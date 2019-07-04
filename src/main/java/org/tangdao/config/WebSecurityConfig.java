@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.tangdao.modules.sys.service.impl.PasswordEncoderService;
 
 @Configuration
 @EnableWebSecurity
@@ -16,15 +17,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final UserDetailsService userDetailsService;
+	
+	private final PasswordEncoderService passwordEncoderService;
 
     @Autowired
-    public WebSecurityConfig(@Qualifier("userServiceImpl") UserDetailsService userDetailsService) {
+    public WebSecurityConfig(@Qualifier("userServiceImpl") UserDetailsService userDetailsService, PasswordEncoderService passwordEncoderService) {
         this.userDetailsService = userDetailsService;
+        this.passwordEncoderService = passwordEncoderService;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(this.userDetailsService);
+        auth.userDetailsService(this.userDetailsService).passwordEncoder(passwordEncoderService);
     }
 
     @Override

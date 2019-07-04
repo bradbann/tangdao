@@ -14,6 +14,6 @@ public class HomeController extends BaseController {
 
 	@GetMapping(value = { "/", "/index", "/home" })
 	public ModelAndView index(Principal principal) {
-		return this.view("home/index");
+		return this.view("modules/sysIndex");
 	}
 }

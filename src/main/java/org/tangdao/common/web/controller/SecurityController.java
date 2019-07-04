@@ -17,6 +17,6 @@ public class SecurityController extends BaseController {
         if (!(auth instanceof AnonymousAuthenticationToken)) {
             return this.view("redirect:/");
         }
-        return this.view("user/login");
+        return this.view("modules/sysLogin");
     }
 }

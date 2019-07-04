@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.tangdao.common.suports.DataEntity;
+import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.StringUtils;
 
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -127,14 +128,14 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 	 * 角色列表
 	 */
 	@TableField(exist = false)
-	private List<Role> roles;
+	private List<Role> roles = ListUtils.newArrayList();
 	
 	/**
 	 *菜单权限列表
 	 */
 	@TableField(exist = false)
-	private List<Menu> menus;
-
+	private List<Menu> menus= ListUtils.newArrayList();
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<SimpleGrantedAuthority> collect = this.getRoles().stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r.getRoleCode())).collect(Collectors.toSet());
