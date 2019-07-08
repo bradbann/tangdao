@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+    	http.headers().frameOptions().disable();
         http
                 .csrf()
                 .disable()
@@ -44,6 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureUrl("/login?error=true")
                 .and()
                 .userDetailsService(this.userDetailsService);
+                
 
     }
 }
