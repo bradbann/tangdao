@@ -3,10 +3,11 @@ package org.tangdao.common.suports;
 import java.io.Serializable;
 
 import org.tangdao.common.utils.ObjectUtils;
-import org.tangdao.modules.sys.entity.User;
+import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.utils.UserUtils;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -18,22 +19,35 @@ public abstract class BaseEntity<T> implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	@JsonIgnore	
 	@TableField(exist = false)
 	protected String key;
 
+	@JsonIgnore	
 	@TableField(exist = false)
 	protected String keyAttrName;
 
+	@JsonIgnore	
 	@TableField(exist = false)
 	protected String keyColumnName;
 
+	@JsonIgnore	
 	@TableField(exist = false)
 	protected boolean isNewRecord;
 	
 	/**
 	 * 当前用户
 	 */
+	@JsonIgnore
+	@TableField(exist = false)
 	protected User currentUser;
+	
+	/**
+	 * 分页对象
+	 */
+//	@JsonIgnore
+//	@TableField(exist = false)
+//	protected Pagination pagination;
 
 	public BaseEntity() {
 		this(null);

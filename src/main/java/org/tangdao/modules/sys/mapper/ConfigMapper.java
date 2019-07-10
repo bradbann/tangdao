@@ -1,7 +1,7 @@
 package org.tangdao.modules.sys.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.tangdao.modules.sys.entity.Config;
+import org.tangdao.modules.sys.model.domain.Config;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 

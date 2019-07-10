@@ -2,8 +2,8 @@ package org.tangdao.modules.sys.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
-import org.tangdao.modules.sys.entity.Config;
 import org.tangdao.modules.sys.mapper.ConfigMapper;
+import org.tangdao.modules.sys.model.domain.Config;
 import org.tangdao.modules.sys.service.IConfigService;
 
 /**

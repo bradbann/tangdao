@@ -2,8 +2,8 @@ package org.tangdao.modules.sys.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
-import org.tangdao.modules.sys.entity.DictType;
 import org.tangdao.modules.sys.mapper.DictTypeMapper;
+import org.tangdao.modules.sys.model.domain.DictType;
 import org.tangdao.modules.sys.service.IDictTypeService;
 
 /**

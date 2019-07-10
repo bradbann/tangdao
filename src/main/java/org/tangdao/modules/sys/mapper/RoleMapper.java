@@ -1,7 +1,8 @@
 package org.tangdao.modules.sys.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.tangdao.modules.sys.entity.Role;
+import org.tangdao.modules.sys.model.domain.Role;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.tangdao.common.suports.Page;
+import org.tangdao.common.suports.Pagination;
+import org.tangdao.common.suports.Sort;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -371,4 +374,12 @@ public interface ICurdService<T> {
     default LambdaUpdateChainWrapper<T> lambdaUpdate() {
         return new LambdaUpdateChainWrapper<>(getBaseMapper());
     }
+    
+   
+    public Page findPage(Pagination pagination, Sort sort, Wrapper<T> queryWrapper);
+
+    default public Page findPage(Pagination pagination, Sort sort) {
+    	return findPage(pagination, sort, Wrappers.emptyWrapper());
+    }
+  
 }

@@ -5,10 +5,11 @@ import java.util.List;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.tangdao.common.service.ITreeService;
+import org.tangdao.common.suports.TreeEntity;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-public class TreeServiceImpl<M extends BaseMapper<T>, T> extends CrudServiceImpl<BaseMapper<T>, T> implements ITreeService<T> {
+public class TreeServiceImpl<M extends BaseMapper<T>, T extends TreeEntity<T>> extends CrudServiceImpl<M, T> implements ITreeService<T> {
 
 	protected Log log = LogFactory.getLog(getClass());
 

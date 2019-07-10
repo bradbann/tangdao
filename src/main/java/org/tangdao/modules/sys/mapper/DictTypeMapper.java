@@ -1,7 +1,8 @@
 package org.tangdao.modules.sys.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.tangdao.modules.sys.entity.DictType;
+import org.tangdao.modules.sys.model.domain.DictType;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

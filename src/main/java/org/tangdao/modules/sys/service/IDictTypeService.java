@@ -1,7 +1,7 @@
 package org.tangdao.modules.sys.service;
 
 import org.tangdao.common.service.ICurdService;
-import org.tangdao.modules.sys.entity.DictType;
+import org.tangdao.modules.sys.model.domain.DictType;
 
 /**
  * <p>

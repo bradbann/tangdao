@@ -1,6 +1,6 @@
 package org.tangdao.modules.sys.utils;
 
-import org.tangdao.modules.sys.entity.User;
+import org.tangdao.modules.sys.model.domain.User;
 
 public class UserUtils {
 

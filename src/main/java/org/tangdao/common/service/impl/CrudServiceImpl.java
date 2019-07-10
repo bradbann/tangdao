@@ -16,11 +16,16 @@ import org.mybatis.spring.SqlSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.tangdao.common.service.ICurdService;
+import org.tangdao.common.suports.DataEntity;
+import org.tangdao.common.suports.Page;
+import org.tangdao.common.suports.Pagination;
+import org.tangdao.common.suports.Sort;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
@@ -31,7 +36,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 
 @SuppressWarnings("unchecked")
-public class CrudServiceImpl<M extends BaseMapper<T>, T> implements ICurdService<T> {
+public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> implements ICurdService<T> {
 
 	protected Log log = LogFactory.getLog(getClass());
 
@@ -279,4 +284,23 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T> implements ICurdService
     public <V> V getObj(Wrapper<T> queryWrapper, Function<? super Object, V> mapper) {
         return SqlHelper.getObject(log, selectObjs(queryWrapper, mapper));
     }
+
+	@Override
+	public Page findPage(Pagination pagination, Sort sort, Wrapper<T> queryWrapper) {
+		// TODO Auto-generated method stub
+		com.baomidou.mybatisplus.extension.plugins.pagination.Page<T> param = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<T>();
+		param.setCurrent(pagination.getPage());
+		param.setSize(pagination.getPerpage());
+		if(sort!=null&&StringUtils.isNotEmpty(sort.getField())) {
+			//需要转换一下驼峰字段
+			String column = StringUtils.camelToUnderline(sort.getField());
+			if("asc".equalsIgnoreCase(sort.getSort()))
+				param.addOrder(OrderItem.asc(column));
+			else
+				param.addOrder(OrderItem.desc(column));
+		}
+		IPage<T> dataSet = baseMapper.selectPage(param, queryWrapper);
+		return new Page(dataSet, sort);
+	}
+
 }

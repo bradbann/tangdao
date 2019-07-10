@@ -1,198 +1,298 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/default}">
-   <head>
-   		<title>用户列表</title>
-   		<th:block th:replace="fragments/bundles/css :: datatables"></th:block>
-   </head>
-   <body>
-	<th:block layout:fragment="content">
-     <div class="content">
-          <!-- Start Content-->
-          <div class="container-fluid">
-              
-              <!-- start page title -->
-              <div class="row">
-                  <div class="col-12">
-                      <div class="page-title-box">
-                          <div class="page-title-right">
-                              <ol class="breadcrumb m-0">
-                                  <li class="breadcrumb-item"><a href="javascript: void(0);">首页</a></li>
-                                  <li class="breadcrumb-item"><a href="javascript: void(0);">系统管理</a></li>
-                                  <li class="breadcrumb-item active">用户管理</li>
-                              </ol>
-                          </div>
-                          <h4 class="page-title">用户管理</h4>
-                      </div>
-                  </div>
-              </div>     
-              <!-- end page title --> 
-
-
-              <div class="row">
-                  <div class="col-12">
-                      <div class="card-box">
-                          <button type="button" class="btn btn-sm btn-dark waves-effect waves-light float-right">
-                              <i class="mdi mdi-plus-circle"></i> 新增用户
-                          </button>
-                          <h4 class="header-title mb-4">用户列表</h4>
-
-                          <div class="table-responsive">
-                              <table class="table table-centered table-borderless table-hover mb-0" id="datatable">
-                                  <thead class="thead-light">
-                                  <tr>
-                                      <th class="border-top-0">Name</th>
-                                      <th class="border-top-0">Card</th>
-                                      <th class="border-top-0">Date</th>
-                                      <th class="border-top-0">Amount</th>
-                                      <th class="border-top-0">Status</th>
-                                  </tr>
-                                  </thead>
-                                  <tbody>
-                                  <tr>
-                                      <td>
-                                          <img src="assets/images/users/user-2.jpg" alt="user-pic" class="rounded-circle avatar-sm" />
-                                          <span class="ml-2">Imelda J. Stanberry</span>
-                                      </td>
-                                      <td>
-                                          <img src="assets/images/cards/visa.png" alt="user-card" height="24" />
-                                          <span class="ml-2">**** 3256</span>
-                                      </td>
-                                      <td>27.03.2018</td>
-                                      <td>$345.98</td>
-                                      <td><span class="badge badge-pill badge-danger">Failed</span></td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <img src="assets/images/users/user-3.jpg" alt="user-pic" class="rounded-circle avatar-sm" />
-                                          <span class="ml-2">Francisca S. Lobb</span>
-                                      </td>
-                                      <td>
-                                          <img src="assets/images/cards/master.png" alt="user-card" height="24" />
-                                          <span class="ml-2">**** 8451</span>
-                                      </td>
-                                      <td>28.03.2018</td>
-                                      <td>$1,250</td>
-                                      <td><span class="badge badge-pill badge-success">Paid</span></td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <img src="assets/images/users/user-4.jpg" alt="user-pic" class="rounded-circle avatar-sm" />
-                                          <span class="ml-2">James A. Wert</span>
-                                      </td>
-                                      <td>
-                                          <img src="assets/images/cards/amazon.png" alt="user-card" height="24" />
-                                          <span class="ml-2">**** 2258</span>
-                                      </td>
-                                      <td>28.03.2018</td>
-                                      <td>$145</td>
-                                      <td><span class="badge badge-pill badge-success">Paid</span></td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <img src="assets/images/users/user-5.jpg" alt="user-pic" class="rounded-circle avatar-sm" />
-                                          <span class="ml-2">Dolores J. Pooley</span>
-                                      </td>
-                                      <td>
-                                          <img src="assets/images/cards/american-express.png" alt="user-card" height="24" />
-                                          <span class="ml-2">**** 6950</span>
-                                      </td>
-                                      <td>29.03.2018</td>
-                                      <td>$2,005.89</td>
-                                      <td><span class="badge badge-pill badge-danger">Failed</span></td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <img src="assets/images/users/user-5.jpg" alt="user-pic" class="rounded-circle avatar-sm" />
-                                          <span class="ml-2">Karen I. McCluskey</span>
-                                      </td>
-                                      <td>
-                                          <img src="assets/images/cards/discover.png" alt="user-card" height="24" />
-                                          <span class="ml-2">**** 0021</span>
-                                      </td>
-                                      <td>31.03.2018</td>
-                                      <td>$24.95</td>
-                                      <td><span class="badge badge-pill badge-success">Paid</span></td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <img src="assets/images/users/user-6.jpg" alt="user-pic" class="rounded-circle avatar-sm" />
-                                          <span class="ml-2">Kenneth J. Melendez</span>
-                                      </td>
-                                      <td>
-                                          <img src="assets/images/cards/visa.png" alt="user-card" height="24" />
-                                          <span class="ml-2">**** 2840</span>
-                                      </td>
-                                      <td>27.03.2018</td>
-                                      <td>$345.98</td>
-                                      <td><span class="badge badge-pill badge-success">Paid</span></td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <img src="assets/images/users/user-7.jpg" alt="user-pic" class="rounded-circle avatar-sm" />
-                                          <span class="ml-2">Sandra M. Nicholas</span>
-                                      </td>
-                                      <td>
-                                          <img src="assets/images/cards/master.png" alt="user-card" height="24" />
-                                          <span class="ml-2">**** 2015</span>
-                                      </td>
-                                      <td>28.03.2018</td>
-                                      <td>$1,250</td>
-                                      <td><span class="badge badge-pill badge-danger">Failed</span></td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <img src="assets/images/users/user-8.jpg" alt="user-pic" class="rounded-circle avatar-sm" />
-                                          <span class="ml-2">Ronald S. Taylor</span>
-                                      </td>
-                                      <td>
-                                          <img src="assets/images/cards/amazon.png" alt="user-card" height="24" />
-                                          <span class="ml-2">**** 0325</span>
-                                      </td>
-                                      <td>28.03.2018</td>
-                                      <td>$145</td>
-                                      <td><span class="badge badge-pill badge-success">Paid</span></td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <img src="assets/images/users/user-9.jpg" alt="user-pic" class="rounded-circle avatar-sm" />
-                                          <span class="ml-2">Beatrice L. Iacovelli</span>
-                                      </td>
-                                      <td>
-                                          <img src="assets/images/cards/discover.png" alt="user-card" height="24" />
-                                          <span class="ml-2">**** 9058</span>
-                                      </td>
-                                      <td>29.03.2018</td>
-                                      <td>$6,542.32</td>
-                                      <td><span class="badge badge-pill badge-success">Paid</span></td>
-                                  </tr>
-                                  <tr>
-                                      <td>
-                                          <img src="assets/images/users/user-10.jpg" alt="user-pic" class="rounded-circle avatar-sm" />
-                                          <span class="ml-2">Sylvia H. Parker</span>
-                                      </td>
-                                      <td>
-                                          <img src="assets/images/cards/discover.png" alt="user-card" height="24" />
-                                          <span class="ml-2">**** 2577</span>
-                                      </td>
-                                      <td>31.03.2018</td>
-                                      <td>$24.95</td>
-                                      <td><span class="badge badge-pill badge-danger">Failed</span></td>
-                                  </tr>
-                                  </tbody>
-                              </table>
-                          </div> <!-- end table-responsive -->
-                      </div>
-                  </div><!-- end col -->
-              <!-- end row -->  
-              
-          </div> <!-- container -->
-
-      </div> <!-- content -->
- </th:block>
-  <th:block layout:fragment="script">
-   		<th:block th:replace="fragments/bundles/script :: datatables"></th:block>
-   		<script th:src="@{~/assets/js/pages/tickets.js}"></script>
-   </th:block>
- </body>
-</html>
+<%  var cssSection = { %>
+<link href="${ctxStatic}/vendors/custom/jstree/jstree.bundle.css" rel="stylesheet" type="text/css" />
+<% }; %>
+<%  var jsSection = { %>
+<script>
+var myDatatable = $(".kt-datatable").myDatatable({
+	searchForm: $("#searchForm"),
+	columns:[
+		{
+			field: 'userCode',
+			title: '#',
+			width: 30,
+			selector: true,
+		}, {
+			field: 'username',
+			title: 'User name',
+			autoHide: false,
+		}, {
+			field: 'nickname',
+			title: 'Nick name',
+		},{
+			field: 'roles',
+			title: 'Roles',
+			sortable: false,
+		},{
+			field: 'email',
+			title: 'Email address',
+		},{
+			field: 'status',
+			title: 'Status',
+			// callback function support for column rendering
+			template: function(row) {
+				var status = {
+					2: {'title': '锁定', 'state': 'danger'},
+					0: {'title': '正常', 'state': 'primary'},
+				};
+				return '<span class="kt-badge kt-badge--' + status[row.status].state + ' kt-badge--dot"></span>&nbsp;<span class="kt-font-bold kt-font-' + status[row.status].state + '">' + status[row.status].title + '</span>';
+			},
+		},{
+			field: 'lastLoginIp',
+			title: 'Last loginip',
+			sortable: false,
+		}, {
+			field: 'Actions',
+			title: 'Actions',
+			sortable: false,
+			width: 110,
+			overflow: 'visible',
+			autoHide: false,
+			template: function() {
+				return '\
+				<div class="dropdown">\
+					<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" data-toggle="dropdown">\
+	                       <i class="flaticon2-gear"></i>\
+	                   </a>\
+				  	<div class="dropdown-menu dropdown-menu-right">\
+				    	<a class="dropdown-item" href="#"><i class="la la-edit"></i> Edit Details</a>\
+				    	<a class="dropdown-item" href="#"><i class="la la-leaf"></i> Update Status</a>\
+				    	<a class="dropdown-item" href="#"><i class="la la-print"></i> Generate Report</a>\
+				  	</div>\
+				</div>\
+				<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="Edit details">\
+					<i class="flaticon2-paper"></i>\
+				</a>\
+				<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="Delete">\
+					<i class="flaticon2-trash"></i>\
+				</a>\
+			';
+			},
+		}
+	],
+});
+$('#kt_form_status').selectpicker();
+</script>
+<% }; %>
+<%  var toolsSection = { %>
+<div class="kt-subheader__wrapper">
+	<a href="#" class="btn btn-secondary btn-sm active" id="btnSearch">
+		<i class="flaticon-tool"></i> 查询
+	</a>
+	<a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#kt_modal_6">
+		<i class="flaticon2-add-1"></i> 新增用户
+	</a>
+</div>
+<% }; %>
+<% layout('/layouts/default.html', {title: '用户列表',  menuCode:'1044886627991953408', libs:['jstree','validate'], cssSection: cssSection, jsSection: jsSection, toolsSection: toolsSection}){ %>
+<div class="kt-portlet kt-portlet--mobile">
+	<div class="kt-portlet__head">
+		<div class="kt-portlet__head-label">
+			<span class="kt-portlet__head-icon">
+				<i class="kt-font-brand flaticon2-list"></i>
+			</span>
+			<h3 class="kt-portlet__head-title">
+				Data list
+			</h3>
+		</div>
+	</div>
+	<div class="kt-portlet__body" style="padding: 0px;">
+		<form class="kt-form kt-form--label-right kt-margin-20" id="searchForm" action="${ctxPath}/sys/user/listData" method="post">
+			<div class="row align-items-center">
+				<div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
+					<div class="kt-input-icon kt-input-icon--left">
+						<input type="text" class="form-control" placeholder="Search..." name="generalSearch">
+						<span class="kt-input-icon__icon kt-input-icon__icon--left">
+							<span><i class="la la-search"></i></span>
+						</span>
+					</div>
+				</div>
+				<div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
+					<div class="kt-form__group kt-form__group--inline">
+						<div class="kt-form__label">
+							<label>Status:</label>
+						</div>
+						<div class="kt-form__control">
+							<select class="form-control bootstrap-select" id="kt_form_status" name="status">
+								<option value="">请选择</option>
+								<option value="0">正常</option>
+								<option value="2">锁定</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4 kt-margin-b-20-tablet-and-mobile">
+					<button type="submit" class="btn btn-primary">查询</button>
+					<button type="reset" class="btn btn-secondary">重置</button>
+				</div>
+			</div>
+		</form>
+		<!--begin: Datatable -->
+		<div class="kt-datatable" id="server_record_selection"></div>
+		<!--end: Datatable -->
+	</div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="kt_modal_6" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 850px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">新增用户</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				</button>
+			</div>
+			<div class="modal-body">
+				<ul class="nav nav-tabs  nav-tabs-line" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link active" data-toggle="tab" href="#kt_tabs_1_1" role="tab">基本信息</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#kt_tabs_1_3" role="tab">组织结构</a>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane active" id="kt_tabs_1_1" role="tabpanel">
+						<div class="kt-form kt-form--label-right">
+							<div class="kt-portlet__body">
+								<div class="form-group row">
+									<div class="col-lg-6">
+										<label>用户名:</label>
+										<input type="email" class="form-control" placeholder="Enter full name">
+										<span class="form-text text-muted">Please enter your full name</span>
+									</div>
+									<div class="col-lg-6">
+										<label class="">昵称:</label>
+										<input type="email" class="form-control" placeholder="Enter contact number">
+										<span class="form-text text-muted">Please enter your contact number</span>
+									</div>
+								</div>
+								<div class="form-group row">
+									<div class="col-lg-6">
+										<label>地址:</label>
+										<div class="kt-input-icon">
+											<input type="text" class="form-control" placeholder="Enter your address">
+											<span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-map-marker"></i></span></span>
+										</div>
+										<span class="form-text text-muted">Please enter your address</span>
+									</div>
+									<div class="col-lg-6">
+										<label class="">邮编:</label>
+										<div class="kt-input-icon">
+											<input type="text" class="form-control" placeholder="Enter your postcode">
+											<span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-bookmark-o"></i></span></span>
+										</div>
+										<span class="form-text text-muted">Please enter your postcode</span>
+									</div>
+								</div>
+								<div class="form-group row">
+									<div class="col-lg-12">
+										<label>用户角色:</label>
+										<div class="kt-input-icon">
+											<input type="text" class="form-control" placeholder="Enter your address">
+											<span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-map-marker"></i></span></span>
+										</div>
+										<span class="form-text text-muted">请配置角色信息</span>
+									</div>
+								</div>
+								<div class="form-group row">
+									<div class="col-lg-6">
+										<label>用户类型:</label>
+										<div class="kt-radio-inline">
+											<label class="kt-radio kt-radio--solid">
+												<input type="radio" name="example_2" checked value="2"> 管理员
+												<span></span>
+											</label>
+											<label class="kt-radio kt-radio--solid">
+												<input type="radio" name="example_2" value="2"> 用户
+												<span></span>
+											</label>
+										</div>
+										<span class="form-text text-muted">Please select user group</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="recipient-name" class="form-control-label">其它设置:</label>
+									<div class="kt-checkbox-list">
+										<label class="kt-checkbox kt-checkbox--solid">
+											<input type="checkbox" checked=""> Set random password
+											<span></span>
+										</label>
+										<label class="kt-checkbox kt-checkbox--solid">
+											<input type="checkbox"> Should change password on next login
+											<span></span>
+										</label>
+										<label class="kt-checkbox kt-checkbox--solid">
+											<input type="checkbox"> Send activation email
+											<span></span>
+										</label>
+										<label class="kt-checkbox kt-checkbox--solid">
+											<input type="checkbox">  Active
+											<span></span>
+										</label>
+										<label class="kt-checkbox kt-checkbox--solid">
+											<input type="checkbox"> Lockout enabled
+											<span></span>
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="kt_tabs_1_3" role="tabpanel">
+						<div id="kt_tree_3" class="tree-demo"></div>
+						
+						<script src="${ctxStatic}/vendors/custom/jstree/jstree.bundle.js" type="text/javascript"></script>
+						<script>
+						$('#kt_tree_3').jstree({
+				            'plugins': ["wholerow", "checkbox", "types"],
+				            'core': {
+				                "themes" : {
+				                    "responsive": false
+				                },    
+				                'data': [{
+				                        "text": "Same but with checkboxes",
+				                        "children": [{
+				                            "text": "initially selected",
+				                            "state": {
+				                                "selected": true
+				                            }
+				                        }, {
+				                            "text": "custom icon",
+				                        }, {
+				                            "text": "initially open",
+				                            "state": {
+				                                "opened": true
+				                            },
+				                            "children": ["Another node"]
+				                        }, {
+				                            "text": "custom icon",
+				                        }, {
+				                            "text": "disabled node",
+				                            "state": {
+				                                "disabled": true
+				                            }
+				                        }]
+				                    },
+				                    "And wholerow selection"
+				                ]
+				            },
+				            "types" : {
+				                "default" : {
+				                    "icon" : "fa fa-folder kt-font-warning"
+				                },
+				                "file" : {
+				                    "icon" : "fa fa-file  kt-font-warning"
+				                }
+				            },
+				        });
+						</script>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary">保存修改</button>
+			</div>
+		</div>
+	</div>
+</div>
+<% } %>

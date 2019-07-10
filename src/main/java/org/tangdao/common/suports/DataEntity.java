@@ -3,7 +3,7 @@ package org.tangdao.common.suports;
 import java.util.Date;
 
 import org.tangdao.common.utils.StringUtils;
-import org.tangdao.modules.sys.entity.User;
+import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.utils.UserUtils;
 
 import com.baomidou.mybatisplus.annotation.TableField;

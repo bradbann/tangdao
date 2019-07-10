@@ -2,8 +2,8 @@ package org.tangdao.modules.sys.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
-import org.tangdao.modules.sys.entity.Menu;
 import org.tangdao.modules.sys.mapper.MenuMapper;
+import org.tangdao.modules.sys.model.domain.Menu;
 import org.tangdao.modules.sys.service.IMenuService;
 
 /**

@@ -29,19 +29,15 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		<!-- 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -52,26 +48,19 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
-		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>nz.net.ultraq.thymeleaf</groupId>
-			<artifactId>thymeleaf-layout-dialect</artifactId>
-		</dependency>
-		
+		 -->
 		<dependency>
 	        <groupId>com.baomidou</groupId>
 	        <artifactId>mybatis-plus-boot-starter</artifactId>
 	        <version>3.1.2</version>
 	    </dependency>
 		
-		<!-- Scope test -->
+		<!-- Scope test 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -95,7 +84,7 @@
 		    <artifactId>freemarker</artifactId>
 		    <scope>test</scope>
 		</dependency>
-		
+		-->
 		<!-- Common -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -143,6 +132,14 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 		</dependency>
+		
+		<!-- beetl -->
+		<dependency>
+	        <groupId>com.ibeetl</groupId>
+	        <artifactId>beetl</artifactId>
+	        <version>3.0.7.RELEASE</version>
+		</dependency>
+			
 		
 	</dependencies>
 

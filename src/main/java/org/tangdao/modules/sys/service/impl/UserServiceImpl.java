@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
-import org.tangdao.modules.sys.entity.User;
 import org.tangdao.modules.sys.mapper.UserMapper;
+import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.IUserService;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
