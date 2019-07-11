@@ -41,5 +41,10 @@ public class UserController extends BaseController {
 	public @ResponseBody Page listData(@RequestBody UserDTO userDTO) {
 		return this.userService.findPage(userDTO.getPagination(), userDTO.getSort());
 	}
+	
+	@RequestMapping("/form")
+	public String form(User user, Model model) {
+		return "modules/sys/userForm";
+	}
 
 }
