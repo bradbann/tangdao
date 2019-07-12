@@ -4,9 +4,14 @@ package org.tangdao.modules.sys.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.suports.Page;
 import org.tangdao.modules.sys.model.domain.User;
@@ -32,19 +37,35 @@ public class UserController extends BaseController {
 		this.userService = userService;
 	}
 	
-	@RequestMapping("/list")
+	@ModelAttribute
+	public User get(String userCode, boolean isNewRecord) {
+		return userService.get(userCode, isNewRecord);
+	}
+	
+	@GetMapping("/list")
 	public String list(User user, Model model) {
 		return "modules/sys/userList";
 	}
 
-	@RequestMapping("/listData")
+	@PostMapping("/listData")
 	public @ResponseBody Page listData(@RequestBody UserDTO userDTO) {
 		return this.userService.findPage(userDTO.getPagination(), userDTO.getSort());
 	}
 	
-	@RequestMapping("/form")
+	@GetMapping("/form")
 	public String form(User user, Model model) {
+		user.setUsername("test");
+		model.addAttribute("user", user);
 		return "modules/sys/userForm";
+	}
+	
+	@PostMapping(value = "save")
+	public @ResponseBody String save(@Validated User user, String oldUsername, Model model) {
+//		if (!"true".equals(checkPostName(oldRoleName, post.getPostName()))) {
+//			return renderResult(Global.FALSE, text("保存岗位失败，岗位名称''{0}''已存在", post.getPostName()));
+//		}
+//		postService.save(post);
+		return renderResult(Global.TRUE, "操作成功");
 	}
 
 }

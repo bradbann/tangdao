@@ -12,10 +12,12 @@ var valGetParentContainer = function(element) {
 }
 
 jQuery.validator.setDefaults({
-    errorElement: 'div', //default input error message container
-    focusInvalid: false, // do not focus the last invalid input
-    ignore: "",  // validate all fields including form hidden input
-
+    //errorElement: '', //default input error message container
+    //focusInvalid: false, // do not focus the last invalid input
+    //ignore: "",  // validate all fields including form hidden input
+    ignore: ":hidden:not(.required),input.select2-focusser",  // 忽略不做校验的元素
+    //errorClass: "valid-feedback",
+    //errorContainer: ".form-error",
     errorPlacement: function(error, element) { // render error placement for each input type
         var element = $(element);
 
@@ -39,6 +41,8 @@ jQuery.validator.setDefaults({
             } else {                                                   //Checkbox & radios
                 if (element.is(':checkbox')) {
                     element.closest('.kt-checkbox').find('> span').after(error);
+                } else if(element.is(':radio')) {
+                	element.closest('.kt-radio').parent().after(error);
                 } else {
                     element.after(error);
                 }                
@@ -59,7 +63,7 @@ jQuery.validator.setDefaults({
         group.removeClass('is-invalid'); 
         $(element).removeClass('is-invalid');
     },
-
+    
     success: function(label, element) {
         var group = valGetParentContainer(element);
         group.removeClass('validate');
@@ -73,4 +77,4 @@ jQuery.validator.addMethod("email", function(value, element) {
     } else {
         return false;
     }
-}, "Please enter a valid Email.");
+});

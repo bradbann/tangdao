@@ -63,5 +63,8 @@ public class DictData extends DataEntity<DictData> {
      * css类名（如：red）
      */
     private String cssClass;
+    
+    public interface SimpleView {
+	}
 
 }

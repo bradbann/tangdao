@@ -1,0 +1,16 @@
+<%
+var p = {
+
+	// 标签参数
+	id: id!,					// 表单ID
+	model: model!,				// 绑定Model对象，例如：${user!}
+	action: action!,			// 表单请求地址
+	method: method!,			// 请求方法，默认 post
+	enctype: enctype!,			// 发送之前进行数据编码，上传文件时指定：multipart/form-data
+	model: model!
+};
+pageCtx("modelAttr", model);
+%>
+<form id="${p.id}" action="${p.action}" <%if(@StringUtils.isNotBlank(p.method!)){%>method="${p.method}"<%}%> <%if(@StringUtils.isNotBlank(p.enctype!)){%>enctype="${p.enctype}"<%}%> <%if(@StringUtils.isNotBlank(class!)){%>class="${class!}"<%}%> <%if(@StringUtils.isNotBlank(style!)){%>style="${style!}"<%}%> novalidate="novalidate">
+${tagBody}
+</form>

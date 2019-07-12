@@ -376,6 +376,12 @@ public interface ICurdService<T> {
     }
     
    
+    public T get(Serializable id, boolean isNewRecord);
+    
+    default public T get(Serializable id) {
+    	return get(id, false);
+    }
+    
     public Page findPage(Pagination pagination, Sort sort, Wrapper<T> queryWrapper);
 
     default public Page findPage(Pagination pagination, Sort sort) {

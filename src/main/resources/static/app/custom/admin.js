@@ -11,7 +11,94 @@ if (typeof jQuery === "undefined") {
             if (typeof(console) !== "undefined") {
                 console.error(msg)
             }
-        }
+        },
+        ajaxSubmit: function(url, data, callback, dataType, async, message) {
+            $(".btn").attr("disabled", true);
+            if (typeof data == "function") {
+                message = async;
+                async = dataType;
+                dataType = callback;
+                callback = data;
+                data = undefined
+            }
+            var options = {};
+            if (typeof callback == "object") {
+                options = callback;
+                callback = options.callback;
+                dataType = options.dataType;
+                async = options.async;
+                message = options.message
+            }
+            js.loading(message == undefined ? js.text("loading.submitMessage") : message);
+            $.ajax($.extend(true, {
+                type: "POST",
+                url: url,
+                data: data,
+                dataType: dataType == undefined ? "json": dataType,
+                async: async == undefined ? true: async,
+                error: function(data) {
+                    $(".btn").attr("disabled", false);
+                    js.showErrorMessage(data.responseText);
+                    js.closeLoading(0, true)
+                },
+                success: function(data, status, xhr) {
+                    $(".btn").attr("disabled", false);
+                    js.closeLoading();
+                    if (typeof callback == "function") {
+                        callback(data, status, xhr)
+                    } else {
+                        js.log(data)
+                    }
+                }
+            },
+            options))
+        },
+        ajaxSubmitForm: function(formJqueryObj, callback, dataType, async, message) {
+            $(".btn").attr("disabled", true);
+            var options = {};
+            if (typeof callback == "object") {
+                options = callback;
+                callback = options.callback;
+                dataType = options.dataType;
+                async = options.async;
+                message = options.message
+            }
+            log(message);
+            //js.loading(message == undefined ? js.text("loading.submitMessage") : message);
+            if (options.downloadFile === true) {
+                options.iframe = true
+            }
+            formJqueryObj.ajaxSubmit($.extend(true, {
+                type: "POST",
+                xhrFields: {
+                    withCredentials: true
+                },
+                url: formJqueryObj.attr("action"),
+                dataType: dataType == undefined ? "json": dataType,
+                async: async == undefined ? true: async,
+                error: function(data) {
+                    $(".btn").attr("disabled", false);
+                    error(data);
+                    //js.showErrorMessage(data.responseText);
+                    //js.closeLoading(0, true)
+                },
+                success: function(data, status, xhr) {
+                    $(".btn").attr("disabled", false);
+                    log(data);
+                    //js.closeLoading();
+                    //if (typeof callback == "function") {
+                    //    callback(data, status, xhr)
+                    //} else {
+                    //    js.log(data)
+                    //}
+                }
+            },
+            options));
+            if (options.downloadFile === true) {
+                $(".btn").attr("disabled", false);
+                //js.closeLoading()
+            }
+        },
 	};
 	window.js = js;
     window.log = js.log;

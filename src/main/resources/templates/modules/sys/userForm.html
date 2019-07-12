@@ -1,143 +1,165 @@
 <% var op = '新建'; %>
 <%  var jsSection = { %>
 <script>
-$('#kt_form_status').selectpicker();
+$("#inputForm").validate({
+	rules: {
+        sex: {
+            required: true
+        }
+	},
+	submitHandler: function(form){
+		log(form);
+		js.ajaxSubmitForm($(form), function(data){
+			console.log(data)
+		}, "json");
+    }
+});
 </script>
 <% }; %>
 <%  var toolsSection = { %>
 <div class="kt-subheader__wrapper">
-	<div class="kt-subheader__breadcrumbs">
-        <a href="" class="kt-subheader__breadcrumbs-link">我的首页</a>
-        <span class="kt-subheader__breadcrumbs-separator"></span>
-        <a href="" class="kt-subheader__breadcrumbs-link">用户列表</a>
-         <span class="kt-subheader__breadcrumbs-separator"></span>
-        <a href="" class="kt-subheader__breadcrumbs-link"> </a>
-        <span class="kt-subheader__breadcrumbs-link kt-subheader__breadcrumbs-link--active">${op!+'用户'}</span>
-     </div>
+	<a href="javascript：history.go(-1);" class="btn btn-outline-secondary btn-sm">
+		<i class="la la-arrow-left"></i> 返回列表
+	</a>
 </div>
 <% }; %>
-<% layout('/layouts/default.html', {title: op!+'用户',  menuCode:'1044886627991953408', libs:['validate'], jsSection: jsSection, toolsSection: toolsSection}){ %>
+<% layout('/layouts/default.html', {title:op!+'用户',  menuCode:'1044886627991953408', libs:['validation'], subDesc:op!+'用户', jsSection:jsSection, toolsSection:toolsSection}){ %>
 <div class="kt-portlet">
-	<div class="kt-portlet__body">
-		<div class="kt-form kt-form--label-right">
-			<div class="form-group row">
+	<#form:form id="inputForm" model="${user}" action="${ctxPath}/sys/user/save" method="post" class="kt-form kt-form--fit kt-form--label-right">
+		<div class="kt-portlet__body">
+			<div class="row">
 				<div class="col-lg-3">
-					<label>用户名:</label>
-					<input type="email" class="form-control" placeholder="Enter full name">
+					<label>用户名：</label>
+					214214234
 					<span class="form-text text-muted">Please enter your full name</span>
 				</div>
 				<div class="col-lg-9">
-					<div class="form-group row">
-						<div class="col-lg-6">
-							<label>用户名:</label>
-							<input type="email" class="form-control" placeholder="Enter full name">
-							<span class="form-text text-muted">Please enter your full name</span>
+					<div class="row">
+						<div class="form-group col-lg-6">
+							<label>用户名：</label>
+							<#form:input path="username" class="form-control required" placeholder="请输入用户名" />
 						</div>
-						<div class="col-lg-6">
-							<label class="">昵称:</label>
-							<input type="email" class="form-control" placeholder="Enter contact number">
-							<span class="form-text text-muted">Please enter your contact number</span>
+						<div class="form-group col-lg-6">
+							<label class="">用户昵称：</label>
+							<#form:input path="nickname" class="form-control required" placeholder="请输入用户昵称" />
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-lg-6">
-							<label>用户名:</label>
-							<input type="email" class="form-control" placeholder="Enter full name">
-							<span class="form-text text-muted">Please enter your full name</span>
+					<div class="row">
+						<div class="form-group col-lg-6">
+							<label>电子邮箱：</label>
+							<#form:input path="email" class="form-control" placeholder="请输入电子邮箱" />
 						</div>
-						<div class="col-lg-6">
-							<label class="">昵称:</label>
-							<input type="email" class="form-control" placeholder="Enter contact number">
-							<span class="form-text text-muted">Please enter your contact number</span>
+						<div class="form-group col-lg-6">
+							<label class="">手机号码：</label>
+							<#form:input path="mobile" class="form-control" placeholder="请输入手机号码" />
 						</div>
 					</div>
-					<div class="form-group row">
-						<div class="col-lg-6">
-							<label>用户名:</label>
-							<input type="email" class="form-control" placeholder="Enter full name">
-							<span class="form-text text-muted">Please enter your full name</span>
+					<div class="row">
+						<div class="form-group col-lg-6">
+							<label>办公电话：</label>
+							<#form:input path="phone" class="form-control" placeholder="请输入办公电话" />
 						</div>
-						<div class="col-lg-6">
-							<label class="">昵称:</label>
-							<input type="email" class="form-control" placeholder="Enter contact number">
-							<span class="form-text text-muted">Please enter your contact number</span>
+						<div class="form-group col-lg-6">
+							<label class="">权重排序：</label>
+							<#form:input path="userWeight" class="form-control" placeholder="请输入权重排序" />
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="form-group row">
-				<div class="col-lg-6">
-					<label>地址:</label>
-					<div class="kt-input-icon">
-						<input type="text" class="form-control" placeholder="Enter your address">
-						<span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-map-marker"></i></span></span>
+			<div class="row">
+				<div class="col-lg-3">
+					<div class="row">
+						<div class="form-group col-lg-12">
+							<label>用户性别：</label>
+							<#form:radio path="sex" dictType="sys_user_sex" class="kt-radio-inline" help="Please select user sex"/>
+						</div>
 					</div>
-					<span class="form-text text-muted">Please enter your address</span>
-				</div>
-				<div class="col-lg-6">
-					<label class="">邮编:</label>
-					<div class="kt-input-icon">
-						<input type="text" class="form-control" placeholder="Enter your postcode">
-						<span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-bookmark-o"></i></span></span>
+					<div class="row">
+						<div class="form-group col-lg-12">
+							<label>用户分组：</label>
+							<div class="kt-radio-inline">
+								<label class="kt-radio kt-radio--solid">
+									<input type="radio" name="mgrType" checked value="2"> 管理组
+									<span></span>
+								</label>
+								<label class="kt-radio kt-radio--solid">
+									<input type="radio" name="mgrType" value="2"> 用户组
+									<span></span>
+								</label>
+							</div>
+							<span class="form-text text-muted">Please select user group</span>
+						</div>
 					</div>
-					<span class="form-text text-muted">Please enter your postcode</span>
-				</div>
-			</div>
-			<div class="form-group row">
-				<div class="col-lg-12">
-					<label>用户角色:</label>
-					<div class="kt-input-icon">
-						<input type="text" class="form-control" placeholder="Enter your address">
-						<span class="kt-input-icon__icon kt-input-icon__icon--right"><span><i class="la la-map-marker"></i></span></span>
+					<div class="form-group">
+						<label for="recipient-name" class="form-control-label">角色：</label>
+						<div class="kt-checkbox-list required" class="kt-scroll" data-scroll="true" style="max-height： 200px">
+							<label class="kt-checkbox kt-checkbox--solid">
+								<input type="checkbox"> 超级管理员
+								<span></span>
+							</label>
+							<label class="kt-checkbox kt-checkbox--solid">
+								<input type="checkbox"> 管理员
+								<span></span>
+							</label>
+							<label class="kt-checkbox kt-checkbox--solid">
+								<input type="checkbox"> 默认角色
+								<span></span>
+							</label>
+							<label class="kt-checkbox kt-checkbox--solid">
+								<input type="checkbox"> 用户
+								<span></span>
+							</label>
+						</div>
+						<span class="form-text text-muted">Please select user group</span>
 					</div>
-					<span class="form-text text-muted">请配置角色信息</span>
 				</div>
-			</div>
-			<div class="form-group row">
-				<div class="col-lg-6">
-					<label>用户类型:</label>
-					<div class="kt-radio-inline">
-						<label class="kt-radio kt-radio--solid">
-							<input type="radio" name="example_2" checked value="2"> 管理员
-							<span></span>
-						</label>
-						<label class="kt-radio kt-radio--solid">
-							<input type="radio" name="example_2" value="2"> 用户
-							<span></span>
-						</label>
+				<div class="col-lg-9">
+					<div class="row">
+						<div class="form-group col-lg-6">
+							<label class="">签名：</label>
+							<#form:input path="sign" class="form-control" placeholder="请输入签名" />
+						</div>
 					</div>
-					<span class="form-text text-muted">Please select user group</span>
+					<div class="row">
+						<div class="form-group col-lg-12">
+							<label class="">备注：</label>
+							<#form:textarea path="remarks" class="form-control"  placeholder="请输入备注"  rows="3" help="Please enter your remarks"></#form:textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="recipient-name" class="form-control-label">其它设置：</label>
+						<div class="kt-checkbox-list">
+							<label class="kt-checkbox kt-checkbox--solid">
+								<input type="checkbox" checked=""> Set random password
+								<span></span>
+							</label>
+							<label class="kt-checkbox kt-checkbox--solid">
+								<input type="checkbox"> Should change password on next login
+								<span></span>
+							</label>
+							<label class="kt-checkbox kt-checkbox--solid">
+								<input type="checkbox"> Send activation email
+								<span></span>
+							</label>
+							<label class="kt-checkbox kt-checkbox--solid">
+								<input type="checkbox">  Active
+								<span></span>
+							</label>
+							<label class="kt-checkbox kt-checkbox--solid">
+								<input type="checkbox"> Lockout enabled
+								<span></span>
+							</label>
+						</div>
+					</div>
 				</div>
-			</div>
-			<div class="form-group">
-				<label for="recipient-name" class="form-control-label">其它设置:</label>
-				<div class="kt-checkbox-list">
-					<label class="kt-checkbox kt-checkbox--solid">
-						<input type="checkbox" checked=""> Set random password
-						<span></span>
-					</label>
-					<label class="kt-checkbox kt-checkbox--solid">
-						<input type="checkbox"> Should change password on next login
-						<span></span>
-					</label>
-					<label class="kt-checkbox kt-checkbox--solid">
-						<input type="checkbox"> Send activation email
-						<span></span>
-					</label>
-					<label class="kt-checkbox kt-checkbox--solid">
-						<input type="checkbox">  Active
-						<span></span>
-					</label>
-					<label class="kt-checkbox kt-checkbox--solid">
-						<input type="checkbox"> Lockout enabled
-						<span></span>
-					</label>
-				</div>
-			</div>
-			<div class="form-group row">
-				<button class="btn btn-primary btn-sm kt-margin-l-10">保 存</button>
 			</div>
 		</div>
-	</div>
+		<div class="kt-portlet__foot">
+			<div class="kt-form__actions">
+				<button type="submit" class="btn btn-primary btn-sm">确  认</button>
+				<button type="reset" class="btn btn-secondary btn-sm">返  回</button>
+			</div>
+		</div>
+	</#form:form>
 </div>
 <% } %>
