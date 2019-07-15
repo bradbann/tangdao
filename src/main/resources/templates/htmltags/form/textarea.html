@@ -12,9 +12,12 @@ var p = {
 };
 var id = p.id!p.name!p.path;
 var name = p.name!p.path;
-var value = p.value!modelAttr[p.path]!p.defaultValue;
+var value = p.value!;
+if(@StringUtils.isBlank(value!)&&@StringUtils.isNotBlank(p.path!)){
+	value = modelAttr[p.path];
+}
+if(@StringUtils.isBlank(value!)){
+	value = p.defaultValue;
+}
 %>
 <textarea id="${id}" name="${name}" <%if(@StringUtils.isNotBlank(row!)){%> row="${row!}"<%}%><%if(@StringUtils.isNotBlank(readonly!)){%> readonly="${readonly!}"<%}%><%if(@StringUtils.isNotBlank(disabled!)){%> disabled="${disabled!}"<%}%><%if(@StringUtils.isNotBlank(minlength!)){%> maxlength="${maxlength!}"<%}%><%if(@StringUtils.isNotBlank(maxlength!)){%> maxlength="${maxlength!}"<%}%><%if(@StringUtils.isNotBlank(placeholder!)){%> placeholder="${placeholder!}"<%}%><%if(@StringUtils.isNotBlank(class!)){%> class="${class!}"<%}%><%if(@StringUtils.isNotBlank(style!)){%> style="${style!}"<%}%>>${value}</textarea>
-<% if(@StringUtils.isNotBlank(help!)){%>
-<span class="form-text text-muted">${help!}</span>
-<%}%>

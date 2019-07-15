@@ -3,12 +3,14 @@
 <script>
 $("#inputForm").validate({
 	rules: {
-        sex: {
+        sex1: {
+            required: true
+        },
+        mgrType1: {
             required: true
         }
 	},
 	submitHandler: function(form){
-		log(form);
 		js.ajaxSubmitForm($(form), function(data){
 			console.log(data)
 		}, "json");
@@ -18,7 +20,7 @@ $("#inputForm").validate({
 <% }; %>
 <%  var toolsSection = { %>
 <div class="kt-subheader__wrapper">
-	<a href="javascript：history.go(-1);" class="btn btn-outline-secondary btn-sm">
+	<a href="javascript:history.go(-1);" class="btn btn-outline-secondary btn-sm">
 		<i class="la la-arrow-left"></i> 返回列表
 	</a>
 </div>
@@ -37,11 +39,12 @@ $("#inputForm").validate({
 					<div class="row">
 						<div class="form-group col-lg-6">
 							<label>用户名：</label>
-							<#form:input path="username" class="form-control required" placeholder="请输入用户名" />
+							<#form:input path="username" class="form-control required" minlength="6" placeholder="请输入用户名" />
+							<span class="form-text text-muted">Please input username</span>
 						</div>
 						<div class="form-group col-lg-6">
 							<label class="">用户昵称：</label>
-							<#form:input path="nickname" class="form-control required" placeholder="请输入用户昵称" />
+							<#form:input path="nickname" class="form-control" placeholder="请输入用户昵称" />
 						</div>
 					</div>
 					<div class="row">
@@ -71,46 +74,29 @@ $("#inputForm").validate({
 					<div class="row">
 						<div class="form-group col-lg-12">
 							<label>用户性别：</label>
-							<#form:radio path="sex" dictType="sys_user_sex" class="kt-radio-inline" help="Please select user sex"/>
+							<div class="kt-radio-inline">
+							<#form:radio path="sex" dictType="sys_user_sex" class="required"/>
+							</div>
+							<span class="form-text text-muted">Please select user sex</span>
 						</div>
 					</div>
 					<div class="row">
 						<div class="form-group col-lg-12">
 							<label>用户分组：</label>
 							<div class="kt-radio-inline">
-								<label class="kt-radio kt-radio--solid">
-									<input type="radio" name="mgrType" checked value="2"> 管理组
-									<span></span>
-								</label>
-								<label class="kt-radio kt-radio--solid">
-									<input type="radio" name="mgrType" value="2"> 用户组
-									<span></span>
-								</label>
+							<#form:radio path="mgrType" dictType="sys_user_mgr_type" class="required"/>
 							</div>
 							<span class="form-text text-muted">Please select user group</span>
 						</div>
 					</div>
-					<div class="form-group">
-						<label for="recipient-name" class="form-control-label">角色：</label>
-						<div class="kt-checkbox-list required" class="kt-scroll" data-scroll="true" style="max-height： 200px">
-							<label class="kt-checkbox kt-checkbox--solid">
-								<input type="checkbox"> 超级管理员
-								<span></span>
-							</label>
-							<label class="kt-checkbox kt-checkbox--solid">
-								<input type="checkbox"> 管理员
-								<span></span>
-							</label>
-							<label class="kt-checkbox kt-checkbox--solid">
-								<input type="checkbox"> 默认角色
-								<span></span>
-							</label>
-							<label class="kt-checkbox kt-checkbox--solid">
-								<input type="checkbox"> 用户
-								<span></span>
-							</label>
+					<div class="row">
+						<div class="form-group col-lg-12">
+							<label for="recipient-name" class="form-control-label">角色：</label>
+							<div class="kt-checkbox-list kt-scroll" data-scroll="true" style="max-height:200px">
+							<#form:checkbox name="roleCode" dictType="sys_role_data_scope" class="required"/>
+							</div>
+							<span class="form-text text-muted">Please select user group</span>
 						</div>
-						<span class="form-text text-muted">Please select user group</span>
 					</div>
 				</div>
 				<div class="col-lg-9">
@@ -123,32 +109,20 @@ $("#inputForm").validate({
 					<div class="row">
 						<div class="form-group col-lg-12">
 							<label class="">备注：</label>
-							<#form:textarea path="remarks" class="form-control"  placeholder="请输入备注"  rows="3" help="Please enter your remarks"></#form:textarea>
+							<#form:textarea path="remarks" class="form-control"  placeholder="请输入备注"  rows="3"></#form:textarea>
+							<span class="form-text text-muted">Please enter your remarks</span>
 						</div>
 					</div>
-					<div class="form-group">
-						<label for="recipient-name" class="form-control-label">其它设置：</label>
-						<div class="kt-checkbox-list">
-							<label class="kt-checkbox kt-checkbox--solid">
-								<input type="checkbox" checked=""> Set random password
-								<span></span>
-							</label>
-							<label class="kt-checkbox kt-checkbox--solid">
-								<input type="checkbox"> Should change password on next login
-								<span></span>
-							</label>
-							<label class="kt-checkbox kt-checkbox--solid">
-								<input type="checkbox"> Send activation email
-								<span></span>
-							</label>
-							<label class="kt-checkbox kt-checkbox--solid">
-								<input type="checkbox">  Active
-								<span></span>
-							</label>
-							<label class="kt-checkbox kt-checkbox--solid">
-								<input type="checkbox"> Lockout enabled
-								<span></span>
-							</label>
+					<div class="row">
+						<div class="form-group col-lg-12">
+							<label for="recipient-name" class="form-control-label">其它设置：</label>
+							<div class="kt-checkbox-list">
+								<#form:checkbox name="randomPassword" label="Set random password" checked="checked"/>
+								<#form:checkbox name="changePassword" label="Should change password on next login"/>
+								<#form:checkbox name="activationEmail" label="Send activation email"  checked="checked"/>
+								<#form:checkbox name="active" label="Active"/>
+								<#form:checkbox name="lockout" label="Lockout enabled"/>
+							</div>
 						</div>
 					</div>
 				</div>

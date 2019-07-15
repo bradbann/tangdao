@@ -1,6 +1,14 @@
 if (typeof jQuery === "undefined") {
     throw new Error("Tangdao's JavaScript requires jQuery")
 } (function($, window, undefined) {
+	$(function() {
+		 $("#inputForm input[type=text]:not([readonly]):not([disabled]):not(.nofocus):eq(0)").focus();
+		 if (js.ie && js.ie <= 9) {
+            setTimeout(function() {
+                $("input[placeholder],textarea[placeholder]").placeholder()
+            }, 500)
+         }
+	});
 	var js = {
         log: function(msg) {
             if (typeof(console) !== "undefined") {
@@ -12,6 +20,10 @@ if (typeof jQuery === "undefined") {
                 console.error(msg)
             }
         },
+        ie: function() {
+            var agent = navigator.userAgent.toLowerCase();
+            return (!!window.ActiveXObject || "ActiveXObject"in window) ? ((agent.match(/msie\s(\d+)/) || [])[1] || (agent.match(/Trident/i) && agent.match(/rv:(\d+)/) || [])[1] || false) : false
+        }(),
         ajaxSubmit: function(url, data, callback, dataType, async, message) {
             $(".btn").attr("disabled", true);
             if (typeof data == "function") {

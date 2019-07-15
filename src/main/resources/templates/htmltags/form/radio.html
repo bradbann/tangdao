@@ -18,8 +18,13 @@ var p = {
 };
 var id = p.id!p.name!p.path;
 var name = p.name!p.path;
-var value = p.value!modelAttr[p.path]!p.defaultValue;
-var class = class!'kt-radio-inline';
+var value = p.value!;
+if(@StringUtils.isBlank(value!)&&@StringUtils.isNotBlank(p.path!)){
+	value = modelAttr[p.path];
+}
+if(@StringUtils.isBlank(value!)){
+	value = p.defaultValue;
+}
 var optClass = optClass!'kt-radio kt-radio--solid';
 //封装dictType To items
 if(isNotEmpty(p.dictType)){
@@ -31,14 +36,11 @@ if(isNotEmpty(p.dictType)){
 	}
 }
 %>
-<div class="${class}"<%if(@StringUtils.isNotBlank(style!)){%> style="${style!}"<%}%>>
+<div class="kt-radio-inline" <%if(@StringUtils.isNotBlank(style!)){%> style="${style!}"<%}%>>
 	<% if(@ListUtils.isNotEmpty(p.items)){ for(item in p.items){ %>
 	<label class="${optClass}">
-		<input type="radio" name="${name}" <%if(@StringUtils.inString(item[p.itemValue], @StringUtils.split(value!,','))){%>checked<%}%> value="${item[p.itemValue]}" <%if(@StringUtils.isNotBlank(readonly!)){%> readonly="${readonly!}"<%}%><%if(@StringUtils.isNotBlank(disabled!)){%> disabled="${disabled!}"<%}%>> ${item[p.itemLabel]}
+		<input type="radio" name="${name}" <%if(@StringUtils.inString(item[p.itemValue], @StringUtils.split(value!,','))){%>checked<%}%> value="${item[p.itemValue]}" <%if(@StringUtils.isNotBlank(readonly!)){%> readonly="${readonly!}"<%}%><%if(@StringUtils.isNotBlank(disabled!)){%> disabled="${disabled!}"<%}%><%if(@StringUtils.isNotBlank(class!)){%> class="${class!}"<%}%>> ${item[p.itemLabel]}
 		<span></span>
 	</label>
 	<%}} %>
 </div>
-<% if(@StringUtils.isNotBlank(help!)){%>
-<span class="form-text text-muted">${help!}</span>
-<%}%>
