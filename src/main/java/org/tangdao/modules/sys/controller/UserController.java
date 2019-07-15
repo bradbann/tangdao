@@ -2,6 +2,7 @@ package org.tangdao.modules.sys.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -30,18 +31,15 @@ import org.tangdao.modules.sys.service.IUserService;
 @RequestMapping("/sys/user")
 public class UserController extends BaseController {
 	
-	private IUserService userService;
-	
 	@Autowired
-	private UserController(IUserService userService) {
-		this.userService = userService;
-	}
+	private IUserService userService;
 	
 	@ModelAttribute
 	public User get(String userCode, boolean isNewRecord) {
 		return userService.get(userCode, isNewRecord);
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/list")
 	public String list(User user, Model model) {
 		return "modules/sys/userList";
@@ -54,7 +52,6 @@ public class UserController extends BaseController {
 	
 	@GetMapping("/form")
 	public String form(User user, Model model) {
-		user.setUsername("test");
 		model.addAttribute("user", user);
 		return "modules/sys/userForm";
 	}

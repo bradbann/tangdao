@@ -31,16 +31,28 @@ $("#inputForm").validate({
 		<div class="kt-portlet__body">
 			<div class="row">
 				<div class="col-lg-3">
-					<label>用户名：</label>
-					214214234
-					<span class="form-text text-muted">Please enter your full name</span>
+                    <div class="row">
+                         <label class="col-xl-3 col-lg-3 col-form-label">Avatar</label>
+                         <div class="col-lg-9 col-xl-6">
+                             <div class="kt-avatar kt-avatar--outline kt-avatar--circle" id="kt_apps_user_add_avatar">
+                                 <div class="kt-avatar__holder" style='background-image: url(&quot;${ctxStatic}${user.avatar!"/media/users/default.jpg"}&quot;);'></div>
+                                 <label class="kt-avatar__upload" data-toggle="kt-tooltip" title="" data-original-title="Change avatar">
+                                     <i class="fa fa-pen"></i>
+                                     <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg">
+                                 </label>
+                                 <span class="kt-avatar__cancel" data-toggle="kt-tooltip" title="" data-original-title="Cancel avatar">
+                                     <i class="fa fa-times"></i>
+                                 </span>
+                             </div>
+                         </div>
+                     </div>
 				</div>
 				<div class="col-lg-9">
 					<div class="row">
 						<div class="form-group col-lg-6">
 							<label>用户名：</label>
 							<#form:input path="username" class="form-control required" minlength="6" placeholder="请输入用户名" />
-							<span class="form-text text-muted">Please input username</span>
+							<span class="form-text text-muted">Please Enter Username</span>
 						</div>
 						<div class="form-group col-lg-6">
 							<label class="">用户昵称：</label>
@@ -55,16 +67,6 @@ $("#inputForm").validate({
 						<div class="form-group col-lg-6">
 							<label class="">手机号码：</label>
 							<#form:input path="mobile" class="form-control" placeholder="请输入手机号码" />
-						</div>
-					</div>
-					<div class="row">
-						<div class="form-group col-lg-6">
-							<label>办公电话：</label>
-							<#form:input path="phone" class="form-control" placeholder="请输入办公电话" />
-						</div>
-						<div class="form-group col-lg-6">
-							<label class="">权重排序：</label>
-							<#form:input path="userWeight" class="form-control" placeholder="请输入权重排序" />
 						</div>
 					</div>
 				</div>
@@ -102,6 +104,16 @@ $("#inputForm").validate({
 				<div class="col-lg-9">
 					<div class="row">
 						<div class="form-group col-lg-6">
+							<label>办公电话：</label>
+							<#form:input path="phone" class="form-control" placeholder="请输入办公电话" />
+						</div>
+						<div class="form-group col-lg-6">
+							<label class="">权重排序：</label>
+							<#form:input path="userWeight" class="form-control" placeholder="请输入权重排序" />
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-lg-6">
 							<label class="">签名：</label>
 							<#form:input path="sign" class="form-control" placeholder="请输入签名" />
 						</div>
@@ -131,7 +143,7 @@ $("#inputForm").validate({
 		<div class="kt-portlet__foot">
 			<div class="kt-form__actions">
 				<button type="submit" class="btn btn-primary btn-sm">确  认</button>
-				<button type="reset" class="btn btn-secondary btn-sm">返  回</button>
+				<button type="reset" class="btn btn-secondary btn-sm" onclick="window.history.go(-1);">返  回</button>
 			</div>
 		</div>
 	</#form:form>

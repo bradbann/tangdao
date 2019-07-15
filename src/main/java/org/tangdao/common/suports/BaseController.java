@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.servlet.ModelAndView;
 import org.tangdao.common.utils.ServletUtils;
 
 public abstract class BaseController {
@@ -47,15 +46,4 @@ public abstract class BaseController {
 	protected String renderResult(HttpServletResponse response, String result, String message) {	
 	      return ServletUtils.renderResult(response, result, message, null);	
 	} 
-
-	protected ModelAndView view(String view) {
-		ModelAndView modelAndView = new ModelAndView(view);
-		return modelAndView;
-	}
-
-	protected ModelAndView view(String view, String name, Object model) {
-		ModelAndView modelAndView = new ModelAndView(view);
-		modelAndView.addObject(name, model);
-		return modelAndView;
-	}
 }

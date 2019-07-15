@@ -1,0 +1,19 @@
+<%
+@servlet.getResponse().setStatus(responseStatus!404);
+var message = @ObjectUtils.toString(@request.getAttribute("message"));
+if (@ServletUtils.isAjaxRequest(request)) {
+	if (@StringUtils.isBlank(message)){
+		message = "您访问的地址不存在！";
+	}
+	print(@ServletUtils.renderResult(@Global.FALSE, message));
+}
+if (@StringUtils.isBlank(message)){
+	message = "您访问的页面不存在！";
+}
+%>
+${message!}<br/>
+------------------------------------------------<br/>
+可能是如下原因引起的这个错误：<br/>
+地址输入错误，链接已经失效过期.<br/>
+您访问的地址为：${@EncodeUtils.encodeHtml(@request.getAttribute('javax.servlet.forward.request_uri'))}<br/>
+若有疑问请联系管理员.

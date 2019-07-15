@@ -48,6 +48,8 @@ $kt-media-breakpoints: (
         .kt-login.kt-login--v3 .kt-login__wrapper .kt-login__container .kt-form .input-group {
           padding: 0;
           margin: 0 auto; }
+        .kt-login.kt-login--v3 .kt-login__wrapper .kt-login__container .kt-form .form-group {
+          margin-bottom: 2.5rem;}
         .kt-login.kt-login--v3 .kt-login__wrapper .kt-login__container .kt-form .form-control {
           height: 46px;
           border: none;
@@ -66,7 +68,7 @@ $kt-media-breakpoints: (
         .kt-login.kt-login--v3 .kt-login__wrapper .kt-login__container .kt-form .form-control.is-invalid + .invalid-feedback {
           font-weight: 500;
           font-size: 0.9rem;
-          padding-left: 1.6rem; }
+          padding-left: 0.5rem; }
         .kt-login.kt-login--v3 .kt-login__wrapper .kt-login__container .kt-form .kt-login__extra {
           margin-top: 30px;
           margin-bottom: 15px;
