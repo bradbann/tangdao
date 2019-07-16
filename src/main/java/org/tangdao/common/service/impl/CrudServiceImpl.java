@@ -306,6 +306,12 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 		IPage<T> dataSet = baseMapper.selectPage(param, queryWrapper);
 		return new Page(dataSet, sort);
 	}
+	
+	@Override
+	public Page findPage(T entity, Wrapper<T> queryWrapper) {
+		// TODO Auto-generated method stub
+		return findPage(entity.getPagination(), entity.getSort(), queryWrapper);
+	}
 
 	@Override
 	public T get(Serializable id, boolean isNewRecord) {

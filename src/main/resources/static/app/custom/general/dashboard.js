@@ -651,15 +651,15 @@ var KTDashboard = function() {
         Morris.Donut({
             element: 'kt_chart_revenue_change',
             data: [{
-                    label: "New York",
+                    label: "北京",
                     value: 10
                 },
                 {
-                    label: "London",
+                    label: "香港",
                     value: 7
                 },
                 {
-                    label: "Paris",
+                    label: "上海",
                     value: 20
                 }
             ],
@@ -1882,15 +1882,15 @@ var KTDashboard = function() {
         // Init demos
         init: function() {
             // init charts
-//            dailySales();
-//            profitShare();
-//            salesStats();
+            dailySales();
+            profitShare();
+            salesStats();
 //            salesByApps();
 //            latestUpdates();
 //            trendsStats();
 //            trendsStats2();
 //            latestTrendsMap();
-//            revenueChange();
+            revenueChange();
 //            supportCases();
 //            supportRequests();
 //            activitiesChart();
@@ -1899,7 +1899,7 @@ var KTDashboard = function() {
 //            adWordsStat();
 //            financeSummary();
 //            quickStats();
-//            orderStatistics();
+            orderStatistics();
 
             // init daterangepicker
 //            daterangepickerInit();
@@ -1920,7 +1920,7 @@ var KTDashboard = function() {
 
             setTimeout(function() {
                 loading.hide();
-            }, 4000);
+            }, 1000);
         }
     };
 }();

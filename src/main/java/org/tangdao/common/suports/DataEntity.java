@@ -44,6 +44,35 @@ public class DataEntity<T> extends BaseEntity<T> {
 
 	@TableField(exist = false)
 	protected String updateByName; // 更新人姓名
+	
+	/**
+	 * 正常
+	 */
+	public static final String STATUS_NORMAL = "0";
+	/**
+	 * 已删除
+	 */
+	public static final String STATUS_DELETE = "1";
+	/**
+	 * 停用
+	 */
+	public static final String STATUS_DISABLE = "2";
+	/**
+	 * 冻结
+	 */
+	public static final String STATUS_FREEZE = "3";
+	/**
+	 * 审核
+	 */
+	public static final String STATUS_AUDIT = "4";
+	/**
+	 * 回退
+	 */
+	public static final String STATUS_AUDIT_BACK = "5";
+	/**
+	 * 草稿
+	 */
+	public static final String STATUS_DRAFT = "9";
 
 	public DataEntity() {
 		this(null);
@@ -86,6 +115,9 @@ public class DataEntity<T> extends BaseEntity<T> {
 			this.updateBy = user.getUserCode();
 		}
 		this.updateTime = new Date();
+	}
+	
+	public interface SimpleView {
 	}
 
 }

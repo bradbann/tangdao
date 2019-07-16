@@ -383,9 +383,15 @@ public interface ICurdService<T> {
     }
     
     public Page findPage(Pagination pagination, Sort sort, Wrapper<T> queryWrapper);
-
+    
     default public Page findPage(Pagination pagination, Sort sort) {
     	return findPage(pagination, sort, Wrappers.emptyWrapper());
+    }
+    
+    public Page findPage(T entity, Wrapper<T> queryWrapper);
+    
+    default public Page findPage(T entity) {
+    	return findPage(entity, Wrappers.emptyWrapper());
     }
   
 }

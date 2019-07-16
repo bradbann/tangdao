@@ -1,15 +1,7 @@
-<% var op = '新建'; %>
+<% var op = user.isNewRecord?'新建':'编辑'; %>
 <%  var jsSection = { %>
 <script>
 $("#inputForm").validate({
-	rules: {
-        sex1: {
-            required: true
-        },
-        mgrType1: {
-            required: true
-        }
-	},
 	submitHandler: function(form){
 		js.ajaxSubmitForm($(form), function(data){
 			console.log(data)
@@ -18,14 +10,14 @@ $("#inputForm").validate({
 });
 </script>
 <% }; %>
-<%  var toolsSection = { %>
+<%  var toolbar = { %>
 <div class="kt-subheader__wrapper">
 	<a href="javascript:history.go(-1);" class="btn btn-outline-secondary btn-sm">
 		<i class="la la-arrow-left"></i> 返回列表
 	</a>
 </div>
 <% }; %>
-<% layout('/layouts/default.html', {title:op!+'用户',  menuCode:'1044886627991953408', libs:['validation'], subDesc:op!+'用户', jsSection:jsSection, toolsSection:toolsSection}){ %>
+<% layout('/layouts/default.html', {title:op!+'用户',  menuCode:'1044886627991953408', libs:['validation'], jsSection:jsSection, desc: op+'用户',toolbar: toolbar}){ %>
 <div class="kt-portlet">
 	<#form:form id="inputForm" model="${user}" action="${ctxPath}/sys/user/save" method="post" class="kt-form kt-form--fit kt-form--label-right">
 		<div class="kt-portlet__body">

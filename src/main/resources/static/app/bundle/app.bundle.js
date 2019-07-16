@@ -367,11 +367,11 @@ var KTQuickSearch = function() {
 
         setTimeout(function() {
             $.ajax({
-                url: 'https://keenthemes.com/metronic/themes/themes/metronic/dist/preview/inc/api/quick_search.php',
+                url: '/quickSearch',
                 data: {
                     query: query
                 },
-                dataType: 'html',
+                dataType: 'json',
                 success: function(res) {
                     hasResult = true;
                     hideProgress();

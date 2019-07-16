@@ -9,14 +9,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.suports.Page;
 import org.tangdao.modules.sys.model.domain.User;
-import org.tangdao.modules.sys.model.dto.UserDTO;
 import org.tangdao.modules.sys.service.IUserService;
 
 /**
@@ -29,6 +27,7 @@ import org.tangdao.modules.sys.service.IUserService;
  */
 @Controller
 @RequestMapping("/sys/user")
+@PreAuthorize("isAuthenticated()")
 public class UserController extends BaseController {
 	
 	@Autowired
@@ -39,15 +38,14 @@ public class UserController extends BaseController {
 		return userService.get(userCode, isNewRecord);
 	}
 	
-	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/list")
 	public String list(User user, Model model) {
 		return "modules/sys/userList";
 	}
 
 	@PostMapping("/listData")
-	public @ResponseBody Page listData(@RequestBody UserDTO userDTO) {
-		return this.userService.findPage(userDTO.getPagination(), userDTO.getSort());
+	public @ResponseBody Page listData(User user) {
+		return this.userService.findPage(user);
 	}
 	
 	@GetMapping("/form")

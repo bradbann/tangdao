@@ -4,24 +4,15 @@ var myDatatable = $(".kt-datatable").myDatatable({
 	searchForm: $("#searchForm"),
 	columns:[
 		{
-			field: 'userCode',
-			title: '#',
-			width: 30,
-			selector: true,
-		}, {
-			field: 'username',
-			title: 'User name',
+			field: 'configName',
+			title: '参数名称',
 			autoHide: false,
 		}, {
-			field: 'nickname',
-			title: 'Nick name',
+			field: 'configKey',
+			title: '参数键名',
 		},{
-			field: 'roles',
-			title: 'Roles',
-			sortable: false,
-		},{
-			field: 'email',
-			title: 'Email address',
+			field: 'configValue',
+			title: '参数键值',
 		},{
 			field: 'status',
 			title: 'Status',
@@ -33,10 +24,6 @@ var myDatatable = $(".kt-datatable").myDatatable({
 				};
 				return '<span class="kt-badge kt-badge--' + status[row.status].state + ' kt-badge--dot"></span>&nbsp;<span class="kt-font-bold kt-font-' + status[row.status].state + '">' + status[row.status].title + '</span>';
 			},
-		},{
-			field: 'lastLoginIp',
-			title: 'Last loginip',
-			sortable: false,
 		}, {
 			field: 'Actions',
 			title: 'Actions',
@@ -46,7 +33,7 @@ var myDatatable = $(".kt-datatable").myDatatable({
 			autoHide: false,
 			template: function(row) {
 				return '\
-				<a href="${ctxPath}/sys/user/form?userCode='+row.userCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="编辑">\
+				<a href="${ctxPath}/sys/config/form?id='+row.id+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="编辑">\
 					<i class="la la-edit"></i>\
 				</a>\
 				<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="删除">\
@@ -58,6 +45,14 @@ var myDatatable = $(".kt-datatable").myDatatable({
 	],
 });
 $('#kt_form_status').selectpicker();
+
+$("#inputForm").validate({
+	submitHandler: function(form){
+		js.ajaxSubmitForm($(form), function(data){
+			console.log(data)
+		}, "json");
+    }
+});
 </script>
 <% }; %>
 <%  var toolbar = { %>
@@ -65,12 +60,12 @@ $('#kt_form_status').selectpicker();
 	<a href="#" class="btn btn-secondary btn-sm active" id="btnSearch">
 		<i class="flaticon-tool"></i> 查询
 	</a>
-	<a href="${ctxPath}/sys/user/form" class="btn btn-primary btn-sm">
-		<i class="flaticon2-add-1"></i> 新建用户
+	<a href="${ctxPath}/sys/config/form" class="btn btn-primary btn-sm">
+		<i class="flaticon2-add-1"></i> 新建参数
 	</a>
 </div>
 <% }; %>
-<% layout('/layouts/default.html', {title: '用户列表',  menuCode:'1044886627991953408', libs:[], jsSection: jsSection, toolbar: toolbar}){ %>
+<% layout('/layouts/default.html', {title: '参数列表',  menuCode:'1044886630252683264', libs:['validation'], jsSection: jsSection, toolbar: toolbar}){ %>
 <div class="kt-portlet kt-portlet--mobile">
 	<div class="kt-portlet__head">
 		<div class="kt-portlet__head-label">
@@ -83,11 +78,11 @@ $('#kt_form_status').selectpicker();
 		</div>
 	</div>
 	<div class="kt-portlet__body" style="padding: 0px;">
-		<form class="kt-form kt-form--label-right kt-margin-20" id="searchForm" action="${ctxPath}/sys/user/listData" method="post">
+		<form class="kt-form kt-form--label-right kt-margin-20" id="searchForm" action="${ctxPath}/sys/config/listData" method="post">
 			<div class="row align-items-center">
 				<div class="col-md-3 col-sm-4 kt-margin-b-20-tablet-and-mobile">
 					<div class="kt-input-icon kt-input-icon--left">
-						<input type="text" class="form-control" placeholder="Search..." name="generalSearch">
+						<input type="text" class="form-control" placeholder="输入参数名称" name="configName">
 						<span class="kt-input-icon__icon kt-input-icon__icon--left">
 							<span><i class="la la-search"></i></span>
 						</span>
@@ -114,7 +109,7 @@ $('#kt_form_status').selectpicker();
 			</div>
 		</form>
 		<!--begin: Datatable -->
-		<div class="kt-datatable" id="server_record_selection_user"></div>
+		<div class="kt-datatable" id="server_record_selection_config"></div>
 		<!--end: Datatable -->
 	</div>
 </div>

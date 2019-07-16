@@ -1,0 +1,58 @@
+<% var op = config.isNewRecord?'新建':'编辑'; %>
+<%  var jsSection = { %>
+<script>
+$("#inputForm").validate({
+	submitHandler: function(form){
+		js.ajaxSubmitForm($(form), function(data){
+			console.log(data)
+		}, "json");
+    }
+});
+</script>
+<% }; %>
+<%  var toolbar = { %>
+<div class="kt-subheader__wrapper">
+	<a href="javascript:history.go(-1);" class="btn btn-outline-secondary btn-sm">
+		<i class="la la-arrow-left"></i> 返回列表
+	</a>
+</div>
+<% }; %>
+<% layout('/layouts/default.html', {title:op!+'参数',  menuCode:'1044886630252683264', libs:['validation'], jsSection:jsSection, desc: op+'参数',toolbar: toolbar}){ %>
+<div class="kt-portlet">
+	<#form:form id="inputForm" model="${config}" action="${ctxPath}/sys/config/save" method="post" class="kt-form kt-form--fit kt-form--label-right">
+		<div class="kt-portlet__body">
+			<div class="row">
+				<div class="form-group col-lg-12">
+					<label>参数名称：</label>
+					<#form:input path="configName" class="form-control required" />
+					<span class="form-text text-muted">Please Enter ConfigName</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-lg-12">
+					<label>参数键名：</label>
+					<#form:input path="configKey" class="form-control required" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-lg-12">
+					<label>参数键值：</label>
+					<#form:input path="configValue" class="form-control required" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-lg-12">
+					<label>备注：</label>
+					<#form:textarea path="remarks" class="form-control"  placeholder="请输入备注"  rows="3"></#form:textarea>
+				</div>
+			</div>
+		</div>
+		<div class="kt-portlet__foot">
+			<div class="kt-form__actions">
+				<button type="submit" class="btn btn-primary btn-sm">确  认</button>
+				<button type="reset" class="btn btn-secondary btn-sm" onclick="window.history.go(-1);">返  回</button>
+			</div>
+		</div>
+	</#form:form>
+</div>
+<% } %>
