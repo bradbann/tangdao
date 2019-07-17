@@ -7,6 +7,7 @@
 <script src="${ctxStatic}/vendors/general/perfect-scrollbar/dist/perfect-scrollbar.js" type="text/javascript"></script>
 <script src="${ctxStatic}/vendors/general/sticky-js/dist/sticky.min.js" type="text/javascript"></script>
 <script src="${ctxStatic}/vendors/general/wnumb/wNumb.js" type="text/javascript"></script>
+<script src="${ctxStatic}/vendors/general/layer/3.1/layer.js" type="text/javascript"></script>
 <!--end:: Global Mandatory Vendors -->
 <script>
 </script>
@@ -27,13 +28,11 @@
 <script src="${ctxStatic}/vendors/general/bootstrap-select/dist/js/bootstrap-select.js" type="text/javascript"></script>
 <script src="${ctxStatic}/vendors/general/bootstrap-switch/dist/js/bootstrap-switch.js" type="text/javascript"></script>
 <script src="${ctxStatic}/vendors/custom/components/vendors/bootstrap-switch/init.js" type="text/javascript"></script>
-<script src="${ctxStatic}/vendors/general/select2/dist/js/select2.full.js" type="text/javascript"></script>
 <% if (@ListUtils.inString('slider', libs!)){ %>
 <script src="${ctxStatic}/vendors/general/ion-rangeslider/js/ion.rangeSlider.js" type="text/javascript"></script>
 <script src="${ctxStatic}/vendors/general/nouislider/distribute/nouislider.js" type="text/javascript"></script>
 <% } %>
 <script src="${ctxStatic}/vendors/general/typeahead.js/dist/typeahead.bundle.js" type="text/javascript"></script>
-<script src="${ctxStatic}/vendors/general/handlebars/dist/handlebars.js" type="text/javascript"></script>
 <% if (@ListUtils.inString('inputmask', libs!)){ %>
 <script src="${ctxStatic}/vendors/general/inputmask/dist/jquery.inputmask.bundle.js" type="text/javascript"></script>
 <script src="${ctxStatic}/vendors/general/inputmask/dist/inputmask/inputmask.date.extensions.js" type="text/javascript"></script>
@@ -43,9 +42,6 @@
 <script src="${ctxStatic}/vendors/general/owl.carousel/dist/owl.carousel.js" type="text/javascript"></script>
 <% } %>
 <script src="${ctxStatic}/vendors/general/autosize/dist/autosize.js" type="text/javascript"></script>
-<% if (@ListUtils.inString('clipboard', libs!)){ %>
-<script src="${ctxStatic}/vendors/general/clipboard/dist/clipboard.min.js" type="text/javascript"></script>
-<% } %>
 <% if (@ListUtils.inString('dropzone', libs!)){ %>
 <script src="${ctxStatic}/vendors/general/dropzone/dist/dropzone.js" type="text/javascript"></script>
 <% } %>
@@ -81,15 +77,9 @@
 <script src="${ctxStatic}/vendors/custom/vendors/bootstrap-session-timeout/dist/bootstrap-session-timeout.min.js" type="text/javascript"></script>
 <script src="${ctxStatic}/vendors/custom/vendors/jquery-idletimer/idle-timer.min.js" type="text/javascript"></script>
 <% } %>
+<!-- 滚动监听插件 -->
 <script src="${ctxStatic}/vendors/general/waypoints/lib/jquery.waypoints.js" type="text/javascript"></script>
-<% if (@ListUtils.inString('counterup', libs!)){ %>
-<script src="${ctxStatic}/vendors/general/counterup/jquery.counterup.js" type="text/javascript"></script>
-<% } %>
 <script src="${ctxStatic}/vendors/general/es6-promise-polyfill/promise.min.js" type="text/javascript"></script>
-<% if (@ListUtils.inString('sweetalert2', libs!)){ %>
-<script src="${ctxStatic}/vendors/general/sweetalert2/dist/sweetalert2.min.js" type="text/javascript"></script>
-<script src="${ctxStatic}/vendors/custom/components/vendors/sweetalert2/init.js" type="text/javascript"></script>
-<% } %>
 <script src="${ctxStatic}/vendors/general/jquery.repeater/jquery.repeater.min.js" type="text/javascript"></script>
 <script src="${ctxStatic}/vendors/general/dompurify/dist/purify.js" type="text/javascript"></script>
 

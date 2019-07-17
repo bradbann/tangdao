@@ -92,6 +92,7 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 
 	@Override
 	public boolean save(T entity) {
+		entity.preInsert();
 		return retBool(baseMapper.insert(entity));
 	}
 
@@ -109,6 +110,7 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 		try (SqlSession batchSqlSession = sqlSessionBatch()) {
 			int i = 0;
 			for (T anEntityList : entityList) {
+				anEntityList.preInsert();
 				batchSqlSession.insert(sqlStatement, anEntityList);
 				if (i >= 1 && i % batchSize == 0) {
 					batchSqlSession.flushStatements();
@@ -136,8 +138,10 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 			String keyProperty = tableInfo.getKeyProperty();
 			Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
 			Object idVal = ReflectionKit.getMethodValue(cls, entity, tableInfo.getKeyProperty());
-			return StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal)) ? save(entity)
+			return StringUtils.checkValNull(idVal) || entity.getIsNewRecord() ? save(entity)
 					: updateById(entity);
+//			return StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal)) ? save(entity)
+//					: updateById(entity);
 		}
 		return false;
 	}
@@ -155,7 +159,8 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 			int i = 0;
 			for (T entity : entityList) {
 				Object idVal = ReflectionKit.getMethodValue(cls, entity, keyProperty);
-				if (StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal))) {
+				if (StringUtils.checkValNull(idVal) || entity.getIsNewRecord()) {
+//				if (StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal))) {
 					batchSqlSession.insert(sqlStatement(SqlMethod.INSERT_ONE), entity);
 				} else {
 					MapperMethod.ParamMap<T> param = new MapperMethod.ParamMap<>();
@@ -196,11 +201,13 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 
 	@Override
 	public boolean updateById(T entity) {
+		entity.preUpdate();
 		return retBool(baseMapper.updateById(entity));
 	}
 
 	@Override
 	public boolean update(T entity, Wrapper<T> updateWrapper) {
+		entity.preUpdate();
 		return retBool(baseMapper.update(entity, updateWrapper));
 	}
 

@@ -11,7 +11,7 @@ public class UserUtils {
 	 * @return
 	 */
 	public static User getUser() {
-		return new User();
+		return getPrincipal();
 	}
 
 	public static User getPrincipal() {

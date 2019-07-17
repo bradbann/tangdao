@@ -25,6 +25,7 @@ var myDatatable = $(".kt-datatable").myDatatable({
 		},{
 			field: 'status',
 			title: 'Status',
+			width: 80,
 			// callback function support for column rendering
 			template: function(row) {
 				var status = {
@@ -37,11 +38,14 @@ var myDatatable = $(".kt-datatable").myDatatable({
 			field: 'lastLoginIp',
 			title: 'Last loginip',
 			sortable: false,
-		}, {
+		},{
+			field: 'updateTime',
+			title: '更新时间',
+		},{
 			field: 'Actions',
 			title: 'Actions',
 			sortable: false,
-			width: 110,
+			width: 150,
 			overflow: 'visible',
 			autoHide: false,
 			template: function(row) {
@@ -52,12 +56,17 @@ var myDatatable = $(".kt-datatable").myDatatable({
 				<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="删除">\
 					<i class="la la-trash"></i>\
 				</a>\
+				<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="删除">\
+					<i class="la la-trash"></i>\
+				</a>\
+				<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="删除">\
+					<i class="la la-trash"></i>\
+				</a>\
 			';
 			},
 		}
 	],
 });
-$('#kt_form_status').selectpicker();
 </script>
 <% }; %>
 <%  var toolbar = { %>

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.DataEntity;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.StringUtils;
@@ -142,6 +143,19 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 	@TableField(exist = false)
 	private List<Menu> menus= ListUtils.newArrayList();
 	
+	public static final String SUPER_ADMIN_ID = Global.getConfig("user.superAdminId", "system");
+	
+	public boolean isSuperAdmin() {
+		return isSuperAdmin(this.userCode);
+	}
+
+	public static boolean isSuperAdmin(String id) {
+		if (id != null && StringUtils.inString(id, SUPER_ADMIN_ID.split(","))) {
+			return true;
+		}
+		return false;
+	}
+	
 	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -195,5 +209,7 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 		// TODO Auto-generated method stub
 		return this.username;
 	}
+	
+	
 
 }

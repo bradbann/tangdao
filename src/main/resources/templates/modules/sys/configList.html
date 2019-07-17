@@ -16,7 +16,7 @@ var myDatatable = $(".kt-datatable").myDatatable({
 		},{
 			field: 'status',
 			title: 'Status',
-			// callback function support for column rendering
+			width: 80,
 			template: function(row) {
 				var status = {
 					2: {'title': '锁定', 'state': 'danger'},
@@ -24,6 +24,9 @@ var myDatatable = $(".kt-datatable").myDatatable({
 				};
 				return '<span class="kt-badge kt-badge--' + status[row.status].state + ' kt-badge--dot"></span>&nbsp;<span class="kt-font-bold kt-font-' + status[row.status].state + '">' + status[row.status].title + '</span>';
 			},
+		},{
+			field: 'updateTime',
+			title: '更新时间',
 		}, {
 			field: 'Actions',
 			title: 'Actions',
@@ -43,15 +46,6 @@ var myDatatable = $(".kt-datatable").myDatatable({
 			},
 		}
 	],
-});
-$('#kt_form_status').selectpicker();
-
-$("#inputForm").validate({
-	submitHandler: function(form){
-		js.ajaxSubmitForm($(form), function(data){
-			console.log(data)
-		}, "json");
-    }
 });
 </script>
 <% }; %>

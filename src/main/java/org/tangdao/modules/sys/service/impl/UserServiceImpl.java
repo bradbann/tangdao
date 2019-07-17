@@ -5,10 +5,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
+import org.tangdao.common.suports.Page;
 import org.tangdao.modules.sys.mapper.UserMapper;
 import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.IUserService;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -80,5 +84,22 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 		
 		return null;
 	}
+	
+	@Override
+	public Page findPage(User user, Wrapper<User> queryWrapper) {
+		com.baomidou.mybatisplus.extension.plugins.pagination.Page<User> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<User>();
+//		page.setCurrent(user.getPagination().getPage());
+//		page.setSize(user.getPagination().getPages());
+//		if (user.getSort() != null && StringUtils.isNotEmpty(user.getSort().getField())) {
+//			// 需要转换一下驼峰字段
+//			String column = StringUtils.camelToUnderline(user.getSort().getField());
+//			if ("asc".equalsIgnoreCase(user.getSort().getSort()))
+//				page.addOrder(OrderItem.asc(column));
+//			else
+//				page.addOrder(OrderItem.desc(column));
+//		}
+		return new Page(page.setRecords(this.getBaseMapper().findPage(user, queryWrapper)), user.getSort());
+	}
+
 
 }

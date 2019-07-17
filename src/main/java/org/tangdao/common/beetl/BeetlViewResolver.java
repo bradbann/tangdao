@@ -12,41 +12,42 @@ import org.tangdao.common.utils.DateUtils;
 
 public class BeetlViewResolver extends BeetlSpringViewResolver {
 
-	public BeetlViewResolver() {	
-        this.setViewClass(BeetlView.class);	
+	public BeetlViewResolver() {
+		this.setViewClass(BeetlView.class);
 	}
-	
-    protected Class<BeetlSpringView> requiredViewClass() {	
-        return BeetlSpringView.class;	
-    }	
-	
-    protected AbstractUrlBasedView buildView(String viewName) throws Exception {	
-        BeetlSpringView beetlView = (BeetlSpringView)super.buildView(viewName);	
-        beetlView.setGroupTemplate(this.getConfig().getGroupTemplate());	
-        String suffix = this.getSuffix();	
-        if (suffix != null && suffix.length() != 0 && viewName.contains("#")) {	
-            String[] viewNames = viewName.split("#");	
-            if (viewNames.length > 2) {	
-                throw new Exception(new StringBuilder().insert(0, "视图名称有误：").append(viewName).toString());	
-            }	
-            beetlView.setUrl(new StringBuilder().insert(0, this.getPrefix()).append(viewNames[0]).append(this.getSuffix()).append("#").append(viewNames[1]).toString());	
-        }	
-        return beetlView;	
-    }
+
+	protected Class<BeetlSpringView> requiredViewClass() {
+		return BeetlSpringView.class;
+	}
+
+	protected AbstractUrlBasedView buildView(String viewName) throws Exception {
+		BeetlSpringView beetlView = (BeetlSpringView) super.buildView(viewName);
+		beetlView.setGroupTemplate(this.getConfig().getGroupTemplate());
+		String suffix = this.getSuffix();
+		if (suffix != null && suffix.length() != 0 && viewName.contains("#")) {
+			String[] viewNames = viewName.split("#");
+			if (viewNames.length > 2) {
+				throw new Exception(new StringBuilder().insert(0, "视图名称有误：").append(viewName).toString());
+			}
+			beetlView.setUrl(this.getPrefix() + viewNames[0] + this.getSuffix() + "#" + viewNames[1]);
+		}
+		return beetlView;
+	}
 
 	@Override
-	public void afterPropertiesSet() throws NoSuchBeanDefinitionException, NoUniqueBeanDefinitionException,SecurityException, NoSuchFieldException {
+	public void afterPropertiesSet() throws NoSuchBeanDefinitionException, NoUniqueBeanDefinitionException,
+			SecurityException, NoSuchFieldException {
 		super.afterPropertiesSet();
-		
-        String ctxPath = this.getServletContext().getContextPath();	
-        String serverStartDate = DateUtils.formatDate(DateUtils.getServerStartDate(), (String)"MMddHHmm"); 
-        
-        Map<String, Object> sharedVars = this.getConfig().getGroupTemplate().getSharedVars();
-        sharedVars.put("ctxStatic", new StringBuilder().insert(0, ctxPath).append("/static").toString());	
-        sharedVars.put("ctxPath", ctxPath);	
-        sharedVars.put("_version", new StringBuilder().insert(0, "1.0.0").append("-").append(serverStartDate).toString());	
-        
-        GroupTemplate groupTemplate = this.getConfig().getGroupTemplate();
-        groupTemplate.setSharedVars(sharedVars); 
-	} 
+
+		String ctxPath = this.getServletContext().getContextPath();
+		String serverStartDate = DateUtils.formatDate(DateUtils.getServerStartDate(), (String) "MMddHHmm");
+
+		Map<String, Object> sharedVars = this.getConfig().getGroupTemplate().getSharedVars();
+		sharedVars.put("ctxStatic", ctxPath + "/static");
+		sharedVars.put("ctxPath", ctxPath);
+		sharedVars.put("_version", "1.0.0-" + serverStartDate);
+
+		GroupTemplate groupTemplate = this.getConfig().getGroupTemplate();
+		groupTemplate.setSharedVars(sharedVars);
+	}
 }

@@ -17,6 +17,8 @@ import org.tangdao.common.suports.Page;
 import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.IUserService;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+
 /**
  * <p>
  * 用户表 前端控制器
@@ -45,7 +47,7 @@ public class UserController extends BaseController {
 
 	@PostMapping("/listData")
 	public @ResponseBody Page listData(User user) {
-		return this.userService.findPage(user);
+		return this.userService.findPage(user, Wrappers.emptyWrapper());
 	}
 	
 	@GetMapping("/form")

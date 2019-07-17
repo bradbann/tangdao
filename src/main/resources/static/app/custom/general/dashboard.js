@@ -1915,12 +1915,19 @@ var KTDashboard = function() {
 
             
             // demo loading
-            var loading = new KTDialog({'type': 'loader', 'placement': 'top center', 'message': '页面模块加载中...'});
+            var loading = new KTDialog({'type': 'loader', 'placement': 'top center', 'message': 'Processing...'});
+//            KTApp.blockPage({
+//                overlayColor: '#000000',
+//                type: 'v2',
+//                state: 'primary',
+//                message: 'Processing...'
+//            });
             loading.show();
 
             setTimeout(function() {
                 loading.hide();
-            }, 1000);
+            	 KTApp.unblockPage();
+            }, 2000);
         }
     };
 }();

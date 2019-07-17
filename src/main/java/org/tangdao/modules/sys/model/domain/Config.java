@@ -1,7 +1,10 @@
 package org.tangdao.modules.sys.model.domain;
 
+import javax.validation.constraints.NotBlank;
+
 import org.tangdao.common.suports.DataEntity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
@@ -27,21 +30,25 @@ public class Config extends DataEntity<Config>{
     /**
      * 编号
      */
+    @TableId
     private String id;
 
     /**
      * 名称
      */
+    @NotBlank(message="参数名称不能为空")
     private String configName;
 
     /**
      * 参数键
      */
+    @NotBlank(message="参数键名不能为空")
     private String configKey;
 
     /**
      * 参数值
      */
+    @NotBlank(message="参数键值不能为空")
     private String configValue;
 
 }

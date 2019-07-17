@@ -2,12 +2,21 @@ if (typeof jQuery === "undefined") {
     throw new Error("Tangdao's JavaScript requires jQuery")
 } (function($, window, undefined) {
 	$(function() {
-		 $("#inputForm input[type=text]:not([readonly]):not([disabled]):not(.nofocus):eq(0)").focus();
-		 if (js.ie && js.ie <= 9) {
-            setTimeout(function() {
-                $("input[placeholder],textarea[placeholder]").placeholder()
-            }, 500)
-         }
+		if ($.fn.selectpicker !== undefined) {
+		    $("select.form-control").each(function() {
+		    	$(this).selectpicker({}).on("change", function() {
+		            try {
+		                //$(this).resetValid()
+		            } catch (e) {}
+		        })
+		    })
+		}
+		$("#inputForm input[type=text]:not([readonly]):not([disabled]):not(.nofocus):eq(0)").focus();
+		if (js.ie && js.ie <= 9) {W
+			setTimeout(function() {
+				$("input[placeholder],textarea[placeholder]").placeholder()
+			}, 500)
+		}
 	});
 	var js = {
         log: function(msg) {
@@ -24,6 +33,282 @@ if (typeof jQuery === "undefined") {
             var agent = navigator.userAgent.toLowerCase();
             return (!!window.ActiveXObject || "ActiveXObject"in window) ? ((agent.match(/msie\s(\d+)/) || [])[1] || (agent.match(/Trident/i) && agent.match(/rv:(\d+)/) || [])[1] || false) : false
         }(),
+        loading: function(message, ignoreMessageIfExists) {
+            var topJs;
+            try {
+                top.loadingFlag = true;
+                topJs = top.js || parent.parent.js || parent.js
+            } catch (e) {}
+            if (typeof loadingFlag == "undefined" && topJs) {
+                if (typeof topJs.loading == "function") {
+                    topJs.loading(message);
+                    return
+                }
+            }
+            if (message == undefined || message == "") {
+                message = "正在加载，请稍候..."
+            }
+            if (message == "none") {
+                return
+            }
+            
+            setTimeout(function() {
+                if (!js.pageLoadingNum) {
+                    js.pageLoadingNum = 0
+                }
+//                if (!js.pageLoadingStyle) {
+//                    if ($("body").hasClass("loading-topline")) {
+//                        js.pageLoadingStyle = 2
+//                    } else {
+//                        js.pageLoadingStyle = 1
+//                    }
+//                }
+//                if (js.pageLoadingStyle == 1) {
+//                    message += '<em onclick="js.closeLoading(0, true)">×</em>';
+//                    if ($("#page-loading").length == 0) {
+//                        $("body").append('<div id="page-loading" onmouseover="$(this).find(\'em\').show()" onmouseout="$(this).find(\'em\').hide()">' + message + "</div>")
+//                    } else {
+//                        if (!(ignoreMessageIfExists == true)) {
+//                            $("#page-loading").html(message)
+//                        }
+//                    }
+//                } else {
+//                    if (js.pageLoadingStyle == 2) {
+//                        if ($("#page-loading-top").length == 0) {
+//                            $("body").append('<div id="page-loading-top" class="page-loading-top"></div>');
+//                            $("#page-loading-top").animate({
+//                                width: "65%"
+//                            }, 2000, function() {
+//                                $(this).animate({
+//                                    width: "85%"
+//                                }, 8000)
+//                            })
+//                        }
+//                    }
+//                }
+                KTApp.blockPage({
+                    overlayColor: '#000000',
+                    type: 'v2',
+                    state: 'primary',
+                    message: message
+                });
+                js.pageLoadingNum++
+            }, 0)
+        },
+        closeLoading: function(timeout, forceClose) {
+            var topJs;
+            try {
+                top.loadingFlag = true;
+                topJs = top.js || parent.parent.js || parent.js
+            } catch (e) {}
+            if (typeof loadingFlag == "undefined" && topJs) {
+                if (typeof topJs.closeLoading == "function") {
+                    topJs.closeLoading(timeout, forceClose);
+                    return
+                }
+            }
+            setTimeout(function() {
+                if (!js.pageLoadingNum) {
+                    js.pageLoadingNum = 0
+                }
+                js.pageLoadingNum--;
+                if (forceClose || js.pageLoadingNum <= 0) {
+//                    if (js.pageLoadingStyle == 1) {
+//                        $("#page-loading").remove()
+//                    } else {
+//                        if (js.pageLoadingStyle == 2) {
+//                            $("#page-loading-top").stop().animate({
+//                                width: "100%"
+//                            }, 200, function() {
+//                                $(this).fadeOut(300, function() {
+//                                    $(this).remove()
+//                                })
+//                            })
+//                        }
+//                    }
+                	KTApp.unblockPage();
+                    js.pageLoadingNum = 0
+                }
+            }, timeout == undefined ? 0 : timeout)
+        },
+        layer: function() {
+            try {
+                if (top.layer && top.layer.window) {
+                    return top.layer
+                }
+                if (parent.parent.layer && parent.parent.layer.window) {
+                    return parent.parent.layer
+                }
+                if (parent.layer && parent.layer.window) {
+                    return parent.layer
+                }
+            } catch (e) {}
+            if (window.layer) {
+                return layer
+            }
+            return null
+        }(),
+        showMessage: function(message, title, type, timeout) {
+            var msgType, layerIcon, msg = String(message), msgTimeout = timeout == undefined ? 4000 : timeout;
+            var contains = function(str, searchs) {
+                if (searchs) {
+                    var ss = searchs.split(",");
+                    for (var i = 0; i < ss.length; i++) {
+                        if (msg.indexOf(ss[i]) >= 0) {
+                            return true
+                        }
+                    }
+                }
+                return false
+            };
+            if (type == "error" || contains(msg, "失败,错误,未完成")) {
+                msgType = "error";
+                layerIcon = 2
+            } else {
+                if (type == "warning" || contains(msg, "不能,不允许,必须,已存在,不需要,不正确")) {
+                    msgType = "warning";
+                    layerIcon = 5
+                } else {
+                    if (type == "success" || contains(msg, "成功,完成")) {
+                        msgType = "success";
+                        layerIcon = 1
+                    } else {
+                        msgType = "info";
+                        layerIcon = 6
+                    }
+                }
+            }
+            try {
+                if (top.toastr) {
+                    var positionClass = "toast-bottom-right";
+                    if (msg && msg.length >= 8 && msg.indexOf("posfull:") >= 0) {
+                        if (timeout == undefined) {
+                            msgTimeout = 0
+                        }
+                        positionClass = "toast-top-full-width";
+                        msg = msg.substring(8);
+                        js.log(msg)
+                    }
+                    top.toastr.options = {
+                        closeButton: true,
+                        positionClass: positionClass,
+                        timeOut: msgTimeout
+                    };
+                    top.toastr[msgType](msg, title);
+                    return
+                }
+            } catch (e) {}
+            if (!js.layer) {
+                alert(msg);
+                return
+            }
+            if (layerIcon) {
+                js.layer.msg(msg, {
+                    icon: layerIcon,
+                    time: msgTimeout
+                })
+            } else {
+                js.layer.msg(msg, {
+                    time: msgTimeout
+                })
+            }
+        },
+        showErrorMessage: function(responseText) {
+            if (responseText && responseText != "") {
+                js.error(js.abbr(responseText, 500));
+                if (responseText.length>6 && (responseText.indexOf("<html ") != -1 || responseText.indexOf("<head ") != -1 || responseText.indexOf("<body ") != -1)) {
+                    js.showMessage("未知错误，F12查看异常信息！", null, "error")
+                } else {
+                    try {
+                        var json = JSON.parse(responseText);
+                        if (typeof json == "object" && typeof json.message != "undefined") {
+                            js.showMessage(json.message, null, "error");
+                            return
+                        }
+                    } catch (e) {}
+                    js.showMessage(responseText, null, "error")
+                }
+            }
+        },
+        closeMessage: function() {
+            try {
+                if (top.toastr) {
+                    top.toastr.clear()
+                }
+            } catch (e) {}
+        },
+        alert: function(message, options, closed) {
+            if (typeof options != "object") {
+                closed = options;
+                options = {
+                    icon: 1
+                }
+            }
+            if (!js.layer) {
+                alert(message);
+                if (typeof closed == "function") {
+                    closed()
+                }
+                return
+            }
+            js.layer.alert(message, options, function(index) {
+                if (typeof closed == "function") {
+                    closed(index)
+                }
+                js.layer.close(index)
+            })
+        },
+        confirm: function(message, urlOrFun, data, callback, dataType, async, loadingMessage) {
+            if (typeof data == "function") {
+                loadingMessage = async;
+                async = dataType;
+                dataType = callback;
+                callback = data;
+                data = undefined
+            }
+            var sendAjax = function() {
+                js.loading(loadingMessage == undefined ? js.text("loading.submitMessage") : loadingMessage);
+                $.ajax({
+                    type: "POST",
+                    url: urlOrFun,
+                    data: data,
+                    dataType: dataType == undefined ? "json" : dataType,
+                    async: async == undefined ? true : async,
+                    error: function(data) {
+                        js.showErrorMessage(data.responseText);
+                        js.closeLoading(0, true)
+                    },
+                    success: function(data) {
+                        if (typeof callback == "function") {
+                            callback(data)
+                        }
+                        js.closeLoading()
+                    }
+                })
+            };
+            if (!js.layer) {
+                if (confirm(message)) {
+                    if (typeof urlOrFun == "function") {
+                        urlOrFun()
+                    } else {
+                        sendAjax()
+                    }
+                }
+                return
+            }
+            var options = {
+                icon: 3
+            };
+            js.layer.confirm(message, options, function(index) {
+                if (typeof urlOrFun == "function") {
+                    urlOrFun()
+                } else {
+                    sendAjax()
+                }
+                js.layer.close(index)
+            });
+            return false
+        },
         ajaxSubmit: function(url, data, callback, dataType, async, message) {
             $(".btn").attr("disabled", true);
             if (typeof data == "function") {
@@ -41,7 +326,7 @@ if (typeof jQuery === "undefined") {
                 async = options.async;
                 message = options.message
             }
-            js.loading(message == undefined ? js.text("loading.submitMessage") : message);
+            js.loading(message == undefined ? '正在提交，请稍候...' : message);
             $.ajax($.extend(true, {
                 type: "POST",
                 url: url,
@@ -73,10 +358,9 @@ if (typeof jQuery === "undefined") {
                 callback = options.callback;
                 dataType = options.dataType;
                 async = options.async;
-                message = options.message
+                message = options.message;
             }
-            log(message);
-            //js.loading(message == undefined ? js.text("loading.submitMessage") : message);
+            js.loading(message == undefined ? '正在提交，请稍候...' : message);
             if (options.downloadFile === true) {
                 options.iframe = true
             }
@@ -90,26 +374,96 @@ if (typeof jQuery === "undefined") {
                 async: async == undefined ? true: async,
                 error: function(data) {
                     $(".btn").attr("disabled", false);
-                    error(data);
-                    //js.showErrorMessage(data.responseText);
-                    //js.closeLoading(0, true)
+                    js.showErrorMessage(data.responseText);
+                    js.closeLoading(0, true)
                 },
                 success: function(data, status, xhr) {
                     $(".btn").attr("disabled", false);
-                    log(data);
-                    //js.closeLoading();
-                    //if (typeof callback == "function") {
-                    //    callback(data, status, xhr)
-                    //} else {
-                    //    js.log(data)
-                    //}
+                    js.closeLoading();
+                    if (typeof callback == "function") {
+                        callback(data, status, xhr)
+                    } else {
+                        js.log(data)
+                    }
                 }
             },
             options));
             if (options.downloadFile === true) {
                 $(".btn").attr("disabled", false);
-                //js.closeLoading()
+                js.closeLoading()
             }
+        },
+        trim: function(str) {
+            return jQuery.trim(str)
+        },
+        startWith: function(str, start) {
+            var reg = new RegExp("^" + start);
+            return reg.test(str)
+        },
+        startsWith: function(str, prefix) {
+            if (!str || !prefix || str.length < prefix.length) {
+                return false
+            }
+            return str.slice(0, prefix.length) === prefix
+        },
+        endWith: function(str, end) {
+            var reg = new RegExp(end + "$");
+            return reg.test(str)
+        },
+        endsWith: function(str, suffix) {
+            if (!str || !suffix || str.length < suffix.length) {
+                return false
+            }
+            return str.indexOf(suffix, str.length - suffix.length) !== -1
+        },
+        abbr: function(name, maxLength) {
+            if (!maxLength) {
+                maxLength = 20
+            }
+            if (name == null || name.length < 1) {
+                return ""
+            }
+            var w = 0;
+            var s = 0;
+            var p = false;
+            var b = false;
+            var nameSub;
+            for (var i = 0; i < name.length; i++) {
+                if (i > 1 && b == false) {
+                    p = false
+                }
+                if (i > 1 && b == true) {
+                    p = true
+                }
+                var c = name.charCodeAt(i);
+                if ((c >= 1 && c <= 126) || (65376 <= c && c <= 65439)) {
+                    w++;
+                    b = false
+                } else {
+                    w += 2;
+                    s++;
+                    b = true
+                }
+                if (w > maxLength && i <= name.length - 1) {
+                    if (b == true && p == true) {
+                        nameSub = name.substring(0, i - 2) + "..."
+                    }
+                    if (b == false && p == false) {
+                        nameSub = name.substring(0, i - 3) + "..."
+                    }
+                    if (b == true && p == false) {
+                        nameSub = name.substring(0, i - 2) + "..."
+                    }
+                    if (p == true) {
+                        nameSub = name.substring(0, i - 2) + "..."
+                    }
+                    break
+                }
+            }
+            if (w <= maxLength) {
+                return name
+            }
+            return nameSub
         },
 	};
 	window.js = js;
