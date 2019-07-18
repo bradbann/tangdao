@@ -51,48 +51,41 @@ public abstract class BaseEntity<T> implements Serializable {
 	 */
 	@TableField(exist = false)
 	@JsonIgnore
-	protected Pagination pagination;
+	protected Page<T> page;
 
 	public void setPerpage(Long perpage) {
 		if (perpage != null) {
-			if (this.pagination == null) {
-				this.pagination = new Pagination();
+			if (this.page == null) {
+				this.page = new Page<T>();
 			}
-			this.pagination.setPerpage(perpage);
+			this.getPage().setSize(perpage);
 		}
 	}
 
 	public void setPage(Long page) {
 		if (page != null) {
-			if (this.pagination == null) {
-				this.pagination = new Pagination();
+			if (this.page == null) {
+				this.page = new Page<T>();
 			}
-			this.pagination.setPage(page);
+			this.getPage().setCurrent(page);
 		}
 	}
 
-	/**
-	 * 排序对象
-	 */
-	@TableField(exist = false)
-	@JsonIgnore
-	protected Sort sort;
-
 	public void setField(String field) {
 		if (field != null) {
-			if (this.sort == null) {
-				this.sort = new Sort();
+			if (this.page == null) {
+				this.page = new Page<T>();
 			}
-			this.sort.setField(field);
+			this.getPage().getMeta().setField(field);
 		}
 	}
 
 	public void setSort(String sort) {
 		if (sort != null) {
-			if (this.sort == null) {
-				this.sort = new Sort();
+			if (this.page == null) {
+				this.page = new Page<T>();
 			}
-			this.sort.setSort(sort);
+			this.getPage().getMeta().setSort(sort);
 		}
 	}
 

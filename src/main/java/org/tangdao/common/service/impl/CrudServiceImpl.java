@@ -19,14 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.tangdao.common.service.ICurdService;
 import org.tangdao.common.suports.DataEntity;
+import org.tangdao.common.suports.Meta;
 import org.tangdao.common.suports.Page;
-import org.tangdao.common.suports.Pagination;
-import org.tangdao.common.suports.Sort;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
@@ -53,7 +51,7 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 	/**
 	 * 判断数据库操作是否成功
 	 *
-	 * @param result 数据库操作返回影响条数
+	 * @page result 数据库操作返回影响条数
 	 * @return boolean
 	 */
 	protected boolean retBool(Integer result) {
@@ -74,7 +72,7 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 	/**
 	 * 释放sqlSession
 	 *
-	 * @param sqlSession session
+	 * @page sqlSession session
 	 */
 	protected void closeSqlSession(SqlSession sqlSession) {
 		SqlSessionUtils.closeSqlSession(sqlSession, GlobalConfigUtils.currentSessionFactory(currentModelClass()));
@@ -83,7 +81,7 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 	/**
 	 * 获取 SqlStatement
 	 *
-	 * @param sqlMethod ignore
+	 * @page sqlMethod ignore
 	 * @return ignore
 	 */
 	protected String sqlStatement(SqlMethod sqlMethod) {
@@ -99,8 +97,8 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 	/**
 	 * 批量插入
 	 *
-	 * @param entityList ignore
-	 * @param batchSize  ignore
+	 * @page entityList ignore
+	 * @page batchSize  ignore
 	 * @return ignore
 	 */
 	@Transactional(rollbackFor = Exception.class)
@@ -125,7 +123,7 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 	/**
 	 * TableId 注解存在更新记录，否插入一条记录
 	 *
-	 * @param entity 实体对象
+	 * @page entity 实体对象
 	 * @return boolean
 	 */
 	@Transactional(rollbackFor = Exception.class)
@@ -163,9 +161,9 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 //				if (StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal))) {
 					batchSqlSession.insert(sqlStatement(SqlMethod.INSERT_ONE), entity);
 				} else {
-					MapperMethod.ParamMap<T> param = new MapperMethod.ParamMap<>();
-					param.put(Constants.ENTITY, entity);
-					batchSqlSession.update(sqlStatement(SqlMethod.UPDATE_BY_ID), param);
+					MapperMethod.ParamMap<T> page = new MapperMethod.ParamMap<>();
+					page.put(Constants.ENTITY, entity);
+					batchSqlSession.update(sqlStatement(SqlMethod.UPDATE_BY_ID), page);
 				}
 				// 不知道以后会不会有人说更新失败了还要执行插入 😂😂😂
 				if (i >= 1 && i % batchSize == 0) {
@@ -219,9 +217,9 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 		try (SqlSession batchSqlSession = sqlSessionBatch()) {
 			int i = 0;
 			for (T anEntityList : entityList) {
-				MapperMethod.ParamMap<T> param = new MapperMethod.ParamMap<>();
-				param.put(Constants.ENTITY, anEntityList);
-				batchSqlSession.update(sqlStatement, param);
+				MapperMethod.ParamMap<T> page = new MapperMethod.ParamMap<>();
+				page.put(Constants.ENTITY, anEntityList);
+				batchSqlSession.update(sqlStatement, page);
 				if (i >= 1 && i % batchSize == 0) {
 					batchSqlSession.flushStatements();
 				}
@@ -270,10 +268,10 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 		return baseMapper.selectList(queryWrapper);
 	}
 
-	@Override
-	public IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper) {
-		return baseMapper.selectPage(page, queryWrapper);
-	}
+//	@Override
+//	public IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper) {
+//		return baseMapper.selectPage(page, queryWrapper);
+//	}
 
 	@Override
 	public List<Map<String, Object>> selectMaps(Wrapper<T> queryWrapper) {
@@ -286,10 +284,10 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 				.collect(Collectors.toList());
 	}
 
-	@Override
-	public IPage<Map<String, Object>> pageMaps(IPage<T> page, Wrapper<T> queryWrapper) {
-		return baseMapper.selectMapsPage(page, queryWrapper);
-	}
+//	@Override
+//	public IPage<Map<String, Object>> pageMaps(IPage<T> page, Wrapper<T> queryWrapper) {
+//		return baseMapper.selectMapsPage(page, queryWrapper);
+//	}
 
 	@Override
 	public <V> V getObj(Wrapper<T> queryWrapper, Function<? super Object, V> mapper) {
@@ -297,27 +295,18 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 	}
 
 	@Override
-	public Page findPage(Pagination pagination, Sort sort, Wrapper<T> queryWrapper) {
+	public Page<T> findPage(T entity, Wrapper<T> queryWrapper) {
 		// TODO Auto-generated method stub
-		com.baomidou.mybatisplus.extension.plugins.pagination.Page<T> param = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<T>();
-		param.setCurrent(pagination.getPage());
-		param.setSize(pagination.getPerpage());
-		if (sort != null && StringUtils.isNotEmpty(sort.getField())) {
+		Meta meta = entity.getPage().getMeta();
+		if(meta!=null&&StringUtils.isNotEmpty(meta.getField())) {
 			// 需要转换一下驼峰字段
-			String column = StringUtils.camelToUnderline(sort.getField());
-			if ("asc".equalsIgnoreCase(sort.getSort()))
-				param.addOrder(OrderItem.asc(column));
+			String column = StringUtils.camelToUnderline(meta.getField());
+			if ("asc".equalsIgnoreCase(meta.getSort()))
+				entity.getPage().addOrder(OrderItem.asc(column));
 			else
-				param.addOrder(OrderItem.desc(column));
+				entity.getPage().addOrder(OrderItem.desc(column));
 		}
-		IPage<T> dataSet = baseMapper.selectPage(param, queryWrapper);
-		return new Page(dataSet, sort);
-	}
-	
-	@Override
-	public Page findPage(T entity, Wrapper<T> queryWrapper) {
-		// TODO Auto-generated method stub
-		return findPage(entity.getPagination(), entity.getSort(), queryWrapper);
+		return new Page<T>(baseMapper.selectPage(entity.getPage(), queryWrapper));
 	}
 
 	@Override
@@ -343,4 +332,5 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 	public static ValidationException newValidationException(String message) {
 		return new ValidationException(org.tangdao.common.utils.StringUtils.defaultString(message, "校验失败"));
 	}
+
 }

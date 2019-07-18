@@ -29,15 +29,18 @@
 	</sql>
 	<resultMap id="UserMap" type="User">
 		<id column="user_code" property="userCode" />
+		<result column="username" property="username"/>
 		<!--封装关联属性-->
         <association property="roles" javaType="Role">
-            <id column="roleCode" property="roleCode" />
-            <result column="roleName" property="roleName" />
+            <id column="role_code" property="roleCode" />
+            <result column="role_name" property="roleName" />
         </association>
 	</resultMap>
-	<select id="findPage" resultMap="UserMap">
+	<select id="selectPage" resultMap="UserMap">
 		SELECT
 		<include refid="selectColumns"/>
+		,r.role_code
+		,r.role_name
 		FROM sys_user t 
 		LEFT JOIN sys_user_role ur ON ur.user_code = t.user_code
 		LEFT JOIN sys_role r on r.role_code = ur.role_code

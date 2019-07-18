@@ -1,6 +1,8 @@
 package org.tangdao.modules.sys.controller;
 
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -46,7 +48,7 @@ public class UserController extends BaseController {
 	}
 
 	@PostMapping("/listData")
-	public @ResponseBody Page listData(User user) {
+	public @ResponseBody Page<User> listData(User user, HttpServletRequest request) {
 		return this.userService.findPage(user, Wrappers.emptyWrapper());
 	}
 	

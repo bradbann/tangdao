@@ -45,7 +45,7 @@ public class ConfigController extends BaseController {
 	}
 
 	@PostMapping("/listData")
-	public @ResponseBody Page listData(Config config) {
+	public @ResponseBody Page<Config> listData(Config config) {
 		QueryWrapper<Config> wrapper = new QueryWrapper<Config>();
 		if(StringUtils.isNotBlank(config.getStatus())) {
 			wrapper.eq("status", config.getStatus());

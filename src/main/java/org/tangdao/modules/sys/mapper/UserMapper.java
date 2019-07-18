@@ -1,12 +1,12 @@
 package org.tangdao.modules.sys.mapper;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.tangdao.modules.sys.model.domain.User;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
  * <p>
@@ -19,5 +19,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
-	public List<User> findPage(User user, Wrapper<User> queryWrapper);
+	public IPage<User> findPage(Page<User> page, Wrapper<User> queryWrapper);
 }
