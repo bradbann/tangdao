@@ -24,13 +24,13 @@ var p = {
 var id = p.id!p.name!p.path;
 var name = p.name!p.path;
 var value = p.value!;
-if(@StringUtils.isBlank(value!)&&@StringUtils.isNotBlank(p.path!)){
+if(isEmpty(value!)&&isNotEmpty(p.path!)){
 	value = modelAttr[p.path];
 }
-if(@StringUtils.isBlank(value!)){
+if(isEmpty(value!)){
 	value = p.defaultValue;
 }
-if(@StringUtils.isNotBlank(p.dataFormat)){
+if(isNotEmpty(p.dataFormat)){
 	if("number"==p.dataFormat){
 		value = parseDouble(value);
 	}else{
@@ -38,4 +38,4 @@ if(@StringUtils.isNotBlank(p.dataFormat)){
 	}
 }
 %>
-<input type="${p.type}" id="${id}" name="${name}" value="${value}"<%if(@StringUtils.isNotBlank(readonly!)){%> readonly="${readonly!}"<%}%><%if(@StringUtils.isNotBlank(disabled!)){%> disabled="${disabled!}"<%}%><%if(@StringUtils.isNotBlank(minlength!)){%> minlength="${minlength!}"<%}%><%if(@StringUtils.isNotBlank(maxlength!)){%> maxlength="${maxlength!}"<%}%><%if(@StringUtils.isNotBlank(placeholder!)){%> placeholder="${placeholder!}"<%}%><%if(@StringUtils.isNotBlank(class!)){%> class="${class!}"<%}%><%if(@StringUtils.isNotBlank(style!)){%> style="${style!}"<%}%>/>
+<input type="${p.type}" id="${id}" name="${name}" value="${value}"<%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled<%}%><%if(isNotEmpty(minlength!)){%> minlength="${minlength!}"<%}%><%if(isNotEmpty(maxlength!)){%> maxlength="${maxlength!}"<%}%><%if(isNotEmpty(placeholder!)){%> placeholder="${placeholder!}"<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%><%if(isNotEmpty(style!)){%> style="${style!}"<%}%>/>

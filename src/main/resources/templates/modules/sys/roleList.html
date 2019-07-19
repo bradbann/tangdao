@@ -4,29 +4,19 @@ var myDatatable = $(".kt-datatable").myDatatable({
 	searchForm: $("#searchForm"),
 	columns:[
 		{
-			field: 'userCode',
-			title: '#',
-			width: 30,
-			selector: true,
-		}, {
-			field: 'username',
-			title: 'User name',
+			field: 'roleName',
+			title: '角色名称',
 			autoHide: false,
 		}, {
-			field: 'nickname',
-			title: 'Nick name',
+			field: 'roleCode',
+			title: '角色键名',
 		},{
-			field: 'roleNames',
-			title: 'Roles',
-			sortable: false,
-		},{
-			field: 'email',
-			title: 'Email address',
+			field: 'roleSort',
+			title: '角色排序',
 		},{
 			field: 'status',
 			title: 'Status',
 			width: 80,
-			// callback function support for column rendering
 			template: function(row) {
 				var status = {
 					2: {'title': '锁定', 'state': 'danger'},
@@ -37,23 +27,17 @@ var myDatatable = $(".kt-datatable").myDatatable({
 		},{
 			field: 'updateTime',
 			title: '更新时间',
-		},{
+		}, {
 			field: 'Actions',
 			title: 'Actions',
 			sortable: false,
-			width: 150,
+			width: 110,
 			overflow: 'visible',
 			autoHide: false,
 			template: function(row) {
 				return '\
-				<a href="${ctxPath}/sys/user/form?userCode='+row.userCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="编辑">\
+				<a href="${ctxPath}/sys/role/form?op=edit&roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="编辑">\
 					<i class="la la-edit"></i>\
-				</a>\
-				<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="删除">\
-					<i class="la la-trash"></i>\
-				</a>\
-				<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="删除">\
-					<i class="la la-trash"></i>\
 				</a>\
 				<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="删除">\
 					<i class="la la-trash"></i>\
@@ -70,12 +54,12 @@ var myDatatable = $(".kt-datatable").myDatatable({
 	<a href="#" class="btn btn-secondary btn-sm active" id="btnSearch">
 		<i class="flaticon-tool"></i> 查询
 	</a>
-	<a href="${ctxPath}/sys/user/form" class="btn btn-primary btn-sm">
-		<i class="flaticon2-add-1"></i> 新建用户
+	<a href="${ctxPath}/sys/role/form?op=add" class="btn btn-primary btn-sm">
+		<i class="flaticon2-add-1"></i> 新建角色
 	</a>
 </div>
 <% }; %>
-<% layout('/layouts/default.html', {title: '用户列表',  menuCode:'1044886627991953408', libs:[], jsSection: jsSection, toolbar: toolbar}){ %>
+<% layout('/layouts/default.html', {title: '角色列表',  menuCode:'1044886629531262976', libs:[], jsSection: jsSection, toolbar: toolbar}){ %>
 <div class="kt-portlet kt-portlet--mobile">
 	<div class="kt-portlet__head">
 		<div class="kt-portlet__head-label">
@@ -88,11 +72,11 @@ var myDatatable = $(".kt-datatable").myDatatable({
 		</div>
 	</div>
 	<div class="kt-portlet__body" style="padding: 0px;">
-		<form class="kt-form kt-form--label-right kt-margin-20" id="searchForm" action="${ctxPath}/sys/user/listData" method="post">
+		<form class="kt-form kt-form--label-right kt-margin-20" id="searchForm" action="${ctxPath}/sys/role/listData" method="post">
 			<div class="row align-items-center">
 				<div class="col-md-3 col-sm-4 kt-margin-b-20-tablet-and-mobile">
 					<div class="kt-input-icon kt-input-icon--left">
-						<input type="text" class="form-control" placeholder="Search..." name="generalSearch">
+						<input type="text" class="form-control" placeholder="输入角色名称" name="roleName">
 						<span class="kt-input-icon__icon kt-input-icon__icon--left">
 							<span><i class="la la-search"></i></span>
 						</span>
@@ -119,7 +103,7 @@ var myDatatable = $(".kt-datatable").myDatatable({
 			</div>
 		</form>
 		<!--begin: Datatable -->
-		<div class="kt-datatable" id="server_record_selection_user"></div>
+		<div class="kt-datatable" id="server_record_selection_role"></div>
 		<!--end: Datatable -->
 	</div>
 </div>

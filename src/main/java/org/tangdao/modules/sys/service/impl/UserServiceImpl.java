@@ -1,14 +1,20 @@
 package org.tangdao.modules.sys.service.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
+import org.tangdao.common.suports.Page;
 import org.tangdao.modules.sys.mapper.UserMapper;
 import org.tangdao.modules.sys.model.domain.User;
+import org.tangdao.modules.sys.service.IRoleService;
 import org.tangdao.modules.sys.service.IUserService;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -21,34 +27,27 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
  */
 @Service
 public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implements IUserService, UserDetailsService {
+	
+	@Autowired
+	private IRoleService roleService;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		User user = this.getOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, username).or()
-				.eq(User::getMobile, username).or().eq(User::getEmail, username));
+		User user = this.getUserByUsername(username);
 		if (user == null) {
 			throw new UsernameNotFoundException("User not found");
 		}
 		return user;
 	}
 
-	@Override
-	public boolean checkEmailExists(String email) {
-		// TODO Auto-generated method stub
-		return this.count(Wrappers.<User>lambdaQuery().eq(User::getEmail, email)) > 0;
-	}
-
-	@Override
-	public boolean checkMobileExists(String mobile) {
-		// TODO Auto-generated method stub
-		return this.count(Wrappers.<User>lambdaQuery().eq(User::getMobile, mobile)) > 0;
-	}
-
-	@Override
-	public boolean checkUsernameExists(String username) {
-		// TODO Auto-generated method stub
-		return this.count(Wrappers.<User>lambdaQuery().eq(User::getUsername, username)) > 0;
+	public boolean checkUsernameExists(String oldUsername, String username) {
+		if (username != null && username.equals(oldUsername)) {
+			return true;
+		} else if (username != null && this.count(Wrappers.<User>lambdaQuery().eq(User::getUsername, username)) == 0) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -77,26 +76,18 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 
 	@Override
 	public User getUserByUsername(String username) {
-		
-		return null;
+		return this.getOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
 	}
 	
-//	@Override
-//	public PageResponse findPage(User user, Wrapper<User> queryWrapper) {
-//		Page<User> page = new Page<User>();
-//		page.setCurrent(user.getPagination().getPage());
-//		page.setSize(user.getPagination().getPages());
-//		if (user.getSort() != null && StringUtils.isNotEmpty(user.getSort().getField())) {
-//			// 需要转换一下驼峰字段
-//			String column = StringUtils.camelToUnderline(user.getSort().getField());
-//			if ("asc".equalsIgnoreCase(user.getSort().getSort()))
-//				page.addOrder(OrderItem.asc(column));
-//			else
-//				page.addOrder(OrderItem.desc(column));
-//		}
-//		IPage<User> dataSet = this.getBaseMapper().findPage(page, queryWrapper);
-//		return new PageResponse(dataSet, user.getSort());
-//	}
 
+	@Override
+	public Page<User> findPage(User user, Wrapper<User> queryWrapper) {
+		Page<User> pageUser = super.findPage(user, queryWrapper);
+		List<User> listUser = pageUser.getData();
+		for (User u : listUser) {
+			u.setRoles(roleService.findByUserCode(u));
+		}
+		return pageUser;
+	}
 
 }

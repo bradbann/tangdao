@@ -15,10 +15,10 @@ var p = {
 var id = p.id!p.name!p.path;
 var name = p.name!p.path;
 var value = p.value!;
-if(@StringUtils.isBlank(value!)&&@StringUtils.isNotBlank(p.path!)){
+if(isEmpty(value!)&&isNotEmpty(p.path!)){
 	value = modelAttr[p.path];
 }
-if(@StringUtils.isBlank(value!)){
+if(isEmpty(value!)){
 	value = p.defaultValue;
 }
 %>

@@ -1,6 +1,5 @@
 package org.tangdao.modules.sys.controller;
 
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.suports.Page;
+import org.tangdao.modules.sys.model.domain.Role;
 import org.tangdao.modules.sys.model.domain.User;
+import org.tangdao.modules.sys.service.IRoleService;
 import org.tangdao.modules.sys.service.IUserService;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -33,15 +34,18 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 @RequestMapping("/sys/user")
 @PreAuthorize("isAuthenticated()")
 public class UserController extends BaseController {
-	
+
 	@Autowired
 	private IUserService userService;
-	
+
+	@Autowired
+	private IRoleService roleService;
+
 	@ModelAttribute
 	public User get(String userCode, boolean isNewRecord) {
 		return userService.get(userCode, isNewRecord);
 	}
-	
+
 	@GetMapping("/list")
 	public String list(User user, Model model) {
 		return "modules/sys/userList";
@@ -51,13 +55,16 @@ public class UserController extends BaseController {
 	public @ResponseBody Page<User> listData(User user, HttpServletRequest request) {
 		return this.userService.findPage(user, Wrappers.emptyWrapper());
 	}
-	
+
 	@GetMapping("/form")
 	public String form(User user, Model model) {
+		model.addAttribute("roles",
+				roleService.select(Wrappers.<Role>lambdaQuery().eq(Role::getStatus, Role.STATUS_NORMAL)));
+		user.setRoles(roleService.findByUserCode(user));
 		model.addAttribute("user", user);
 		return "modules/sys/userForm";
 	}
-	
+
 	@PostMapping(value = "save")
 	public @ResponseBody String save(@Validated User user, String oldUsername, Model model) {
 //		if (!"true".equals(checkPostName(oldRoleName, post.getPostName()))) {

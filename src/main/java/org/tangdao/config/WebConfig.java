@@ -1,20 +1,38 @@
 package org.tangdao.config;
 
 import java.nio.charset.StandardCharsets;
+import java.util.EventListener;
 import java.util.List;
 
 import org.beetl.core.resource.ClasspathResourceLoader;
+import org.hibernate.validator.HibernateValidator;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.MultipartProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;
 import org.springframework.boot.web.server.ErrorPageRegistry;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
+import org.springframework.web.context.request.RequestContextListener;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -22,11 +40,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.tangdao.common.beetl.BeetlConfiguration;
 import org.tangdao.common.beetl.BeetlViewResolver;
 import org.tangdao.common.utils.JsonMapper;
+import org.tangdao.common.utils.PropertiesUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Configuration
+@AutoConfigureBefore({ValidationAutoConfiguration.class, MultipartAutoConfiguration.class})
+@EnableWebMvc
+@EnableConfigurationProperties({MultipartProperties.class})
 public class WebConfig implements WebMvcConfigurer {
 
 	@Value("${beetl.templatesPath}") String templatesPath;
@@ -63,6 +85,26 @@ public class WebConfig implements WebMvcConfigurer {
 	}
 	
 	@Bean
+	@Primary
+	public LocalValidatorFactoryBean beanValidator() {
+		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+		localValidatorFactoryBean.setProviderClass(HibernateValidator.class);
+		return localValidatorFactoryBean;
+	}
+
+	@Bean
+	public MethodValidationPostProcessor getMethodValidationPostProcessor() {
+		MethodValidationPostProcessor processor = new MethodValidationPostProcessor();
+		processor.setValidator(beanValidator());
+		return processor;
+	}
+
+	@Override
+	public Validator getValidator() {
+		return this.beanValidator();
+	}
+	
+	@Bean
 	public ObjectMapper objectMapper() {
 		return new JsonMapper();
 	}
@@ -93,5 +135,35 @@ public class WebConfig implements WebMvcConfigurer {
 				e.addErrorPages(badRequest, unauthorized, forbidden, notFound, internalServerError, throwable);
 			}
 		};
+	}
+	
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+		PropertySourcesPlaceholderConfigurer localPropertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+		localPropertySourcesPlaceholderConfigurer.setProperties(PropertiesUtils.getInstance().getProperties());
+		localPropertySourcesPlaceholderConfigurer.setIgnoreUnresolvablePlaceholders(true);
+		return localPropertySourcesPlaceholderConfigurer;
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean(name = { "requestContextListener" })
+	public ServletListenerRegistrationBean<EventListener> requestContextListener() {
+		ServletListenerRegistrationBean<EventListener> a = new ServletListenerRegistrationBean<>();
+		a.setListener(new RequestContextListener());
+		return a;
+	}
+	
+	@Override
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		configurer.enable();
+	}
+	
+	@Override
+	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+		configurer.favorParameter(false);
+		configurer.favorPathExtension(true);
+		configurer.ignoreAcceptHeader(true);
+		configurer.mediaType("xml", MediaType.APPLICATION_XML);
+		configurer.mediaType("json", MediaType.APPLICATION_JSON);
 	}
 }

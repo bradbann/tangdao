@@ -20,15 +20,15 @@ public class Page<T> extends com.baomidou.mybatisplus.extension.plugins.paginati
 
 	private Meta meta;
 
-	private List<?> data = ListUtils.newArrayList();
+	private List<T> data = ListUtils.newArrayList();
 
 	public Page() {
 		if (meta == null) {
 			meta = new Meta();
 		}
 	}
-
-	public Page(IPage<?> dataSet) {
+	
+	public Page(IPage<T> dataSet) {
 		if (meta == null) {
 			meta = new Meta();
 		}
@@ -39,4 +39,5 @@ public class Page<T> extends com.baomidou.mybatisplus.extension.plugins.paginati
 
 		this.setData(dataSet.getRecords());
 	}
+	
 }

@@ -44,7 +44,7 @@ public class Menu extends DataEntity<Menu> {
     /**
      * 本级排序号（升序）
      */
-    private Long treeSort;
+    private Integer treeSort;
 
     /**
      * 全节点名
@@ -84,7 +84,7 @@ public class Menu extends DataEntity<Menu> {
     /**
      * 菜单权重
      */
-    private Long weight;
+    private Integer weight;
 
     /**
      * 是否显示（1显示 0隐藏）

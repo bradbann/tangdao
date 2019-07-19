@@ -13,9 +13,7 @@ import org.tangdao.modules.sys.model.domain.User;
  */
 public interface IUserService extends ICurdService<User> {
 
-	public boolean checkEmailExists(String email);
-	public boolean checkMobileExists(String mobile);
-	public boolean checkUsernameExists(String username);
+	boolean checkUsernameExists(String oldUsername, String username);
 	
 	public User getUserByUsername(String username);
 	

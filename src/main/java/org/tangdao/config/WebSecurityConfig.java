@@ -2,6 +2,7 @@ package org.tangdao.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,7 +25,7 @@ public class WebSecurityConfig {
 			http
 				.antMatcher("/api/**")                               
 				.authorizeRequests()
-					.anyRequest().hasRole("ADMIN")
+					.anyRequest().hasRole("APP")
 					.and()
 				.httpBasic();
 		}
@@ -57,7 +58,8 @@ public class WebSecurityConfig {
                     .csrf()
                     .disable()
                     .authorizeRequests()
-                    .antMatchers("/**").permitAll()
+                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+//                    .antMatchers("/**").permitAll()
             .and().formLogin()
                     .loginPage("/login").permitAll()
                     .failureUrl("/login?error=true")

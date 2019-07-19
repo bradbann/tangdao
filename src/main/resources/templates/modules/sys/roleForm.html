@@ -1,0 +1,66 @@
+<% var optip = role.isNewRecord?'新建':'编辑'; %>
+<%  var jsSection = { %>
+<script>
+$("#inputForm").validate({
+	submitHandler: function(form){
+		js.ajaxSubmitForm($(form), function(data){
+			js.showMessage(data.message);
+			//js.log(data.result);
+			//if(data.result == "true"){
+			//}
+		}, "json");
+    }
+});
+</script>
+<% }; %>
+<%  var toolbar = { %>
+<div class="kt-subheader__wrapper">
+	<a href="javascript:history.go(-1);" class="btn btn-outline-secondary btn-sm">
+		<i class="la la-arrow-left"></i> 返回列表
+	</a>
+</div>
+<% }; %>
+<% layout('/layouts/default.html', {title:optip!+'角色',  menuCode:'1044886629531262976', libs:['validation'], jsSection:jsSection, desc: optip+'角色',toolbar: toolbar}){ %>
+<div class="kt-portlet">
+	<#form:form id="inputForm" model="${role}" action="${ctxPath}/sys/role/save" method="post" class="kt-form kt-form--fit kt-form--label-right">
+		<#form:hidden name="op" value="${op}"/>
+		<div class="kt-portlet__body">
+			<div class="row">
+				<div class="form-group col-lg-12">
+					<label>角色名称：</label>
+					<#form:hidden name="oldRoleName" value="${role.roleName}"/>
+					<#form:input path="roleName" class="form-control required" />
+					<span class="form-text text-muted">Please Enter name</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-lg-12">
+					<label>角色编码：</label>
+					<#form:hidden path="isNewRecord"/>
+					<#form:input path="roleCode" maxlength="64" readonly="${!role.isNewRecord}" class="form-control required" />
+					<span class="form-text text-muted">Please Enter code</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-lg-12">
+					<label>角色排序：</label>
+					<#form:input path="roleSort" class="form-control required" />
+					<span class="form-text text-muted">Please Enter sort</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-lg-12">
+					<label>备注：</label>
+					<#form:textarea path="remarks" class="form-control"  placeholder="请输入备注"  rows="3"></#form:textarea>
+				</div>
+			</div>
+		</div>
+		<div class="kt-portlet__foot">
+			<div class="kt-form__actions">
+				<button type="submit" class="btn btn-primary btn-sm">确  认</button>
+				<button type="reset" class="btn btn-secondary btn-sm" onclick="window.history.go(-1);">返  回</button>
+			</div>
+		</div>
+	</#form:form>
+</div>
+<% } %>

@@ -2,7 +2,9 @@ package org.tangdao.modules.sys.utils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
@@ -16,10 +18,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class DictUtils {
 
-	public static final String CACHE_DICT = "dictMap";
+//	public static final String CACHE_DICT = "dictMap";
 
 	private static final class Static {
 		private static IDictDataService dictDataService = SpringUtils.getBean(IDictDataService.class);
+		private static RedisTemplate<String, Object> redis = SpringUtils.getBean("redisTemplate");
 	}
 
 	public static String getDictLabels(String dictType, String dictValues, String defaultValue) {
@@ -107,19 +110,21 @@ public class DictUtils {
 	 * @param reload
 	 * @return
 	 */
-//	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public static Map<String, List<Map<String, Object>>> getDictList(DictData dictData, boolean reload) {
+		Map<String, List<Map<String, Object>>> dictDataMap = (Map<String, List<Map<String, Object>>>) Static.redis.opsForValue().get("tangdao:sysCache:dictMap");
+		
 //		Map<String, List<Map<String, Object>>> dictDataMap = (Map<String, List<Map<String, Object>>>) CacheUtils.get(CACHE_DICT);
-		Map<String, List<Map<String, Object>>> dictDataMap = null;
+//		Map<String, List<Map<String, Object>>> dictDataMap = null;
 		if (reload) {
 			clearCache();
 		}
-//		if (dictDataMap != null && dictDataMap.size() != 0) {
-//			return dictDataMap;
-//		} else {
-//			dictDataMap = MapUtils.newLinkedHashMap();
-//		}
-		dictDataMap = MapUtils.newLinkedHashMap();
+		if (dictDataMap != null && dictDataMap.size() != 0) {
+			return dictDataMap;
+		} else {
+			dictDataMap = MapUtils.newLinkedHashMap();
+		}
+//		dictDataMap = MapUtils.newLinkedHashMap();
 
 //		Example example = new Example(DictData.class);
 //		if (dictData.getTenantId() != null) {
@@ -160,6 +165,8 @@ public class DictUtils {
 				dictDataMap.put(dictType, targetList);
 			}
 			// 存储
+//			Static.redis.opsForValue().set("tangdao:sysCache:dictMap", dictDataMap, -1L, TimeUnit.DAYS);
+			Static.redis.opsForValue().set("tangdao:sysCache:dictMap", dictDataMap);
 //			CacheUtils.put(CACHE_DICT, dictDataMap);
 		}
 		return dictDataMap;
@@ -167,5 +174,6 @@ public class DictUtils {
 
 	public static void clearCache() {
 //		CacheUtils.remove(CACHE_DICT);
+		Static.redis.expire("tangdao:sysCache:dictMap", 0L, TimeUnit.SECONDS);
 	}
 }

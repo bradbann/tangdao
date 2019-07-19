@@ -87,7 +87,7 @@ $("#inputForm").validate({
 						<div class="form-group col-lg-12">
 							<label for="recipient-name" class="form-control-label">角色：</label>
 							<div class="kt-checkbox-list kt-scroll" data-scroll="true" style="max-height:200px">
-							<#form:checkbox name="roleCode" dictType="sys_role_data_scope" class="required"/>
+							<#form:checkbox name="roleCode" items="${roles}" itemLabel="roleName" itemValue="roleCode" value="${user.roleCodes}" class="required"/>
 							</div>
 							<span class="form-text text-muted">Please select user group</span>
 						</div>
@@ -121,9 +121,9 @@ $("#inputForm").validate({
 						<div class="form-group col-lg-12">
 							<label for="recipient-name" class="form-control-label">其它设置：</label>
 							<div class="kt-checkbox-list">
-								<#form:checkbox name="randomPassword" label="Set random password" checked="checked"/>
+								<#form:checkbox name="randomPassword" label="Set random password" checked="true"/>
 								<#form:checkbox name="changePassword" label="Should change password on next login"/>
-								<#form:checkbox name="activationEmail" label="Send activation email"  checked="checked"/>
+								<#form:checkbox name="activationEmail" label="Send activation email"  checked="true"/>
 								<#form:checkbox name="active" label="Active"/>
 								<#form:checkbox name="lockout" label="Lockout enabled"/>
 							</div>

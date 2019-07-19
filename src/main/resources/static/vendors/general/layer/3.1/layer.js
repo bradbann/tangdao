@@ -1170,9 +1170,9 @@ layer.photos = function(options, loop, key){
     photos.start = dict.imgIndex - 1;
     layer.close(dict.index);
     return layer.photos(options, true, key);
-    setTimeout(function(){
-      layer.photos(options, true, key);
-    }, 200);
+    //setTimeout(function(){
+    //  layer.photos(options, true, key);
+   // }, 200);
   }
   
   //一些动作

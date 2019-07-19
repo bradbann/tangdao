@@ -135,16 +135,30 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 	@JsonIgnore
 	@TableField(exist = false)
 	private List<Role> roles = ListUtils.newArrayList();
+
+	public String getRoleNames() {
+		if (ListUtils.isNotEmpty(roles)) {
+			return ListUtils.extractToString(roles, "roleName", ",");
+		}
+		return null;
+	}
 	
+	public String getRoleCodes() {
+		if (ListUtils.isNotEmpty(roles)) {
+			return ListUtils.extractToString(roles, "roleCode", ",");
+		}
+		return null;
+	}
+
 	/**
-	 *菜单权限列表
+	 * 菜单权限列表
 	 */
 	@JsonIgnore
 	@TableField(exist = false)
-	private List<Menu> menus= ListUtils.newArrayList();
-	
+	private List<Menu> menus = ListUtils.newArrayList();
+
 	public static final String SUPER_ADMIN_ID = Global.getConfig("user.superAdminId", "system");
-	
+
 	public boolean isSuperAdmin() {
 		return isSuperAdmin(this.userCode);
 	}
@@ -155,19 +169,20 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 		}
 		return false;
 	}
-	
+
 	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Set<SimpleGrantedAuthority> collect = this.getRoles().stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r.getRoleCode())).collect(Collectors.toSet());
-		
+		Set<SimpleGrantedAuthority> collect = this.getRoles().stream()
+				.map(r -> new SimpleGrantedAuthority("ROLE_" + r.getRoleCode())).collect(Collectors.toSet());
+
 		menus.stream().filter(m -> StringUtils.isNotBlank(m.getPermission())).forEach(m -> {
-            // 添加基于Permission的权限信息
-            for (String permission : StringUtils.split(m.getPermission(), ",")) {
-            	collect.add(new SimpleGrantedAuthority(permission));
-            }
+			// 添加基于Permission的权限信息
+			for (String permission : StringUtils.split(m.getPermission(), ",")) {
+				collect.add(new SimpleGrantedAuthority(permission));
+			}
 		});
-        return collect;
+		return collect;
 	}
 
 	@JsonIgnore
@@ -209,7 +224,5 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 		// TODO Auto-generated method stub
 		return this.username;
 	}
-	
-	
 
 }

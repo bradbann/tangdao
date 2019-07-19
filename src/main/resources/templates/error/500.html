@@ -1,17 +1,16 @@
-<% 
-@servlet.getResponse().setStatus(500);
-
+<%
+@servlet.getResponse().setStatus(responseStatus!500);
 var message = @ObjectUtils.toString(@request.getAttribute("message"));
 
 var ex;
-if (isBlank(message)){
+if (isEmpty(message)){
 	ex = @ExceptionUtils.getThrowable(request);
 	if (ex != null){
 		for (e in [ex, ex.cause!, ex.cause.cause!]){
 			if (@StringUtils.startsWith(e.message!, "msg:")){
 				message = @StringUtils.replace(e.message!, "msg:", "");
 				break;
-			}else if (e.class.name! == 'com.jeesite.common.service.ServiceException'){
+			}else if (e.class.name! == 'org.tangdao.common.exception.ServiceException'){
 				message = e.message!;
 				break;
 			}
@@ -19,30 +18,11 @@ if (isBlank(message)){
 		@org.slf4j.LoggerFactory.getLogger("error/500").error(ex.message, ex);
 	}
 }
-
-if (isBlank(message)){
+if (isEmpty(message)){
 	message = "您访问的页面出错啦！";
 }
-
-// 如果是异步请求或是手机端，则直接返回信息
 if (@ServletUtils.isAjaxRequest(request)) {
 	print(@ServletUtils.renderResult(@Global.FALSE, message));
-}
-
-// 输出异常信息页面
-else {
-%>
-<% layout('/layouts/default.html', {title: '500 - 系统内部错误'}){ %>
-${message}<br>
----------------------------------------------------
+}else{%>
 ${@StringUtils.toHtml(@ExceptionUtils.getStackTraceAsString(ex))}<br>
-<script>
-layui.use(['admin'], function () {
-	var admin = layui.admin;
-	setTimeout(function () {
-        admin.removeLoading();
-    }, 300);
-});
-</script>
-<% } %>
 <% } %>

@@ -293,10 +293,8 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 	public <V> V getObj(Wrapper<T> queryWrapper, Function<? super Object, V> mapper) {
 		return SqlHelper.getObject(log, selectObjs(queryWrapper, mapper));
 	}
-
-	@Override
-	public Page<T> findPage(T entity, Wrapper<T> queryWrapper) {
-		// TODO Auto-generated method stub
+	
+	protected Page<T> getPage(T entity) {
 		Meta meta = entity.getPage().getMeta();
 		if(meta!=null&&StringUtils.isNotEmpty(meta.getField())) {
 			// 需要转换一下驼峰字段
@@ -306,7 +304,13 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 			else
 				entity.getPage().addOrder(OrderItem.desc(column));
 		}
-		return new Page<T>(baseMapper.selectPage(entity.getPage(), queryWrapper));
+		return entity.getPage();
+	}
+
+	@Override
+	public Page<T> findPage(T entity, Wrapper<T> queryWrapper) {
+		// TODO Auto-generated method stub
+		return new Page<T>(baseMapper.selectPage(getPage(entity), queryWrapper));
 	}
 
 	@Override
