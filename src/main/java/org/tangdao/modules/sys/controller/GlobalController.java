@@ -33,7 +33,7 @@ public class GlobalController extends BaseController {
 	
 	@RequestMapping({ "components/{path}" })
 	public String components(@PathVariable String path) {
-		return "components/" + path;
+		return "fragments/components/" + path;
 	}
 
 	@RequestMapping({ "/global.min.js" })
