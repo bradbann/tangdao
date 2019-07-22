@@ -105,12 +105,9 @@ public class Global implements PropertySourceLoader {
 		}
 
 		if (!baseDir.endsWith("/")) {
-			baseDir = (new StringBuilder()).insert(0, baseDir).append("/").toString();
+			baseDir = baseDir + "/";
 		}
 
-		return path != null
-				? FileUtils
-						.path(new StringBuilder().insert(0, baseDir).append(USERFILES_BASE_URL).append(path).toString())
-				: FileUtils.path(baseDir);
+		return path != null ? FileUtils.path(baseDir + USERFILES_BASE_URL + path) : FileUtils.path(baseDir);
 	}
 }
