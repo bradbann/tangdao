@@ -1,7 +1,8 @@
 package org.tangdao.modules.sys.controller;
 
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.suports.Page;
+import org.tangdao.common.utils.ListUtils;
+import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
+import org.tangdao.modules.sys.model.domain.Menu;
 import org.tangdao.modules.sys.model.domain.Role;
 import org.tangdao.modules.sys.service.IMenuService;
 import org.tangdao.modules.sys.service.IRoleService;
@@ -70,7 +74,7 @@ public class RoleController extends BaseController {
 	}
 	
 	@PostMapping(value = "save")
-	public @ResponseBody String save(@Validated Role role, String oldRoleCode, String oldRoleName, String[] menuCodes, String op, HttpServletRequest request){
+	public @ResponseBody String save(@Validated Role role, String oldRoleName, String[] menuCodes, String op){
 		if (!roleService.checkRoleNameExists(oldRoleName, role.getRoleName())) {	
 			return this.renderResult(Global.FALSE, "保存失败，角色名称已存在");	
 		}
@@ -124,69 +128,47 @@ public class RoleController extends BaseController {
 //			return renderResult(Global.TRUE, "启用成功");
 //		}
 //	}
-//	
-//	@ResponseBody
-//	@RequestMapping(value = "menuTreeData")
-//	public Map<String, Object> treeMenu(Role role){
-//		String mgrType = role.getShiroUser().getParam("mgrType");
-//		Map<String, Object> resultMap = new HashMap<>();
-//		Map<String, List<Map<String, Object>>> menuMap = new HashMap<>();
-//		Map<String, List<String>> defaultMenuIdMap = new HashMap<>();
-//		Example example = new Example(Menu.class);
-//		example.and().andEqualTo("status", Menu.STATUS_NORMAL);
-//		if(User.isSuperAdmin(role.getShiroUser().getId())) {
-//			example.and().andLessThan("weight", Menu.WEIGHT_SUPER_ADMIN);
-//		} else if(User.MGR_TYPE_TENANT_ADMIN.equals(mgrType)) {
-//			example.and().andLessThan("weight", Menu.WEIGHT_TENANT_ADMIN);
-//		} else if(User.MGR_TYPE_SEC_ADMIN.equals(mgrType)) {
-//			example.and().andLessThan("weight", Menu.WEIGHT_SEC_ADMIN);
-//		}else {
-//			example.and().andLessThan("weight", Menu.WEIGHT_DEFAULT);
-//		}
-//		
-//		example.setOrderByClause("sys_id, tree_sort, menu_id ");
-//		List<Menu> menuList =  menuService.selectByExample(example);
-//		List<Map<String, Object>> tempList = null;
-//		Map<String, Object> tempMap = null;
-//		for (Menu menu : menuList) {
-//			String sysId = menu.getSysId();
-//			tempMap = MapUtils.newHashMap();
-//			tempMap.put("id", menu.getMenuId());
-//			tempMap.put("pId", menu.getParentId());
-//			tempMap.put("name", menu.getMenuName());
-//			tempMap.put("title", menu.getMenuName());
-//			if(menuMap.containsKey(sysId)) {
-//				tempList = menuMap.get(sysId);
-//				tempList.add(tempMap);
-//			}else {
-//				tempList = new ArrayList<>();
-//				tempList.add(tempMap);
-//				menuMap.put(sysId, tempList);
-//			}
-//		}
-//		for (Map.Entry<String, List<Map<String, Object>>> entry : menuMap.entrySet()) {
-////			List<Map<String, Object>> targetList = new ArrayList<>();
-////			menuService.execChildListBulid(entry.getValue(), targetList, Menu.ROOT_ID);
-//			
-//			List<String> defaultMenuId = new ArrayList<>();
-//			if(StringUtils.isNotBlank(role.getRoleId())) {
-//				Menu menu = new Menu();
-//				menu.setRoleId(role.getRoleId());
-//				menu.setSysId(entry.getKey());
-//				menuList = menuService.findByRoleId(menu);
-//				for (Menu m : menuList) {
-//					defaultMenuId.add(m.getMenuId());
-//				}
-//			}
-////			menuMap.put(entry.getKey(), targetList);
-//			menuMap.put(entry.getKey(), entry.getValue());
-//			defaultMenuIdMap.put(entry.getKey(), defaultMenuId);
-//		}
-//		
-//		resultMap.put("treeMenuMap", menuMap);
-//		resultMap.put("defaultMenuIdMap", defaultMenuIdMap);
-////		resultMap.put("role", role);
-////		return renderResult(Global.TRUE, "启用成功", resultMap);
-//		return resultMap;
-//	}
+	
+	@RequestMapping(value = "menuTreeData")
+	public @ResponseBody Map<String, Object> treeMenu(Role role){
+		Map<String, Object> resultMap = MapUtils.newHashMap();
+		QueryWrapper<Menu> queryWrapper = new QueryWrapper<Menu>();
+		queryWrapper.eq("status", Menu.STATUS_NORMAL);
+		if(role.getCurrentUser().isSuperAdmin()) {
+			queryWrapper.le("weight", Menu.WEIGHT_SUPER_ADMIN);
+		} else if(role.getCurrentUser().isAdmin()) {
+			queryWrapper.le("weight", Menu.WEIGHT_DEFAULT_ADMIN);
+		} else {
+			queryWrapper.le("weight", Menu.WEIGHT_DEFAULT);
+		}
+		queryWrapper.orderByAsc("tree_sort","menu_code");
+		
+		List<Menu> menuList =  menuService.select(queryWrapper);
+		List<Map<String, Object>> menus = ListUtils.newArrayList();
+		Map<String, Object> tempMap = null;
+		for (Menu menu : menuList) {
+			tempMap = MapUtils.newHashMap();
+			tempMap.put("id", menu.getMenuCode());
+			tempMap.put("pId", menu.getParentCode());
+			tempMap.put("name", menu.getMenuName());
+			tempMap.put("title", menu.getMenuName());
+			
+			menus.add(tempMap);
+		}
+		
+		List<String> roleMenuCodes = ListUtils.newArrayList();
+		if(StringUtils.isNotBlank(role.getRoleCode())) {
+			Menu menu = new Menu();
+			menu.setRoleCode(role.getRoleCode());
+			menuList = menuService.findByRoleCode(menu);
+			for (Menu m : menuList) {
+				roleMenuCodes.add(m.getMenuCode());
+			}
+		}
+		
+		resultMap.put("menuList", menus);
+		
+		resultMap.put("roleMenuCodes", roleMenuCodes);
+		return resultMap;
+	}
 }

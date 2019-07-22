@@ -7,7 +7,6 @@ import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.mapper.RoleMapper;
 import org.tangdao.modules.sys.model.domain.Role;
-import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.IRoleService;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -23,8 +22,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 @Service
 public class RoleServiceImpl extends CrudServiceImpl<RoleMapper, Role> implements IRoleService {
 
-	public List<Role> findByUserCode(User user) {
-		return baseMapper.findByUserCode(user);
+	public List<Role> findByUserCode(Role role) {
+		return baseMapper.findByUserCode(role);
 	}
 
 	/**

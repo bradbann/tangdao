@@ -2,15 +2,6 @@ if (typeof jQuery === "undefined") {
     throw new Error("Tangdao's JavaScript requires jQuery")
 } (function($, window, undefined) {
 	$(function() {
-		if ($.fn.selectpicker !== undefined) {
-		    $("select.form-control").each(function() {
-		    	$(this).selectpicker({}).on("change", function() {
-		            try {
-		                //$(this).resetValid()
-		            } catch (e) {}
-		        })
-		    })
-		}
 		$("#inputForm input[type=text]:not([readonly]):not([disabled]):not(.nofocus):eq(0)").focus();
 		if (js.ie && js.ie <= 9) {W
 			setTimeout(function() {
@@ -571,6 +562,10 @@ if (typeof jQuery === "undefined") {
         		serverPaging: true,
         		serverFiltering: true,
         		serverSorting: true,
+        		saveState: {
+        			cookie: false,
+        			webstorage:false
+        		}
         	},
 
         	// layout definition

@@ -24,28 +24,22 @@ $("#inputForm").validate({
 <div class="kt-portlet">
 	<#form:form id="inputForm" model="${config}" action="${ctxPath}/sys/config/save" method="post" class="kt-form kt-form--fit kt-form--label-right">
 		<#form:hidden path="id"/>
-		<div class="kt-portlet__body">
-			<div class="row">
-				<div class="form-group col-lg-12">
+		<div class="kt-portlet__body row">
+			<div class="col-lg-12">
+				<div class="form-group">
 					<labelz>参数名称：</label>
 					<#form:input path="configName" class="form-control required" />
 					<span class="form-text text-muted">Please Enter ConfigName</span>
 				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-lg-12">
+				<div class="form-group">
 					<label>参数键名：</label>
 					<#form:input path="configKey" class="form-control required" />
 				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-lg-12">
+				<div class="form-group">
 					<label>参数键值：</label>
 					<#form:input path="configValue" class="form-control required" />
 				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-lg-12">
+				<div class="form-group">
 					<label>备注：</label>
 					<#form:textarea path="remarks" class="form-control"  placeholder="请输入备注"  rows="3"></#form:textarea>
 				</div>

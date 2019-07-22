@@ -19,5 +19,7 @@ public interface ITreeService<T> extends ICurdService<T>{
 	 * @param parentId   目标数据列表的顶级节点
 	 */
 	void convertChildList(List<T> sourceList, List<T> targetList, String parentId);
+
 	
+	boolean saveOrUpdate(T entity);
 }

@@ -1,5 +1,6 @@
 <%  var jsSection = { %>
 <script>
+$("#kt_form_status").selectpicker();
 var myDatatable = $(".kt-datatable").myDatatable({
 	searchForm: $("#searchForm"),
 	columns:[
@@ -61,16 +62,6 @@ var myDatatable = $(".kt-datatable").myDatatable({
 <% }; %>
 <% layout('/layouts/default.html', {title: '参数列表',  menuCode:'1044886630252683264', libs:[], jsSection: jsSection, toolbar: toolbar}){ %>
 <div class="kt-portlet kt-portlet--mobile">
-	<div class="kt-portlet__head">
-		<div class="kt-portlet__head-label">
-			<span class="kt-portlet__head-icon">
-				<i class="kt-font-brand flaticon2-list"></i>
-			</span>
-			<h3 class="kt-portlet__head-title">
-				Data list
-			</h3>
-		</div>
-	</div>
 	<div class="kt-portlet__body" style="padding: 0px;">
 		<form class="kt-form kt-form--label-right kt-margin-20" id="searchForm" action="${ctxPath}/sys/config/listData" method="post">
 			<div class="row align-items-center">

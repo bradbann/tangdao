@@ -1,7 +1,12 @@
 package org.tangdao.modules.sys.model.domain;
 
-import org.tangdao.common.suports.DataEntity;
+import java.util.Collection;
 
+import org.tangdao.common.config.Global;
+import org.tangdao.common.suports.TreeEntity;
+import org.tangdao.common.suports.TreeName;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -21,7 +26,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("sys_menu")
-public class Menu extends DataEntity<Menu> {
+public class Menu extends TreeEntity<Menu> {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,30 +35,10 @@ public class Menu extends DataEntity<Menu> {
      */
     @TableId
     private String menuCode;
-
-    /**
-     * 父级编号
-     */
-    private String parentCode;
-
-    /**
-     * 所有父级编号
-     */
-    private String parentCodes;
-
-    /**
-     * 本级排序号（升序）
-     */
-    private Integer treeSort;
-
-    /**
-     * 全节点名
-     */
-    private String treeNames;
-
     /**
      * 菜单名称
      */
+    @TreeName
     private String menuName;
 
     /**
@@ -90,5 +75,37 @@ public class Menu extends DataEntity<Menu> {
      * 是否显示（1显示 0隐藏）
      */
     private String isShow;
+    
+    //超级管理员访问的最低权重
+    public static Integer SUPER_ADMIN_GET_MENU_MIN_WEIGHT = Integer.valueOf(Global.getConfig("user.superAdminGetMenuMinWeight", "40"));
+    
+	public static Integer WEIGHT_DEFAULT = Integer.valueOf(20);
+	public static Integer WEIGHT_DEFAULT_ADMIN = Integer.valueOf(60);
+	public static Integer WEIGHT_SUPER_ADMIN = Integer.valueOf(80);
+	
+	public static final String TYPE_MENU = "1";
+	public static final String TYPE_PERM = "2";
+	
+	@TableField(exist = false)
+	private Collection<String> defaultRoleCodes;
+	
+	@TableField(exist = false)
+	private String roleCode;
+	
+	@TableField(exist = false)
+	private String userCode;
+	
+	public Menu() {
+		super();
+	}
+	
+	public Menu(String menuCode) {
+		super(menuCode);
+	}
+
+	@Override
+	public Menu getParent() {
+		return this.parent;
+	}
 
 }

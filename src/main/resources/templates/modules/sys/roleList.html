@@ -1,5 +1,6 @@
 <%  var jsSection = { %>
 <script>
+$("#kt_form_status").selectpicker();
 var myDatatable = $(".kt-datatable").myDatatable({
 	searchForm: $("#searchForm"),
 	columns:[
@@ -15,7 +16,7 @@ var myDatatable = $(".kt-datatable").myDatatable({
 			title: '角色排序',
 		},{
 			field: 'status',
-			title: 'Status',
+			title: '状态',
 			width: 80,
 			template: function(row) {
 				var status = {
@@ -29,7 +30,7 @@ var myDatatable = $(".kt-datatable").myDatatable({
 			title: '更新时间',
 		}, {
 			field: 'Actions',
-			title: 'Actions',
+			title: '操作',
 			sortable: false,
 			width: 110,
 			overflow: 'visible',
@@ -38,6 +39,9 @@ var myDatatable = $(".kt-datatable").myDatatable({
 				return '\
 				<a href="${ctxPath}/sys/role/form?op=edit&roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="编辑">\
 					<i class="la la-edit"></i>\
+				</a>\
+				<a href="${ctxPath}/sys/role/form?op=auth&roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="授权">\
+					<i class="la la-get-pocket"></i>\
 				</a>\
 				<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="删除">\
 					<i class="la la-trash"></i>\
@@ -61,16 +65,6 @@ var myDatatable = $(".kt-datatable").myDatatable({
 <% }; %>
 <% layout('/layouts/default.html', {title: '角色列表',  menuCode:'1044886629531262976', libs:[], jsSection: jsSection, toolbar: toolbar}){ %>
 <div class="kt-portlet kt-portlet--mobile">
-	<div class="kt-portlet__head">
-		<div class="kt-portlet__head-label">
-			<span class="kt-portlet__head-icon">
-				<i class="kt-font-brand flaticon2-list"></i>
-			</span>
-			<h3 class="kt-portlet__head-title">
-				Data list
-			</h3>
-		</div>
-	</div>
 	<div class="kt-portlet__body" style="padding: 0px;">
 		<form class="kt-form kt-form--label-right kt-margin-20" id="searchForm" action="${ctxPath}/sys/role/listData" method="post">
 			<div class="row align-items-center">

@@ -11,24 +11,13 @@
 
 <link href="${ctxStatic}/vendors/general/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.css" rel="stylesheet" type="text/css" />
 <link href="${ctxStatic}/vendors/general/bootstrap-select/dist/css/bootstrap-select.css" rel="stylesheet" type="text/css" />
-<link href="${ctxStatic}/vendors/general/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" rel="stylesheet" type="text/css" />
 
-<% if (@ListUtils.inString('slider', libs!)){ %>
-<link href="${ctxStatic}/vendors/general/ion-rangeslider/css/ion.rangeSlider.css" rel="stylesheet" type="text/css" />
-<link href="${ctxStatic}/vendors/general/nouislider/distribute/nouislider.css" rel="stylesheet" type="text/css" />
-<% } %>
 <% if (@ListUtils.inString('carousel', libs!)){ %>
 <link href="${ctxStatic}/vendors/general/owl.carousel/dist/assets/owl.carousel.css" rel="stylesheet" type="text/css" />
 <link href="${ctxStatic}/vendors/general/owl.carousel/dist/assets/owl.theme.default.css" rel="stylesheet" type="text/css" />
 <% } %>
 <% if (@ListUtils.inString('dropzone', libs!)){ %>
 <link href="${ctxStatic}/vendors/general/dropzone/dist/dropzone.css" rel="stylesheet" type="text/css" />
-<% } %>
-<% if (@ListUtils.inString('summernote', libs!)){ %>
-<link href="${ctxStatic}/vendors/general/summernote/dist/summernote.css" rel="stylesheet" type="text/css" />
-<% } %>
-<% if (@ListUtils.inString('markdown', libs!)){ %>
-<link href="${ctxStatic}/vendors/general/bootstrap-markdown/css/bootstrap-markdown.min.css" rel="stylesheet" type="text/css" />
 <% } %>
 <link href="${ctxStatic}/vendors/general/animate.css/animate.css" rel="stylesheet" type="text/css" />
 <link href="${ctxStatic}/vendors/general/toastr/build/toastr.css" rel="stylesheet" type="text/css" />
@@ -41,6 +30,10 @@
 <link href="${ctxStatic}/vendors/custom/vendors/flaticon2/flaticon.css" rel="stylesheet" type="text/css" />
 <link href="${ctxStatic}/vendors/custom/vendors/fontawesome5/css/all.min.css" rel="stylesheet" type="text/css" />
 ${cssSection!}
+
+<% if (@ListUtils.inString('zTree', libs!)){ %>
+<link rel="stylesheet" href="${ctxStatic}/vendors/general/jquery-ztree/3.5/css/metro/zTreeStyle.css">
+<% } %>
 
 <!--begin::Global Theme Styles(used by all pages) -->
 <link href="${ctxStatic}/theme/default/base/style.bundle.css" rel="stylesheet" type="text/css" />

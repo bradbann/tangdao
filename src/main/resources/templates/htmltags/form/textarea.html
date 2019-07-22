@@ -20,4 +20,4 @@ if(isEmpty(value!)){
 	value = p.defaultValue;
 }
 %>
-<textarea id="${id}" name="${name}" <%if(isNotEmpty(row!)){%> row="${row!}"<%}%><%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled<%}%><%if(isNotEmpty(minlength!)){%> maxlength="${maxlength!}"<%}%><%if(isNotEmpty(maxlength!)){%> maxlength="${maxlength!}"<%}%><%if(isNotEmpty(placeholder!)){%> placeholder="${placeholder!}"<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%><%if(isNotEmpty(style!)){%> style="${style!}"<%}%>>${value}</textarea>
+<textarea id="${id}" name="${name}" <%if(isNotEmpty(row!)){%> row="${row!}"<%}%><%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly="readonly"<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled="disabled"<%}%><%if(isNotEmpty(minlength!)){%> maxlength="${maxlength!}"<%}%><%if(isNotEmpty(maxlength!)){%> maxlength="${maxlength!}"<%}%><%if(isNotEmpty(placeholder!)){%> placeholder="${placeholder!}"<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%><%if(isNotEmpty(style!)){%> style="${style!}"<%}%>>${value}</textarea>

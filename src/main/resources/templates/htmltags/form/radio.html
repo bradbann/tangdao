@@ -39,7 +39,7 @@ if(isNotEmpty(p.dictType)){
 <div class="kt-radio-inline" <%if(isNotEmpty(style!)){%> style="${style!}"<%}%>>
 	<% if(@ListUtils.isNotEmpty(p.items)){ for(item in p.items){ %>
 	<label class="${optClass}">
-		<input type="radio" name="${name}" <%if(@StringUtils.inString(item[p.itemValue], @StringUtils.split(value!,','))){%>checked<%}%> value="${item[p.itemValue]}"<%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%>> ${item[p.itemLabel]}
+		<input type="radio" name="${name}" <%if(@StringUtils.inString(item[p.itemValue], @StringUtils.split(value!,','))){%>checked<%}%> value="${item[p.itemValue]}"<%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly="readonly"<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled="disabled"<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%>> ${item[p.itemLabel]}
 		<span></span>
 	</label>
 	<%}} %>

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.tangdao.common.service.ICurdService;
 import org.tangdao.modules.sys.model.domain.Role;
-import org.tangdao.modules.sys.model.domain.User;
 
 /**
  * <p>
@@ -16,7 +15,7 @@ import org.tangdao.modules.sys.model.domain.User;
  */
 public interface IRoleService extends ICurdService<Role> {
 
-	public List<Role> findByUserCode(User user);
+	public List<Role> findByUserCode(Role role);
 	
 	public boolean checkRoleNameExists(String oldRoleName, String roleName);
 	

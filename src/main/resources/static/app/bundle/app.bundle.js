@@ -65,7 +65,7 @@ var KTDemoPanel = function() {
 }();
 
 $(document).ready(function() {
-    KTDemoPanel.init();
+   // KTDemoPanel.init();
 });
 "use strict";
 
@@ -210,7 +210,7 @@ var KTOffcanvasPanel = function() {
 }();
 
 $(document).ready(function() {
-    KTOffcanvasPanel.init();
+    //KTOffcanvasPanel.init();
 });
 "use strict";
 
@@ -292,7 +292,7 @@ var KTQuickPanel = function() {
 }();
 
 $(document).ready(function() {
-    KTQuickPanel.init();
+   // KTQuickPanel.init();
 });
 "use strict";
 
@@ -462,11 +462,11 @@ var KTQuickSearch = function() {
 var KTQuickSearchMobile = KTQuickSearch;
 
 $(document).ready(function() {
-    if (KTUtil.get('kt_quick_search_default')) {
-        KTQuickSearch().init(KTUtil.get('kt_quick_search_default'));
-    }
-
-    if (KTUtil.get('kt_quick_search_inline')) {
-        KTQuickSearchMobile().init(KTUtil.get('kt_quick_search_inline'));
-    }
+   // if (KTUtil.get('kt_quick_search_default')) {
+    //    KTQuickSearch().init(KTUtil.get('kt_quick_search_default'));
+    //}
+//
+   // if (KTUtil.get('kt_quick_search_inline')) {
+   //     KTQuickSearchMobile().init(KTUtil.get('kt_quick_search_inline'));
+  //  }
 });

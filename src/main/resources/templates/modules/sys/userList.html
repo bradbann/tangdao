@@ -1,5 +1,6 @@
 <%  var jsSection = { %>
 <script>
+$("#kt_form_status").selectpicker();
 var myDatatable = $(".kt-datatable").myDatatable({
 	searchForm: $("#searchForm"),
 	columns:[
@@ -10,21 +11,21 @@ var myDatatable = $(".kt-datatable").myDatatable({
 			selector: true,
 		}, {
 			field: 'username',
-			title: 'User name',
+			title: '用户名',
 			autoHide: false,
 		}, {
 			field: 'nickname',
-			title: 'Nick name',
+			title: '昵称',
 		},{
 			field: 'roleNames',
-			title: 'Roles',
+			title: '角色',
 			sortable: false,
 		},{
 			field: 'email',
-			title: 'Email address',
+			title: '电子邮箱',
 		},{
 			field: 'status',
-			title: 'Status',
+			title: '状态',
 			width: 80,
 			// callback function support for column rendering
 			template: function(row) {
@@ -39,7 +40,7 @@ var myDatatable = $(".kt-datatable").myDatatable({
 			title: '更新时间',
 		},{
 			field: 'Actions',
-			title: 'Actions',
+			title: '操作',
 			sortable: false,
 			width: 150,
 			overflow: 'visible',
@@ -77,16 +78,6 @@ var myDatatable = $(".kt-datatable").myDatatable({
 <% }; %>
 <% layout('/layouts/default.html', {title: '用户列表',  menuCode:'1044886627991953408', libs:[], jsSection: jsSection, toolbar: toolbar}){ %>
 <div class="kt-portlet kt-portlet--mobile">
-	<div class="kt-portlet__head">
-		<div class="kt-portlet__head-label">
-			<span class="kt-portlet__head-icon">
-				<i class="kt-font-brand flaticon2-list"></i>
-			</span>
-			<h3 class="kt-portlet__head-title">
-				Data list
-			</h3>
-		</div>
-	</div>
 	<div class="kt-portlet__body" style="padding: 0px;">
 		<form class="kt-form kt-form--label-right kt-margin-20" id="searchForm" action="${ctxPath}/sys/user/listData" method="post">
 			<div class="row align-items-center">

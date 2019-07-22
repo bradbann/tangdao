@@ -1,16 +1,104 @@
-<% var optip = role.isNewRecord?'新建':'编辑'; %>
+<% var optip = role.isNewRecord?'新建':'编辑'; if(op=='auth')optip='授权';%>
 <%  var jsSection = { %>
 <script>
 $("#inputForm").validate({
 	submitHandler: function(form){
+		<% if(op == 'add' || op == 'auth') {%>
+		// 获取数据权限数据
+		var menuData = [];
+		var treeNodes = menuTree.getCheckedNodes(true);
+		for(var i=0; i<treeNodes.length; i++) {
+			menuData.push(treeNodes[i].id);
+		}
+		$("#menuCodes").val(menuData.join(','));
+		<% } %>
 		js.ajaxSubmitForm($(form), function(data){
 			js.showMessage(data.message);
-			//js.log(data.result);
-			//if(data.result == "true"){
-			//}
 		}, "json");
     }
 });
+<% if(op == 'add' || op == 'auth') {%>
+//加载数据权限树结构
+var setting = {
+	check:{enable:true,nocheckInherit:true,chkboxType:{"Y":"ps","N":"ps"}},
+	view:{selectedMulti:false,nameIsHTML: true},
+	data:{simpleData:{enable:true},key:{title:"title"}},
+	callback:{
+		beforeClick: function (treeId, treeNode, clickFlag) {
+			var tree = $.fn.zTree.getZTreeObj(treeId);
+			tree.checkNode(treeNode, !treeNode.checked, true, true);
+			return false;
+		},
+		onCheck: function (event, treeId, treeNode){
+			var tid = treeNode.tId;
+			if(!treeNode.checked){
+				$(".checkall[value="+treeId+"]").each(function(){
+					if(this.checked){
+					    $(this).removeAttr("checked").iCheck('update');
+					}
+					return false;
+				}); 
+			}
+		}
+	}
+},
+menuTree = {}; // 用sysCode分类存储所有菜单树
+$.ajax({
+	type: 'POST',
+	url: "${ctxPath}/sys/role/menuTreeData?___t=" + new Date().getTime(),
+	data: {roleCode: '${role.roleCode}'},
+	dataType: 'json',
+	//async: false,
+	error: function(data){
+		js.showErrorMessage(data.responseText);
+	},
+	success: function(data, status, xhr){
+			// 初始化树结构
+			var tree = $.fn.zTree.init($("#menus"), setting, data.menuList);
+			// 展开第一级节点
+			var nodes = tree.getNodesByParam("level", 0);
+			for(var i=0; i<nodes.length; i++) {
+				tree.expandNode(nodes[i], true, false, false);
+			}
+			// 展开第二级节点
+			//nodes = tree.getNodesByParam("level", 1);
+			//for(var i=0; i<nodes.length; i++) {
+			//	tree.expandNode(nodes[i], true, false, false);
+			//}
+			// 默认展开全部节点
+			//tree.expandAll(true);
+			// 树结构：全选、取消全选
+			//$('#checkall_'+sysCode).iCheck({
+	        //	checkboxClass:'icheckbox_minimal-grey'
+ 			//}).on('ifChecked ifUnchecked', function(){
+			//	var sysCode = $(this).attr('sysCode');
+			//	if(this.checked){
+			//		menuTrees[sysCode].checkAllNodes(true);
+			//	}else{
+			//		menuTrees[sysCode].checkAllNodes(false);
+			//	}
+			//}).attr("sysCode", sysCode);
+			// 展开和折叠按钮绑定
+			//$('#expand_'+sysCode).click(function(){
+			//	var sysCode = $(this).attr('sysCode');
+			//	menuTrees[sysCode].expandAll(true);
+			//}).attr("sysCode", sysCode);
+			//$('#collapse_'+sysCode).click(function(){
+			//	var sysCode = $(this).attr('sysCode');
+			//	menuTrees[sysCode].expandAll(false);
+			//}).attr("sysCode", sysCode);
+			// 将树对象存储到全局数组里
+			menuTree = tree;
+		//}
+		// 默认选择节点
+		var roleMenuCodes = data.roleMenuCodes;
+		for(var i=0; i<roleMenuCodes.length; i++) {
+			var node = tree.getNodeByParam("id", roleMenuCodes[i]);
+			try{tree.checkNode(node, true, false);}catch(e){}
+		}
+	}
+});
+<% } %>
 </script>
 <% }; %>
 <%  var toolbar = { %>
@@ -20,39 +108,42 @@ $("#inputForm").validate({
 	</a>
 </div>
 <% }; %>
-<% layout('/layouts/default.html', {title:optip!+'角色',  menuCode:'1044886629531262976', libs:['validation'], jsSection:jsSection, desc: optip+'角色',toolbar: toolbar}){ %>
+<% layout('/layouts/default.html', {title:optip!+'角色',  menuCode:'1044886629531262976', libs:['validation','zTree'], jsSection:jsSection, desc: optip+'角色',toolbar: toolbar}){ %>
 <div class="kt-portlet">
 	<#form:form id="inputForm" model="${role}" action="${ctxPath}/sys/role/save" method="post" class="kt-form kt-form--fit kt-form--label-right">
 		<#form:hidden name="op" value="${op}"/>
-		<div class="kt-portlet__body">
-			<div class="row">
-				<div class="form-group col-lg-12">
+		<div class="kt-portlet__body row">
+			<div class="col-lg-12">
+				<div class="form-group">
 					<label>角色名称：</label>
 					<#form:hidden name="oldRoleName" value="${role.roleName}"/>
-					<#form:input path="roleName" class="form-control required" />
+					<#form:input path="roleName" class="form-control required" readonly="${op=='auth'}"/>
 					<span class="form-text text-muted">Please Enter name</span>
 				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-lg-12">
+				<div class="form-group">
 					<label>角色编码：</label>
 					<#form:hidden path="isNewRecord"/>
 					<#form:input path="roleCode" maxlength="64" readonly="${!role.isNewRecord}" class="form-control required" />
 					<span class="form-text text-muted">Please Enter code</span>
 				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-lg-12">
+				<% if(op == 'add' || op == 'edit') {%>
+				<div class="form-group">
 					<label>角色排序：</label>
 					<#form:input path="roleSort" class="form-control required" />
 					<span class="form-text text-muted">Please Enter sort</span>
 				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-lg-12">
+				<div class="form-group">
 					<label>备注：</label>
 					<#form:textarea path="remarks" class="form-control"  placeholder="请输入备注"  rows="3"></#form:textarea>
 				</div>
+				<%}%>
+				<% if(op == 'add' || op == 'auth') {%>
+				<div class="form-group">
+					<label>菜单和权限授权：</label>
+					<div id="menus" class="ztree"></div>
+					<#form:hidden name="menuCodes"/>
+				</div>
+				<%}%>
 			</div>
 		</div>
 		<div class="kt-portlet__foot">

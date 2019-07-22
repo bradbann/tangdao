@@ -40,13 +40,13 @@ if(isNotEmpty(p.dictType)){
 %>
 <% if(isNotEmpty(label!)){ %>
 <label class="${optClass}">
-	<input type="checkbox" name="${name}" id="${id}"<%if(isNotEmpty(checked!)&&@ObjectUtils.toBoolean(checked)){%> checked="checked"<%}%><%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%>> ${label!}
+	<input type="checkbox" name="${name}" id="${id}"<%if(isNotEmpty(checked!)&&@ObjectUtils.toBoolean(checked)){%> checked="checked"<%}%><%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly="readonly"<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled="disabled"<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%>> ${label!}
 	<span></span>
 </label>
 <%}else{ %>
 <% if(@ListUtils.isNotEmpty(p.items)){ for(item in p.items){ %>
 <label class="${optClass}">
-	<input type="checkbox" name="${name}" <%if(@StringUtils.inString(item[p.itemValue], @StringUtils.split(value!,','))){%>checked<%}%> value="${item[p.itemValue]}"<%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%>> ${item[p.itemLabel]}
+	<input type="checkbox" name="${name}" <%if(@StringUtils.inString(item[p.itemValue], @StringUtils.split(value!,','))){%>checked="checked"<%}%> value="${item[p.itemValue]}"<%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly="readonly"<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled="disabled"<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%>> ${item[p.itemLabel]}
 	<span></span>
 </label>
 <%}} %>

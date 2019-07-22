@@ -2,8 +2,10 @@ package org.tangdao.modules.sys.model.domain;
 
 import javax.validation.constraints.NotNull;
 
+import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.DataEntity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -50,5 +52,15 @@ public class Role extends DataEntity<Role> {
      * 数据范围设置（0未设置  1全部数据 2自定义数据）
      */
     private String dataScope;
+    
+    // 默认管理员角色
+ 	public static final String DEFAULT_ADMIN_ROLE_CODE = Global.getConfig("user.defaultAdminRoleCode", "corpAdmin");
+
+ 	public static final String DATA_SCOPE_NONE = "0";
+ 	public static final String DATA_SCOPE_ALL = "1";
+ 	public static final String DATA_SCOPE_CUSTOM = "2";
+ 	
+ 	@TableField(exist = false)
+ 	private String userCode;
     
 }

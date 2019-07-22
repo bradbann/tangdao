@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.suports.Page;
 import org.tangdao.modules.sys.mapper.UserMapper;
+import org.tangdao.modules.sys.model.domain.Role;
 import org.tangdao.modules.sys.model.domain.User;
+import org.tangdao.modules.sys.service.IMenuService;
 import org.tangdao.modules.sys.service.IRoleService;
 import org.tangdao.modules.sys.service.IUserService;
 
@@ -30,7 +32,10 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 	
 	@Autowired
 	private IRoleService roleService;
-
+	
+	@Autowired
+	private IMenuService menuService;
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
@@ -38,6 +43,11 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 		if (user == null) {
 			throw new UsernameNotFoundException("User not found");
 		}
+		Role role = new Role();
+		role.setUserCode(user.getUserCode());
+		user.setRoles(roleService.findByUserCode(role));
+		
+		user.setMenus(menuService.findByUser(user));
 		return user;
 	}
 
@@ -84,8 +94,11 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 	public Page<User> findPage(User user, Wrapper<User> queryWrapper) {
 		Page<User> pageUser = super.findPage(user, queryWrapper);
 		List<User> listUser = pageUser.getData();
+		Role r = null;
 		for (User u : listUser) {
-			u.setRoles(roleService.findByUserCode(u));
+			r = new Role();
+			r.setUserCode(u.getUserCode());
+			u.setRoles(roleService.findByUserCode(r));
 		}
 		return pageUser;
 	}

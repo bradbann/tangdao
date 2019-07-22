@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.tangdao.modules.sys.model.domain.Role;
-import org.tangdao.modules.sys.model.domain.User;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -20,7 +19,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 @Mapper
 public interface RoleMapper extends BaseMapper<Role> {
 
-	public List<Role> findByUserCode(User user);
+	public List<Role> findByUserCode(Role role);
 	
 	public int deleteRoleMenu(String roleCode);
 	
