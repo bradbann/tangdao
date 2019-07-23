@@ -10,7 +10,7 @@ var myDatatable = $(".kt-datatable").myDatatable({
 			autoHide: false,
 		}, {
 			field: 'roleCode',
-			title: '角色键名',
+			title: '角色编码',
 		},{
 			field: 'roleSort',
 			title: '角色排序',
@@ -43,7 +43,7 @@ var myDatatable = $(".kt-datatable").myDatatable({
 				<a href="${ctxPath}/sys/role/form?op=auth&roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="授权">\
 					<i class="la la-get-pocket"></i>\
 				</a>\
-				<a href="javascript:;" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="删除">\
+				<a href="${ctxPath}/sys/role/delete?roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm btnList" title="删除" data-confirm="确认要删除该角色吗？">\
 					<i class="la la-trash"></i>\
 				</a>\
 			';

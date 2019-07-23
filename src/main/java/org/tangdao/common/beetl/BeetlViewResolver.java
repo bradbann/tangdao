@@ -27,7 +27,7 @@ public class BeetlViewResolver extends BeetlSpringViewResolver {
 		if (suffix != null && suffix.length() != 0 && viewName.contains("#")) {
 			String[] viewNames = viewName.split("#");
 			if (viewNames.length > 2) {
-				throw new Exception(new StringBuilder().insert(0, "视图名称有误：").append(viewName).toString());
+				throw new Exception("视图名称有误：" + viewName);
 			}
 			beetlView.setUrl(this.getPrefix() + viewNames[0] + this.getSuffix() + "#" + viewNames[1]);
 		}

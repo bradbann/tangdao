@@ -258,7 +258,7 @@ if (typeof jQuery === "undefined") {
                 data = undefined
             }
             var sendAjax = function() {
-                js.loading(loadingMessage == undefined ? js.text("loading.submitMessage") : loadingMessage);
+                js.loading(loadingMessage == undefined ? '正在提交，请稍候...' : loadingMessage);
                 $.ajax({
                     type: "POST",
                     url: urlOrFun,
@@ -460,7 +460,8 @@ if (typeof jQuery === "undefined") {
 	window.js = js;
     window.log = js.log;
     window.error = js.error;
-})(window.jQuery, window); (function(f, d, a) {
+})(window.jQuery, window); ! 
+(function(f, d, a) {
     var b, g, c;
     c = "resizeEnd";
     g = {
@@ -535,8 +536,9 @@ if (typeof jQuery === "undefined") {
 (function($) {
 	
 	$.fn.myDatatable = function(options) {
-		var KTDatatable = typeof $this != "undefined" ? $this: options.KTDatatable ? options.KTDatatable: $(".kt-datatable"),
+		var myDatatable = typeof $this != "undefined" ? $this: options.myDatatable ? options.myDatatable: $(".kt-datatable"),
 		searchForm = options.searchForm ? options.searchForm: $("#searchForm"),
+		myDatatableId = myDatatable.attr("id"),
 				//console.log(searchForm.serializeArray());
         options = $.extend({
         	btnSearch: $("#btnSearch"),
@@ -582,10 +584,37 @@ if (typeof jQuery === "undefined") {
         	// column sorting
         	sortable: true,
 
-        	pagination: true
+        	pagination: true,
+        	
+        	btnEventBind: function(elements,reload) {
+                elements.each(function() {
+                    if ($(this).attr("data-click-binded") == undefined||reload) {
+                        $(this).attr("data-click-binded", true);
+                        $(this).click(function() {
+                            var se = $(this);
+                            var url = se.attr("href");
+                            var title = se.data("title");
+                            if (title == undefined) {
+                                title = se.attr("title")
+                            }
+                            var confirm = se.data("confirm");
+                            if (confirm != undefined) {
+                                js.confirm(confirm, url, function(data) {
+                                    js.showMessage(data.message);
+                                    if (data.result == 'true') {
+                                    	refresh();
+                                    }
+                                }, "json")
+                            }
+                            return false
+                        })
+                    }
+                });
+                return false
+            }
         	
         }, options);
-        
+		
         if (options.btnSearch.length > 0) {
             options.btnSearch.unbind("click").click(function() {
                 var btnSearch = $(this);
@@ -607,6 +636,7 @@ if (typeof jQuery === "undefined") {
                 btnSearch.html(btnSearch.html().replace("查询", "隐藏"));
             }
         }
+        
         if (searchForm && searchForm.length > 0) {
             searchForm.submit(function() {
             	refresh();
@@ -614,11 +644,8 @@ if (typeof jQuery === "undefined") {
             }).on("reset",
             function() {
             	setTimeout(function() {
-                    if ($.fn.iCheck !== undefined) {
-                        searchForm.find("input[type=checkbox].form-control:not(.noicheck),input[type=radio].form-control:not(.noicheck)").iCheck("update")
-                    }
-                    if ($.fn.select2 !== undefined||$.fn.selectpicker !== undefined) {
-                        searchForm.find("select.form-control:not(.noselect2)").trigger("change")
+                    if ($.fn.selectpicker !== undefined) {
+                        searchForm.find("select.form-control").trigger("change")
                     }
                     searchForm.find(".isReset").each(function() {
                         $(this).val($(this).data("defaultValue"))
@@ -639,14 +666,33 @@ if (typeof jQuery === "undefined") {
                 }
                 return obj;
             }
-        	KTDatatable.setOption("data.source.read.params", transformToJson(formArray));
-        	KTDatatable.reload();
+        	myDatatable.setOption("data.source.read.params", transformToJson(formArray));
+        	myDatatable.reload();
         }
-        KTDatatable.KTDatatable(options);
+        
+        
+        if (typeof options.btnEventBind == "function") {
+        	
+        	myDatatable.on('kt-datatable--on-init',function(){
+        		//js.log('kt-datatable--on-init');
+        	}).on('kt-datatable--on-ajax-done',function(){
+        		//js.log('kt-datatable--on-ajax-done');
+        		//options.btnEventBind(myDatatable.find(".btnList"),true);
+        		setTimeout(function(){
+        			options.btnEventBind(myDatatable.find(".btnList"));
+        		},100);
+        	}).on('kt-datatable--on-reloaded',function(){
+        		//js.log('kt-datatable--on-reloaded');
+        	})
+        }
+        
+        myDatatable.KTDatatable(options);
+        
+        
         $(window).resizeEnd(function() {
-        	KTDatatable.layoutUpdate();
+        	myDatatable.layoutUpdate();
         });
-		return KTDatatable;
+		return myDatatable;
     };
     
 }(jQuery));

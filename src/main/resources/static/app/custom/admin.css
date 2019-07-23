@@ -1,3 +1,8 @@
+.layui-layer-btn>.layui-layer-btn0{
+	color:#fff !important;
+	background-color: #5867dd !important;
+	border-color: #5867dd !important;
+}
 label.error.invalid-feedback{
 	top: auto;
 	left: 10px;

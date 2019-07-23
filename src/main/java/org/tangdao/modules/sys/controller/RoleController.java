@@ -90,20 +90,15 @@ public class RoleController extends BaseController {
 		return renderResult(Global.TRUE,"保存成功");
 	}
 	
-//	@ResponseBody
-//	@PostMapping(value = "delete")
-//	public String delete(Role role){
-//		if(Role.TENANT_ADMIN_ROLE_ID.equals(role.getRoleId())) {
-//			return this.renderResult(Global.FALSE, "非法操作，此角色为内置角色，不允许删除！");
-//		}else {
-//			if(Global.YES.equals(role.getIsSys())&&!role.getShiroUser().isSuperAdmin()) {
-//				return renderResult(Global.FALSE, "越权操作，只有超级管理员才能操作此数据");
-//			}else {
-//				roleService.deleteByPrimaryKey(role);
-//				return renderResult(Global.TRUE, "角色删除成功");
-//			}
-//		}
-//	}
+	@PostMapping(value = "delete")
+	public @ResponseBody String delete(Role role){
+		if(Role.DEFAULT_ADMIN_ROLE_CODE.equals(role.getRoleCode())) {
+			return this.renderResult(Global.FALSE, "非法操作，此角色为内置角色，不允许删除！");
+		}else {
+//			roleService.deleteByPrimaryKey(role);
+			return renderResult(Global.TRUE, "角色删除成功");
+		}
+	}
 //	
 //	@ResponseBody
 //	@PostMapping(value = "disable")
