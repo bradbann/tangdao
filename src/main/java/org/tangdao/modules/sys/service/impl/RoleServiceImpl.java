@@ -46,7 +46,7 @@ public class RoleServiceImpl extends CrudServiceImpl<RoleMapper, Role> implement
 		// 删除原有角色的所有权限
 		this.baseMapper.deleteRoleMenu(role.getRoleCode());
 		// 新增角色授权
-		if (menuCodes != null && StringUtils.isNotBlank(role.getRoleCode())) {
+		if (menuCodes != null&&menuCodes.length>0 && StringUtils.isNotBlank(role.getRoleCode())) {
 			this.baseMapper.insertRoleMenu(role.getRoleCode(), menuCodes);
 		}
 	}
