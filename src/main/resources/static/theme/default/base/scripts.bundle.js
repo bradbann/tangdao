@@ -3885,7 +3885,8 @@ $(document).ready(function() {
 									append(this));
 						});
 						$(detailRowTd).append(detailSubTable);
-
+						//tangdao
+						$(datatable).trigger(pfx + 'datatable--on-tangdao', [datatable.dataSet]);
 					} else {
 						$(this).find('i').removeClass(Plugin.getOption('layout.icons.rowDetail.expand')).addClass(Plugin.getOption('layout.icons.rowDetail.collapse'));
 						$(detailRow).remove();

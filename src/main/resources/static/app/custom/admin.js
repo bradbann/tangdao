@@ -586,9 +586,9 @@ if (typeof jQuery === "undefined") {
 
         	pagination: true,
         	
-        	btnEventBind: function(elements,reload) {
+        	btnEventBind: function(elements, reload) {
                 elements.each(function() {
-                    if ($(this).attr("data-click-binded") == undefined||reload) {
+                    if ($(this).attr("data-click-binded") == undefined || reload) {
                         $(this).attr("data-click-binded", true);
                         $(this).click(function() {
                             var se = $(this);
@@ -674,15 +674,31 @@ if (typeof jQuery === "undefined") {
         if (typeof options.btnEventBind == "function") {
         	
         	myDatatable.on('kt-datatable--on-init',function(){
-        		//js.log('kt-datatable--on-init');
+        		js.log('kt-datatable--on-init');
         	}).on('kt-datatable--on-ajax-done',function(){
-        		//js.log('kt-datatable--on-ajax-done');
+        		js.log('kt-datatable--on-ajax-done');
         		//options.btnEventBind(myDatatable.find(".btnList"),true);
         		setTimeout(function(){
-        			options.btnEventBind(myDatatable.find(".btnList"));
+        			options.btnEventBind(myDatatable.find(".kt-datatable__row .btnList"));
         		},100);
         	}).on('kt-datatable--on-reloaded',function(){
         		//js.log('kt-datatable--on-reloaded');
+        	}).on('kt-datatable--on-layout-updated',function(){
+        		//js.log('kt-datatable--on-layout-updated');
+        		//setTimeout(function(){
+        		//	options.btnEventBind(myDatatable.find(".btnList"));
+        		//},100);
+        		setTimeout(function(){
+        			options.btnEventBind(myDatatable.find(".kt-datatable__row .btnList"));
+        		},100);
+        	}).on('kt-datatable--on-tangdao',function(){
+        		//js.log('kt-datatable--on-tangdao');
+        		setTimeout(function(){
+        			options.btnEventBind(myDatatable.find(".kt-datatable__row-detail .btnList"), true);
+        		},100);
+        		//setTimeout(function(){
+        		//	options.btnEventBind(myDatatable.find(".btnList"));
+        		//},100);
         	})
         }
         

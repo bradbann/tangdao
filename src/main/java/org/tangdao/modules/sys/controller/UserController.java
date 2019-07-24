@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.suports.Page;
+import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.model.domain.Role;
 import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.IRoleService;
 import org.tangdao.modules.sys.service.IUserService;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -53,7 +55,15 @@ public class UserController extends BaseController {
 
 	@PostMapping("/listData")
 	public @ResponseBody Page<User> listData(User user, HttpServletRequest request) {
-		return this.userService.findPage(user, Wrappers.emptyWrapper());
+		QueryWrapper<User> queryWrapper = new QueryWrapper<User>();
+		
+		if(StringUtils.isNotBlank(user.getStatus())) {
+			queryWrapper.eq("status", user.getStatus());
+		}
+		if(StringUtils.isNotBlank(user.getUsername())) {
+			queryWrapper.likeRight("username", user.getUsername());
+		}
+		return this.userService.findPage(user, queryWrapper);
 	}
 
 	@GetMapping("/form")

@@ -15,34 +15,31 @@ var myDatatable = $(".kt-datatable").myDatatable({
 			field: 'roleSort',
 			title: '角色排序',
 		},{
-			field: 'status',
-			title: '状态',
-			width: 80,
-			template: function(row) {
-				var status = {
-					2: {'title': '锁定', 'state': 'danger'},
-					0: {'title': '正常', 'state': 'primary'},
-				};
-				return '<span class="kt-badge kt-badge--' + status[row.status].state + ' kt-badge--dot"></span>&nbsp;<span class="kt-font-bold kt-font-' + status[row.status].state + '">' + status[row.status].title + '</span>';
-			},
-		},{
-			field: 'updateTime',
-			title: '更新时间',
+			field: 'createTime',
+			title: '创建时间',
 		}, {
 			field: 'Actions',
 			title: '操作',
 			sortable: false,
-			width: 110,
+			width: 150,
 			overflow: 'visible',
 			autoHide: false,
 			template: function(row) {
+				var status = '<a href="${ctxPath}/sys/role/disable?roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm btnList" title="启用" data-confirm="确认要禁用该角色吗？">\
+					<i class="la la-check-circle kt-font-success"></i>\
+					</a>';
+				if(row.status==2){
+					status = '<a href="${ctxPath}/sys/role/enable?roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm btnList" title="禁用" data-confirm="确认要启用该角色吗？">\
+						<i class="la la-ban kt-font-danger"></i>\
+						</a>';
+				}
 				return '\
 				<a href="${ctxPath}/sys/role/form?op=edit&roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="编辑">\
 					<i class="la la-edit"></i>\
 				</a>\
 				<a href="${ctxPath}/sys/role/form?op=auth&roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="授权">\
 					<i class="la la-get-pocket"></i>\
-				</a>\
+				</a>'+status+'\
 				<a href="${ctxPath}/sys/role/delete?roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm btnList" title="删除" data-confirm="确认要删除该角色吗？">\
 					<i class="la la-trash"></i>\
 				</a>\
@@ -77,18 +74,11 @@ var myDatatable = $(".kt-datatable").myDatatable({
 					</div>
 				</div>
 				<div class="col-md-3 col-sm-4 kt-margin-b-20-tablet-and-mobile">
-					<div class="kt-form__group kt-form__group--inline">
-						<div class="kt-form__label">
-							<label>Status:</label>
-						</div>
-						<div class="kt-form__control">
-							<select class="form-control bootstrap-select" id="kt_form_status" name="status">
-								<option value="">请选择</option>
-								<option value="0">正常</option>
-								<option value="2">锁定</option>
-							</select>
-						</div>
-					</div>
+					<select class="form-control bootstrap-select" id="kt_form_status" name="status">
+						<option value=""></option>
+						<option value="0">正常</option>
+						<option value="2">锁定</option>
+					</select>
 				</div>
 				<div class="col-md-6 col-sm-4 kt-margin-b-20-tablet-and-mobile">
 					<button type="submit" class="btn btn-primary">查询</button>

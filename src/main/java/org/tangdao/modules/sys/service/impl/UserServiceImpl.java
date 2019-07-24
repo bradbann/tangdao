@@ -1,14 +1,11 @@
 package org.tangdao.modules.sys.service.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
-import org.tangdao.common.suports.Page;
 import org.tangdao.modules.sys.mapper.UserMapper;
 import org.tangdao.modules.sys.model.domain.Role;
 import org.tangdao.modules.sys.model.domain.User;
@@ -16,7 +13,6 @@ import org.tangdao.modules.sys.service.IMenuService;
 import org.tangdao.modules.sys.service.IRoleService;
 import org.tangdao.modules.sys.service.IUserService;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -90,17 +86,17 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 	}
 	
 
-	@Override
-	public Page<User> findPage(User user, Wrapper<User> queryWrapper) {
-		Page<User> pageUser = super.findPage(user, queryWrapper);
-		List<User> listUser = pageUser.getData();
-		Role r = null;
-		for (User u : listUser) {
-			r = new Role();
-			r.setUserCode(u.getUserCode());
-			u.setRoles(roleService.findByUserCode(r));
-		}
-		return pageUser;
-	}
+//	@Override
+//	public Page<User> findPage(User user, Wrapper<User> queryWrapper) {
+//		Page<User> pageUser = super.findPage(user, queryWrapper);
+//		List<User> listUser = pageUser.getData();
+//		Role r = null;
+//		for (User u : listUser) {
+//			r = new Role();
+//			r.setUserCode(u.getUserCode());
+//			u.setRoles(roleService.findByUserCode(r));
+//		}
+//		return pageUser;
+//	}
 
 }
