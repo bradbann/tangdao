@@ -42,9 +42,6 @@ var myDatatable = $(".kt-datatable").myDatatable({
 				return output;
 			},
 		},{
-			field: 'createTime',
-			title: '创建时间',
-		},{
 			field: 'lastLoginDate',
 			title: '最后登录',
 			template: function(row) {
@@ -55,6 +52,9 @@ var myDatatable = $(".kt-datatable").myDatatable({
 					return '--';
 				}
 			},
+		},{
+			field: 'createTime',
+			title: '创建时间',
 		},{
 			field: 'Actions',
 			title: '操作',
