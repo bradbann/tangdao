@@ -70,9 +70,9 @@ public class UserController extends BaseController {
 	public String form(User user, Model model) {
 		model.addAttribute("roles",
 				roleService.select(Wrappers.<Role>lambdaQuery().eq(Role::getStatus, Role.STATUS_NORMAL)));
-		Role r = new Role();
-		r.setUserCode(user.getUserCode());
-		user.setRoles(roleService.findByUserCode(r));
+//		Role r = new Role();
+//		r.setUserCode(user.getUserCode());
+//		user.setRoles(roleService.findByUserCode(user));
 		model.addAttribute("user", user);
 		return "modules/sys/userForm";
 	}

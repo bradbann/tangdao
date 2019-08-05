@@ -24,7 +24,7 @@
 		t.remarks AS "remarks"
 	</sql>
 	
-	<select id="findByRoleCode" resultType="Menu">
+	<select id="findByRoleMenu" resultType="Menu">
 		SELECT DISTINCT 
 		<include refid="selectColumns"/>
 		FROM sys_menu t
@@ -44,7 +44,7 @@
 		ORDER BY t.tree_sort
 	</select>
 	
-	<select id="findByUserCode" resultType="Menu">
+	<select id="findByUserMenu" resultType="Menu">
 		SELECT DISTINCT 
 		<include refid="selectColumns"/>
 		FROM sys_menu t

@@ -3,7 +3,6 @@ package org.tangdao.common.suports;
 import java.io.Serializable;
 
 import org.apache.commons.lang3.StringUtils;
-import org.tangdao.common.config.Global;
 import org.tangdao.common.utils.ObjectUtils;
 import org.tangdao.common.utils.ReflectUtils;
 import org.tangdao.modules.sys.model.domain.User;
@@ -130,13 +129,6 @@ public abstract class BaseEntity<T> implements Serializable {
 
 	public void setIsNewRecord(boolean isNewRecord) {
 		this.isNewRecord = isNewRecord;
-	}
-
-	/**
-	 * 全局配置
-	 */
-	public Global getGlobal() {
-		return Global.getInstance();
 	}
 
 	public Object clone() {

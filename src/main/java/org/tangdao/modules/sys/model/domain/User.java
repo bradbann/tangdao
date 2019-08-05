@@ -188,7 +188,7 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<SimpleGrantedAuthority> collect = this.getRoles().stream()
-				.map(r -> new SimpleGrantedAuthority("ROLE_" + r.getRoleCode())).collect(Collectors.toSet());
+				.map(r -> new SimpleGrantedAuthority("ROLE_" + r.getRoleCode().toUpperCase())).collect(Collectors.toSet());
 
 		menus.stream().filter(m -> StringUtils.isNotBlank(m.getPermission())).forEach(m -> {
 			// 添加基于Permission的权限信息
@@ -196,6 +196,7 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 				collect.add(new SimpleGrantedAuthority(permission));
 			}
 		});
+		collect.add(new SimpleGrantedAuthority("ROLE_USER"));
 		return collect;
 	}
 

@@ -155,7 +155,7 @@ public class RoleController extends BaseController {
 		if(StringUtils.isNotBlank(role.getRoleCode())) {
 			Menu menu = new Menu();
 			menu.setRoleCode(role.getRoleCode());
-			menuList = menuService.findByRoleCode(menu);
+			menuList = menuService.findByRoleMenu(menu);
 			for (Menu m : menuList) {
 				roleMenuCodes.add(m.getMenuCode());
 			}

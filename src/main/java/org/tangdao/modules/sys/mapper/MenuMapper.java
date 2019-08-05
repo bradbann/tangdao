@@ -18,7 +18,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 @Mapper
 public interface MenuMapper extends BaseMapper<Menu> {
 
-	public List<Menu> findByRoleCode(Menu menu);
+	public List<Menu> findByRoleMenu(Menu menu);
 	
-	public List<Menu> findByUserCode(Menu menu);
+	public List<Menu> findByUserMenu(Menu menu);
 }

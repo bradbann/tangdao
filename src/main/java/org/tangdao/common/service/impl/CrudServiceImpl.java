@@ -229,11 +229,11 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 		}
 		return true;
 	}
-
-	@Override
-	public T getById(Serializable id) {
-		return baseMapper.selectById(id);
-	}
+//
+//	@Override
+//	public T getById(Serializable id) {
+//		return baseMapper.selectById(id);
+//	}
 
 	@Override
 	public Collection<T> selectByIds(Collection<? extends Serializable> idList) {

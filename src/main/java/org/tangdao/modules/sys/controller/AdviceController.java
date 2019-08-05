@@ -27,8 +27,13 @@ import org.tangdao.common.utils.EncodeUtils;
  */
 @ControllerAdvice
 public class AdviceController {
+	
+	@ExceptionHandler({ BindException.class, ConstraintViolationException.class, ValidationException.class })
+	protected String exceptionHandlerTo400Page() {
+		return "error/400";
+	}
 
-	@ExceptionHandler({ AuthenticationException.class })
+	@ExceptionHandler({ AuthenticationException.class})
 	protected String exceptionHandlerTo403Page() {
 		return "error/403";
 	}
@@ -51,10 +56,5 @@ public class AdviceController {
 			request.setAttribute(BaseController.WEB_DATA_BINDER_SOURCE, baseEntity.clone());
 			request.setAttribute(BaseController.WEB_DATA_BINDER_TARGET, baseEntity);
 		}
-	}
-
-	@ExceptionHandler({ BindException.class, ConstraintViolationException.class, ValidationException.class })
-	protected String exceptionHandlerTo400Page() {
-		return "error/400";
 	}
 }

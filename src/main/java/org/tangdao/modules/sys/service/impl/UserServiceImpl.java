@@ -1,17 +1,14 @@
 package org.tangdao.modules.sys.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.modules.sys.mapper.UserMapper;
-import org.tangdao.modules.sys.model.domain.Role;
 import org.tangdao.modules.sys.model.domain.User;
-import org.tangdao.modules.sys.service.IMenuService;
-import org.tangdao.modules.sys.service.IRoleService;
 import org.tangdao.modules.sys.service.IUserService;
+import org.tangdao.modules.sys.utils.UserUtils;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
@@ -26,24 +23,31 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 @Service
 public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implements IUserService, UserDetailsService {
 	
-	@Autowired
-	private IRoleService roleService;
-	
-	@Autowired
-	private IMenuService menuService;
+//	@Autowired
+//	private PasswordEncoderService passwordEncoderService;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		User user = this.getUserByUsername(username);
+		User user = UserUtils.getByUsername(username);
 		if (user == null) {
-			throw new UsernameNotFoundException("User not found");
+			throw new UsernameNotFoundException("账号不存在");
 		}
-		Role role = new Role();
-		role.setUserCode(user.getUserCode());
-		user.setRoles(roleService.findByUserCode(role));
 		
-		user.setMenus(menuService.findByUser(user));
+//		String plainPassword = ServletUtils.getParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY);
+//		if(!passwordEncoderService.validatePassword(plainPassword, user.getPassword())) {
+//			throw new BadCredentialsException("密码认证失败");
+//		}
+//		
+//		if (User.STATUS_DISABLE.equals(user.getStatus())) { // DisabledException LockedException
+//			throw new DisabledException("用户被禁用");
+//		} else if (User.STATUS_FREEZE.equals(user.getStatus())) { // DisabledException LockedException
+//			throw new DisabledException("用户被冻结");
+//		} else if (!User.STATUS_NORMAL.equals(user.getStatus())) { // DisabledException LockedException
+//			throw new AccountExpiredException("用户暂时无法操作，请联管理员");
+//		}
+		//获取权限信息
+//		user.setMenus(UserUtils.findByParentCode(null));
 		return user;
 	}
 

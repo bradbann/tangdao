@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.tangdao.common.service.ITreeService;
 import org.tangdao.modules.sys.model.domain.Menu;
-import org.tangdao.modules.sys.model.domain.User;
 
 /**
  * <p>
@@ -16,10 +15,8 @@ import org.tangdao.modules.sys.model.domain.User;
  */
 public interface IMenuService extends ITreeService<Menu> {
 
-	public List<Menu> findByRoleCode(Menu menu);
+	public List<Menu> findByRoleMenu(Menu menu);
 	
-	public List<Menu> findByUserCode(Menu menu);
-	
-	public List<Menu> findByUser(User user);
+	public List<Menu> findByUserMenu(Menu menu, boolean isFindParentAndChild);
 	
 }

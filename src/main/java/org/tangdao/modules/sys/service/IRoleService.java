@@ -15,7 +15,7 @@ import org.tangdao.modules.sys.model.domain.Role;
  */
 public interface IRoleService extends ICurdService<Role> {
 
-	public List<Role> findByUserCode(Role role);
+	public List<Role> findByUserCode(String userCode);
 	
 	public boolean checkRoleNameExists(String oldRoleName, String roleName);
 	

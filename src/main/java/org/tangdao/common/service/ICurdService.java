@@ -139,12 +139,12 @@ public interface ICurdService<T> {
      */
     boolean saveOrUpdate(T entity);
 
-    /**
-     * 根据 ID 查询
-     *
-     * @param id 主键ID
-     */
-    T getById(Serializable id);
+//    /**
+//     * 根据 ID 查询
+//     *
+//     * @param id 主键ID
+//     */
+//    T getById(Serializable id);
 
     /**
      * 查询（根据ID 批量查询）

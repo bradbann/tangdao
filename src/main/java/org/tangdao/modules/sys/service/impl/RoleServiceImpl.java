@@ -22,7 +22,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 @Service
 public class RoleServiceImpl extends CrudServiceImpl<RoleMapper, Role> implements IRoleService {
 
-	public List<Role> findByUserCode(Role role) {
+	public List<Role> findByUserCode(String userCode) {
+		Role role = new Role();
+		role.setUserCode(userCode);
 		return baseMapper.findByUserCode(role);
 	}
 

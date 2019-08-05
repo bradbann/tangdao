@@ -1,7 +1,6 @@
 package org.tangdao.config;
 
 import java.nio.charset.StandardCharsets;
-import java.util.EventListener;
 import java.util.List;
 
 import org.beetl.core.resource.ClasspathResourceLoader;
@@ -16,22 +15,17 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;
 import org.springframework.boot.web.server.ErrorPageRegistry;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
-import org.springframework.web.context.request.RequestContextListener;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -145,25 +139,4 @@ public class WebConfig implements WebMvcConfigurer {
 		return localPropertySourcesPlaceholderConfigurer;
 	}
 	
-	@Bean
-	@ConditionalOnMissingBean(name = { "requestContextListener" })
-	public ServletListenerRegistrationBean<EventListener> requestContextListener() {
-		ServletListenerRegistrationBean<EventListener> a = new ServletListenerRegistrationBean<>();
-		a.setListener(new RequestContextListener());
-		return a;
-	}
-	
-	@Override
-	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-		configurer.enable();
-	}
-	
-	@Override
-	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-		configurer.favorParameter(false);
-		configurer.favorPathExtension(true);
-		configurer.ignoreAcceptHeader(true);
-		configurer.mediaType("xml", MediaType.APPLICATION_XML);
-		configurer.mediaType("json", MediaType.APPLICATION_JSON);
-	}
 }
