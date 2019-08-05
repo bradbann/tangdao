@@ -27,9 +27,10 @@ import org.springframework.core.io.Resource;
 public class PropertiesUtils {
 	
 	// 默认加载的文件，可通过继承覆盖（若有相同Key，优先加载后面的）
-	public static final String[] DEFAULT_CONFIG_FILE = new String[]{
-			"classpath:config/bootstrap.yml", "classpath:bootstrap.yml",
-			"classpath:config/application.yml", "classpath:application.yml"};
+	public static final String[] DEFAULT_CONFIG_FILE = new String[]{"classpath:application.properties"};
+//	public static final String[] DEFAULT_CONFIG_FILE = new String[]{
+//			"classpath:config/bootstrap.yml", "classpath:bootstrap.yml",
+//			"classpath:config/application.yml", "classpath:application.yml"};
 
 	private static Logger logger = LoggerFactory.getLogger(PropertiesUtils.class);
 	private final Set<String> configSet = SetUtils.newLinkedHashSet();

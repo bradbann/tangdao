@@ -1,71 +1,9 @@
-<%
-var menuAll = {
-	"myhome":{menuCode:"myhome",parentCodes:[],menuName:"我的首页"},
-	"1044886627991953408":{menuCode:"1044886627991953408",parentCodes:["0","1044886626813353984"],menuName:"用户管理"},
-	"1044886630252683264":{menuCode:"1044886630252683264",parentCodes:["0","1044886626813353984"],menuName:"系统参数"},
-	"1044886629531262976":{menuCode:"1044886629531262976",parentCodes:["0","1044886626813353984"],menuName:"角色管理"}
-	};
-var menu = menuAll[menuCode!];
-%>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<% include('/fragments/bundles/head.html', {title: title!}){} %>
-<% include('/fragments/bundles/css.html', {libs: libs!, cssSection: cssSection!}){} %>
-</head>
-<body class="kt-header--fixed kt-header-mobile--fixed kt-subheader--fixed kt-subheader--enabled kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading">
-<% include('/fragments/common/header-mobile.html'){} %>
-<div class="kt-grid kt-grid--hor kt-grid--root">
-<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver kt-page">
-<!-- begin:: Aside -->
-<% include('/fragments/common/aside.html',{menu: menu!}){} %>
-<!-- end:: Aside -->
-<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-wrapper" id="kt_wrapper">
-<!-- begin:: Header -->
-<% include('/fragments/common/header.html'){} %>
-<!-- end:: Header -->
-<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
-<!-- begin:: Content Head -->
-<% include('/fragments/common/content-head.html',{subheader: subheader!, toolbar: toolbar!, menu: menu!}){} %>
-<!-- end:: Content Head -->
-<!-- begin:: Content -->
-<div class="kt-content  kt-grid__item kt-grid__item--fluid" style="padding: 10px;" id="kt_content">
-${layoutContent}
-</div>
-<!-- end:: Content -->
-</div>
-<!-- begin:: Footer -->
-<% include('/fragments/common/footer.html'){} %>
-<!-- end:: Footer -->
-</div>
-</div>
-</div>
-<!-- end:: Page -->
-<!-- begin::Scrolltop -->
-<div id="kt_scrolltop" class="kt-scrolltop">
-<i class="fa fa-arrow-up"></i>
-</div>
-<!-- end::Scrolltop -->
-<script>
-var KTAppOptions = {
-	"colors": {
-		"state": {
-			"brand": "#5d78ff",
-			"dark": "#282a3c",
-			"light": "#ffffff",
-			"primary": "#5867dd",
-			"success": "#34bfa3",
-			"info": "#36a3f7",
-			"warning": "#ffb822",
-			"danger": "#fd3995"
-		},
-		"base": {
-			"label": ["#c5cbe3", "#a1a8c3", "#3d4465", "#3e4466"],
-			"shape": ["#f0f3ff", "#d9dffa", "#afb4d4", "#646c9a"]
-		}
-	}
-};
-</script>
-<% include('/fragments/bundles/script.html', {libs: libs!, jsSection: jsSection!}){} %>
-</body>
-</html>
+<% print('<'+'!DOC'+'TYPE html'+'>'); %>
+<% print('<'+'html'+'><'+'head'+'>'); %>
+<% include('/include/head.html', {title: title!}){} %>
+<% include('/include/css.html', {libs: libs!}){} %>
+</head><body class="hold-transition ${bodyClass!}">
+<% if (!@ListUtils.inString('layout', libs!)){ %>
+<div class="wrapper">${layoutContent}</div>
+<% }else{ %>${layoutContent}<% } %>
+<% include('/include/script.html', {libs: libs!}){} %>

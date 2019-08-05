@@ -236,14 +236,13 @@ $(function () {
         }
     });
     $(window).resize();
-    // var b = $("#desktopTabPage");
-    // if (b.length > 0) {
-    //     var a = b.data("url");
-    //     if (a != "" && a != ctx) {
-    js.addTabPage(null, '<i class="fa fa-home"></i>我的首页', 'dashboard.html', false, false);
-    //js.addTabPage(null, '测试用例', 'demo2.html', true, false);
-    //     }
-    // }
+    var b = $("#desktopTabPage");
+    if (b.length > 0) {
+         var a = b.data("url");
+         if (a != "" && a != ctx) {
+        	js.addTabPage(null, '<i class="fa fa-home"></i>控制台', a, false, false);
+         }
+     }
     // var c = $("#modifyPasswordTip");
     // if (c.length > 0 && c.data("message") != "") {
     //     js.confirm(c.data("message"), function () {
