@@ -23,7 +23,6 @@ public abstract class BaseEntity<T> implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@JsonIgnore
 	@TableField(exist = false)
 	protected String key;
 
@@ -49,44 +48,43 @@ public abstract class BaseEntity<T> implements Serializable {
 	 * 分页对象
 	 */
 	@TableField(exist = false)
-	@JsonIgnore
 	protected Page<T> page;
 
-	public void setPerpage(Long perpage) {
-		if (perpage != null) {
-			if (this.page == null) {
-				this.page = new Page<T>();
-			}
-			this.getPage().setSize(perpage);
-		}
-	}
-
-	public void setPage(Long page) {
-		if (page != null) {
-			if (this.page == null) {
-				this.page = new Page<T>();
-			}
-			this.getPage().setCurrent(page);
-		}
-	}
-
-	public void setField(String field) {
-		if (field != null) {
-			if (this.page == null) {
-				this.page = new Page<T>();
-			}
-			this.getPage().getMeta().setField(field);
-		}
-	}
-
-	public void setSort(String sort) {
-		if (sort != null) {
-			if (this.page == null) {
-				this.page = new Page<T>();
-			}
-			this.getPage().getMeta().setSort(sort);
-		}
-	}
+//	public void setPerpage(Long perpage) {
+//		if (perpage != null) {
+//			if (this.page == null) {
+//				this.page = new Page<T>();
+//			}
+//			this.getPage().setSize(perpage);
+//		}
+//	}
+//
+//	public void setPage(Long page) {
+//		if (page != null) {
+//			if (this.page == null) {
+//				this.page = new Page<T>();
+//			}
+//			this.getPage().setCurrent(page);
+//		}
+//	}
+//
+//	public void setField(String field) {
+//		if (field != null) {
+//			if (this.page == null) {
+//				this.page = new Page<T>();
+//			}
+//			this.getPage().getMeta().setField(field);
+//		}
+//	}
+//
+//	public void setSort(String sort) {
+//		if (sort != null) {
+//			if (this.page == null) {
+//				this.page = new Page<T>();
+//			}
+//			this.getPage().getMeta().setSort(sort);
+//		}
+//	}
 
 	public BaseEntity() {
 		this(null);

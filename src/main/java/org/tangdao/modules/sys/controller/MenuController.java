@@ -1,6 +1,5 @@
 package org.tangdao.modules.sys.controller;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,16 +35,16 @@ public class MenuController extends BaseController {
 
 	@Autowired
 	IMenuService menuService;
-	
+
 	@ModelAttribute
 	public Menu get(String menuCode, boolean isNewRecord) {
 		return menuService.get(menuCode, isNewRecord);
 	}
 
-	@RequestMapping(value = "index")
-	public String index(Menu menu, Model model) {
-		return "modules/sys/menuIndex";
-	}
+//	@RequestMapping(value = "index")
+//	public String index(Menu menu, Model model) {
+//		return "modules/sys/menuIndex";
+//	}
 
 	@RequestMapping(value = "list")
 	public String list(Menu menu, Model model) {
@@ -54,33 +53,19 @@ public class MenuController extends BaseController {
 
 	@RequestMapping(value = "listData")
 	public @ResponseBody List<Menu> list(Menu menu) {
-//		Example example = new Example(Menu.class);
-//		Criteria criteria = example.and();
-//
-//		if (StringUtils.isBlank(menu.getSysId())) {
-//			criteria.andEqualTo("sysId", Menu.SYS_ID_DEFAULT);
-//		} else {
-//			criteria.andEqualTo("sysId", menu.getSysId());
-//		}
-//
-//		if (StringUtils.isBlank(menu.getParentId())) {
-//			criteria.andEqualTo("parentId", Menu.ROOT_ID);
-//		} else {
-//			criteria.andEqualTo("parentId", menu.getParentId());
-//		}
-//
-//		if (StringUtils.isNotBlank(menu.getMenuName())) {
-//			criteria.andLike("menuName", "%" + menu.getMenuName() + "%");
-//		}
 
-//		menu.preStatusFilter(example, menu.getStatus());
-//		example.orderBy("treeSort").asc();
-//		List<Menu> sourceList = menuService.selectByExample(example);
+		QueryWrapper<Menu> queryWrapper = new QueryWrapper<Menu>();
+		if (StringUtils.isBlank(menu.getParentCode())) {
+			menu.setParentCode(Menu.ROOT_CODE);
+		}
+		queryWrapper.eq("parent_code", menu.getParentCode());
+		
+		if (StringUtils.isNotBlank(menu.getMenuName())) {
+			queryWrapper.likeRight("menu_name", menu.getMenuName());
+		}
 
-//		List<Menu> targetList = new ArrayList<>();
-//		menuService.execChildListBulid(sourceList, targetList, Menu.ROOT_ID);
-
-		return null;
+		queryWrapper.orderByAsc("tree_sort","menu_code");
+		return this.menuService.select(queryWrapper);
 	}
 
 	@RequestMapping(value = "form")
@@ -96,7 +81,6 @@ public class MenuController extends BaseController {
 		return "modules/sys/menuForm";
 	}
 
-	
 	@PostMapping(value = "save")
 	public @ResponseBody String save(@Validated Menu menu) {
 //		if (!menu.getShiroUser().isSuperAdmin()) {
@@ -138,7 +122,7 @@ public class MenuController extends BaseController {
 //		menuService.updateByPrimaryKeySelective(menu);
 //		return renderResult(Global.TRUE, "启用成功");
 //	}
-	
+
 //	@ResponseBody
 //	@PostMapping(value = "refresh")
 //	public String refresh() {
@@ -159,10 +143,10 @@ public class MenuController extends BaseController {
 			queryWrapper.eq("is_show", menu.getIsShow());
 		}
 		queryWrapper.ne("status", Menu.STATUS_DELETE);
-		
+
 		queryWrapper.orderByAsc("tree_sort");
 		List<Menu> sourceList = menuService.select(queryWrapper);
-		
+
 		List<Map<String, Object>> targetList = new ArrayList<>();
 		Map<String, Object> tempMap = null;
 		for (Menu sMenu : sourceList) {
@@ -175,5 +159,5 @@ public class MenuController extends BaseController {
 		}
 		return targetList;
 	}
-	
+
 }

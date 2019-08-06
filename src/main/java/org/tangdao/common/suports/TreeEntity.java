@@ -25,17 +25,16 @@ public abstract class TreeEntity<T> extends DataEntity<T> {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
 
 	@TableField(exist = false)
 	protected T parent;
 
 	protected String parentCode;
-	
+
 	protected String parentCodes;
-	
+
 	protected String treeNames;
-	
+
 	protected Integer treeSort;
 
 	@TableField(exist = false)
@@ -44,16 +43,17 @@ public abstract class TreeEntity<T> extends DataEntity<T> {
 	@TableField(exist = false)
 	protected List<T> children;
 
+	protected String treeLeaf;
+
+	protected Integer treeLevel;
+
 	/**
 	 * 根节点编码
 	 */
 	public static final String ROOT_CODE = "0";
 
-	/**
-	 * 默认排序
-	 */
 	public static final int DEFAULT_TREE_SORT = 30;
-	
+
 	public TreeEntity() {
 		this(null);
 	}
@@ -78,7 +78,7 @@ public abstract class TreeEntity<T> extends DataEntity<T> {
 		if (StringUtils.isNotBlank(this.treeName_)) {
 			return this.treeName_;
 		}
-		
+
 		List<Field> fieldList = TableInfoHelper.getAllFields(this.getClass());
 		for (Field field : fieldList) {
 			if (field.isAnnotationPresent(TreeName.class)) {
@@ -86,9 +86,24 @@ public abstract class TreeEntity<T> extends DataEntity<T> {
 				break;
 			}
 		}
-		if(StringUtils.isEmpty(this.treeName_)) {
+		if (StringUtils.isEmpty(this.treeName_)) {
 			throw new ServiceException("树状结构需要设置节点名称注解@TreeName");
 		}
 		return this.treeName_;
+	}
+	
+	public Integer getTreeLevel() {
+	      if (this.treeLeaf != null && this.treeLevel == null) {
+	         this.treeLevel = this.parentCodes != null ? this.parentCodes.replaceAll(",", "").length() - 1 : null;
+	      }
+	      return this.treeLevel;
+	   }
+
+	public Boolean getIsTreeLeaf() {
+		return "1".equals(this.treeLeaf);
+	}
+
+	public void setTreeLeaf(String treeLeaf) {
+		this.treeLeaf = treeLeaf;
 	}
 }

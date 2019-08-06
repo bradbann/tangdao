@@ -14,7 +14,7 @@
           , options = $.extend({
             url: searchForm.attr("action"),
             postData: searchForm.serializeArray(),
-            mtype: "GET",
+            mtype: "POST",
             datatype: "json",
             jsonReader: {
                 id: options.dataId,

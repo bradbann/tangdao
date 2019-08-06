@@ -9,7 +9,7 @@
     <div class="aside-body">
         <div class="aside-loggedin">
             <div class="d-flex align-items-center justify-content-start">
-                <a href="" class="avatar"><img src="https://via.placeholder.com/500" class="rounded-circle"
+                <a href="" class="avatar"><img src="${ctxStatic+user.avatar!'/images/user1.jpg'}" class="rounded-circle"
                         alt=""></a>
                 <div class="aside-alert-link">
                     <a href="" class="new" data-toggle="tooltip" title="You have 2 unread messages"><i
@@ -21,9 +21,9 @@
             </div>
             <div class="aside-loggedin-user">
                 <a href="javascript:;" class="d-flex align-items-center justify-content-between mg-b-2">
-                    <h6 class="tx-semibold mg-b-0">我叫朱碧石</h6>
+                    <h6 class="tx-semibold mg-b-0">${user.nickname!user.username}</h6>
                 </a>
-                <p class="tx-color-03 tx-12 mg-b-0">Luozhixiang</p>
+                <p class="tx-color-03 tx-12 mg-b-0">${user.email!user.mobile}</p>
             </div>
         </div><!-- aside-loggedin -->
         <ul class="nav nav-aside">
@@ -41,6 +41,28 @@
                     data-code="1148141434169016321"><i data-feather="life-buoy"></i>
                     <span>Helpdesk Management</span></a></li>
             <li class="nav-label mg-t-25">系统应用</li>
+            
+            <% for(item in menus) { %>
+            	<% if(@ListUtils.isEmpty(item.children)){  %>
+            		<li class="nav-item treeview"><a href="javascript:;" data-href="${item.menuHref}" class="nav-link addTabPage" data-code="${item.menuCode}"><i data-feather="life-buoy"></i>
+                    <span>${item.menuName}</span></a></li>
+            	<% }else{ %>
+            		<li class="nav-item with-sub">
+		                <a href="javascript:;" class="nav-link"><i data-feather="user"></i> <span>${item.menuName}</span></a>
+		                <ul>
+		                	<% for(subItem in item.children){ %>
+		                		<% if(@ListUtils.isEmpty(subItem.children)){ %>
+			                    <li class="treeview"><a href="javascript:;" data-href="${subItem.menuHref}" class="addTabPage" data-code="${subItem.menuCode}"><i class="badge badge-dot"><span></span></i>${subItem.menuName}</a></li>
+		                		<% }else{ %>
+		                		<% } %>
+		                    <% } %>
+		                </ul>
+		            </li>
+            	<% } %>
+            
+            <% } %>
+            
+            <!-- 
             <li class="nav-item treeview"><a href="demo2.html" class="nav-link"><i data-feather="calendar"></i>
                     <span>Calendar</span></a></li>
             <li class="nav-item treeview"><a href="demo2.html" class="nav-link"><i
@@ -62,7 +84,7 @@
             <li class="nav-item treeview"><a href="javascript:;" data-href="form.html"
                     class="nav-link addTabPage" data-code="1148141434169016321"><i data-feather="image"></i>
                     <span>表单页面</span></a></li>
-
+			
             <li class="nav-label mg-t-25">页面组件</li>
             <li class="nav-item with-sub">
                 <a href="" class="nav-link"><i data-feather="user"></i> <span>User Pages</span></a>
@@ -81,6 +103,7 @@
                     </li>
                 </ul>
             </li>
+            
             <li class="nav-item with-sub">
                 <a href="" class="nav-link"><i data-feather="file"></i> <span>Other Pages</span></a>
                 <ul>
@@ -89,6 +112,7 @@
                                 class="badge badge-dot"><span></span></i>FileManager</a></li>
                 </ul>
             </li>
+             -->
             <li class="nav-label mg-t-25">功能组件</li>
             <li class="nav-item treeview"><a href="demo2.html" class="nav-link"><i data-feather="layers"></i>
                     <span>Components</span></a></li>

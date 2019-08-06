@@ -26,11 +26,11 @@
         </div><!-- dropdown -->
         <div class="dropdown dropdown-profile">
             <a href="" class="dropdown-link" data-toggle="dropdown" data-hover="dropdown">
-                <div class="avatar avatar-sm"><img src="${ctxStatic}/images/img22.png" class="rounded-circle" alt=""></div>
+                <div class="avatar avatar-sm"><img src="${ctxStatic+user.avatar!'/images/user1.jpg'}" class="rounded-circle" alt=""></div>
             </a><!-- dropdown-link -->
             <div class="dropdown-menu dropdown-menu-right">
-                <h6 class="tx-semibold mg-b-5">我叫朱碧石</h6>
-                <p class="mg-b-25 tx-12 tx-color-03">Luozhixiang</p>
+                <h6 class="tx-semibold mg-b-5">${user.nickname!user.username}</h6>
+                <p class="mg-b-25 tx-12 tx-color-03">${user.email!user.mobile}</p>
 
                 <a href="" class="dropdown-item"><i data-feather="user"></i> 我的信息</a>
                 <div class="dropdown-divider"></div>

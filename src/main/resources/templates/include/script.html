@@ -8,5 +8,9 @@
 <script src="${ctxStatic}/vendors/wdScrollTab/js/TabPanel.js"></script>
 <script src="${ctxStatic}/vendors/wdScrollTab/js/TabPanel.extend.js"></script>
 <% } %>
+<% if (@ListUtils.inString('dataGrid', libs!)){ %>
+<script src="${ctxStatic}/vendors/jqGrid/4.7/js/jquery.jqGrid.js"></script>
+<script src="${ctxStatic}/vendors/jqGrid/4.7/js/jquery.jqGrid.extend.js"></script>
+<% } %>
 <script src="${ctxStatic}/vendors/layer/3.1/layer.js"></script>
 <script src="${ctxStatic}/tangdao.js"></script>
