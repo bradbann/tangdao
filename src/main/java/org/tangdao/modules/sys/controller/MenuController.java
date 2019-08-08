@@ -18,6 +18,7 @@ import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.model.domain.Menu;
 import org.tangdao.modules.sys.service.IMenuService;
+import org.tangdao.modules.sys.utils.UserUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
@@ -83,10 +84,11 @@ public class MenuController extends BaseController {
 
 	@PostMapping(value = "save")
 	public @ResponseBody String save(@Validated Menu menu) {
-//		if (!menu.getShiroUser().isSuperAdmin()) {
-//			return this.renderResult("false", "越权操作，只有超级管理员才能修改此数据");
-//		}
-//		menuService.saveSelective(menu);
+		if(!UserUtils.getUser().isSuperAdmin()) {
+			return this.renderResult(Global.FALSE, "越权操作，只有超级管理员才能修改此数据");
+		}
+		
+		menuService.saveOrUpdate(menu);
 		return renderResult(Global.TRUE, "保存成功");
 	}
 

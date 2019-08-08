@@ -12589,6 +12589,14 @@ textarea.parsley-success:focus {
         transition: none; } }
   .nav-aside .nav-item {
     position: relative; }
+  .nav-aside .nav-item i{
+    	width: 20px;
+    	font-size:16px;
+    	line-height: 1;
+    	font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;}
     .nav-aside .nav-item.active .nav-link {
       opacity: 1;
       color: #0168fa;
@@ -12597,6 +12605,7 @@ textarea.parsley-success:focus {
         opacity: 1;
         visibility: visible;
         border-left-color: #0168fa; }
+    .nav-aside .nav-item.active i,
     .nav-aside .nav-item.active svg {
       color: #0168fa;
       fill: rgba(1, 104, 250, 0.2); }
@@ -12639,6 +12648,7 @@ textarea.parsley-success:focus {
     height: auto; }
   .nav-aside .with-sub.show:not(.active) .nav-link {
     color: #1b2e4b; }
+  .nav-aside .with-sub.show:not(.active) i,
   .nav-aside .with-sub.show:not(.active) svg {
     color: #1b2e4b; }
   .nav-aside .nav-link {
@@ -12646,7 +12656,7 @@ textarea.parsley-success:focus {
     display: flex;
     align-items: center;
     padding: 0;
-    height: 30px;
+    height: 35px;
     color: rgba(27, 46, 75, 0.9);
     transition: all 0.25s; }
     @media (prefers-reduced-motion: reduce) {
@@ -12676,7 +12686,7 @@ textarea.parsley-success:focus {
 }
 .nav-aside .nav-item.with-sub ul a{
   display: flex;
-  line-height: 1.6rem;
+  line-height: 30px;
 }
 .badge-dot{
   flex: 0 0 20px;

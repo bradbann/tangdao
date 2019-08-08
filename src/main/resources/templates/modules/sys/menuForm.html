@@ -11,146 +11,86 @@
         <div class="card-body pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4">上级菜单</label>
+                    <label for="parentCode">上级菜单</label>
                     <#form:treeselect 
                         id="parent" 
                         title="上级菜单"
 						path="parentCode"
-						labelPath="parentName"
-						url="${ctx}/sys/menu/treeData"
 						value="${menu.parentCode}"
+						labelPath="parentName"
 						labelValue="${menu.parent.menuName}"
+						url="${ctx}/sys/menu/treeData?excludeCode=&isShowNameOrig=true"
+						class="form-control"
+						allowClear="true" 
+						canSelectRoot="true" 
+						canSelectParent="true"
                         />
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputPassword4">Password</label>
-                    <input type="password" class="form-control required" id="inputPass123" name="inputPass123"
-                        placeholder="Password">
+                    <label for="menuType">菜单类型</label>
+                    <div class="radio-list d-flex pd-t-10">
+	                    <#form:radio path="menuType" dictType="sys_menu_type" value="${menu.menuType}" />
+	                </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="inputAddress">Address</label>
-                <input type="text" class="form-control required" id="input232ress" name="asdfsaf"
-                    readonly="readonly" placeholder="1234 Main St">
-            </div>
-            <div class="form-group">
-                <label for="inputAddress2">Address 2</label>
-                <input type="text" class="form-control required" id="inpu232res2s2" name="asfasf"
-                    disabled="disabled" placeholder="Apartment, studio, or floor">
             </div>
             <div class="form-row">
-                <div class="form-group col-md-5">
-                    <label>Birthday</label>
-                    <div class=" d-flex">
-                        <select id="postType" name="postType" class="select2 custom-select required">
-                            <option value="">&nbsp;</option>
-                            <option value="1">高管</option>
-                            <option value="2">中层</option>
-                            <option value="3">基层</option>
-                            <option value="4">其它</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group col-md-3 d-flex align-items-end">
-                    <select id="postType1" name="postType1" class="select2 custom-select required">
-                        <option value="">&nbsp;</option>
-                        <option value="1">高管</option>
-                        <option value="2">中层</option>
-                        <option value="3">基层</option>
-                        <option value="4">其它</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-4 d-flex align-items-end">
-                    <select id="postType3" name="postType3" class="custom-select required">
-                        ...
-                    </select>
-                </div>
+	            <div class="form-group  col-md-6">
+	                <label>菜单名称</label>
+	                <#form:input path="menuName" class="form-control required" placeholder="请输入菜单名称" />
+	            </div>
+	            <div class="form-group  col-md-6">
+	                <label>菜单排序</label>
+	                <#form:input path="treeSort" class="form-control required" placeholder="请输入菜单排序" />
+	            </div>
+            </div>
+            <div class="form-row">
+	            <div class="form-group  col-md-6">
+	                <label>菜单连接</label>
+	                <#form:input path="menuHref" class="form-control" placeholder="请输入菜单连接" />
+	            </div>
+	            <div class="form-group  col-md-6">
+	                <label>权限标识</label>
+	                <#form:input path="permission" class="form-control" placeholder="请输入权限标识" />
+	            </div>
+            </div>
+            <div class="form-row">
+	            <div class="form-group  col-md-6">
+	                <label>菜单图标</label>
+	                <div class="input-group">
+		                <#form:input path="menuIcon" class="form-control" placeholder="请输入菜单图标" />
+		                <div class="input-group-append">
+						   <button type="button" class="btn btn-outline-light"><i class="${menu.menuIcon!}"></i></button>
+						</div>
+					</div>
+	            </div>
+	            <div class="form-group  col-md-6">
+	                <label>目标地址</label>
+	                <#form:input path="menuTarget" class="form-control" placeholder="请输入目标地址" />
+	            </div>
+            </div>
+            <div class="form-row">
+	            <div class="form-group  col-md-6">
+	                <label>菜单权重</label>
+	                <#form:input path="weight" class="form-control" placeholder="请选择" />
+	            </div>
+	            <div class="form-group  col-md-6">
+	                <label>是否可见</label>
+	                <div class="radio-list d-flex pd-t-10">
+	                <#form:radio path="isShow" dictType="sys_yes_no" class="required" />
+	                </div>
+	            </div>
             </div>
             <div class="form-group">
-                <div class="checkbox-list">
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input required" id="customCh2eck1"
-                            name="checkboxs">
-                        <label class="custom-control-label" for="customCh2eck1">Agree with
-                            Policy</label>
-                    </div>
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input required" id="customCh3eck1"
-                            name="checkboxs">
-                        <label class="custom-control-label" for="customCh3eck1">Terms of Use
-                            Policy</label>
-                    </div>
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input required" id="customChe4ck1"
-                            name="checkboxs">
-                        <label class="custom-control-label" for="customChe4ck1">Privacy
-                            Policy</label>
-                    </div>
-                </div>
+                <label>备注</label>
+                 <#form:textarea path="remarks" class="form-control" row="5" placeholder="请输入" />
             </div>
-            <div class="form-group">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input required" id="customCh22eck1" name="a7df">
-                    <label class="custom-control-label" for="customCh22eck1">Agree with
-                        Policy</label>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="radio-list">
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="customRadio1" name="customRadio"
-                            class="custom-control-input required">
-                        <label class="custom-control-label" for="customRadio1">Custom radio</label>
-                    </div>
-
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="customRadio2" name="customRadio"
-                            class="custom-control-input required">
-                        <label class="custom-control-label" for="customRadio2">Custom radio</label>
-                    </div>
-                </div>
-
-                <div class="custom-control custom-radio">
-                    <input type="radio" id="customRadio3" name="customRadio2" class="custom-control-input" checked
-                        disabled>
-                    <label class="custom-control-label" for="customRadio3">Custom radio</label>
-                </div>
-
-                <div class="custom-control custom-radio">
-                    <input type="radio" id="customRadio4" name="customRadio2" class="custom-control-input" disabled>
-                    <label class="custom-control-label" for="customRadio4">Custom radio</label>
-                </div>
-            </div>
-            <div class="form-group">
-
-                <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                    <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
-                </div>
-
-                <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" disabled id="customSwitch2">
-                    <label class="custom-control-label" for="customSwitch2">Disabled switch element</label>
-                </div>
-
-                <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="customSwitch3" checked>
-                    <label class="custom-control-label" for="customSwitch3">Toggle this switch element</label>
-                </div>
-
-                <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" disabled id="customSwitch4" checked
-                        disabled>
-                    <label class="custom-control-label" for="customSwitch4">Disabled switch element</label>
-                </div>
-            </div>
+            
         </div>
         <div class="card-footer pd-sm-l-30">
             <div class="row">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary" id="btnSubmit">Submit Form</button>
-                    <button type="reset" class="btn">Reset Form</button>
-                    <button type="button" class="btn" onclick="js.closeCurrentTabPage()">close</button>
+                    <button type="submit" class="btn btn-primary">保存提交</button>
+                    <button type="button" class="btn btn-default" onclick="js.closeCurrentTabPage()">关闭窗口</button>
                 </div>
             </div>
         </div>
@@ -160,16 +100,11 @@
 <script>
 $("#inputForm").validate({
 	submitHandler: function(form){
-		if ($('#moduleCodes').val() == null){
-			js.showMessage('请选择归属模块！');
-			return;
-		}
 		js.ajaxSubmitForm($(form), function(data){
 			js.showMessage(data.message);
-			if(data.result == Global.TRUE){
+			if(data.result == 'true'){
 				js.closeCurrentTabPage(function(contentWindow){
-					contentWindow.$('#dataGrid').dataGrid('refreshTreeChildren',
-							$('#parentCode').val(), '${menu.menuCode}');
+					contentWindow.$('#dataGrid').dataGrid('refreshTreeChildren', $('#parentCode').val(), '${menu.menuCode}');
 				});
 			}
 		}, "json");
@@ -180,35 +115,29 @@ $("#inputForm").validate({
 //$('#inputForm .input-color').colorpicker();
 
 // 根据类型显示不同的元素
-$('#menuType input').on('ifCreated ifChecked', function(){
-	if ($(this).is(':checked')){
-		// 1：菜单；2：权限
-		if ($(this).val() == '1'){
-			$('.isPerm').hide();
-			$('.isMenu').show();
-		}else{
-			$('.isMenu').hide();
-			$('.isPerm').show();
-		}
-	}
-});
+//$('#menuType input').on('ifCreated ifChecked', function(){
+//	if ($(this).is(':checked')){
+//		// 1：菜单；2：权限
+//		if ($(this).val() == '1'){
+//			$('.isPerm').hide();
+//			$('.isMenu').show();
+//		}else{
+//			$('.isMenu').hide();
+///			$('.isPerm').show();
+//		}
+//	}
+//});
 
 // 选择上级节点回调方法
 function treeselectCallback(id, act, index, layero){
-	if (id == 'parent' && (act == 'ok' || act == 'clear')){
+	//if (id == 'parent' && (act == 'ok' || act == 'clear')){
 		// 创建并初始化下一个节点信息，如：排序号、默认值
-		$.get('${ctx}/sys/menu/createNextNode?parentCode='
-				+$('#parentCode').val(), function(data){
-			$('#treeSort').val(data.treeSort);
-			$('#menuType input[value="'+data.menuType+'"]').iCheck('check');
-			if (data.moduleCodes){
-				$('#moduleCodes input').iCheck('uncheck');
-				$.each(data.moduleCodes.split(','), function(i, v){
-					$('#moduleCodes input[value="'+v+'"]').iCheck('check');
-				});
-			}
-		});
-	}
+		//$.get('${ctx}/sys/menu/createNextNode?parentCode='
+		//		+$('#parentCode').val(), function(data){
+			//$('#treeSort').val(data.treeSort);
+			//$('#menuType input[value="'+data.menuType+'"]').iCheck('check');
+		//});
+	//}
 }
 </script>
 </body></html>

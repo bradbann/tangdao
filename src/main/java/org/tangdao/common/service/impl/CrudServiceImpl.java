@@ -90,7 +90,9 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 
 	@Override
 	public boolean save(T entity) {
-		entity.preInsert();
+		if(entity!=null) {
+			entity.preInsert();
+		}
 		return retBool(baseMapper.insert(entity));
 	}
 
@@ -199,13 +201,17 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 
 	@Override
 	public boolean updateById(T entity) {
-		entity.preUpdate();
+		if(entity!=null) {
+			entity.preUpdate();
+		}
 		return retBool(baseMapper.updateById(entity));
 	}
 
 	@Override
 	public boolean update(T entity, Wrapper<T> updateWrapper) {
-		entity.preUpdate();
+		if(entity!=null) {
+			entity.preUpdate();
+		}
 		return retBool(baseMapper.update(entity, updateWrapper));
 	}
 

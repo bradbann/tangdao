@@ -11,6 +11,6 @@ var p = {
 };
 pageCtx("modelAttr", p.model);
 %>
-<form id="${p.id}" action="${p.action}" <%if(isNotEmpty(p.method!)){%>method="${p.method}"<%}%> <%if(isNotEmpty(p.enctype!)){%>enctype="${p.enctype}"<%}%> <%if(isNotEmpty(class!)){%>class="${class!}"<%}%> <%if(isNotEmpty(style!)){%>style="${style!}"<%}%> novalidate="novalidate">
+<form id="${p.id}" action="${p.action}" <%if(isNotEmpty(p.method!)){%>method="${p.method}"<%}%> <%if(isNotEmpty(p.enctype!)){%>enctype="${p.enctype}"<%}%> <%if(isNotEmpty(class!)){%>class="${class!}"<%}%> <%if(isNotEmpty(style!)){%>style="${style!}"<%}%>>
 ${tagBody}
 </form>
