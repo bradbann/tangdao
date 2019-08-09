@@ -1,6 +1,7 @@
 package org.tangdao.common.config;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,9 @@ import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
+import org.tangdao.common.suports.DataEntity;
 import org.tangdao.common.utils.FileUtils;
+import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.ObjectUtils;
 import org.tangdao.common.utils.PropertiesUtils;
@@ -93,7 +96,39 @@ public class Global implements PropertySourceLoader {
 	public static Integer getConfigToInteger(String key, String defValue) {
 		return ObjectUtils.toInteger(getConfig(key, defValue));
 	}
-
+	
+	public static Object getConst(String field) {
+		try {
+			if (!"Global.Fields".equals(field)) {	
+				Object gloablField  = Global.class.getField(field).get(null);
+				if(gloablField==null) {
+					return DataEntity.class.getField(field).get(null);
+				}
+				return gloablField;
+			}else {
+				String data = props.get("__"+field);
+				if(data == null) {
+					Map<String, Object> result = MapUtils.newHashMap();
+					Field[] globalFields = Global.class.getFields();
+					for (Field f : globalFields) {
+						result.put(f.getName(), f.get(null));
+					}
+					Field[] dataEntityFields = DataEntity.class.getFields();
+					for (Field f : dataEntityFields) {
+						result.put(f.getName(), f.get(null));
+					}
+					data = JsonMapper.toJson(result);
+					props.put("__"+field, data);	
+				}
+				return data;
+				
+			}
+		} catch (Exception e) {
+			return null;
+		}
+		
+	}
+	
 	public static String getUserfilesBaseDir(String path) {
 		String baseDir = getConfig("file.baseDir");
 		if (StringUtils.isBlank(baseDir)) {

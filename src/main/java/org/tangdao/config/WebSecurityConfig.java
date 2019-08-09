@@ -29,7 +29,7 @@ import org.tangdao.modules.sys.utils.UserUtils;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-
+	
 	@Configuration
 	@Order(1)                                                        
 	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
@@ -43,9 +43,9 @@ public class WebSecurityConfig {
 		}
 	}
     
-    
     @Configuration
-    @EnableGlobalMethodSecurity(prePostEnabled = true)
+    @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+//    @EnableGlobalMethodSecurity(prePostEnabled = true)
 	public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
     	
     	private final UserDetailsService userDetailsService;
@@ -65,11 +65,14 @@ public class WebSecurityConfig {
     	
     	@Override
         public void configure(WebSecurity web) {
-            web.ignoring().antMatchers("/static/**", "/webjars/**", "/v2/**", "/swagger**");
+            web
+            	.ignoring()
+            		.antMatchers("/static/**", "/webjars/**", "/v2/**", "/swagger**");
         }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+        	
         	http.headers().frameOptions().disable();
             http
                     .csrf()

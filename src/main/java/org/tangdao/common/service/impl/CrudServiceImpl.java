@@ -19,13 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.tangdao.common.service.ICurdService;
 import org.tangdao.common.suports.DataEntity;
-import org.tangdao.common.suports.Meta;
 import org.tangdao.common.suports.Page;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
@@ -274,10 +273,13 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 		return baseMapper.selectList(queryWrapper);
 	}
 
-//	@Override
-//	public IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper) {
-//		return baseMapper.selectPage(page, queryWrapper);
-//	}
+	@Override
+	public IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper) {
+		if(page==null) {
+			page = new Page<T>();
+		}
+		return baseMapper.selectPage(page, queryWrapper);
+	}
 
 	@Override
 	public List<Map<String, Object>> selectMaps(Wrapper<T> queryWrapper) {
@@ -290,34 +292,37 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 				.collect(Collectors.toList());
 	}
 
-//	@Override
-//	public IPage<Map<String, Object>> pageMaps(IPage<T> page, Wrapper<T> queryWrapper) {
-//		return baseMapper.selectMapsPage(page, queryWrapper);
-//	}
+	@Override
+	public IPage<Map<String, Object>> pageMaps(IPage<T> page, Wrapper<T> queryWrapper) {
+		if(page==null) {
+			page = new Page<T>();
+		}
+		return baseMapper.selectMapsPage(page, queryWrapper);
+	}
 
 	@Override
 	public <V> V getObj(Wrapper<T> queryWrapper, Function<? super Object, V> mapper) {
 		return SqlHelper.getObject(log, selectObjs(queryWrapper, mapper));
 	}
 	
-	protected Page<T> getPage(T entity) {
-		Meta meta = entity.getPage().getMeta();
-		if(meta!=null&&StringUtils.isNotEmpty(meta.getField())) {
-			// 需要转换一下驼峰字段
-			String column = StringUtils.camelToUnderline(meta.getField());
-			if ("asc".equalsIgnoreCase(meta.getSort()))
-				entity.getPage().addOrder(OrderItem.asc(column));
-			else
-				entity.getPage().addOrder(OrderItem.desc(column));
-		}
-		return entity.getPage();
-	}
-
-	@Override
-	public Page<T> findPage(T entity, Wrapper<T> queryWrapper) {
-		// TODO Auto-generated method stub
-		return new Page<T>(baseMapper.selectPage(getPage(entity), queryWrapper));
-	}
+//	protected Page<T> getPage(T entity) {
+//		Meta meta = entity.getPage().getMeta();
+//		if(meta!=null&&StringUtils.isNotEmpty(meta.getField())) {
+//			// 需要转换一下驼峰字段
+//			String column = StringUtils.camelToUnderline(meta.getField());
+//			if ("asc".equalsIgnoreCase(meta.getSort()))
+//				entity.getPage().addOrder(OrderItem.asc(column));
+//			else
+//				entity.getPage().addOrder(OrderItem.desc(column));
+//		}
+//		return entity.getPage();
+//	}
+//
+//	@Override
+//	public Page<T> findPage(T entity, Wrapper<T> queryWrapper) {
+//		// TODO Auto-generated method stub
+//		return new Page<T>(baseMapper.selectPage(getPage(entity), queryWrapper));
+//	}
 
 	@Override
 	public T get(Serializable id, boolean isNewRecord) {

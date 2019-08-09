@@ -43,7 +43,8 @@ public class GlobalController extends BaseController {
 		String ctxPath = request.getContextPath();
 		bui.append("ctx='").append(StringUtils.defaultIfBlank(ctx, ctxPath)).append("',");
 		bui.append("ctxPath='").append(ctxPath).append("',");
-		bui.append("ctxStatic='").append(ctxPath).append("/static'");
+		bui.append("ctxStatic='").append(ctxPath).append("/static',");
+		bui.append("Global=").append(Global.getConst("Global.Fields"));
 		return bui.toString();
 	}
 }

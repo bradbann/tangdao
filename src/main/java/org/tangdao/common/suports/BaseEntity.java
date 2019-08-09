@@ -9,6 +9,7 @@ import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.utils.UserUtils;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -50,41 +51,40 @@ public abstract class BaseEntity<T> implements Serializable {
 	@TableField(exist = false)
 	protected Page<T> page;
 
-//	public void setPerpage(Long perpage) {
-//		if (perpage != null) {
-//			if (this.page == null) {
-//				this.page = new Page<T>();
-//			}
-//			this.getPage().setSize(perpage);
-//		}
-//	}
-//
-//	public void setPage(Long page) {
-//		if (page != null) {
-//			if (this.page == null) {
-//				this.page = new Page<T>();
-//			}
-//			this.getPage().setCurrent(page);
-//		}
-//	}
-//
-//	public void setField(String field) {
-//		if (field != null) {
-//			if (this.page == null) {
-//				this.page = new Page<T>();
-//			}
-//			this.getPage().getMeta().setField(field);
-//		}
-//	}
-//
-//	public void setSort(String sort) {
-//		if (sort != null) {
-//			if (this.page == null) {
-//				this.page = new Page<T>();
-//			}
-//			this.getPage().getMeta().setSort(sort);
-//		}
-//	}
+	public void setPageSize(Integer pageSize) {
+		if (pageSize != null) {
+			if (this.page == null) {
+				this.page = new Page<T>();
+			}
+			this.getPage().setSize(pageSize);
+		}
+	}
+
+	public void setPageNo(Integer pageNo) {
+		if (pageNo != null) {
+			if (this.page == null) {
+				this.page = new Page<T>();
+			}
+			this.getPage().setCurrent(pageNo);
+		}
+	}
+
+	public void setOrderBy(String orderBy) {
+		if (StringUtils.isNotBlank(orderBy)) {
+			if (this.page == null) {
+				this.page = new Page<T>();
+			}
+			String[] orderBys = orderBy.split("+");
+			if(orderBys!=null&&orderBys.length==2) {
+				if (StringUtils.isNoneEmpty(orderBys[1])&&"asc".equalsIgnoreCase(orderBys[1])) {
+					this.getPage().addOrder(OrderItem.asc(orderBys[0]));
+				} else {
+					this.getPage().addOrder(OrderItem.desc(orderBys[0]));
+				}
+			}
+		}
+
+	 }
 
 	public BaseEntity() {
 		this(null);

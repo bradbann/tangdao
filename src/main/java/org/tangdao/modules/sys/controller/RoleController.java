@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
-import org.tangdao.common.suports.Page;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
@@ -24,6 +23,7 @@ import org.tangdao.modules.sys.service.IMenuService;
 import org.tangdao.modules.sys.service.IRoleService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * <p>
@@ -54,7 +54,7 @@ public class RoleController extends BaseController {
 	}
 	
 	@RequestMapping(value = "listData")
-	public @ResponseBody Page<Role> listData(Role role){
+	public @ResponseBody IPage<Role> listData(Role role){
 		QueryWrapper<Role> queryWrapper = new QueryWrapper<Role>();
 		
 		if(StringUtils.isNotBlank(role.getStatus())) {
@@ -63,7 +63,8 @@ public class RoleController extends BaseController {
 		if(StringUtils.isNotBlank(role.getRoleName())) {
 			queryWrapper.likeRight("role_name", role.getRoleName());
 		}
-		return this.roleService.findPage(role, queryWrapper);
+		
+		return this.roleService.page(role.getPage(), queryWrapper);
 	}
 	
 	@RequestMapping(value = "form")

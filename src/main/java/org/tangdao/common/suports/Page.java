@@ -1,11 +1,5 @@
 package org.tangdao.common.suports;
 
-import java.util.List;
-
-import org.tangdao.common.utils.ListUtils;
-
-import com.baomidou.mybatisplus.core.metadata.IPage;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,26 +12,4 @@ public class Page<T> extends com.baomidou.mybatisplus.extension.plugins.paginati
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Meta meta;
-
-	private List<T> data = ListUtils.newArrayList();
-
-	public Page() {
-		if (meta == null) {
-			meta = new Meta();
-		}
-	}
-	
-	public Page(IPage<T> dataSet) {
-		if (meta == null) {
-			meta = new Meta();
-		}
-		getMeta().setPage(dataSet.getCurrent());
-		getMeta().setPages(dataSet.getPages());
-		getMeta().setPerpage(dataSet.getSize());
-		getMeta().setTotal(dataSet.getTotal());
-
-		this.setData(dataSet.getRecords());
-	}
-	
 }

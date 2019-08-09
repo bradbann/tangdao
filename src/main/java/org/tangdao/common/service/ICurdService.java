@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.tangdao.common.suports.Page;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper;
@@ -225,23 +225,23 @@ public interface ICurdService<T> {
         return select(Wrappers.emptyWrapper());
     }
 
-//    /**
-//     * 翻页查询
-//     *
-//     * @param page         翻页对象
-//     * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
-//     */
-//    IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper);
-//
-//    /**
-//     * 无条件翻页查询
-//     *
-//     * @param page 翻页对象
-//     * @see Wrappers#emptyWrapper()
-//     */
-//    default IPage<T> page(IPage<T> page) {
-//        return page(page, Wrappers.emptyWrapper());
-//    }
+    /**
+     * 翻页查询
+     *
+     * @param page         翻页对象
+     * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+     */
+    IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper);
+
+    /**
+     * 无条件翻页查询
+     *
+     * @param page 翻页对象
+     * @see Wrappers#emptyWrapper()
+     */
+    default IPage<T> page(IPage<T> page) {
+        return page(page, Wrappers.emptyWrapper());
+    }
 
     /**
      * 查询列表
@@ -292,23 +292,23 @@ public interface ICurdService<T> {
      */
     <V> List<V> selectObjs(Wrapper<T> queryWrapper, Function<? super Object, V> mapper);
 
-//    /**
-//     * 翻页查询
-//     *
-//     * @param page         翻页对象
-//     * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
-//     */
-//    IPage<Map<String, Object>> pageMaps(IPage<T> page, Wrapper<T> queryWrapper);
-//
-//    /**
-//     * 无条件翻页查询
-//     *
-//     * @param page 翻页对象
-//     * @see Wrappers#emptyWrapper()
-//     */
-//    default IPage<Map<String, Object>> pageMaps(IPage<T> page) {
-//        return pageMaps(page, Wrappers.emptyWrapper());
-//    }
+    /**
+     * 翻页查询
+     *
+     * @param page         翻页对象
+     * @param queryWrapper 实体对象封装操作类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+     */
+    IPage<Map<String, Object>> pageMaps(IPage<T> page, Wrapper<T> queryWrapper);
+
+    /**
+     * 无条件翻页查询
+     *
+     * @param page 翻页对象
+     * @see Wrappers#emptyWrapper()
+     */
+    default IPage<Map<String, Object>> pageMaps(IPage<T> page) {
+        return pageMaps(page, Wrappers.emptyWrapper());
+    }
 
     /**
      * 获取对应 entity 的 BaseMapper
@@ -378,9 +378,9 @@ public interface ICurdService<T> {
     	return get(id, false);
     }
     
-    public Page<T> findPage(T entity, Wrapper<T> queryWrapper);
-    
-    default public Page<T> findPage(T entity) {
-    	return findPage(entity, Wrappers.emptyWrapper());
-    }
+//    public Page<T> findPage(T entity, Wrapper<T> queryWrapper);
+//    
+//    default public Page<T> findPage(T entity) {
+//    	return findPage(entity, Wrappers.emptyWrapper());
+//    }
 }

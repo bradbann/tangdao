@@ -18,13 +18,13 @@
             datatype: "json",
             jsonReader: {
                 id: options.dataId,
-                root: "list",
-                page: "pageNo",
+                root: "records",
+                page: "current",
                 userdata: "otherData",
-                total: "last",
-                records: "count",
+                total: "total",
+                records: "size",
                 subgrid: {
-                    root: "list"
+                    root: "records"
                 }
             },
             treeReader: {

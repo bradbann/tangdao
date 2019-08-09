@@ -7470,7 +7470,7 @@ strong {
   font-size: 10px;
   font-weight: 500;
   font-family: -apple-system, BlinkMacSystemFont, "Inter UI", Roboto, sans-serif;
-  padding: 3px 5px 4px;
+  padding: 3px 8px 4px;
   border-radius: 3px; }
 
 .badge-light {
@@ -12594,7 +12594,6 @@ textarea.parsley-success:focus {
     	font-size:16px;
     	line-height: 1;
     	font-style: normal;
-		font-weight: normal;
 		font-variant: normal;
 		text-transform: none;}
     .nav-aside .nav-item.active .nav-link {

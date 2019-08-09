@@ -36,14 +36,14 @@
             		<% if(@ListUtils.isEmpty(subItem.children)){  %>
 	            	<li class="nav-item treeview">
 	            		<a href="javascript:;" data-href="${subItem.menuHref}" class="nav-link addTabPage" data-code="${subItem.menuCode}">
-	            			<i class="${subItem.menuIcon!}"></i>
+	            			<i class="${isEmpty(subItem.menuIcon)?'la la-code':subItem.menuIcon}"></i>
 	                		<span>${subItem.menuName}</span>
 	                	</a>
 	                </li>
 	                <% }else{ %>
                 	<li class="nav-item with-sub">
 		                <a href="javascript:;" class="nav-link">
-			                <i class="${subItem.menuIcon!}"></i> 
+			                <i class="${isEmpty(subItem.menuIcon)?'la la-code':subItem.menuIcon}"></i> 
 			                <span>${subItem.menuName}</span>
 		                </a>
 		                <ul>
