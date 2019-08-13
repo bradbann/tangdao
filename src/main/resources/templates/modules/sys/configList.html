@@ -1,87 +1,73 @@
-<%  var jsSection = { %>
+<% layout('/layouts/default.html', {title: '参数设置', libs: ['dataGrid']}){ %>
+<div class="card bd-0">
+    <div class="card-header d-flex align-items-start justify-content-between pd-10-f">
+      <div class="pt-1">参数设置</div>
+      <div class="d-flex">
+          <button type="button" id="btnSearch" title="查询" class="btn btn-xs btn-default"><i  class="fa fa-filter"></i>查询</button>
+          <% if(expIf("hasAuthority('sys:config:edit')")){ %>
+          <button type="button" href="${ctx}/sys/config/form" class="btn btn-xs btn-secondary mg-l-10 btnTool" title="新增角色"><i  class="fa fa-plus"></i>新增</button>
+          <button type="button" class="btn btn-xs btn-secondary mg-l-10" id="btnUpdateCache" title="清理全部缓存，包括属性文件的配置"><i class="fa fa-redo-alt"></i> 清理全部缓存</button>
+          <% } %>
+      </div>
+    </div>
+    <div class="card-body pd-10">
+      <#form:form id="searchForm" model="${config}" action="${ctx}/sys/config/listData" method="post"  class="form-horizontal"
+				data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+        <div class="form-group">
+          <div class="input-group wd-250">
+            <div class="input-group-prepend">
+              <span class="input-group-text">参数名称</span>
+            </div>
+            <#form:input path="configName" class="form-control" />
+          </div>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-secondary btn-sm">查询</button>
+          <button type="reset" class="btn btn-default btn-sm">重置</button>
+        </div>
+      </#form:form>
+      <table id="dataGrid"></table>
+      <div id="dataGridPage"></div>
+    </div>
+  </div>
+<% } %>
 <script>
-$("#kt_form_status").selectpicker();
-var myDatatable = $(".kt-datatable").myDatatable({
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
-	columns:[
-		{
-			field: 'configName',
-			title: '参数名称',
-			autoHide: false,
-		}, {
-			field: 'configKey',
-			title: '参数键名',
-		},{
-			field: 'configValue',
-			title: '参数键值',
-		},{
-			field: 'createTime',
-			title: '创建时间',
-		}, {
-			field: 'Actions',
-			title: 'Actions',
-			sortable: false,
-			width: 110,
-			overflow: 'visible',
-			autoHide: false,
-			template: function(row) {
-				var status = '<a href="${ctxPath}/sys/role/disable?roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm btnList" title="启用" data-confirm="确认要禁用该配置吗？">\
-					<i class="la la-check-circle kt-font-success"></i>\
-					</a>';
-				if(row.status==2){
-					status = '<a href="${ctxPath}/sys/role/enable?roleCode='+row.roleCode+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm btnList" title="禁用" data-confirm="确认要启用该配置吗？">\
-						<i class="la la-ban kt-font-danger"></i>\
-						</a>';
-				}
-				return '\
-				<a href="${ctxPath}/sys/config/form?id='+row.id+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm" title="编辑">\
-					<i class="la la-edit"></i>\
-				</a>'+status+'\
-				<a href="${ctxPath}/sys/config/delete?id='+row.id+'" class="btn btn-sm btn-clean btn-icon btn-icon-sm btnList" title="删除" data-confirm="确认要删除该配置吗？">\
-				<i class="la la-trash"></i>\
-				</a>\
-			';
-			},
-		}
+	columnModel: [ 
+		{header:'参数名称', name:'configName', index:'config_name', width:200, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/sys/config/form?id='+row.id+'" class="btnList" data-title="编辑参数">'+val+'</a>';
+		}},
+		{header:'参数键名', name:'configKey', index:'config_key', width:200},
+		{header:'参数键值', name:'configValue', sortable:false, width:200, classes:"nowrap"},
+		{header:'操作', name:'actions', width:100, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(expIf("hasAuthority('sys:config:edit')")){ %>
+				actions.push('<a href="${ctx}/sys/config/form?id='+row.id+'" class="btnList" title="编辑参数"><i class="la la-edit"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/sys/config/delete?id='+row.id+'" class="btnList" title="删除参数" data-confirm="确认要删除该参数吗？"><i class="la la-trash"></i></a>&nbsp;');
+// 				actions.push('<a href="javascript:" class="btnMore" title="更多操作"><i class="fa fa-chevron-circle-right"></i></a>&nbsp;');
+// 				actions.push('<div class="moreItems">');
+// 				actions.push('<a href="${ctx}/sys/config/form?id='+row.id+'" class="btn btn-default btn-xs btnList" title="编辑参数"><i class="fa fa-pencil"></i> 编辑参数</a>&nbsp;');
+// 				actions.push('<a href="${ctx}/sys/config/form?id='+row.id+'" class="btn btn-default btn-xs btnList" title="编辑参数"><i class="fa fa-pencil"></i> 编辑参数</a>&nbsp;');
+// 				actions.push('<a href="${ctx}/sys/config/form?id='+row.id+'" class="btn btn-default btn-xs btnList" title="编辑参数"><i class="fa fa-pencil"></i> 编辑参数</a>&nbsp;');
+// 				actions.push('</div>');
+			<% } %>
+			return actions.join('');
+		}}
 	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+
+// 更新平台中的全部缓存，包含属性配置文件。
+$("#btnUpdateCache").click(function(){ 
+	js.ajaxSubmit("${ctx}/sys/cache/clearAll", function(data){
+		js.showMessage(datmessage);
+	});
+	return false;
 });
 </script>
-<% }; %>
-<%  var toolbar = { %>
-<div class="kt-subheader__wrapper">
-	<a href="#" class="btn btn-secondary btn-sm active" id="btnSearch">
-		<i class="flaticon-tool"></i> 查询
-	</a>
-	<a href="${ctxPath}/sys/config/form" class="btn btn-primary btn-sm">
-		<i class="flaticon2-add-1"></i> 新建参数
-	</a>
-</div>
-<% }; %>
-<% layout('/layouts/default.html', {title: '参数列表',  menuCode:'1044886630252683264', libs:[], jsSection: jsSection, toolbar: toolbar}){ %>
-<div class="kt-portlet kt-portlet--mobile">
-	<div class="kt-portlet__body" style="padding: 0px;">
-		<form class="kt-form kt-form--label-right kt-margin-20" id="searchForm" action="${ctxPath}/sys/config/listData" method="post">
-			<div class="row align-items-center">
-				<div class="col-md-3 col-sm-4 kt-margin-b-20-tablet-and-mobile">
-					<div class="kt-input-icon kt-input-icon--left">
-						<input type="text" class="form-control" placeholder="按参数名称搜索" name="configName">
-						<span class="kt-input-icon__icon kt-input-icon__icon--left">
-							<span><i class="la la-search"></i></span>
-						</span>
-					</div>
-				</div>
-				<div class="col-md-3 col-sm-4 kt-margin-b-20-tablet-and-mobile">
-					<#form:select id="kt_form_status" name="status" dictType="sys_search_status" class="form-control" />
-				</div>
-				<div class="col-md-6 col-sm-4 kt-margin-b-20-tablet-and-mobile">
-					<button type="submit" class="btn btn-primary">查询</button>
-					<button type="reset" class="btn btn-secondary">重置</button>
-				</div>
-			</div>
-		</form>
-		<!--begin: Datatable -->
-		<div class="kt-datatable" id="server_record_selection_config"></div>
-		<!--end: Datatable -->
-	</div>
-</div>
-<% } %>
+</body></html>

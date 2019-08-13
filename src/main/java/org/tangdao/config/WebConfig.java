@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.beetl.core.resource.ClasspathResourceLoader;
+import org.beetl.ext.spring.AccessExpressionIfFunction;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -44,11 +45,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @EnableWebMvc
 @EnableConfigurationProperties({MultipartProperties.class})
 public class WebConfig implements WebMvcConfigurer {
+	
+	@Bean
+	public AccessExpressionIfFunction accessExpressionIfFunction() {
+		return new AccessExpressionIfFunction();
+	}
 
 	@Value("${beetl.templatesPath}") String templatesPath;
 	@Bean(name = "beetlConfig")
 	public BeetlConfiguration beetlConfiguration() {
-		BeetlConfiguration beetlConfiguration = new BeetlConfiguration();
+		BeetlConfiguration beetlConfiguration = new BeetlConfiguration(accessExpressionIfFunction());
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		if (loader == null) {
 			loader = BeetlConfiguration.class.getClassLoader();

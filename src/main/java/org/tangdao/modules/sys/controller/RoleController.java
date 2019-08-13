@@ -131,11 +131,11 @@ public class RoleController extends BaseController {
 		QueryWrapper<Menu> queryWrapper = new QueryWrapper<Menu>();
 		queryWrapper.eq("status", Menu.STATUS_NORMAL);
 		if(role.getCurrentUser().isSuperAdmin()) {
-			queryWrapper.le("weight", Menu.WEIGHT_SUPER_ADMIN);
+			queryWrapper.lt("weight", Menu.WEIGHT_SUPER_ADMIN);
 		} else if(role.getCurrentUser().isAdmin()) {
-			queryWrapper.le("weight", Menu.WEIGHT_DEFAULT_ADMIN);
+			queryWrapper.lt("weight", Menu.WEIGHT_DEFAULT_ADMIN);
 		} else {
-			queryWrapper.le("weight", Menu.WEIGHT_DEFAULT);
+			queryWrapper.lt("weight", Menu.WEIGHT_DEFAULT);
 		}
 		queryWrapper.orderByAsc("tree_sort","menu_code");
 		

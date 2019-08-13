@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -82,6 +83,7 @@ public class MenuController extends BaseController {
 		return "modules/sys/menuForm";
 	}
 
+	@PreAuthorize("hasAuthority('sys:menu:edit')")
 	@PostMapping(value = "save")
 	public @ResponseBody String save(@Validated Menu menu) {
 		if(!UserUtils.getUser().isSuperAdmin()) {
@@ -92,6 +94,7 @@ public class MenuController extends BaseController {
 		return renderResult(Global.TRUE, "保存成功");
 	}
 
+	@PreAuthorize("hasAuthority('sys:menu:edit')")
 	@ResponseBody
 	@PostMapping(value = "delete")
 	public String delete(Menu menu) {
@@ -102,6 +105,7 @@ public class MenuController extends BaseController {
 		return renderResult(Global.TRUE, "删除成功");
 	}
 
+//	@PreAuthorize("hasAuthority('sys:menu:edit')")
 //	@ResponseBody
 //	@PostMapping(value = "disable")
 //	public String disable(Menu menu) {
@@ -117,6 +121,7 @@ public class MenuController extends BaseController {
 //		return renderResult(Global.TRUE, "停用成功");
 //	}
 //
+//	@PreAuthorize("hasAuthority('sys:menu:edit')")
 //	@ResponseBody
 //	@PostMapping(value = "enable")
 //	public String enable(Menu menu) {

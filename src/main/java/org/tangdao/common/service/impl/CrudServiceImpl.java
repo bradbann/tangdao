@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.tangdao.common.service.ICurdService;
 import org.tangdao.common.suports.DataEntity;
-import org.tangdao.common.suports.Page;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
@@ -275,9 +274,10 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 
 	@Override
 	public IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper) {
-		if(page==null) {
-			page = new Page<T>();
-		}
+//		if(page==null) {
+//			page = new Page<T>();
+//			page.setSize(20);
+//		}
 		return baseMapper.selectPage(page, queryWrapper);
 	}
 
@@ -294,9 +294,10 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 
 	@Override
 	public IPage<Map<String, Object>> pageMaps(IPage<T> page, Wrapper<T> queryWrapper) {
-		if(page==null) {
-			page = new Page<T>();
-		}
+//		if(page==null) {
+//			page = new Page<T>();
+//			page.setSize(20);
+//		}
 		return baseMapper.selectMapsPage(page, queryWrapper);
 	}
 

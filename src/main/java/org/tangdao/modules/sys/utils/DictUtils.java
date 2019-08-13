@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.tangdao.common.config.Contents;
 import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
@@ -17,8 +18,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class DictUtils {
-
-//	public static final String CACHE_DICT = "dictMap";
 
 	private static final class Static {
 		private static IDictDataService dictDataService = SpringUtils.getBean(IDictDataService.class);
@@ -112,7 +111,7 @@ public class DictUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, List<Map<String, Object>>> getDictList(DictData dictData, boolean reload) {
-		Map<String, List<Map<String, Object>>> dictDataMap = (Map<String, List<Map<String, Object>>>) Static.redis.opsForValue().get("tangdao:sysCache:dictMap");
+		Map<String, List<Map<String, Object>>> dictDataMap = (Map<String, List<Map<String, Object>>>) Static.redis.opsForValue().get(Contents.dictMap);
 		
 //		Map<String, List<Map<String, Object>>> dictDataMap = (Map<String, List<Map<String, Object>>>) CacheUtils.get(CACHE_DICT);
 //		Map<String, List<Map<String, Object>>> dictDataMap = null;
@@ -166,14 +165,13 @@ public class DictUtils {
 			}
 			// 存储
 //			Static.redis.opsForValue().set("tangdao:sysCache:dictMap", dictDataMap, -1L, TimeUnit.DAYS);
-			Static.redis.opsForValue().set("tangdao:sysCache:dictMap", dictDataMap);
+			Static.redis.opsForValue().set(Contents.dictMap, dictDataMap);
 //			CacheUtils.put(CACHE_DICT, dictDataMap);
 		}
 		return dictDataMap;
 	}
 
 	public static void clearCache() {
-//		CacheUtils.remove(CACHE_DICT);
-		Static.redis.expire("tangdao:sysCache:dictMap", 0L, TimeUnit.SECONDS);
+		Static.redis.expire(Contents.dictMap, 0L, TimeUnit.SECONDS);
 	}
 }

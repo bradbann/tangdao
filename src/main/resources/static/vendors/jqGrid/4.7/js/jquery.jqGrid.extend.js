@@ -892,13 +892,16 @@ function page(b, a, c) {
 }
 function pageHtml(c) {
     if (!c.pageNo) {
-        c.pageNo = 1
+        //c.pageNo = 1
+    	c.pageNo = c.current;
     }
     if (!c.pageSize) {
-        c.pageSize = 20
+        //c.pageSize = 20
+    	c.pageSize = c.size;
     }
     if (!c.count) {
-        c.count = 0
+//        c.count = 0
+    	c.count = c.total;
     }
     if (!c.bothNum) {
         c.bothNum = 1
@@ -974,7 +977,7 @@ function pageHtml(c) {
         b.push('<li class="page-item"><a href="javascript:;" class="page-link" onclick="' + c.funcName + "(" + a + "," + c.pageSize + ",'" + c.funcParam + "');\">" + (a + 1 - c.first) + "</a></li>\n")
     }
     if (a < c.centerBegin) {
-        b.push('<li class="page-item disabled"><a href="javascript:;" class="page-link">...</a></li>\n')
+        b.push('<li class="page-item disabled"><a href="javascript:;" class="page-link"><i class="fa fa-ellipsis-h"></i></a></li>\n')
     } else {
         c.centerEnd++
     }

@@ -45,7 +45,6 @@ public class WebSecurityConfig {
     
     @Configuration
     @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-//    @EnableGlobalMethodSecurity(prePostEnabled = true)
 	public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
     	
     	private final UserDetailsService userDetailsService;
@@ -67,7 +66,7 @@ public class WebSecurityConfig {
         public void configure(WebSecurity web) {
             web
             	.ignoring()
-            		.antMatchers("/static/**", "/webjars/**", "/v2/**", "/swagger**");
+            		.antMatchers("/static/**", "/webjars/**", "/v2/**", "/swagger**", "/global.min.js", "/error/**");
         }
 
         @Override

@@ -3,18 +3,10 @@
     <div class="card-header d-flex align-items-start justify-content-between pd-10-f">
       <div class="pt-1">角色管理</div>
       <div class="d-flex">
-          <button type="button" id="btnSearch" title="查询" class="btn btn-xs btn-default"><i data-feather="filter"></i>查询</button>
-          <button type="button" class="btn btn-xs btn-secondary mg-l-10"><i data-feather="plus"></i>新增</button>
-          <div class="dropdown mg-l-10">
-              <button class="btn btn-xs btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">用户导入</a>
-                <a class="dropdown-item" href="#">微信会员同步</a>
-                <a class="dropdown-item" href="#">新浪账户同步</a>
-                <a class="dropdown-item" href="#">账户分析</a>
-                <a class="dropdown-item" href="#">账户诊断</a>
-              </div>
-            </div>
+          <button type="button" id="btnSearch" title="查询" class="btn btn-xs btn-default"><i class="fa fa-filter"></i>查询</button>
+          <% if(expIf("hasAuthority('sys:role:edit')")){ %>
+          <button type="button" href="${ctx}/sys/role/form?op=add" class="btn btn-xs btn-secondary mg-l-10 btnTool" title="新增角色"><i class="fa fa-plus"></i>新增</button>
+          <% } %>
       </div>
     </div>
     <div class="card-body pd-10">
@@ -43,20 +35,20 @@
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
-		{header:'角色名称', name:'roleName', index:'a.role_name', width:150, align:"center", frozen:true, formatter: function(val, obj, row, act){
+		{header:'角色名称', name:'roleName', index:'role_name', width:150, align:"center", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/sys/role/form?roleCode='+row.roleCode+'&op=edit" class="btnList" data-title="编辑角色">'+(val||row.id)+'</a>';
 		}},
-		{header:'角色编码', name:'roleCode', index:'a.role_code', width:150, align:"center"},
-		{header:'排序号', name:'roleSort', index:'a.role_sort', width:80, align:"center"},
-		{header:'数据范围', name:'dataScope', index:'a.data_scope', width:100, align:"center", formatter: function(val, obj, row, act){
+		{header:'角色编码', name:'roleCode', index:'role_code', width:150, align:"center"},
+		{header:'排序号', name:'roleSort', index:'role_sort', width:80, align:"center"},
+		{header:'数据范围', name:'dataScope', index:'data_scope', width:100, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_role_data_scope')}, val, '未设置', true);
 		}},
-		{header:'更新时间', name:'updateDate', index:'a.update_date', width:130, align:"center"},
-		{header:'备注信息', name:'remarks', index:'a.remarks', width:160, align:"left"},
-		{header:'状态', name:'status', index:'a.status', width:80, align:"center", formatter: function(val, obj, row, act){
+		{header:'更新时间', name:'updateDate', index:'update_date', width:130, align:"center"},
+		{header:'备注信息', name:'remarks', index:'remarks', width:160, align:"left"},
+		{header:'状态', name:'status', index:'status', width:80, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_status')}, val, '未知', true);
 		}},
-		{header:'操作', name:'actions', width:130, sortable:false, title:false, formatter: function(val, obj, row, act){
+		{header:'操作', name:'actions', width:150, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 				actions.push('<a href="${ctx}/sys/role/form?roleCode='+row.roleCode+'&op=edit" class="btnList" title="编辑角色"><i class="la la-edit"></i></a>&nbsp;');
 				if (row.status == Global.STATUS_NORMAL){
@@ -66,6 +58,8 @@ $('#dataGrid').dataGrid({
 					actions.push('<a href="${ctx}/sys/role/enable?roleCode='+row.roleCode+'" class="btnList" title="启用角色" data-confirm="确认要启用该角色吗？"><i class="la la-check-circle"></i></a>&nbsp;');
 				}
 				actions.push('<a href="${ctx}/sys/role/delete?roleCode='+row.roleCode+'" class="btnList" title="删除角色" data-confirm="确认要删除该角色吗？"><i class="la la-trash"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/sys/role/form?roleCode='+row.roleCode+'&op=auth" class="btnList" title="角色分配功能权限">功能菜单</a>&nbsp;');
+				actions.push('<a href="${ctx}/sys/role/formAuthDataScope?roleCode='+row.roleCode+'" class="btnList" title="角色分配数据权限">数据权限</a>&nbsp;');
 			return actions.join('');
 		}}
 	],
@@ -75,3 +69,4 @@ $('#dataGrid').dataGrid({
 	}
 });
 </script>
+</body></html>

@@ -7,8 +7,10 @@
           <button type="button" id="btnRefreshTree" class="btn btn-xs btn-default mg-l-10" title="刷新"><i class="fa fa-redo-alt"></i> 刷新</button>
           <button type="button" id="btnExpandTreeNode" class="btn btn-xs btn-default mg-l-10" title="展开一级"><i class="fa fa-angle-double-down"></i> 展开</button>
           <button type="button" id="btnCollapseTreeNode" class="btn btn-xs btn-default mg-l-10" title="折叠全部"><i class="fa fa-angle-double-up"></i> 折叠</button>
+          <% if(expIf("hasAuthority('sys:menu:edit')")){ %>
           <a href="${ctx}/sys/menu/form" class="btn btn-xs btn-secondary mg-l-10 btnTool" title="新增菜单"><i class="fa fa-plus"></i>新增</a>
           <button type="button" id="btnUpdateSort" class="btn btn-xs btn-default mg-l-10" title="保存排序"><i class="fa fa-sort-amount-down"></i> 保存排序</button>
+          <% } %>
       </div>
     </div>
     <div class="card-body pd-10">
@@ -46,9 +48,13 @@
   		}},
   		{header:'排序', name:'treeSort', width:63, align:"center", formatter: function(val, obj, row, act){
   			var html = [];
+  			<% if(expIf("hasAuthority('sys:menu:edit')")){ %>
   			html.push('<input type="hidden" name="ids" value="'+row.key+'"/>');
 			html.push('<input name="sorts" type="text" value="'+row.treeSort+'" style="width:50px;height:19px;margin:0;padding:0;text-align:center;border:1px solid #ddd">');
-  			return html.join('');
+			<% }else{ %>
+			html.push(row.treeSort);
+			<% } %>
+			return html.join('');
   		}},
   		{header:'链接', name:'menuHref', width:150},
   		{header:'权限标识', name:'permission', width:150},
@@ -57,12 +63,12 @@
   		}},
   		{header:'操作', name:'actions', width:100, sortable:false, formatter: function(val, obj, row, act){
   			var actions = [];
-  			 
+  			<% if(expIf("hasAuthority('sys:menu:edit')")){ %>
   				actions.push('<a href="${ctx}/sys/menu/form?menuCode='+row.key+'" class="btnList" title="编辑菜单"><i class="la la-edit"></i></a>&nbsp;');
   				actions.push('<a href="${ctx}/sys/menu/delete?menuCode='+row.key+'" class="btnList" title="删除菜单" data-confirm="确认要删除该菜单及所有子菜单吗？" data-deltreenode="'+row.menuCode+'"><i class="la la-trash"></i></a>&nbsp;');
   				actions.push('<a href="${ctx}/sys/menu/form?parentCode='+row.key+'" class="btnList" title="新增下级菜单"><i class="la la-plus-square"></i></a>&nbsp;');
   				//actions.push('<a href="#" title="只看本节点" onclick="$(\'#dataGrid\').dataGrid(\'refreshTree\', 1, \''+row.id+'\')"><i class="fa fa-arrow-circle-down"></i></a>&nbsp;');
-  			 
+  			<% } %> 
   			return actions.join('');
   		}}
   	],
@@ -79,10 +85,10 @@
   // 绑定更新排序按钮
   $('#btnUpdateSort').click(function(){
   	 js.ajaxSubmitForm($("#dataGridForm"), function(data){
-  		if(data.result == Global.TRUE){
+  		if(datresult == Global.TRUE){
   			$('#btnRefreshTree').click();
   		}
-  		js.showMessage(data.message);
+  		js.showMessage(datmessage);
   	}, "json");
   });
   </script>

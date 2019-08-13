@@ -1,21 +1,94 @@
 package org.tangdao.modules.sys.controller;
 
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
+import org.tangdao.common.utils.StringUtils;
+import org.tangdao.modules.sys.model.domain.DictData;
+import org.tangdao.modules.sys.service.IDictDataService;
+import org.tangdao.modules.sys.utils.DictUtils;
 
-/**
- * <p>
- * 字典数据表 前端控制器
- * </p>
- *
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+/** 
+ * @ClassName: DictDataController.java 
+ * @Description: TODO(这里用一句话描述这个类的作用) 
  * @author ruyang
- * @since 2019-07-02
+ * @date 2018年12月28日 下午3:17:41
+ *  
  */
-@RestController
-@RequestMapping("/sys/dict-data")
+@Controller
+@RequestMapping(value = "/sys/dictData")
 public class DictDataController extends BaseController {
 
+	@Autowired
+ 	IDictDataService dictDataService;
+	
+	@ModelAttribute
+	public DictData get(String dictId, boolean isNewRecord) {
+		return dictDataService.get(dictId, isNewRecord);
+	}
+	
+	@RequestMapping(value = "list")
+	public String list(DictData dictData, Model model){
+		model.addAttribute("dictData", dictData);
+		return "modules/sys/dictDataList";
+	}
+	
+	@RequestMapping(value = "listData")
+	public @ResponseBody List<DictData> listData(DictData dictData){
+		QueryWrapper<DictData> queryWrapper = new QueryWrapper<DictData>();
+		
+		if(StringUtils.isNotBlank(dictData.getDictType())) {
+			queryWrapper.eq("dict_type", dictData.getDictType());
+		}
+		queryWrapper.orderByAsc("dict_sort");
+		return dictDataService.select(queryWrapper);
+	}
+	
+	@RequestMapping(value = "form")
+	public String form(DictData dictData, Model model){
+		model.addAttribute("dictData", dictData);
+		return "modules/sys/dictDataForm";
+	}
+	
+	@PostMapping(value = "save")
+	public @ResponseBody String save(@Validated DictData dictData){
+		dictDataService.saveOrUpdate(dictData);
+		DictUtils.clearCache();
+		return this.renderResult(Global.TRUE, "保存成功");
+	}
+	
+	@PostMapping(value = "delete")
+	public @ResponseBody Object delete(DictData dictData){
+		dictDataService.deleteById(dictData);
+		DictUtils.clearCache();
+		return this.renderResult(Global.TRUE, "删除成功");
+	}
+	
+	@PostMapping(value = "disable")
+	public @ResponseBody Object disable(DictData dictData){
+		dictData.setStatus(DictData.STATUS_DISABLE);
+		dictDataService.updateById(dictData);
+		DictUtils.clearCache();
+		return this.renderResult(Global.TRUE, "停用成功");
+	}
+	
+	@PostMapping(value = "enable")
+	public @ResponseBody Object enable(DictData dictData){
+		dictData.setStatus(DictData.STATUS_NORMAL);
+		dictDataService.updateById(dictData);
+		DictUtils.clearCache();
+		return this.renderResult(Global.TRUE, "启用成功");
+	}
+	
 }
