@@ -34,7 +34,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * @since 2019-07-02
  */
 @Controller
-@RequestMapping("/sys/role")
+@RequestMapping("${adminPath}/sys/role")
 public class RoleController extends BaseController {
 
 	@Autowired

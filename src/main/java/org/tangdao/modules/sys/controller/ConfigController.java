@@ -27,7 +27,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * @since 2019-07-02
  */
 @Controller
-@RequestMapping("/sys/config")
+@RequestMapping("${adminPath}/sys/config")
 public class ConfigController extends BaseController {
 
 	@Autowired

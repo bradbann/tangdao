@@ -4,13 +4,13 @@ package org.tangdao.modules.sys.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.utils.StringUtils;
@@ -29,8 +29,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * @author ruyang
  * @since 2019-07-02
  */
-@RestController
-@RequestMapping("/sys/dictType")
+@Controller
+@RequestMapping("${adminPath}/sys/dictType")
 public class DictTypeController extends BaseController {
 
 	@Autowired

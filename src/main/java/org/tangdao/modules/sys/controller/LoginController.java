@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.tangdao.common.config.Global;
@@ -19,6 +18,7 @@ import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.utils.UserUtils;
 
 @Controller
+@RequestMapping(value = "${adminPath}")
 public class LoginController extends BaseController {
 
 	/**
@@ -45,7 +45,7 @@ public class LoginController extends BaseController {
 	 * @return
 	 */
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping(value = { "/" })
+	@RequestMapping(value = { "index", "console" })
 	public String index(HttpServletRequest request, HttpServletResponse response, Model model) {
 		User user = UserUtils.getUser();
 		if (user == null) {

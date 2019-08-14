@@ -147,7 +147,12 @@
 	        <artifactId>beetl</artifactId>
 	        <version>3.0.7.RELEASE</version>
 		</dependency>
-			
+		
+		<dependency>
+		    <groupId>eu.bitwalker</groupId>
+		    <artifactId>UserAgentUtils</artifactId>
+		    <version>1.21</version>
+		</dependency>
 		
 	</dependencies>
 

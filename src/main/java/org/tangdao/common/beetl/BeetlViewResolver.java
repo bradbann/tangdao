@@ -8,6 +8,7 @@ import org.beetl.ext.spring.BeetlSpringViewResolver;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
+import org.tangdao.common.config.Global;
 import org.tangdao.common.utils.DateUtils;
 
 public class BeetlViewResolver extends BeetlSpringViewResolver {
@@ -45,6 +46,7 @@ public class BeetlViewResolver extends BeetlSpringViewResolver {
 		Map<String, Object> sharedVars = this.getConfig().getGroupTemplate().getSharedVars();
 		sharedVars.put("ctxStatic", ctxPath + "/static");
 		sharedVars.put("ctxPath", ctxPath);
+		sharedVars.put("ctxAdmin", ctxPath + Global.getAdminPath());
 		sharedVars.put("_version", "1.0.0-" + serverStartDate);
 
 		GroupTemplate groupTemplate = this.getConfig().getGroupTemplate();

@@ -1,5 +1,7 @@
 package org.tangdao.modules.sys.service;
 
+import org.tangdao.modules.sys.model.domain.Log;
+
 /**
  * <p>
  * 操作日志表 服务类
@@ -10,4 +12,5 @@ package org.tangdao.modules.sys.service;
  */
 public interface ILogService {
 
+	public void insertLog(Log entity);
 }

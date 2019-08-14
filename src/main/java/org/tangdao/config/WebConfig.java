@@ -9,6 +9,7 @@ import org.hibernate.validator.HibernateValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartProperties;
@@ -28,14 +29,19 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.tangdao.common.beetl.BeetlConfiguration;
 import org.tangdao.common.beetl.BeetlViewResolver;
+import org.tangdao.common.config.Global;
 import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.PropertiesUtils;
+import org.tangdao.common.utils.StringUtils;
+import org.tangdao.modules.sys.interceptor.LogInterceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -143,6 +149,28 @@ public class WebConfig implements WebMvcConfigurer {
 		localPropertySourcesPlaceholderConfigurer.setProperties(PropertiesUtils.getInstance().getProperties());
 		localPropertySourcesPlaceholderConfigurer.setIgnoreUnresolvablePlaceholders(true);
 		return localPropertySourcesPlaceholderConfigurer;
+	}
+	
+	@Configuration
+	@ConditionalOnProperty(name="web.interceptor.log.enabled", havingValue="true", matchIfMissing=true)
+	public static class LogInterceptorWebMvcConfigurer implements WebMvcConfigurer {
+		
+		@Override
+		public void addInterceptors(InterceptorRegistry registry) {
+			InterceptorRegistration registration = registry.addInterceptor(new LogInterceptor());
+			String apps = Global.getConfig("web.interceptor.log.addPathPatterns");
+			String epps = Global.getConfig("web.interceptor.log.excludePathPatterns");
+			for (String uri : StringUtils.split(apps, ",")){
+				if (StringUtils.isNotBlank(uri)){
+					registration.addPathPatterns(StringUtils.trim(uri));
+				}
+			}
+			for (String uri : StringUtils.split(epps, ",")){
+				if (StringUtils.isNotBlank(uri)){
+					registration.excludePathPatterns(StringUtils.trim(uri));
+				}
+			}
+		}
 	}
 	
 }

@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.beetl.ext.spring.BeetlSpringView;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
+import org.tangdao.common.config.Global;
+import org.tangdao.common.utils.StringUtils;
 
 /** 
  * @ClassName: BeetlView.java 
@@ -19,7 +21,12 @@ import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 public class BeetlView extends BeetlSpringView {
 
 	protected void renderMergedTemplateModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws NoSuchBeanDefinitionException, NoUniqueBeanDefinitionException {	
-        model.put("ctx", request.getContextPath());	
+		String uri = request.getRequestURI();	
+        String path = request.getContextPath();	
+        if (StringUtils.startsWith(uri, path + Global.getAdminPath())) {	
+        	path = path + Global.getAdminPath();
+        }
+        model.put("ctx", path);	
         super.renderMergedTemplateModel(model, request, response);	
 	} 
 }

@@ -23,7 +23,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 @Controller
-@RequestMapping(value = "/sys/admin")
+@RequestMapping(value = "${adminPath}/sys/admin")
 public class AdminController extends BaseController {
 
 	@Autowired

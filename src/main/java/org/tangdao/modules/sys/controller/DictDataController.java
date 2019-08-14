@@ -27,15 +27,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  *  
  */
 @Controller
-@RequestMapping(value = "/sys/dictData")
+@RequestMapping(value = "${adminPath}/sys/dictData")
 public class DictDataController extends BaseController {
 
 	@Autowired
  	IDictDataService dictDataService;
 	
 	@ModelAttribute
-	public DictData get(String dictId, boolean isNewRecord) {
-		return dictDataService.get(dictId, isNewRecord);
+	public DictData get(String id, boolean isNewRecord) {
+		return dictDataService.get(id, isNewRecord);
 	}
 	
 	@RequestMapping(value = "list")

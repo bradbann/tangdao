@@ -32,7 +32,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  * @since 2019-07-02
  */
 @Controller
-@RequestMapping("/sys/menu")
+@RequestMapping("${adminPath}/sys/menu")
 public class MenuController extends BaseController {
 
 	@Autowired

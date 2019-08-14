@@ -15,7 +15,7 @@ import org.tangdao.common.suports.BaseController;
  * @since 2019-07-02
  */
 @RestController
-@RequestMapping("/sys/log")
+@RequestMapping("${adminPath}/sys/log")
 public class LogController extends BaseController {
 
 }

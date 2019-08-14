@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.WebDataBinder;
 import org.tangdao.common.utils.ServletUtils;
 
@@ -14,6 +15,9 @@ public abstract class BaseController {
 	
 	public static final String WEB_DATA_BINDER_SOURCE = WebDataBinder.class.getName()+".SOURCE"; 
 	public static final String WEB_DATA_BINDER_TARGET = WebDataBinder.class.getName()+".TARGET"; 
+	
+	@Value("${adminPath}")	
+	protected String adminPath;	
 	
 	protected Object getWebDataBinderSource(HttpServletRequest request) {	
 		return request.getAttribute(WEB_DATA_BINDER_SOURCE);	

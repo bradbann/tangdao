@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,8 +23,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+import org.tangdao.modules.sys.model.domain.Log;
 import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.impl.PasswordEncoderService;
+import org.tangdao.modules.sys.utils.LogUtils;
 import org.tangdao.modules.sys.utils.UserUtils;
 
 @Configuration
@@ -47,6 +51,18 @@ public class WebSecurityConfig {
     @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 	public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
     	
+    	@Value("${security.loginUrl}")
+    	private String loginUrl;
+    	
+    	@Value("${security.logoutUrl}")
+    	private String logoutUrl;
+    	
+    	@Value("${security.successUrl}")
+    	private String successUrl;
+    	
+    	@Value("${security.authorize}")
+    	private String authorize;
+    	
     	private final UserDetailsService userDetailsService;
     	
     	private final PasswordEncoderService passwordEncoderService;
@@ -66,7 +82,7 @@ public class WebSecurityConfig {
         public void configure(WebSecurity web) {
             web
             	.ignoring()
-            		.antMatchers("/static/**", "/webjars/**", "/v2/**", "/swagger**", "/global.min.js", "/error/**");
+            		.antMatchers("/static/**", "/webjars/**", "/v2/**", "/swagger**");
         }
 
         @Override
@@ -76,10 +92,11 @@ public class WebSecurityConfig {
             http
                     .csrf()
                     .disable()
+                    .antMatcher(authorize)    
                     .authorizeRequests()
-                    .anyRequest().authenticated()
+//                    .anyRequest().authenticated()
             .and().formLogin()
-                    .loginPage("/login").permitAll()
+                    .loginPage(loginUrl).permitAll()
                     .successHandler(new SimpleUrlAuthenticationSuccessHandler() {
 						@Override
 						public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -94,15 +111,32 @@ public class WebSecurityConfig {
 						    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));  					    
 							SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 							
-							super.setDefaultTargetUrl("/");
+							// 记录用户登录日志
+							LogUtils.saveLog(user, request, "系统登录", Log.TYPE_LOGIN_LOGOUT);
+							
+							super.setDefaultTargetUrl(successUrl);
 							super.setUseReferer(true);
 							super.onAuthenticationSuccess(request, response, authentication);
 						}
 					})
-                    .failureUrl("/login?error=true")
+                    .failureUrl(loginUrl+"?error=true")
             .and().logout()
-             		.logoutUrl("/logout")
-             		.logoutSuccessUrl("/login?logout");
+             		.logoutSuccessHandler(new SimpleUrlLogoutSuccessHandler() {
+             			public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
+             					Authentication authentication) throws IOException, ServletException {
+             				if(authentication!=null) {
+             					Object principal = authentication.getPrincipal();
+             					if (principal != null) {
+             						if (principal instanceof User) {
+             							LogUtils.saveLog((User)principal, request, "系统退出", Log.TYPE_LOGIN_LOGOUT);
+             						}
+             					}
+             				}
+             				super.setDefaultTargetUrl(logoutUrl);
+             				super.setUseReferer(true);
+             				super.onLogoutSuccess(request, response, authentication);
+             			}
+					});
         }
 	}
 

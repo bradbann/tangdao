@@ -1,9 +1,16 @@
 package org.tangdao.modules.sys.model.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Map;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.tangdao.common.utils.MapUtils;
+import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.utils.TimeUtils;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
@@ -23,12 +30,19 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("sys_log")
 public class Log implements Serializable {
+	
+	// 日志类型（access：接入日志；update：修改日志；select：查询日志；loginLogout：登录登出；）
+	public static final String TYPE_ACCESS = "access";
+	public static final String TYPE_UPDATE = "update";
+	public static final String TYPE_SELECT = "select";
+	public static final String TYPE_LOGIN_LOGOUT = "loginLogout";
 
     private static final long serialVersionUID = 1L;
 
     /**
      * 编号
      */
+    @TableId
     private String id;
 
     /**
@@ -54,7 +68,7 @@ public class Log implements Serializable {
     /**
      * 创建时间
      */
-    private LocalDateTime createDate;
+    private Date createDate;
 
     /**
      * 请求URI
@@ -124,7 +138,55 @@ public class Log implements Serializable {
     /**
      * 执行时间
      */
-    private BigDecimal executeTime;
+    private Long executeTime;
 
+    // 操作提交的数据，临时存储用
+    @TableField(exist=false)
+    private Map<String, String[]> paramsMap; 	
+    
+    // 
+    public String getExecuteTimeFormat(){
+		return TimeUtils.formatDateAgo(executeTime);
+	}
+
+	/**
+	 * 设置请求参数
+	 * @param paramMap
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void setRequestParams(Map paramsMap){
+		if (paramsMap == null){
+			return;
+		}
+		if (this.paramsMap == null){
+			this.paramsMap = MapUtils.newHashMap();
+		}
+		StringBuilder params = new StringBuilder();
+		for (Map.Entry<String, String[]> param : ((Map<String, String[]>)paramsMap).entrySet()){
+			params.append(("".equals(params.toString()) ? "" : "&") + param.getKey() + "=");
+			String paramValue = (param.getValue() != null && param.getValue().length > 0 ? param.getValue()[0] : "");
+			params.append(StringUtils.abbr(StringUtils.endsWithIgnoreCase(param.getKey(), "password") ? "*" : paramValue, 1000));
+			this.paramsMap.put(param.getKey(), param.getValue());
+		}
+		this.requestParams = params.toString();
+	}
+
+	/**
+	 * 根据名称获取参数（只有先执行setParams(Map)后才有效）
+	 * @param name
+	 * @return
+	 */
+	public String getRequestParam(String name) {
+		if (paramsMap == null){
+			return null;
+		}
+        String[] values = (String[])paramsMap.get(name);
+        return values != null && values.length > 0 ? values[0] : null;
+    }
+	
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this);
+	}
 
 }

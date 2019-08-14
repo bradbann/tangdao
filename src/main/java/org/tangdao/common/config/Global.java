@@ -145,4 +145,8 @@ public class Global implements PropertySourceLoader {
 
 		return path != null ? FileUtils.path(baseDir + USERFILES_BASE_URL + path) : FileUtils.path(baseDir);
 	}
+	
+	public static String getAdminPath() {
+		return getConfig("adminPath", StringUtils.EMPTY);
+	}
 }

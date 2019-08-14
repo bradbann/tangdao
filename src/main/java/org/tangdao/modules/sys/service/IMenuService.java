@@ -19,4 +19,6 @@ public interface IMenuService extends ITreeService<Menu> {
 	
 	public List<Menu> findByUserMenu(Menu menu, boolean isFindParentAndChild);
 	
+	public String getMenuNamePath(String href, String permission);
+	
 }
