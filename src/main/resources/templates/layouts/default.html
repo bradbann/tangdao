@@ -2,8 +2,6 @@
 <% print('<'+'html'+'><'+'head'+'>'); %>
 <% include('/include/head.html', {title: title!}){} %>
 <% include('/include/css.html', {libs: libs!}){} %>
-</head><body class="hold-transition ${bodyClass!}">
-<% if (!@ListUtils.inString('layout', libs!)){ %>
-<div class="wrapper">${layoutContent}</div>
-<% }else{ %>${layoutContent}<% } %>
+</head><body<%if(isNotEmpty(bodyClass!)){%> class="${bodyClass!}"<%}%>>
+${layoutContent}
 <% include('/include/script.html', {libs: libs!}){} %>

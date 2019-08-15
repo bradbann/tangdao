@@ -1,17 +1,22 @@
 <div class="content-header navbar-header">
-    <div class="content-search">
-        <i data-feather="search"></i>
-        <input type="search" class="form-control" placeholder="Search...">
-    </div>
-    <nav class="navbar-right">
-        <div class="dropdown dropdown-notification">
-            <a href="" class="dropdown-link new-indicator" data-toggle="dropdown">
+<nav class="navbar-right">
+    	<div class="nav-link" >
+            <a href="javascript:;" class="nav-icon"  data-toggle="tooltip" title="主题切换">
+                <i data-feather="archive"></i>
+            </a>
+        </div>
+    	<div class="nav-link">
+            <a href="javascript:;" class="nav-icon" >
+                <i data-feather="image"></i>
+            </a>
+        </div><!-- dropdown -->
+        <div class="nav-link dropdown dropdown-notification">
+            <a href="javascript:;" class="new-indicator nav-icon" data-toggle="dropdown">
                 <i data-feather="bell"></i>
-                <span>2</span>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <div class="dropdown-header">Notifications</div>
-                <a href="" class="dropdown-item">
+                <a href="javascript:;" class="dropdown-item">
                     <div class="media">
                         <div class="avatar avatar-sm avatar-online"><img src="${ctxStatic}/images/img15.png"
                                 class="rounded-circle" alt=""></div>
@@ -21,19 +26,18 @@
                         </div><!-- media-body -->
                     </div><!-- media -->
                 </a>
-                <div class="dropdown-footer"><a href="">View all Notifications</a></div>
+                <div class="dropdown-footer"><a href="javascript:;">View all Notifications</a></div>
             </div><!-- dropdown-menu -->
         </div><!-- dropdown -->
-        <div class="dropdown dropdown-profile">
-            <a href="" class="dropdown-link" data-toggle="dropdown" data-hover="dropdown">
+        <div class="nav-link dropdown dropdown-profile mg-l-10">
+            <a href="javascript:;" class="dropdown-link dropdown-avatar" data-toggle="dropdown" data-hover="dropdown">
                 <div class="avatar avatar-sm"><img src="${ctxStatic+user.avatar!'/images/user1.jpg'}" class="rounded-circle" alt=""></div>
             </a><!-- dropdown-link -->
             <div class="dropdown-menu dropdown-menu-right">
-                <h6 class="tx-semibold mg-b-5">${user.nickname!user.username}</h6>
-                <p class="mg-b-25 tx-12 tx-color-03">${user.email!user.mobile}</p>
+                <h6 class="tx-semibold mg-b-5 mg-t-10">${user.nickname!user.username}</h6>
+                <p class="mg-b-20 tx-12 tx-color-03">${user.email!user.mobile}</p>
 
                 <a href="" class="dropdown-item"><i data-feather="user"></i> 我的信息</a>
-                <div class="dropdown-divider"></div>
                 <a href="page-help-center.html" class="dropdown-item"><i data-feather="help-circle"></i>
                     帮助中心</a>
                 <a href="" class="dropdown-item"><i data-feather="life-buoy"></i> 活动</a>

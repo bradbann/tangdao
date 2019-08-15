@@ -40,7 +40,7 @@ public class ConfigUtils {
 		if (cacheMap == null) {
 			cacheMap = MapUtils.newHashMap();
 			QueryWrapper<Config> queryWrapper = new QueryWrapper<Config>();
-			queryWrapper.eq("status", Config.STATUS_NORMAL);
+//			queryWrapper.eq("status", Config.STATUS_NORMAL);
 			List<Config> list = Static.configService.select(queryWrapper);
 			for (Config item : list) {
 				cacheMap.put(item.getConfigKey(), item);

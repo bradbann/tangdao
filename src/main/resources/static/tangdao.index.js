@@ -240,7 +240,7 @@ $(function () {
     if (b.length > 0) {
          var a = b.data("url");
          if (a != "" && a != ctx) {
-        	js.addTabPage(null, '<i class="fa fa-home"></i>控制台', a, false, false);
+        	js.addTabPage(null, '我的工作台', a, false, false);
          }
      }
     // var c = $("#modifyPasswordTip");

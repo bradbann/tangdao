@@ -14,3 +14,10 @@
 <link rel="stylesheet" href="${ctxStatic}/vendors/jquery.ztree/3.5/css/metro/zTreeStyle.css">
 <% } %>
 <link rel="stylesheet" href="${ctxStatic}/css/tangdao.css">
+<% 
+var themeName = @ConfigUtils.getConfig2('sys.index.skinName', 'default');
+if(isNotEmpty(themeName)){
+ %>
+<link rel="stylesheet" href="${ctxStatic}/css/skin.${themeName}.css">
+<% } %>
+ 
