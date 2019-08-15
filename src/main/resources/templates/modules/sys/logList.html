@@ -18,10 +18,12 @@
           </div>
         </div>
         <div class="form-group">
-          <div class="input-group wd-250">
+          <div class="input-group" style="width:420px;">
             <div class="input-group-prepend">
               <span class="input-group-text">操作时间</span>
             </div>
+            <#form:input name="d1" class="form-control mg-r-5" />
+            <#form:input name="d2" class="form-control" />
           </div>
         </div>
         <div class="form-group">
@@ -49,7 +51,7 @@ $('#dataGrid').dataGrid({
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_log_type')}, val, '未知', true);
 		}},
 		{header:'操作用户', name:'createByName', index:'create_by_name', width:100, align:"center", formatter: function(val, obj, row, act){
-			return '<span title="账号：'+row.createBy+'">'+ row.createByName;
+			return '<span data-toggle="tooltip" title="账号：'+row.createBy+'">'+ row.createByName;
 		}},
 		{header:'异常', name:'isException', index:'is_exception', width:60, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_yes_no')}, val, '未知', true);
@@ -69,7 +71,7 @@ $('#dataGrid').dataGrid({
 	],
 	// 加载成功后执行事件
 	ajaxSuccess: function(data){
-		
+		$('[data-toggle="tooltip"]').tooltip();
 	}
 });
 </script>
