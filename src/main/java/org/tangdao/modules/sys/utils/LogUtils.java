@@ -2,6 +2,8 @@ package org.tangdao.modules.sys.utils;
 
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,11 +14,11 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.method.HandlerMethod;
+import org.tangdao.common.annotation.DbSaveLog;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseEntity;
 import org.tangdao.common.utils.ExceptionUtils;
 import org.tangdao.common.utils.IpUtils;
-import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.ObjectUtils;
 import org.tangdao.common.utils.SpringUtils;
 import org.tangdao.common.utils.StringUtils;
@@ -25,6 +27,9 @@ import org.tangdao.modules.sys.model.domain.Log;
 import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.ILogService;
 import org.tangdao.modules.sys.service.IMenuService;
+
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 
 import eu.bitwalker.useragentutils.UserAgent;
 
@@ -57,6 +62,24 @@ public class LogUtils {
 			return;
 		}
 		Log log = new Log();
+		if (handler instanceof HandlerMethod){
+			HandlerMethod hm = ((HandlerMethod)handler);
+			Method m = hm.getMethod();
+			DbSaveLog dsl = m.getAnnotation(DbSaveLog.class);
+			if(dsl!=null) {
+				if(dsl.logIgnore()) {
+					return;
+				}
+				if(StringUtils.isNotBlank(logTitle)) {
+					logTitle = dsl.logTitle();
+				}
+				if(StringUtils.isNotBlank(logType)) {
+					logType = dsl.logType();
+				}
+				log.setBizKey(dsl.bizKey());
+				log.setBizType(dsl.bizType());
+			}
+		}
 		log.setLogTitle(logTitle);
 		log.setLogType(logType);
 		if (StringUtils.isBlank(log.getLogType())){
@@ -120,8 +143,14 @@ public class LogUtils {
 					Method m = hm.getMethod();
 					// 获取权限字符串
 					PreAuthorize rp = m.getAnnotation(PreAuthorize.class);
-					permission = (rp != null ? StringUtils.join(rp.value(), ",") : "");
-					
+					if(rp != null) {
+						Pattern pattern = Pattern.compile("(?<=\\()[^\\)]+"); 
+						Matcher matcher = pattern.matcher(rp.value());
+						while(matcher.find()){
+							permission = permission + matcher.group() + ",";
+						} 
+						permission = permission.replaceAll("'", "");
+					}
 					// 尝试获取BaseEntity的设置的主键值
 					for (Class<?> type : m.getParameterTypes()){
 						try {
@@ -132,21 +161,15 @@ public class LogUtils {
 							};
 							// 如果是BaseEntity的子类，则获取主键名
 							if (superClass != null){
-								System.out.println(JsonMapper.toJson(superClass));
-//								TableName t = type.getAnnotation(TableName.class);
-//								for (Column c : t.columns()){
-//									if (c.isPK()){
-//										try {
-//											String attrName = MapperHelper.getAttrName(c);
-//											if (attrName != null){
-//												log.setBizKey(log.getRequestParam(attrName));
-//												log.setBizType(type.getSimpleName());
-//											}
-//										} catch (Exception e) {
-//											break;
-//										}
-//									}
-//								}
+								try {
+									TableInfo tableInfo = TableInfoHelper.getTableInfo(type);
+									if(tableInfo!=null) {
+										log.setBizKey(log.getRequestParam(tableInfo.getKeyProperty()));
+										log.setBizType(type.getSimpleName());
+									}
+								} catch (Exception e) {
+									break;
+								}
 							}
 						} catch (Exception e) {
 							break;

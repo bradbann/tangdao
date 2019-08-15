@@ -1,5 +1,12 @@
 package org.tangdao.common.suports;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.tangdao.common.utils.CookieUtils;
+import org.tangdao.common.utils.ObjectUtils;
+import org.tangdao.common.utils.StringUtils;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,5 +18,36 @@ public class Page<T> extends com.baomidou.mybatisplus.extension.plugins.paginati
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
+	public Page() {
+		
+	}
+	
+	public Page (HttpServletRequest request, HttpServletResponse response ,String defaultPageSize){
+	    this.setCurrent(1);
+	    this.setSize(ObjectUtils.toInteger(defaultPageSize));
+	    
+	    String pageNo = request.getParameter("pageNo");
+	    if (StringUtils.isNumeric(pageNo)) {
+	    	CookieUtils.setCookie(response, "pageNo", pageNo);
+	        this.setCurrent(Integer.parseInt(pageNo));
+	    }else {
+	    	if (pageNo != null && StringUtils.isNumeric(pageNo = CookieUtils.getCookie(request, "pageNo"))) {
+	            this.setCurrent(Integer.parseInt(pageNo));
+	         }
+	    }
+	    String pageSize = request.getParameter("pageSize");
+	    if (StringUtils.isNumeric(pageSize)) {
+	    	CookieUtils.setCookie(response, "pageSize", pageSize);
+	    	this.setSize(Integer.parseInt(pageSize));
+	    }else {
+	    	if (pageSize != null && StringUtils.isNumeric(pageSize = CookieUtils.getCookie(request, "pageSize"))) {
+	    		this.setSize(Integer.parseInt(pageSize));
+	    	}
+	    }
+	}
+	
+	public Page (HttpServletRequest request, HttpServletResponse response){
+		this(request, response, "20");
+	}
 }

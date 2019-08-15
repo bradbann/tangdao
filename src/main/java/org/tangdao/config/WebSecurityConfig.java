@@ -60,8 +60,8 @@ public class WebSecurityConfig {
     	@Value("${security.successUrl}")
     	private String successUrl;
     	
-    	@Value("${security.authorize}")
-    	private String authorize;
+    	@Value("${security.authorizeUrl}")
+    	private String authorizeUrl;
     	
     	private final UserDetailsService userDetailsService;
     	
@@ -92,9 +92,8 @@ public class WebSecurityConfig {
             http
                     .csrf()
                     .disable()
-                    .antMatcher(authorize)    
                     .authorizeRequests()
-//                    .anyRequest().authenticated()
+                    .antMatchers(authorizeUrl).authenticated()
             .and().formLogin()
                     .loginPage(loginUrl).permitAll()
                     .successHandler(new SimpleUrlAuthenticationSuccessHandler() {
@@ -114,26 +113,24 @@ public class WebSecurityConfig {
 							// 记录用户登录日志
 							LogUtils.saveLog(user, request, "系统登录", Log.TYPE_LOGIN_LOGOUT);
 							
+							super.setAlwaysUseDefaultTargetUrl(true);
 							super.setDefaultTargetUrl(successUrl);
-							super.setUseReferer(true);
+//							super.setUseReferer(true);
 							super.onAuthenticationSuccess(request, response, authentication);
 						}
 					})
                     .failureUrl(loginUrl+"?error=true")
             .and().logout()
+            		.logoutUrl(logoutUrl).permitAll()
              		.logoutSuccessHandler(new SimpleUrlLogoutSuccessHandler() {
              			public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
              					Authentication authentication) throws IOException, ServletException {
-             				if(authentication!=null) {
-             					Object principal = authentication.getPrincipal();
-             					if (principal != null) {
-             						if (principal instanceof User) {
-             							LogUtils.saveLog((User)principal, request, "系统退出", Log.TYPE_LOGIN_LOGOUT);
-             						}
-             					}
-             				}
-             				super.setDefaultTargetUrl(logoutUrl);
-             				super.setUseReferer(true);
+         					if (authentication != null && authentication.getPrincipal() != null) {
+         						LogUtils.saveLog((User)authentication.getPrincipal(), request, "系统退出", Log.TYPE_LOGIN_LOGOUT);
+         					}
+         					super.setAlwaysUseDefaultTargetUrl(true);
+             				super.setDefaultTargetUrl(loginUrl+"?logout");
+//             				super.setUseReferer(true);
              				super.onLogoutSuccess(request, response, authentication);
              			}
 					});

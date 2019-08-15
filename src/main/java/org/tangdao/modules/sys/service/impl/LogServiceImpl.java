@@ -2,9 +2,13 @@ package org.tangdao.modules.sys.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.mapper.LogMapper;
 import org.tangdao.modules.sys.model.domain.Log;
 import org.tangdao.modules.sys.service.ILogService;
+
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * <p>
@@ -25,5 +29,20 @@ public class LogServiceImpl  implements ILogService {
 	 */
 	public void insertLog(Log entity) {
 		this.logMapper.insert(entity);
+	}
+	
+	public Log get(String id) {
+		if(StringUtils.isBlank(id)) {
+			return new Log();
+		}
+		Log log = this.logMapper.selectById(id);
+		if(log!=null) {
+			return log;
+		}
+		return new Log();
+	}
+	
+	public IPage<Log> page(IPage<Log> page, Wrapper<Log> queryWrapper){
+		return this.logMapper.selectPage(page, queryWrapper);
 	}
 }

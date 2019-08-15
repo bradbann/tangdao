@@ -14,6 +14,7 @@ import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
 import org.tangdao.modules.sys.model.domain.Config;
 import org.tangdao.modules.sys.service.IConfigService;
+import org.tangdao.modules.sys.utils.ConfigUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -64,12 +65,14 @@ public class ConfigController extends BaseController {
 	@PostMapping(value = "save")
 	public @ResponseBody String save(@Validated Config config) {
 		configService.saveOrUpdate(config);
+		ConfigUtils.clearCache();
 		return renderResult(Global.TRUE, "保存成功");
 	}
 	
 	@PostMapping(value = "delete")
 	public @ResponseBody String delete(Config config) {
 		configService.deleteById(config);
+		ConfigUtils.clearCache();
 		return renderResult(Global.TRUE, "删除成功");
 	}
 	
@@ -77,6 +80,7 @@ public class ConfigController extends BaseController {
 	public @ResponseBody Object disable(Config config) {
 		config.setStatus(Config.STATUS_DISABLE);
 		configService.updateById(config);
+		ConfigUtils.clearCache();
 		return renderResult(Global.TRUE, "停用成功");
 	}
 
@@ -84,6 +88,7 @@ public class ConfigController extends BaseController {
 	public @ResponseBody Object enable(Config config) {
 		config.setStatus(Config.STATUS_NORMAL);
 		configService.updateById(config);
+		ConfigUtils.clearCache();
 		return renderResult(Global.TRUE, "启用成功");
 	}
 }
