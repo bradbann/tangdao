@@ -8837,9 +8837,10 @@ textarea.form-control {
 .dropdown-message .dropdown-menu,
 .dropdown-notification .dropdown-menu {
   width: 300px;
-  padding: 0;
   margin: 0;
-  box-shadow: none; }
+  padding: 0;
+  box-shadow: none; 
+  }
 
 .dropdown-message .dropdown-header,
 .dropdown-notification .dropdown-header {
@@ -8932,13 +8933,13 @@ textarea.form-control {
     background-color: #f5f6fa; }
 .dropdown-profile .dropdown-avatar{
 	display: block;
-	padding: 0 15px;
+	padding: 9px;
 }
 .dropdown-profile .dropdown-menu {
   border-color: rgba(72, 94, 144, 0.16);
   width: 230px;
   padding: 15px;
-  margin-top: 14.5px;
+  margin-top: 1px;
   box-shadow: none;
   border-bottom-right-radius: 0.25rem;
   border-bottom-left-radius: 0.25rem; }
@@ -8982,8 +8983,6 @@ textarea.form-control {
 
    .dropdown-profile .dropdown-link:hover .avatar img,  .dropdown-profile .dropdown-link:focus .avatar img {
     background-color: #e5e5e5; }
-     .dropdown-profile .dropdown-menu {
-      margin-top: 10px; }
    .dropdown-profile .dropdown-item {
     width: auto;
     margin: 0 -10px;
@@ -40072,8 +40071,6 @@ a.bg-twitter:hover, a.bg-twitter:focus, button.bg-twitter:hover, button.bg-twitt
 } 
 
 .layui-layer-btn .layui-layer-btn0{
-  border-color: #7987a1 !important;
-  background-color: #7987a1 !important;
   color: #fff !important;
 }
 .tabpanel_mover li .title i {

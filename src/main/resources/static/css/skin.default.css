@@ -29,8 +29,9 @@
 .content-header{
 	background-color: #0168fa;
 }
-.content-heade.navbar-header{
-	
+.layui-layer-btn .layui-layer-btn0{
+  border-color: #0168fa !important;
+  background-color: #0168fa !important;
 }
 .content-header.navbar-header .nav-icon i,
 .content-header.navbar-header .nav-icon svg{
@@ -41,9 +42,19 @@
 .content-header.navbar-header a.nav-icon:hover svg{
 	color: #fff;
 }
-
+.content-header.navbar-header a.dropdown-avatar:hover,
 .content-header.navbar-header a.nav-icon:hover{
 	background-color:  rgba(255, 255, 255, 0.2);
 }
+/*
+.content-header.navbar-header .dropdown-notification.show{
+	background: #fff;
+}
+.content-header.navbar-header .dropdown-notification.show i,
+.content-header.navbar-header .dropdown-notification.show svg,
+.content-header.navbar-header .dropdown-notification.show a.nav-icon:hover i,
+.content-header.navbar-header .dropdown-notification.show a.nav-icon:hover svg{
+	color: #0168fa;
+}*/
 
 

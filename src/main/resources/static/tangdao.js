@@ -15,7 +15,7 @@ $(function() {
     feather.replace();
 
     $('[data-toggle="tooltip"]').tooltip();
-
+    
     $(document).on("click", ".addTabPage", function(e) {
         // js.log(e);
         var $this = $(this)

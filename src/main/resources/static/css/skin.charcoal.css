@@ -138,6 +138,6 @@ a{
 .show > .btn-primary.dropdown-toggle:focus,
 .pagination-filled .page-item.active .page-link,
 .layui-layer-btn .layui-layer-btn0{
-	background-color: #7987a1;
-	border-color: #7987a1;
+	background-color: #7987a1 !important;
+	border-color: #7987a1 !important;
 }
