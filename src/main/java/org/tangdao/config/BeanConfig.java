@@ -2,10 +2,7 @@ package org.tangdao.config;
 
 import java.io.Serializable;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +17,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.tangdao.common.utils.SpringUtils;
 
@@ -27,8 +25,8 @@ import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 
 @Configuration
 @EnableCaching
+//maxInactiveIntervalInSeconds 默认是1800秒过期，这里测试修改为60秒
 @EnableRedisHttpSession
-@AutoConfigureAfter({ RedisAutoConfiguration.class })
 public class BeanConfig {
 
 	@Bean
@@ -42,23 +40,20 @@ public class BeanConfig {
 	public SpringUtils springUtils() {
 		return new SpringUtils();
 	}
-
+	
 	@Primary
-	@Bean({ "redisTemplate" })
+	@Bean("redisTemplate")
 	public RedisTemplate<String, Serializable> redisTemplate(
-			@Qualifier("redisConnectionFactory") RedisConnectionFactory redisConnectionFactory,
-			@Qualifier("tangdaoSerializer") RedisSerializer<Object> tangdaoSerializer) {
+			RedisConnectionFactory redisConnectionFactory) {
 		RedisTemplate<String, Serializable> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
 		redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-		redisTemplate.setDefaultSerializer(tangdaoSerializer);
+		redisTemplate.setDefaultSerializer(this.redisSerializer());
 		redisTemplate.setConnectionFactory(redisConnectionFactory);
 		return redisTemplate;
 	}
 
-	@Bean("tangdaoSerializer")
-	@ConditionalOnMissingBean(name = "tangdaoSerializer")
-	public RedisSerializer<Object> tangdaoSerializer() {
+	public RedisSerializer<Object> redisSerializer() {
 		return new RedisSerializer<Object>() {
 
 			// 为了方便进行对象与字节数组的转换，所以应该首先准备出两个转换器
@@ -83,12 +78,16 @@ public class BeanConfig {
 		};
 	}
 
-	@Bean("tangdaoRedisMessageListenerContainer")
-	RedisMessageListenerContainer container(
-			@Qualifier("redisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
+	@Bean
+	RedisMessageListenerContainer container(RedisConnectionFactory redisConnectionFactory) {
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 		container.setConnectionFactory(redisConnectionFactory);
 		return container;
 	}
-
+	
+	@Bean
+	public static ConfigureRedisAction configureRedisAction() {
+		return ConfigureRedisAction.NO_OP;
+	}
+	
 }

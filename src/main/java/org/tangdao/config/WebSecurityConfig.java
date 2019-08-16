@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,11 +26,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.session.Session;
+import org.springframework.session.data.redis.RedisOperationsSessionRepository;
+import org.springframework.session.security.SpringSessionBackedSessionRegistry;
+import org.tangdao.common.utils.IpUtils;
+import org.tangdao.common.utils.UserAgentUtils;
 import org.tangdao.modules.sys.model.domain.Log;
 import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.impl.PasswordEncoderService;
 import org.tangdao.modules.sys.utils.LogUtils;
 import org.tangdao.modules.sys.utils.UserUtils;
+
+import eu.bitwalker.useragentutils.UserAgent;
 
 @Configuration
 @EnableWebSecurity
@@ -66,7 +76,7 @@ public class WebSecurityConfig {
     	private final UserDetailsService userDetailsService;
     	
     	private final PasswordEncoderService passwordEncoderService;
-
+    	
         @Autowired
         public FormLoginWebSecurityConfigurerAdapter(@Qualifier("userServiceImpl") UserDetailsService userDetailsService, PasswordEncoderService passwordEncoderService) {
             this.userDetailsService = userDetailsService;
@@ -113,6 +123,9 @@ public class WebSecurityConfig {
 							// 记录用户登录日志
 							LogUtils.saveLog(user, request, "系统登录", Log.TYPE_LOGIN_LOGOUT);
 							
+							request.getSession().setAttribute("host", IpUtils.getRemoteAddr(request));
+							UserAgent userAgent = UserAgentUtils.getUserAgent(request);
+							request.getSession().setAttribute("deviceName", userAgent.getOperatingSystem().getName());
 							super.setAlwaysUseDefaultTargetUrl(true);
 							super.setDefaultTargetUrl(successUrl);
 //							super.setUseReferer(true);
@@ -134,7 +147,35 @@ public class WebSecurityConfig {
              				super.onLogoutSuccess(request, response, authentication);
              			}
 					});
+            http
+            	.sessionManagement()
+                 // 无效session跳转
+            	.invalidSessionUrl(loginUrl)
+            	.maximumSessions(1)
+                 // session过期跳转
+            	.expiredUrl(loginUrl+"?expired=true")
+            	.sessionRegistry(sessionRegistry());
         }
+        
+        /**
+         * 解决session失效后 sessionRegistry中session没有同步失效的问题，启用并发session控制，首先需要在配置中增加下面监听器
+         * @return
+         */
+        @Bean
+        public HttpSessionEventPublisher httpSessionEventPublisher() {
+            return new HttpSessionEventPublisher();
+        }
+        
+        @Lazy
+        @Autowired
+        public RedisOperationsSessionRepository sessionRepository;
+        
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		@Bean
+        public SpringSessionBackedSessionRegistry<Session> sessionRegistry() {
+        	return new SpringSessionBackedSessionRegistry(sessionRepository);
+        }
+		
 	}
 
 }

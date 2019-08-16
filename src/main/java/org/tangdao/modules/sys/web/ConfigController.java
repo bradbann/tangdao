@@ -1,4 +1,4 @@
-package org.tangdao.modules.sys.controller;
+package org.tangdao.modules.sys.web;
 
 
 import org.apache.commons.lang3.StringUtils;

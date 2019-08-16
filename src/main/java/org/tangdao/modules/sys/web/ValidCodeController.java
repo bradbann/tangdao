@@ -1,4 +1,4 @@
-package org.tangdao.modules.sys.controller;
+package org.tangdao.modules.sys.web;
 
 import java.io.IOException;
 import java.io.OutputStream;

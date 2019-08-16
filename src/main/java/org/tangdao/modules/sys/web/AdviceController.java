@@ -1,4 +1,4 @@
-package org.tangdao.modules.sys.controller;
+package org.tangdao.modules.sys.web;
 
 import java.beans.PropertyEditorSupport;
 import java.util.Date;
