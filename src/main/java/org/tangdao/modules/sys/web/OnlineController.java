@@ -93,11 +93,12 @@ public class OnlineController extends BaseController{
 					map.put("userType", user.getUserType());
 				}
 			}
-			
-			map.put("id", sessionInformation.getSessionId());
+			if(sessionInformation!=null) {
+				map.put("id", sessionInformation.getSessionId());
+				map.put("lastAccessTime", DateUtils.formatDateTime(sessionInformation.getLastRequest()));
+				map.put("timeout", TimeUtils.formatDateAgo(ObjectUtils.toLong(entries.get("maxInactiveInterval"))*1000-(currentTime-sessionInformation.getLastRequest().getTime())));
+			}
 			map.put("startTimestamp", DateUtils.formatDateTime(new Date(ObjectUtils.toLong(entries.get("creationTime")))));
-			map.put("lastAccessTime", DateUtils.formatDateTime(sessionInformation.getLastRequest()));
-			map.put("timeout", TimeUtils.formatDateAgo(ObjectUtils.toLong(entries.get("maxInactiveInterval"))*1000-(currentTime-sessionInformation.getLastRequest().getTime())));
 			map.put("host", entries.get("sessionAttr:host"));
 			map.put("deviceName", entries.get("sessionAttr:deviceName"));
 			list.add(map);
@@ -119,6 +120,11 @@ public class OnlineController extends BaseController{
 			sessionRepository.cleanupExpiredSessions();
 			return renderResult(Global.TRUE, "踢出已成功！");
 		}
+		
+		if(sessionId!=null) {
+			clearSession(sessionId);
+		}
+		
 		return renderResult(Global.FALSE, "踢出失败，没有找到该在线用户！");
 	}
 	
