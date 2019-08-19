@@ -109,6 +109,8 @@ public class LogUtils {
         // 获取异常对象
         Throwable throwable = null;
         if (ex != null){
+        	throwable = ex.getCause();
+        }else {
         	throwable = ExceptionUtils.getThrowable(request);
         }
 		

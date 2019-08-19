@@ -1,0 +1,64 @@
+<% layout('/layouts/default.html', {title: '任务管理', libs: ['dataGrid']}){ %>
+<div class="card bd-0">
+    <div class="card-header d-flex align-items-start justify-content-between pd-10-f">
+      <div class="pt-1">任务管理</div>
+      <div class="d-flex">
+          <button type="button" id="btnSearch" title="查询" class="btn btn-xs btn-default"><i  class="fa fa-filter"></i>查询</button>
+      </div>
+    </div>
+    <div class="card-body pd-10">
+      <#form:form id="searchForm" model="${jobsInfo}" action="${ctx}/jobsInfo/listData" method="post" class="form-horizontal"
+				data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+        <div class="form-group">
+          <div class="input-group wd-250">
+            <div class="input-group-prepend">
+              <span class="input-group-text">执行器名称</span>
+            </div>
+            <#form:input name="app" class="form-control" value="jobs-executor-sample" />
+          </div>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-sm">查询</button>
+          <button type="reset" class="btn btn-default btn-sm">重置</button>
+        </div>
+      </#form:form>
+      <table id="dataGrid"></table>
+      <div id="dataGridPage"></div>
+    </div>
+  </div>
+<% } %>
+<script>
+//初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'任务ID', name:'id', index:'id', width:120, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/sys/log/form?id='+row.id+'" class="btnList" data-title="日志详情">'+(val||row.id)+'</a>';
+		}},
+		{header:'任务描述', name:'remarks', index:'remarks', width:120, align:"left"},
+		{header:'管理员', name:'author', index:'author', width:60},
+		{header:'表达式', name:'cron', index:'cron', width:160, align:"left"},
+		{header:'失败重试次数', name:'failRetryCount', index:'fail_retry_count', width:60, align:"right"},
+		{header:'处理器', name:'handler', index:'handler', width:180, align:"left"},
+		{header:'最后一次执行时间', name:'lastTime', index:'last_time', align:"center"},
+		{header:'下次执行时间', name:'nextTime', index:'next_time', align:"center"},
+		{header:'更新时间', name:'updateTime', index:'update_time', width:150, align:"center"},
+		{header:'运行状态', name:'status', index:'status', width:90, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('job_status')}, val, '未知', true);
+		}},
+		{header:'操作', name:'actions', width:160, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+				actions.push('<a href="${ctx}/jobsInfo/execute?id='+row.id+'" class="btnList" title="执行" data-confirm="确认要执行吗？">执行</a>&nbsp;');
+				actions.push('<a href="${ctx}/jobsInfo/start?id='+row.id+'" class="btnList" title="启动" data-confirm="确认要启动吗？">启动</a>&nbsp;');
+				actions.push('<a href="${ctx}/jobsInfo/stop?id='+row.id+'" class="btnList" title="停止" data-confirm="确认要停止吗？">停止</a>&nbsp;');
+				actions.push('<a href="${ctx}/jobsInfo/remove?id='+row.id+'" class="btnList" title="删除" data-confirm="确认要删除该吗？">删除</a>&nbsp;');
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		$('[data-toggle="tooltip"]').tooltip();
+	}
+});
+</script>
+</body></html>

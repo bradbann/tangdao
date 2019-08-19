@@ -98,10 +98,10 @@ public class MenuController extends BaseController {
 	@ResponseBody
 	@PostMapping(value = "delete")
 	public String delete(Menu menu) {
-//		if (!menu.getShiroUser().isSuperAdmin()) {
-//			return renderResult(Global.FALSE, "越权操作，只有超级管理员才能操作此数据");
-//		}
-//		menuService.deleteByPrimaryKey(menu);
+		if(!UserUtils.getUser().isSuperAdmin()) {
+			return this.renderResult(Global.FALSE, "越权操作，只有超级管理员才能修改此数据");
+		}
+		menuService.delete(menu);
 		return renderResult(Global.TRUE, "删除成功");
 	}
 

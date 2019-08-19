@@ -19,6 +19,7 @@ import org.springframework.boot.web.server.ErrorPageRegistrar;
 import org.springframework.boot.web.server.ErrorPageRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.HttpStatus;
@@ -40,9 +41,11 @@ import org.tangdao.common.beetl.BeetlViewResolver;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.PropertiesUtils;
+import org.tangdao.common.utils.SpringUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.interceptor.LogInterceptor;
 
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -149,6 +152,18 @@ public class WebConfig implements WebMvcConfigurer {
 		localPropertySourcesPlaceholderConfigurer.setProperties(PropertiesUtils.getInstance().getProperties());
 		localPropertySourcesPlaceholderConfigurer.setIgnoreUnresolvablePlaceholders(true);
 		return localPropertySourcesPlaceholderConfigurer;
+	}
+	
+	@Bean
+	public PaginationInterceptor paginationInterceptor() {
+		return new PaginationInterceptor();
+	}
+
+	@Bean
+	@Lazy(false)
+	@ConditionalOnMissingBean
+	public SpringUtils springUtils() {
+		return new SpringUtils();
 	}
 	
 	@Configuration

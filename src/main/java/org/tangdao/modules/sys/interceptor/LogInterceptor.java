@@ -48,7 +48,6 @@ public class LogInterceptor implements HandlerInterceptor {
 		long endTime = System.currentTimeMillis(); 	// 2、结束时间
 		long executeTime = endTime - beginTime;	// 3、获取执行时间
 		startTimeThreadLocal.remove(); // 用完之后销毁线程变量数据
-		
 		// 保存日志
 		LogUtils.saveLog(UserUtils.getUser(), request, handler, ex, null, null, executeTime);
 		

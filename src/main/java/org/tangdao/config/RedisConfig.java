@@ -2,11 +2,9 @@ package org.tangdao.config;
 
 import java.io.Serializable;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.serializer.support.DeserializingConverter;
@@ -19,28 +17,13 @@ import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
-import org.tangdao.common.utils.SpringUtils;
-
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 
 @Configuration
 @EnableCaching
 //maxInactiveIntervalInSeconds 默认是1800秒过期，这里测试修改为60秒
 @EnableRedisHttpSession
-public class BeanConfig {
+public class RedisConfig {
 
-	@Bean
-	public PaginationInterceptor paginationInterceptor() {
-		return new PaginationInterceptor();
-	}
-
-	@Bean
-	@Lazy(false)
-	@ConditionalOnMissingBean
-	public SpringUtils springUtils() {
-		return new SpringUtils();
-	}
-	
 	@Primary
 	@Bean("redisTemplate")
 	public RedisTemplate<String, Serializable> redisTemplate(

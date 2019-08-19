@@ -22,4 +22,6 @@ public interface ITreeService<T> extends ICurdService<T>{
 
 	
 	boolean saveOrUpdate(T entity);
+	
+	void delete(T entity);
 }

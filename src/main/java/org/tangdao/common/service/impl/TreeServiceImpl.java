@@ -183,5 +183,8 @@ public class TreeServiceImpl<M extends BaseMapper<T>, T extends TreeEntity<T>> e
 		updateWrapper.eq(tableInfo.getKeyColumn(), entity.getKey());
 		this.update(updateWrapper);
 	}
+	
+	public void delete(T entity) {
+	}
 
 }
