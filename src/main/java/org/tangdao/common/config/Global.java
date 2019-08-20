@@ -149,4 +149,8 @@ public class Global implements PropertySourceLoader {
 	public static String getAdminPath() {
 		return getConfig("adminPath", StringUtils.EMPTY);
 	}
+	
+	public static String getJdbcType() {
+		return getConfig("jdbcType", "mysql");
+	}
 }
