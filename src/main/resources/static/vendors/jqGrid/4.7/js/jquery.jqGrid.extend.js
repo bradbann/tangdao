@@ -237,10 +237,10 @@
                     options.btnEventBind(dataGrid.find(".btnList"));
                     options.btnEventBind($("#" + dataGridId + "_frozen").find(".btnList"))
                 }
-                if (typeof options.btnMoreEventBind == "function") {
-                    options.btnMoreEventBind(dataGrid.find(".btnMore"));
-                    options.btnMoreEventBind($("#" + dataGridId + "_frozen").find(".btnList"))
-                }
+//                if (typeof options.btnMoreEventBind == "function") {
+//                    options.btnMoreEventBind(dataGrid.find(".btnMore"));
+//                    options.btnMoreEventBind($("#" + dataGridId + "_frozen").find(".btnList"))
+//                }
                 if (data && data.message) {
                     js.showMessage(data.message)
                 }
@@ -322,62 +322,62 @@
                 });
                 return self
             },
-            btnMoreEventBind: function(elements) {
-                elements.each(function() {
-                    if ($(this).attr("data-mouseover-binded") == undefined) {
-                        $(this).attr("data-mouseover-binded", true);
-                        var timeoutHover;
-                        $(this).mouseover(function() {
-                            var bdiv = dataGrid.closest(".ui-jqgrid-bdiv")
-                              , more = $(this)
-                              , items = more.next()
-                              , pos = more.position()
-                              , top = pos.top - items.height() / 2 + 6
-                              , left = pos.left;
-                            if (!items.hasClass("moreItems")) {
-                                return
-                            }
-                            if (left + items.width() > bdiv.position().left + bdiv.width() - 80) {
-                                left -= items.width()
-                            } else {
-                                left += more.width()
-                            }
-                            dataGrid.find(".btnMore.open").removeClass("open").find("i").removeClass("fa-chevron-circle-left").addClass("fa-chevron-circle-right");
-                            dataGrid.find(".moreItems.open").removeClass("open").hide();
-                            var itemsTop = bdiv.scrollTop() + 5;
-                            if (top <= itemsTop) {
-                                top = itemsTop
-                            } else {
-                                itemsTop = bdiv.height() - items.height() + itemsTop - 12;
-                                if (top >= itemsTop) {
-                                    top = itemsTop
-                                }
-                            }
-                            more.addClass("open").find("i").removeClass("fa-chevron-circle-right").addClass("fa-chevron-circle-left");
-                            items.addClass("open").css({
-                                top: top,
-                                left: left
-                            }).show();
-                            if (items.attr("data-hover-binded") == undefined) {
-                                items.attr("data-hover-binded", true);
-                                items.hover(function() {
-                                    window.clearTimeout(timeoutHover)
-                                }, function() {
-                                    window.clearTimeout(timeoutHover);
-                                    timeoutHover = window.setTimeout(function() {
-                                        more.removeClass("open").find("i").removeClass("fa-chevron-circle-left").addClass("fa-chevron-circle-right");
-                                        items.hide()
-                                    }, 500)
-                                }).find("a").click(function() {
-                                    more.removeClass("open").find("i").removeClass("fa-chevron-circle-left").addClass("fa-chevron-circle-right");
-                                    items.hide()
-                                })
-                            }
-                        })
-                    }
-                });
-                return self
-            },
+//            btnMoreEventBind: function(elements) {
+//                elements.each(function() {
+//                    if ($(this).attr("data-mouseover-binded") == undefined) {
+//                        $(this).attr("data-mouseover-binded", true);
+//                        var timeoutHover;
+//                        $(this).mouseover(function() {
+//                            var bdiv = dataGrid.closest(".ui-jqgrid-bdiv")
+//                              , more = $(this)
+//                              , items = more.next()
+//                              , pos = more.position()
+//                              , top = pos.top - items.height() / 2 + 6
+//                              , left = pos.left;
+//                            if (!items.hasClass("moreItems")) {
+//                                return
+//                            }
+//                            if (left + items.width() > bdiv.position().left + bdiv.width() - 80) {
+//                                left -= items.width()
+//                            } else {
+//                                left += more.width()
+//                            }
+//                            dataGrid.find(".btnMore.open").removeClass("open").find("i").removeClass("fa-chevron-circle-left").addClass("fa-chevron-circle-right");
+//                            dataGrid.find(".moreItems.open").removeClass("open").hide();
+//                            var itemsTop = bdiv.scrollTop() + 5;
+//                            if (top <= itemsTop) {
+//                                top = itemsTop
+//                            } else {
+//                                itemsTop = bdiv.height() - items.height() + itemsTop - 12;
+//                                if (top >= itemsTop) {
+//                                    top = itemsTop
+//                                }
+//                            }
+//                            more.addClass("open").find("i").removeClass("fa-chevron-circle-right").addClass("fa-chevron-circle-left");
+//                            items.addClass("open").css({
+//                                top: top,
+//                                left: left
+//                            }).show();
+//                            if (items.attr("data-hover-binded") == undefined) {
+//                                items.attr("data-hover-binded", true);
+//                                items.hover(function() {
+//                                    window.clearTimeout(timeoutHover)
+//                                }, function() {
+//                                    window.clearTimeout(timeoutHover);
+//                                    timeoutHover = window.setTimeout(function() {
+//                                        more.removeClass("open").find("i").removeClass("fa-chevron-circle-left").addClass("fa-chevron-circle-right");
+//                                        items.hide()
+//                                    }, 500)
+//                                }).find("a").click(function() {
+//                                    more.removeClass("open").find("i").removeClass("fa-chevron-circle-left").addClass("fa-chevron-circle-right");
+//                                    items.hide()
+//                                })
+//                            }
+//                        })
+//                    }
+//                });
+//                return self
+//            },
             ajaxLoad: function(data) {},
             ajaxSuccess: function(data) {},
             ajaxError: function(data) {},
