@@ -31,11 +31,6 @@ public class GlobalController extends BaseController {
 		return "error/" + status;
 	}
 	
-	@RequestMapping({ "components/{path}" })
-	public String components(@PathVariable String path) {
-		return "fragments/components/" + path;
-	}
-
 	@RequestMapping({ "/global.min.js" })
 	@ResponseBody
 	public String globalJs(String ctx, HttpServletRequest request, Model model) {
