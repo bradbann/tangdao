@@ -18,6 +18,7 @@ import org.tangdao.modules.sys.model.domain.Role;
 import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.IRoleService;
 import org.tangdao.modules.sys.service.IUserService;
+import org.tangdao.modules.sys.utils.UserUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -76,12 +77,111 @@ public class UserController extends BaseController {
 	}
 
 	@PostMapping(value = "save")
-	public @ResponseBody String save(@Validated User user, String oldUsername, Model model) {
-//		if (!"true".equals(checkPostName(oldRoleName, post.getPostName()))) {
-//			return renderResult(Global.FALSE, text("保存岗位失败，岗位名称''{0}''已存在", post.getPostName()));
+	public @ResponseBody String save(@Validated User user, String oldUsername, String op, Model model) {
+		if (User.MGR_TYPE_DEFAULT_ADMIN.equals(user.getMgrType())&&!user.getCurrentUser().isSuperAdmin()){
+			return renderResult(Global.FALSE, "越权操作，只有超级管理员才能修改此数据！");
+		}
+		if (User.isSuperAdmin(user.getUserCode())) {
+			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+		}
+		if (!User.USER_TYPE_EMPLOYEE.equals(user.getUserType())){
+			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+		}
+		if (!userService.checkUsernameExists(oldUsername, user.getUsername())) {
+			return renderResult(Global.FALSE, "保存用户'" + user.getUsername() + "'失败，登录账号已存在");
+		}
+//		if (user.getIsNewRecord()){
+//			user.setUserType(User.USER_TYPE_NONE); // 仅登录用户
 //		}
-//		postService.save(post);
+//		user.setMgrType(User.MGR_TYPE_DEFAULT_ADMIN); // 租户管理员
+		userService.save(user);
+//		userService.saveAuth(user);
+		// 如果修改的是当前用户，则清除当前用户缓存
+		if (user.getUserCode().equals(UserUtils.getUser().getUserCode())) {
+//			UserUtils.clearCache();
+		}
+
 		return renderResult(Global.TRUE, "操作成功");
 	}
+	
+	//
+//	/**
+//	 * 停用用户
+//	 * @param user
+//	 * @return
+//	 */
+//	@ResponseBody
+//	@RequestMapping(value = "disable")
+//	public String disable(User user) {
+//		if (User.isSuperAdmin(user.getUserCode())) {
+//			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+//		}
+//		if (user.getCurrentUser().getUserCode().equals(user.getUserCode())) {
+//			return renderResult(Global.FALSE, "停用用户失败, 不允许停用当前用户");
+//		}
+//		user.setStatus(User.STATUS_DISABLE);
+//		userService.updateStatus(user);
+//		return renderResult(Global.TRUE, "停用用户成功");
+//	}
+//	
+//	/**
+//	 * 启用用户
+//	 * @param user
+//	 * @return
+//	 */
+//	@RequiresPermissions("sys:corpAdmin:edit")
+//	@ResponseBody
+//	@RequestMapping(value = "enable")
+//	public String enable(User user) {
+//		if (User.isSuperAdmin(user.getUserCode())) {
+//			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+//		}
+//		user.setStatus(User.STATUS_NORMAL);
+//		userService.updateStatus(user);
+//		return renderResult(Global.TRUE, "启用用户成功");
+//	}
+//	
+//	/**
+//	 * 密码重置
+//	 * @param user
+//	 * @return
+//	 */
+//	@RequiresPermissions("sys:corpAdmin:edit")
+//	@RequestMapping(value = "resetpwd")
+//	@ResponseBody
+//	public String resetpwd(User user) {
+//		if (User.isSuperAdmin(user.getUserCode())) {
+//			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+//		}
+//		userService.updatePassword(user.getUserCode(), null);
+//		return renderResult(Global.TRUE, "重置用户密码成功");
+//	}
+//
+//	/**
+//	 * 删除用户
+//	 * @param user
+//	 * @return
+//	 */
+//	@RequiresPermissions("sys:corpAdmin:edit")
+//	@RequestMapping(value = "delete")
+//	@ResponseBody
+//	public String delete(User user) {
+//		if (User.isSuperAdmin(user.getUserCode())) {
+//			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+//		}
+//		if (user.getCurrentUser().getUserCode().equals(user.getUserCode())) {
+//			return renderResult(Global.FALSE, "删除用户失败，不允许删除当前用户");
+//		}
+//		if (User.USER_TYPE_NONE.equals(user.getUserType())){
+//			// 删除系统管理员
+//			userService.delete(user);
+//			return renderResult(Global.TRUE, "删除用户'" + user.getUserName() + "'成功！");
+//		}else{
+//			// 取消系统管理员身份
+//			user.setMgrType(User.MGR_TYPE_NOT_ADMIN);
+//			userService.updateMgrType(user);
+//			return renderResult(Global.TRUE, "取消用户'" + user.getUserName() + "'管理员身份成功！");
+//		}
+//	}
 
 }
