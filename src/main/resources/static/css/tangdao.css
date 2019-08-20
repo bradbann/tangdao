@@ -40168,7 +40168,7 @@ a.bg-twitter:hover, a.bg-twitter:focus, button.bg-twitter:hover, button.bg-twitt
 	position: absolute;
 	right: 3px;
 	top: 7px;
-	z-inde:100;
+	z-index:100;
 }
 .card-content-fixed{
 	min-height: calc(100vh - 110px);

@@ -124,7 +124,6 @@ public class OnlineController extends BaseController{
 		if(sessionId!=null) {
 			clearSession(sessionId);
 		}
-		
 		return renderResult(Global.FALSE, "踢出失败，没有找到该在线用户！");
 	}
 	

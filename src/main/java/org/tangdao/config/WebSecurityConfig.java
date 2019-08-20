@@ -1,6 +1,9 @@
 package org.tangdao.config;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.security.Principal;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -22,6 +26,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -76,6 +81,9 @@ public class WebSecurityConfig {
     	private final UserDetailsService userDetailsService;
     	
     	private final PasswordEncoderService passwordEncoderService;
+    	
+    	@Autowired
+    	private RedisOperations<String, Serializable> sessionRedisOperations;
     	
         @Autowired
         public FormLoginWebSecurityConfigurerAdapter(@Qualifier("userServiceImpl") UserDetailsService userDetailsService, PasswordEncoderService passwordEncoderService) {
@@ -141,6 +149,9 @@ public class WebSecurityConfig {
          					if (authentication != null && authentication.getPrincipal() != null) {
          						LogUtils.saveLog((User)authentication.getPrincipal(), request, "系统退出", Log.TYPE_LOGIN_LOGOUT);
          					}
+         					//清楚用户相关所有session信息
+         					cleanRedisSession(request, authentication);
+         					
          					super.setAlwaysUseDefaultTargetUrl(true);
              				super.setDefaultTargetUrl(loginUrl+"?logout");
 //             				super.setUseReferer(true);
@@ -175,6 +186,30 @@ public class WebSecurityConfig {
         public SpringSessionBackedSessionRegistry<Session> sessionRegistry() {
         	return new SpringSessionBackedSessionRegistry(sessionRepository);
         }
+		
+		/**
+		 * 
+		 * @param request
+		 * @param authentication
+		 */
+		private void cleanRedisSession(HttpServletRequest request, Authentication authentication) {
+			//清楚全部当前用户session信息
+			String sessionId = request.getSession().getId();
+			sessionRedisOperations.boundValueOps("spring:session:sessions:"+sessionId).expire(0, TimeUnit.SECONDS);
+			sessionRedisOperations.boundValueOps("spring:session:sessions:expires:"+sessionId).expire(0, TimeUnit.SECONDS);
+			String key = RedisOperationsSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisOperationsSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
+			sessionRedisOperations.boundValueOps(key+":" + name(authentication.getPrincipal())).expire(0, TimeUnit.SECONDS);
+		}
+		
+		private String name(Object principal) {
+			if (principal instanceof UserDetails) {
+				return ((UserDetails) principal).getUsername();
+			}
+			if (principal instanceof Principal) {
+				return ((Principal) principal).getName();
+			}
+			return principal.toString();
+		}
 		
 	}
 
