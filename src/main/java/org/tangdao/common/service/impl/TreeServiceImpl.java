@@ -184,7 +184,34 @@ public class TreeServiceImpl<M extends BaseMapper<T>, T extends TreeEntity<T>> e
 		this.update(updateWrapper);
 	}
 	
+	@Transactional(readOnly = false, isolation = Isolation.READ_UNCOMMITTED)
 	public void delete(T entity) {
+		if (StringUtils.isBlank(entity.getKey())) {	
+            return;	
+        }
+		this.deleteById(entity);
+		QueryWrapper<T> queryWrapper = new QueryWrapper<T>();
+		queryWrapper.like("parent_codes", entity.getKey());
+		this.delete(queryWrapper);
+		
+		T parent = this.get(entity.getParentCode());
+		if (parent != null && parent.getKey()!=null) {	
+            this.updateTreeLeaf(parent);	
+        }
+	}
+
+	@Transactional(readOnly = false, isolation = Isolation.READ_UNCOMMITTED)
+	public void updateTreeSort(T entity) {
+		// TODO Auto-generated method stub
+		if (entity.getTreeSort() == null) {	
+            entity.setTreeSort(30);	
+        }
+		TableInfo tableInfo = TableInfoHelper.getTableInfo(entity.getClass());
+		UpdateWrapper<T> updateWrapper = new UpdateWrapper<T>();
+		updateWrapper.setSql(" tree_sort = " + entity.getTreeSort());
+		updateWrapper.eq(tableInfo.getKeyColumn(), entity.getKey());
+		this.update(updateWrapper);
+		
 	}
 
 }

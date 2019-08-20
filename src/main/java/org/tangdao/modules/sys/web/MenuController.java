@@ -43,11 +43,6 @@ public class MenuController extends BaseController {
 		return menuService.get(menuCode, isNewRecord);
 	}
 
-//	@RequestMapping(value = "index")
-//	public String index(Menu menu, Model model) {
-//		return "modules/sys/menuIndex";
-//	}
-
 	@RequestMapping(value = "list")
 	public String list(Menu menu, Model model) {
 		return "modules/sys/menuList";
@@ -166,5 +161,20 @@ public class MenuController extends BaseController {
 		}
 		return targetList;
 	}
+	
+	@RequestMapping({"updateTreeSort"})
+	@ResponseBody
+	public String updateTreeSort(String[] ids, Integer[] sorts) {
+		if (!UserUtils.getUser().isSuperAdmin()) {
+			return this.renderResult(Global.FALSE, "越权操作，只有超级管理员才能修改此数据");
+		} else {
+    	  for (int i = 0;i<ids.length;i++) {
+    		  Menu menu = new Menu(ids[i]);
+    		  menu.setTreeSort(sorts[i]);
+    		  this.menuService.updateTreeSort(menu);
+    	  }
+    	  return this.renderResult(Global.TRUE, "保存成功");
+      }
+   }
 
 }

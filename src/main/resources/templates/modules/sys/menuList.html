@@ -28,7 +28,9 @@
           <button type="reset" class="btn btn-default btn-sm">重置</button>
         </div>
       </#form:form>
+      <#form:form id="dataGridForm" action="${ctx}/sys/menu/updateTreeSort" method="post">
       <table id="dataGrid"></table>
+      </#form:form>
     </div>
   </div>
 <% } %>
@@ -85,10 +87,10 @@
   // 绑定更新排序按钮
   $('#btnUpdateSort').click(function(){
   	 js.ajaxSubmitForm($("#dataGridForm"), function(data){
-  		if(datresult == Global.TRUE){
+  		if(data.result == Global.TRUE){
   			$('#btnRefreshTree').click();
   		}
-  		js.showMessage(datmessage);
+  		js.showMessage(data.message);
   	}, "json");
   });
   </script>
