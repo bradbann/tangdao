@@ -1,6 +1,7 @@
-package org.tangdao.modules.gen.service.impl;
+package org.tangdao.modules.gen.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,12 +13,14 @@ import org.tangdao.modules.gen.mapper.GenTableColumnMapper;
 import org.tangdao.modules.gen.mapper.GenTableMapper;
 import org.tangdao.modules.gen.model.domain.GenTable;
 import org.tangdao.modules.gen.model.domain.GenTableColumn;
+import org.tangdao.modules.gen.model.vo.GenConfig;
+import org.tangdao.modules.gen.model.vo.GenTemplate;
 import org.tangdao.modules.gen.utils.GenUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 @Service
-public class GenTableServiceImpl extends CrudServiceImpl<GenTableMapper, GenTable>{
+public class GenTableService extends CrudServiceImpl<GenTableMapper, GenTable>{
 
 	@Autowired
 	private GenTableMapper genTableMapper;
@@ -26,11 +29,13 @@ public class GenTableServiceImpl extends CrudServiceImpl<GenTableMapper, GenTabl
 	@Autowired
 	private GenDataDictMapper genDataDictMapper;
 	
-	public GenTable get(String id) {
-		GenTable genTable = genTableMapper.selectById(id);
-		GenTableColumn genTableColumn = new GenTableColumn();
-		genTableColumn.setGenTable(new GenTable(genTable.getId()));
-		genTable.setColumnList(genTableColumnMapper.findList(genTableColumn));
+	public GenTable get(String tableName) {
+		GenTable genTable = genTableMapper.selectById(tableName);
+		if(genTable!=null) {
+			GenTableColumn genTableColumn = new GenTableColumn();
+			genTableColumn.setGenTable(genTable);
+			genTable.setColumnList(genTableColumnMapper.findList(genTableColumn));
+		}
 		return genTable;
 	}
 	
@@ -63,19 +68,19 @@ public class GenTableServiceImpl extends CrudServiceImpl<GenTableMapper, GenTabl
 	 */
 	public GenTable getTableFormDb(GenTable genTable){
 		// 如果有表名，则获取物理表
-		if (StringUtils.isNotBlank(genTable.getName())){
+		if (StringUtils.isNotBlank(genTable.getTableName())){
 			
 			List<GenTable> list = genDataDictMapper.findTableList(genTable);
 			if (list.size() > 0){
 				
 				// 如果是新增，初始化表属性
-				if (StringUtils.isBlank(genTable.getId())){
+				if (genTable.getIsNewRecord()){
 					genTable = list.get(0);
 					// 设置字段说明
 					if (StringUtils.isBlank(genTable.getComments())){
-						genTable.setComments(genTable.getName());
+						genTable.setComments(genTable.getTableName());
 					}
-					genTable.setClassName(StringUtils.capCamelCase(genTable.getName()));
+					genTable.setClassName(StringUtils.capCamelCase(genTable.getTableName()));
 				}
 				
 				// 添加新列
@@ -83,7 +88,7 @@ public class GenTableServiceImpl extends CrudServiceImpl<GenTableMapper, GenTabl
 				for (GenTableColumn column : columnList){
 					boolean b = false;
 					for (GenTableColumn e : genTable.getColumnList()){
-						if (e.getName().equals(column.getName())){
+						if (e.getColumnName().equals(column.getColumnName())){
 							b = true;
 						}
 					}
@@ -96,7 +101,7 @@ public class GenTableServiceImpl extends CrudServiceImpl<GenTableMapper, GenTabl
 				for (GenTableColumn e : genTable.getColumnList()){
 					boolean b = false;
 					for (GenTableColumn column : columnList){
-						if (column.getName().equals(e.getName())){
+						if (column.getColumnName().equals(e.getColumnName())){
 							b = true;
 						}
 					}
@@ -136,8 +141,48 @@ public class GenTableServiceImpl extends CrudServiceImpl<GenTableMapper, GenTabl
 	public void delete(GenTable genTable) {
 		genTableMapper.deleteById(genTable);
 		QueryWrapper<GenTableColumn> wrapper = new QueryWrapper<GenTableColumn>();
-		wrapper.eq("gen_table_id", genTable.getId());
+		wrapper.eq("table_name", genTable.getTableName());
 		genTableColumnMapper.delete(wrapper);
+	}
+	
+	public String generateCode(GenTable genTable){
+
+		StringBuilder result = new StringBuilder();
+		
+		// 查询主表及字段列
+		genTable.setColumnList(genTableColumnMapper.findList(new GenTableColumn(genTable)));
+		
+		// 获取所有代码模板
+		GenConfig config = GenUtils.getConfig();
+		
+		// 获取模板列表
+		List<GenTemplate> templateList = GenUtils.getTemplateList(config, genTable.getTplCategory(), false);
+		List<GenTemplate> childTableTemplateList = GenUtils.getTemplateList(config, genTable.getTplCategory(), true);
+		
+		// 如果有子表模板，则需要获取子表列表
+		if (childTableTemplateList.size() > 0){
+			QueryWrapper<GenTable> queryWrapper = new QueryWrapper<GenTable>();
+			queryWrapper.eq("parent_table", genTable.getTableName());
+			genTable.setChildList(genTableMapper.selectList(queryWrapper));
+		}
+		String projectPath = GenUtils.getProjectPath(null);
+		System.out.println("----------------------------------"+projectPath);
+		// 生成子表模板代码
+		for (GenTable childTable : genTable.getChildList()){
+			childTable.setParent(genTable);
+			childTable.setColumnList(genTableColumnMapper.findList(new GenTableColumn(childTable)));
+			Map<String, Object> childTableModel = GenUtils.getDataModel(childTable);
+			for (GenTemplate tpl : childTableTemplateList){
+				result.append(GenUtils.generateToFile(projectPath, tpl, childTableModel, genTable.getReplaceFile()));
+			}
+		}
+		
+		// 生成主表模板代码
+		Map<String, Object> model = GenUtils.getDataModel(genTable);
+		for (GenTemplate tpl : templateList){
+			result.append(GenUtils.generateToFile(projectPath, tpl, model, genTable.getReplaceFile()));
+		}
+		return result.toString();
 	}
 
 

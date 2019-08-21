@@ -1,15 +1,21 @@
 package org.tangdao.modules.gen.model.domain;
 
 import java.util.List;
+import java.util.Map;
 
-import org.hibernate.validator.constraints.Length;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.DataEntity;
+import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.ListUtils;
+import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,10 +33,11 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	@TableId
 	private String id;
 	
-	private String genTableId;
+	private String tableName; //所属表
 	
+	@JsonIgnore
 	private GenTable genTable;	// 归属表
-	private String name; 		// 列名
+	private String columnName; 		// 列名
 	private String comments;	// 描述
 	private String jdbcType;	// JDBC类型
 	private String javaType;	// JAVA类型
@@ -44,9 +51,46 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	private String queryType;	// 查询方式（等于、不等于、大于、小于、范围、左LIKE、右LIKE、左右LIKE）
 	private String showType;	// 字段生成方案（文本框、文本域、下拉框、复选框、单选框、字典选择、人员选择、部门选择、区域选择）
 	private String dictType;	// 字典类型
-	private Integer sort;		// 排序（升序）
+	private Integer columnSort;		// 排序（升序）
+	private String isUpdate;
 	
-	private Global global;
+	private String options;
+	
+	@SuppressWarnings("rawtypes")
+	@TableField(exist = false)
+	private Map optionMap;
+	
+	@SuppressWarnings("rawtypes")
+	public void setOptions(String options) {
+	      if (StringUtils.isNotBlank(options)) {
+	         this.optionMap = (Map)JsonMapper.fromJson(options, Map.class);
+	      }
+
+	      this.options = options;
+	}
+	
+	@JsonIgnore
+	public String getOptions() {
+		if (this.optionMap != null) {
+			this.options = JsonMapper.toJson(this.optionMap);
+		}
+		return this.options;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public Map getOptionMap() {
+		if (this.optionMap == null) {
+			this.optionMap = MapUtils.newHashMap();
+		}
+		return this.optionMap;
+	}
+
+	
+	@JsonIgnore	
+	@XmlTransient	
+	public Global getGlobal() {	
+		return Global.getInstance();	
+	}
 
 	public GenTableColumn() {
 		super();
@@ -64,23 +108,6 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 		this.genTable = genTable;
 	}
 	
-	@Length(min=1, max=200)
-	public String getName() {
-		return StringUtils.lowerCase(name);
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getComments() {
-		return comments;
-	}
-
-	public void setComments(String comments) {
-		this.comments = comments;
-	}
-
 	public String getJdbcType() {
 		return StringUtils.lowerCase(jdbcType);
 	}
@@ -89,85 +116,6 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 		this.jdbcType = jdbcType;
 	}
 
-	public String getJavaType() {
-		return javaType;
-	}
-
-	public void setJavaType(String javaType) {
-		this.javaType = javaType;
-	}
-
-	public String getJavaField() {
-		return javaField;
-	}
-
-	public void setJavaField(String javaField) {
-		this.javaField = javaField;
-	}
-
-	public String getIsPk() {
-		return isPk;
-	}
-
-	public void setIsPk(String isPk) {
-		this.isPk = isPk;
-	}
-
-	public String getIsNull() {
-		return isNull;
-	}
-
-	public void setIsNull(String isNull) {
-		this.isNull = isNull;
-	}
-
-	public String getIsInsert() {
-		return isInsert;
-	}
-
-	public void setIsInsert(String isInsert) {
-		this.isInsert = isInsert;
-	}
-
-	public String getIsEdit() {
-		return isEdit;
-	}
-
-	public void setIsEdit(String isEdit) {
-		this.isEdit = isEdit;
-	}
-
-	public String getIsList() {
-		return isList;
-	}
-
-	public void setIsList(String isList) {
-		this.isList = isList;
-	}
-
-	public String getIsQuery() {
-		return isQuery;
-	}
-
-	public void setIsQuery(String isQuery) {
-		this.isQuery = isQuery;
-	}
-
-	public String getQueryType() {
-		return queryType;
-	}
-
-	public void setQueryType(String queryType) {
-		this.queryType = queryType;
-	}
-
-	public String getShowType() {
-		return showType;
-	}
-
-	public void setShowType(String showType) {
-		this.showType = showType;
-	}
 
 	public String getDictType() {
 		return dictType == null ? "" : dictType;
@@ -177,20 +125,12 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 		this.dictType = dictType;
 	}
 
-	public Integer getSort() {
-		return sort;
-	}
-
-	public void setSort(Integer sort) {
-		this.sort = sort;
-	}
-
 	/**
 	 * 获取列名和说明
 	 * @return
 	 */
-	public String getNameAndComments() {
-		return getName() + (comments == null ? "" : "  :  " + comments);
+	public String getColumnNameAndComments() {
+		return getColumnName() + (comments == null ? "" : "  :  " + comments);
 	}
 	
 	/**
@@ -210,7 +150,7 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	 * @return
 	 */
 	public String getSimpleJavaType(){
-		if ("This".equals(getJavaType())){
+		if ("This".equals(getJavaType())&&genTable!=null){
 			return StringUtils.capitalize(genTable.getClassName());
 		}
 		return StringUtils.indexOf(getJavaType(), ".") != -1 
@@ -263,6 +203,7 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	 * 获取列注解列表
 	 * @return
 	 */
+	@JsonIgnore
 	public List<String> getAnnotationList(){
 		List<String> list = ListUtils.newArrayList();
 		// 导入Jackson注解
@@ -291,6 +232,7 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	 * 获取简写列注解列表
 	 * @return
 	 */
+	@JsonIgnore
 	public List<String> getSimpleAnnotationList(){
 		List<String> list = ListUtils.newArrayList();
 		for (String ann : getAnnotationList()){
@@ -303,6 +245,7 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	 * 是否是基类字段
 	 * @return
 	 */
+	@JsonIgnore
 	public Boolean getIsNotBaseField(){
 		return !StringUtils.equals(getSimpleJavaField(), "remarks")
 				&& !StringUtils.equals(getSimpleJavaField(), "createBy")

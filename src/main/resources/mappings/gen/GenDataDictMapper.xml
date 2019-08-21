@@ -90,7 +90,7 @@
 				t.COLUMN_COMMENT AS "comments",
 				(CASE WHEN t.IS_NULLABLE = 'YES' THEN '1' ELSE '0' END) AS "isNull",
 				(t.ORDINAL_POSITION * 10) AS "columnSort",
-				t.COLUMN_TYPE AS "columnType"
+				t.COLUMN_TYPE AS "jdbcType"
 			FROM information_schema.`COLUMNS` t
 			WHERE t.TABLE_SCHEMA = (select database())
 			<if test="tableName != null and tableName != ''">
@@ -118,7 +118,7 @@
 									'(' || t.DATA_PRECISION || ')'
 								),'(18)'
 							)
-						),t.DATA_TYPE) AS "columnType"
+						),t.DATA_TYPE) AS "jdbcType"
 			FROM user_tab_columns t, user_col_comments c
 			WHERE t.TABLE_NAME = c.table_name AND t.COLUMN_NAME = c.column_name
 			<if test="tableName != null and tableName != ''">
@@ -135,7 +135,7 @@
 				(case when ct.name = 'datetime' or ct.name = 'datetime2' then ct.name
 					 when c.scale is null or c.scale = 0 then (ct.name + '(' + convert(varchar, c.prec) + ')')
 					 when c.scale > 0 then (ct.name + '(' + convert(varchar, c.prec) + ',' + convert(varchar, c.scale) + ')')
-					 else ct.name end) AS "columnType"
+					 else ct.name end) AS "jdbcType"
 			FROM sysobjects t
 			JOIN syscolumns c on c.id = t.id
 			JOIN systypes ct on ct.xusertype = c.xusertype 
@@ -150,7 +150,7 @@
 				a.attname  AS "columnName",
 				(CASE WHEN a.attnotnull = 't' THEN '1' ELSE '0' END) AS "isNull",
 				(a.attnum * 10) AS "columnSort",
-				format_type(a.atttypid, a.atttypmod) AS "columnType",
+				format_type(a.atttypid, a.atttypmod) AS "jdbcType",
 				d.description AS "comments"
 			FROM pg_class c
 			JOIN pg_namespace n ON c.relnamespace = n.oid
@@ -171,7 +171,7 @@
 				case when scale = 0
 					then t.typename concat '(' concat trim(char(length)) concat ')'
 					else t.typename concat '(' concat trim(char(length)) concat ',' concat trim(char(scale)) concat ')'
-					end as "columnType",
+					end as "jdbcType",
 				t.remarks AS "comments"
 			FROM syscat.columns t
 			WHERE t.tabschema = (SELECT current schema FROM dual)

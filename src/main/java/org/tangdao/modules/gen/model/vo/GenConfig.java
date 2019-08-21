@@ -20,23 +20,21 @@ public class GenConfig implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private List<GenCategory> categoryList;	// 代码模板分类
+	private List<GenCategory> tplCategoryList;	// 代码模板分类
 	private List<GenDict> javaTypeList;		// Java类型
 	private List<GenDict> queryTypeList;		// 查询类型
 	private List<GenDict> showTypeList;		// 显示类型
+	private List<GenDict> fieldValidList;		// 显示类型
+	private List<GenDict> gridRowColList;		// 显示类型
 
 	public GenConfig() {
 		super();
 	}
 
-	@XmlElementWrapper(name = "category")
+	@XmlElementWrapper(name = "tplCategory")
 	@XmlElement(name = "category")
-	public List<GenCategory> getCategoryList() {
-		return categoryList;
-	}
-
-	public void setCategoryList(List<GenCategory> categoryList) {
-		this.categoryList = categoryList;
+	public List<GenCategory> getTplCategoryList() {
+		return tplCategoryList;
 	}
 
 	@XmlElementWrapper(name = "javaType")
@@ -67,6 +65,18 @@ public class GenConfig implements Serializable {
 
 	public void setShowTypeList(List<GenDict> showTypeList) {
 		this.showTypeList = showTypeList;
+	}
+	
+	@XmlElementWrapper(name = "fieldValid")
+	@XmlElement(name = "dict")
+	public List<GenDict> getFieldValidList() {
+		return fieldValidList;
+	}
+	
+	@XmlElementWrapper(name = "gridRowCol")
+	@XmlElement(name = "dict")
+	public List<GenDict> getGridRowColList() {
+		return gridRowColList;
 	}
 
 

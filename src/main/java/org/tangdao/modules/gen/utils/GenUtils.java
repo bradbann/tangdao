@@ -19,13 +19,11 @@ import org.tangdao.common.utils.JaxbMapper;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
-import org.tangdao.modules.gen.model.domain.GenScheme;
 import org.tangdao.modules.gen.model.domain.GenTable;
 import org.tangdao.modules.gen.model.domain.GenTableColumn;
 import org.tangdao.modules.gen.model.vo.GenCategory;
 import org.tangdao.modules.gen.model.vo.GenConfig;
 import org.tangdao.modules.gen.model.vo.GenTemplate;
-import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.utils.UserUtils;
 
 public class GenUtils {
@@ -48,7 +46,7 @@ public class GenUtils {
 			
 			// 设置字段说明
 			if (StringUtils.isBlank(column.getComments())){
-				column.setComments(column.getName());
+				column.setComments(column.getColumnName());
 			}
 			
 			// 设置java类型
@@ -57,12 +55,12 @@ public class GenUtils {
 			}else if (StringUtils.startsWithIgnoreCase(column.getJdbcType(), "DATETIME") || StringUtils.startsWithIgnoreCase(column.getJdbcType(), "DATE") || StringUtils.startsWithIgnoreCase(column.getJdbcType(), "TIMESTAMP")){
 				column.setJavaType("java.util.Date");
 				column.setShowType("dateselect");
-			}else if (StringUtils.startsWithIgnoreCase(column.getJdbcType(), "BIGINT") || StringUtils.startsWithIgnoreCase(column.getJdbcType(), "NUMBER")){
+			}else if (StringUtils.startsWithIgnoreCase(column.getJdbcType(), "BIGINT") || StringUtils.startsWithIgnoreCase(column.getJdbcType(), "NUMBER") || StringUtils.startsWithIgnoreCase(column.getJdbcType(), "decimal")){
 				// 如果是浮点型
 				String[] ss = StringUtils.split(StringUtils.substringBetween(column.getJdbcType(), "(", ")"), ",");
 				if (ss != null && ss.length == 2 && Integer.parseInt(ss[1])>0){
 					column.setJavaType("Double");
-				} else if (ss != null && ss.length == 1 && Integer.parseInt(ss[0])<=10){// 如果是整形
+				} else if (ss != null && ((ss.length == 1 && Integer.parseInt(ss[0])<=10)||ss.length == 2 && Integer.parseInt(ss[1])==0)){// 如果是整形
 					column.setJavaType("Integer");
 				} else{// 长整形
 					column.setJavaType("Long");
@@ -70,50 +68,86 @@ public class GenUtils {
 			}
 			
 			// 设置java字段名
-			column.setJavaField(StringUtils.camelCase(column.getName()));
+			column.setJavaField(StringUtils.camelCase(column.getColumnName()));
 			
 			// 是否是主键
-			column.setIsPk(genTable.getPkList().contains(column.getName())?"1":"0");
+			genTable.getPkList().stream().forEach((item)->{
+				if(column.getColumnName().equalsIgnoreCase(item.getColumnName())) {
+					column.setIsPk("1");
+					column.setIsEdit("1");
+				}else {
+					column.setIsPk("0");
+				}
+			});
 
 			// 插入字段
 			column.setIsInsert("1");
 			
-			// 编辑字段
-			if (!StringUtils.equalsIgnoreCase(column.getName(), "id")
-//					&& !StringUtils.equalsIgnoreCase(column.getName(), "create_by")
-					&& !StringUtils.equalsIgnoreCase(column.getName(), "create_date")
-					&& !StringUtils.equalsIgnoreCase(column.getName(), "del_flag")){
+			// 更新
+			if (!column.getIsPk().equals("1")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "create_by")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "create_time")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "status")){
+				column.setIsUpdate("1");
+			}
+			
+			if (StringUtils.equalsIgnoreCase(column.getColumnName(), "tree_sort")
+					||StringUtils.equalsIgnoreCase(column.getColumnName(), "remarks")){
+				column.setIsEdit("1");
+			}
+			
+			// 编辑字段（控制页面）
+			if (!column.getIsPk().equals("1")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "remarks")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "create_time")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "create_by")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "update_time")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "update_by")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "parent_code")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "parent_codes")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "tree_names")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "tree_sort")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "tree_leaf")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "tree_level")
+					&& !StringUtils.equalsIgnoreCase(column.getColumnName(), "status")){
+				
+				column.setIsList("1");
 				column.setIsEdit("1");
 			}
 
 			// 列表字段
-			if (StringUtils.equalsIgnoreCase(column.getName(), "name")
-					|| StringUtils.equalsIgnoreCase(column.getName(), "title")
-					|| StringUtils.equalsIgnoreCase(column.getName(), "remarks")
-					|| StringUtils.equalsIgnoreCase(column.getName(), "update_date")){
+			if (StringUtils.equalsIgnoreCase(column.getColumnName(), "name")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "tree_sort")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "title")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "status")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "update_time")){
 				column.setIsList("1");
 			}
 			
 			// 查询字段
-			if (StringUtils.equalsIgnoreCase(column.getName(), "name")
-					|| StringUtils.equalsIgnoreCase(column.getName(), "title")){
+			if (StringUtils.equalsIgnoreCase(column.getColumnName(), "name")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "title")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "parent_code")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "parent_codes")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "tree_names")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "status")){
 				column.setIsQuery("1");
 			}
 			
 			// 查询字段类型
-			if (StringUtils.equalsIgnoreCase(column.getName(), "name")
-					|| StringUtils.equalsIgnoreCase(column.getName(), "title")){
+			if (StringUtils.equalsIgnoreCase(column.getColumnName(), "name")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "title")){
 				column.setQueryType("like");
 			}
 
 			// 设置特定类型和字段名
 			
 			// 用户
-			if (StringUtils.startsWithIgnoreCase(column.getName(), "user_id")){
-				column.setJavaType(User.class.getName());
-				column.setJavaField(column.getJavaField().replaceAll("Id", ".id|name"));
-				column.setShowType("userselect");
-			}
+//			if (StringUtils.startsWithIgnoreCase(column.getColumnName(), "user_id")){
+//				column.setJavaType(User.class.getName());
+//				column.setJavaField(column.getJavaField().replaceAll("Id", ".id|name"));
+//				column.setShowType("userselect");
+//			}
 //			// 部门
 //			else if (StringUtils.startsWithIgnoreCase(column.getName(), "office_id")){
 //				column.setJavaType(Office.class.getName());
@@ -133,29 +167,29 @@ public class GenUtils {
 //				column.setJavaField(column.getJavaField() + ".id");
 //			}
 			// 创建时间、更新时间
-			else if (StringUtils.startsWithIgnoreCase(column.getName(), "create_date")
-					|| StringUtils.startsWithIgnoreCase(column.getName(), "update_date")){
+			else if (StringUtils.startsWithIgnoreCase(column.getColumnName(), "create_time")
+					|| StringUtils.startsWithIgnoreCase(column.getColumnName(), "update_time")){
 				column.setShowType("dateselect");
 			}
 			// 备注、内容
-			else if (StringUtils.equalsIgnoreCase(column.getName(), "remarks")
-					|| StringUtils.equalsIgnoreCase(column.getName(), "content")){
+			else if (StringUtils.equalsIgnoreCase(column.getColumnName(), "remarks")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "content")){
 				column.setShowType("textarea");
 			}
 			// 父级ID
-			else if (StringUtils.equalsIgnoreCase(column.getName(), "parent_id")){
+			else if (StringUtils.equalsIgnoreCase(column.getColumnName(), "parent_code")){
 				column.setJavaType("This");
-				column.setJavaField("parent.id|name");
+				column.setJavaField("parent.key|name");
 				column.setShowType("treeselect");
 			}
 			// 所有父级ID
-			else if (StringUtils.equalsIgnoreCase(column.getName(), "parent_ids")){
+			else if (StringUtils.equalsIgnoreCase(column.getColumnName(), "parent_codes")){
 				column.setQueryType("like");
 			}
 			// 删除标记
-			else if (StringUtils.equalsIgnoreCase(column.getName(), "del_flag")){
+			else if (StringUtils.equalsIgnoreCase(column.getColumnName(), "status")){
 				column.setShowType("radiobox");
-				column.setDictType("del_flag");
+				column.setDictType("status");
 			}
 		}
 	}
@@ -240,8 +274,8 @@ public class GenUtils {
 	 */
 	public static List<GenTemplate> getTemplateList(GenConfig config, String category, boolean isChildTable){
 		List<GenTemplate> templateList = ListUtils.newArrayList();
-		if (config !=null && config.getCategoryList() != null && category !=  null){
-			for (GenCategory e : config.getCategoryList()){
+		if (config !=null && config.getTplCategoryList() != null && category !=  null){
+			for (GenCategory e : config.getTplCategoryList()){
 				if (category.equals(e.getValue())){
 					List<String> list = null;
 					if (!isChildTable){
@@ -274,29 +308,29 @@ public class GenUtils {
 	 * @param genTable
 	 * @return
 	 */
-	public static Map<String, Object> getDataModel(GenScheme genScheme){
+	public static Map<String, Object> getDataModel(GenTable genTable){
 		Map<String, Object> model = MapUtils.newHashMap();
 		
-		model.put("packageName", StringUtils.lowerCase(genScheme.getPackageName()));
+		model.put("packageName", StringUtils.lowerCase(genTable.getPackageName()));
 		model.put("lastPackageName", StringUtils.substringAfterLast((String)model.get("packageName"),"."));
-		model.put("moduleName", StringUtils.lowerCase(genScheme.getModuleName()));
-		model.put("subModuleName", StringUtils.lowerCase(genScheme.getSubModuleName()));
-		model.put("className", StringUtils.uncapitalize(genScheme.getGenTable().getClassName()));
-		model.put("ClassName", StringUtils.capitalize(genScheme.getGenTable().getClassName()));
+		model.put("moduleName", StringUtils.lowerCase(genTable.getModuleName()));
+		model.put("subModuleName", StringUtils.lowerCase(genTable.getSubModuleName()));
+		model.put("className", StringUtils.uncapitalize(genTable.getClassName()));
+		model.put("ClassName", StringUtils.capitalize(genTable.getClassName()));
 		
-		model.put("functionName", genScheme.getFunctionName());
-		model.put("functionNameSimple", genScheme.getFunctionNameSimple());
-		model.put("functionAuthor", StringUtils.isNotBlank(genScheme.getFunctionAuthor())?genScheme.getFunctionAuthor():UserUtils.getUser().getUsername());
+		model.put("functionName", genTable.getFunctionName());
+		model.put("functionNameSimple", genTable.getFunctionNameSimple());
+		model.put("functionAuthor", StringUtils.isNotBlank(genTable.getFunctionAuthor())?genTable.getFunctionAuthor():UserUtils.getUser().getUsername());
 		model.put("functionVersion", DateUtils.getDate());
 		
 //		model.put("urlPrefix", model.get("moduleName")+(StringUtils.isNotBlank(genScheme.getSubModuleName()) ?"/"+StringUtils.lowerCase(genScheme.getSubModuleName()):"")+"/"+model.get("className"));
-		model.put("urlPrefix", model.get("moduleName")+(StringUtils.isNotBlank(genScheme.getSubModuleName()) ?"/"+StringUtils.lowerCase(genScheme.getSubModuleName()):""));
+		model.put("urlPrefix", model.get("moduleName")+(StringUtils.isNotBlank(genTable.getSubModuleName()) ?"/"+StringUtils.lowerCase(genTable.getSubModuleName()):""));
 		model.put("viewPrefix", model.get("urlPrefix"));
-		model.put("permissionPrefix", model.get("moduleName")+(StringUtils.isNotBlank(genScheme.getSubModuleName()) ?":"+StringUtils.lowerCase(genScheme.getSubModuleName()):"")+":"+model.get("className"));
+		model.put("permissionPrefix", model.get("moduleName")+(StringUtils.isNotBlank(genTable.getSubModuleName()) ?":"+StringUtils.lowerCase(genTable.getSubModuleName()):"")+":"+model.get("className"));
 		
 		model.put("dbType", jdbcType);
 
-		model.put("table", genScheme.getGenTable());
+		model.put("table", genTable);
 		
 		return model;
 	}

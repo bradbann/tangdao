@@ -1,0 +1,501 @@
+<% layout('/layouts/default.html', {title: '代码生成管理', libs: ['validate', 'dataGrid']}){ %>
+<div class="card bd-0">
+    <div class="card-header d-flex align-items-start justify-content-between pd-10-f">
+        <div class="pt-1">${genTable.isNewRecord ? '新增配置' : '编辑配置'}</div>
+        <div class="d-flex">
+        	<ul class="nav nav-tabs nav-card" id="myTab" role="tablist">  
+        	<li class="nav-item">    
+        	<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">配置信息</a>  </li>  
+        	<li class="nav-item">    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">字段列表</a>  </li> 
+        	 <li class="nav-item">    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">生成信息</a>  </li></ul>
+        </div>
+    </div>
+    <#form:form id="inputForm" model="${genTable}" action="" method="post">
+        <div class="card-body card-content-fixed pd-0">
+        <div class="tab-content" id="myTabContent">  
+	        <div class="tab-pane fade show active pd-sm-t-30 pd-sm-b-40 pd-sm-x-30" id="home" role="tabpanel" aria-labelledby="home-tab">
+	            <div class="form-row">
+	                <div class="form-group col-md-6">
+	                    <label for="parentCode">表名</label>
+	                    <#form:hidden path="isNewRecord"/>
+						<#form:input path="tableName" maxlength="64" class="form-control required"/>
+	                </div>
+	                <div class="form-group col-md-6">
+	                    <label for="menuType">表说明</label>
+		                <#form:input path="comments" maxlength="500" class="form-control required"/>
+	                </div>
+	            </div>
+	            <div class="form-row">
+		            <div class="form-group  col-md-6">
+		                <label>实体类名称</label>
+		                <#form:input path="className" maxlength="100" class="form-control required"/>
+		            </div>
+		            <div class="form-group  col-md-6">
+		                <label>功能作者</label>
+		                <#form:input path="functionAuthor" maxlength="50" class="form-control required"/>
+		            </div>
+	            </div>
+	            <div class="form-group">
+	                <label>备注信息</label>
+	                 <#form:textarea path="remarks" class="form-control" row="5" placeholder="请输入" />
+	            </div>
+	            
+	        </div>  
+	        <div class="tab-pane fade pd-10-f" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+	            <table id="dataGrid"></table>
+	        </div> 
+	        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+	             <h6>Contact</h6>    <p>...</p>  
+	        </div>
+         </div>
+        </div>
+        <div class="card-footer pd-sm-l-30">
+            <div class="row">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-sm btn-primary">下一步</button>
+                    <button type="button" class="btn btn-sm btn-default" onclick="js.closeCurrentTabPage()">关闭窗口</button>
+                </div>
+            </div>
+        </div>
+    </#form:form>
+</div>
+<% } %>
+<script src="${ctxStatic}/vendors/jqGrid/4.7/plugins/jquery.tablednd.js"></script>
+<script>
+<% if(isNotEmpty(message!)){ %>
+js.showMessage('${message}');
+<% } %>
+
+
+$("#inputForm").validate({
+	submitHandler: function(form){
+		form.submit();
+    }
+});
+
+
+var op = '${op}',
+tableName = '${genTable.tableName}',
+columnList = ${toJson(genTable.columnList)},
+config = {
+	javaTypeList: ${toJson(config.javaTypeList)},
+	queryTypeList: ${toJson(config.queryTypeList)},
+	showTypeList: ${toJson(config.showTypeList)},
+	fieldValidList: ${toJson(config.fieldValidList)},
+	gridRowColList: ${toJson(config.gridRowColList)}
+}
+
+$("#dataGrid").dataGrid({
+    data: columnList,
+    datatype: "local",
+    rowNum: 3000,
+    sortableColumn: false,
+    dataId: "aa",
+    autoGridHeight: function() {
+        return $(window).height() - $(".card-header").outerHeight() - $(".card-footer").outerHeight() - 95
+    },
+    autoGridWidth: function() {
+        return $(".card-body").width() - 20
+    },
+    columnModel: [{
+        header: "编码",
+        name: "id",
+        frozen: true,
+        hidden: true,
+        editable: true
+    },
+    {
+        header: "状态",
+        name: "status",
+        frozen: true,
+        hidden: true,
+        editable: true
+    },
+    {
+        header: "列名",
+        name: "columnSort",
+        width: 30,
+        frozen: true,
+        align: "center",
+        editable: true,
+        edittype: "text",
+        editoptions: {
+            maxlength: "8",
+            "class": "form-control required digits d-none columnSort",
+            dataInit: function(a) {
+                if ($(a).val() == "") {
+                    $(a).val($(a).closest("table").find("tr").length * 10)
+                }
+                $(a).parent().append('<i class="la la-sort" style="color:#aaa;cursor:move"></i>')
+            }
+        },
+        classes: "columnSort"
+    },
+    {
+        header: "列名",
+        name: "columnName",
+        width: 110,
+        frozen: true,
+        formatter: function(d, b, c, a) {
+            if (c.status == Global.STATUS_DELETE) {
+                return '<span title="已被删除的列，保存后下次将不可见" style="color:red">' + c.columnName + ' <i class="fa icon-question"></i></span>'
+            }
+            return c.columnName
+        }
+    },
+    {
+        header: "列名",
+        name: "columnName",
+        frozen: true,
+        hidden: true,
+        editable: true
+    },
+    {
+        header: "列说明",
+        name: "comments",
+        width: 110,
+        frozen: true,
+        editable: true,
+        edittype: "text",
+        editoptions: {
+            maxlength: "100",
+            "class": "form-control required"
+        }
+    },
+    {
+        header: "字段类型",
+        name: "jdbcType",
+        hidden: true,
+        editable: true
+    },
+    {
+        header: "字段类型",
+        name: "jdbcType",
+        width: 110,
+        formatter: function(d, b, c, a) {
+            return c.jdbcType
+        }
+    },
+    {
+        header: "属性类型",
+        name: "javaType",
+        width: 90,
+        editable: true,
+        edittype: "select",
+        editoptions: {
+            "class": "form-control select2 required",
+            "data-msg-required": "请选择属性类型",
+            items: (config.javaTypeList),
+            itemLabel: "label",
+            itemValue: "value",
+            dataInit: function(a) {
+                $(a).select2().on("change",
+                function() {
+                    try {
+                        $(this).resetValid()
+                    } catch(b) {}
+                })
+            }
+        }
+    },
+    {
+        header: '属性名称 <i class="fa icon-question" title="实体对象的属性字段支持复杂格式：对象名.属性名|属性名2，例如：用户user.userCode|userName，主要用于树选择组件；如果子表，则写主表实体类名 + 主键，例如：formEntity.entityId"></i>',
+        name: "javaField",
+        width: 100,
+        editable: true,
+        edittype: "text",
+        editoptions: {
+            maxlength: "100",
+            "class": "form-control required",
+            "data-msg-required": "请选择属性名称"
+        }
+    },
+    {
+        header: "主键",
+        name: "isPk",
+        width: 40,
+        align: "center",
+        editable: true,
+        edittype: "checkbox",
+        editoptions: {
+        	"class": "custom-control-input",
+            value: "1",
+            dataInit: function(a) {
+            	$(a).wrap("<div class='custom-control custom-checkbox'></div>");
+            	$(a).after("<label class='custom-control-label' for='"+a.id+"'></label>")
+            }
+        }
+    },
+    {
+        header: "插入",
+        name: "isInsert",
+        width: 40,
+        align: "center",
+        editable: true,
+        edittype: "checkbox",
+        editoptions: {
+            "class": "custom-control-input",
+            value: "1",
+            dataInit: function(a) {
+            	$(a).wrap("<div class='custom-control custom-checkbox'></div>");
+            	$(a).after("<label class='custom-control-label' for='"+a.id+"'></label>")
+            }
+        }
+    },
+    {
+        header: "更新",
+        name: "isUpdate",
+        width: 40,
+        align: "center",
+        editable: true,
+        edittype: "checkbox",
+        editoptions: {
+        	"class": "custom-control-input",
+            value: "1",
+            dataInit: function(a) {
+            	$(a).wrap("<div class='custom-control custom-checkbox'></div>");
+            	$(a).after("<label class='custom-control-label' for='"+a.id+"'></label>")
+            }
+        }
+    },
+    {
+        header: "列表",
+        name: "isList",
+        width: 40,
+        align: "center",
+        editable: true,
+        edittype: "checkbox",
+        editoptions: {
+        	"class": "custom-control-input",
+            value: "1",
+            dataInit: function(a) {
+            	$(a).wrap("<div class='custom-control custom-checkbox'></div>");
+            	$(a).after("<label class='custom-control-label' for='"+a.id+"'></label>")
+            }
+        }
+    },
+    {
+        header: "查询",
+        name: "isQuery",
+        width: 40,
+        align: "center",
+        editable: true,
+        edittype: "checkbox",
+        editoptions: {
+        	"class": "custom-control-input",
+            value: "1",
+            dataInit: function(a) {
+            	$(a).wrap("<div class='custom-control custom-checkbox'></div>");
+            	$(a).after("<label class='custom-control-label' for='"+a.id+"'></label>")
+            }
+        }
+    },
+    {
+        header: "匹配方式",
+        name: "queryType",
+        width: 100,
+        editable: true,
+        edittype: "select",
+        editoptions: {
+            "class": "form-control required",
+            "data-msg-required": "请选择匹配方式",
+            items: (config.queryTypeList),
+            itemLabel: "label",
+            itemValue: "value",
+            dataInit: function(a) {
+                $(a).select2().on("change",
+                function() {
+                    try {
+                        $(this).resetValid()
+                    } catch(b) {}
+                })
+            }
+        }
+    },
+    {
+        header: "编辑",
+        name: "isEdit",
+        width: 40,
+        align: "center",
+        editable: true,
+        edittype: "checkbox",
+        editoptions: {
+        	"class": "custom-control-input",
+            value: "1",
+            dataInit: function(a) {
+            	$(a).wrap("<div class='custom-control custom-checkbox'></div>");
+            	$(a).after("<label class='custom-control-label' for='"+a.id+"'></label>")
+            }
+        }
+    },
+    {
+        header: "必填",
+        name: "isNull",
+        width: 40,
+        align: "center",
+        editable: true,
+        edittype: "checkbox",
+        editoptions: {
+        	"class": "custom-control-input",
+            value: "1",
+            dataInit: function(a) {
+            	$(a).wrap("<div class='custom-control custom-checkbox'></div>");
+            	$(a).after("<label class='custom-control-label' for='"+a.id+"'></label>")
+            }
+        }
+    },
+    {
+        header: "控件类型",
+        name: "showType",
+        width: 120,
+        editable: true,
+        edittype: "select",
+        editoptions: {
+            "class": "form-control required",
+            "data-msg-required": "请选择控件类型",
+            items: (config.showTypeList),
+            itemLabel: "label",
+            itemValue: "value",
+            dataInit: function(a) {
+                $(a).select2().on("change",
+                function() {
+                    try {
+                        $(this).resetValid()
+                    } catch(b) {}
+                })
+            }
+        }
+    },
+    {
+        header: '栅格 <i class="fa icon-question" title="栅格定义：行/标签/输入框"></i>',
+        name: "optionMap['gridRowCol']",
+        width: 90,
+        editable: true,
+        edittype: "select",
+        editoptions: {
+            "class": "form-control",
+            items: (config.gridRowColList),
+            itemLabel: "label",
+            itemValue: "value",
+            dataInit: function(a) {
+                $(a).select2().on("change",
+                function() {
+                    try {
+                        $(this).resetValid()
+                    } catch(b) {}
+                })
+            }
+        }
+    },
+    {
+        header: '<span title="强制新行、换行，强制输出一个&lt;div class=&quot;row&quot;&gt;&lt;/div&gt;">新行</span>',
+        name: "optionMap['isNewLine']",
+        align: "center",
+        width: 40,
+        editable: true,
+        edittype: "checkbox",
+        editoptions: {
+        	"class": "custom-control-input",
+            value: "1",
+            dataInit: function(a) {
+            	$(a).wrap("<div class='custom-control custom-checkbox'></div>");
+            	$(a).after("<label class='custom-control-label' for='"+a.id+"'></label>")
+            }
+        }
+    },
+    
+    {
+        header: "字段验证",
+        name: "optionMap['fieldValid']",
+        width: 170,
+        editable: true,
+        edittype: "select",
+        editoptions: {
+            "class": "form-control",
+            multiple: true,
+            items: (config.fieldValidList),
+            itemLabel: "label",
+            itemValue: "value",
+            dataInit: function(a) {
+                $(a).select2().on("change",
+                function() {
+                    try {
+                        $(this).resetValid()
+                    } catch(b) {}
+                })
+            }
+        }
+    }],
+    groupHeaders: {
+        twoLevel: [{
+            startColumnName: "id",
+            numberOfColumns: 13,
+            titleText: "字段"
+        },
+        {
+            startColumnName: "isList",
+            numberOfColumns: 3,
+            titleText: "列表"
+        },
+        {
+            startColumnName: "isEdit",
+            numberOfColumns: 7,
+            titleText: "表单"
+        }]
+    },
+    editGrid: true,
+    editGridInitRowNum: 0,
+    editGridInitAllRowEdit: true,
+    editGridAddRowBtn: $("#dataGridAdd"),
+    editGridAddRowInitData: {
+        id: "",
+        status: Global.STATUS_NORMAL
+    },
+    editGridInputFormListName: "columnList",
+    editGridInputFormListAttrs: "id,status,columnName,comments,jdbcType,javaType,javaField,isPk,isNull,isInsert,isUpdate,columnSort,isList,isQuery,queryType,isEdit,showType,optionMap['isNewLine'],optionMap['gridRowCol'],optionMap['fieldValid'],optionMap['dictType'],optionMap['dictName']",
+    ajaxSuccess: function(a) {
+        $("#dataGrid_columnSort").attr("colspan", "2").next().hide()
+    }
+});
+$("#dataGrid").tableDnD({
+    onDragClass: "dragClass",
+    dragHandle: "columnSort",
+    onDrop: function(a, b) {
+        $(a).find("input.columnSort").each(function(c) {
+            $(this).val((c + 1) * 10)
+        })
+    }
+});
+$("#inputForm").validate({
+    ignore: ":hidden",
+    submitHandler: function(a) {
+        if ((op == "step1" || op == "step2") && $("#tab-1").hasClass("active")) {
+            $("#btnSave").removeClass("hide");
+            $('[href="#tab-2"]').click();
+            return false
+        }
+        js.ajaxSubmitForm($(a),
+        function(b) {
+            js.showMessage(b.message);
+            if (b.result == Global.TRUE) {
+                if ($("#genFlag").val() == "0") {
+                    location = ctx + "/gen/genTable/form?tableName=" + tableName + "&op=step3"
+                } else {
+                    js.closeCurrentTabPage(function(c) {
+                        c.page()
+                    })
+                }
+            }
+        },
+        "json")
+    }
+});
+$("#tplCategory").change(function() {
+    $(".options").addClass("hide");
+    var a = $(this).val();
+    if (a != "") {
+        $("." + $(this).val()).removeClass("hide")
+    }
+}).change();
+</script>
+</body></html>

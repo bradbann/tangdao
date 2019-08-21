@@ -40,7 +40,6 @@ public class DictDataController extends BaseController {
 	
 	@RequestMapping(value = "list")
 	public String list(DictData dictData, Model model){
-		model.addAttribute("dictData", dictData);
 		return "modules/sys/dictDataList";
 	}
 	

@@ -28,6 +28,6 @@ public interface GenDataDictMapper {
 	 * @param genTable
 	 * @return
 	 */
-	List<String> findTablePK(GenTable genTable);
+	List<GenTableColumn> findTablePK(GenTable genTable);
 
 }

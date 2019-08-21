@@ -31,7 +31,7 @@ public class JobsRegistryController extends BaseController {
     
     @RequestMapping(value = "list")
 	public String list(JobsRegistry jobsRegistry, Model model){
-		return "modules/jobs/jobsRegistryList";
+		return "modules/jobs/registryList";
 	}
     
     @RequestMapping(value = "listData")

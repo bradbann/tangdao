@@ -1,15 +1,21 @@
 package org.tangdao.modules.gen.model.domain;
 
 import java.util.List;
+import java.util.Map;
 
-import org.hibernate.validator.constraints.Length;
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.DataEntity;
+import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.ListUtils;
+import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,25 +30,75 @@ public class GenTable extends DataEntity<GenTable> {
 	private static final long serialVersionUID = 1L;
 	
 	@TableId
-	private String id;
-	
-	private String name; 	// 名称
+	private String tableName; 	// 名称
 	private String comments;		// 描述
 	private String className;		// 实体类名称
 	private String parentTable;		// 关联父表
 	private String parentTableFk;		// 关联父表外键
+	
+	private String tplCategory;		// 分类
+	private String packageName;		// 生成包路径
+	private String moduleName;		// 生成模块名
+	private String subModuleName;		// 生成子模块名
+	private String functionName;		// 生成功能名
+	private String functionNameSimple;		// 生成功能名（简写）
+	private String functionAuthor;		// 生成功能作者
+	private String genBaseDir;	//生成基础路径
 
+	@TableField(exist = false)
 	private List<GenTableColumn> columnList = ListUtils.newArrayList();	// 表列
 
-	private String nameLike; 	// 按名称模糊查询
+	@TableField(exist = false)
+	private List<GenTableColumn> pkList; // 当前表主键列表
 	
-	private List<String> pkList; // 当前表主键列表
-	
+	@TableField(exist = false)
 	private GenTable parent;	// 父表对象
 	
+	@TableField(exist = false)
 	private List<GenTable> childList = ListUtils.newArrayList();	// 子表列表
 	
-	private Global global;
+	@TableField(exist = false)
+	private String flag; 	// 0：保存方案； 1：保存方案并生成代码
+	
+	@TableField(exist = false)
+	private Boolean replaceFile;	// 是否替换现有文件    0：不替换；1：替换文件
+	
+	private String options;
+	
+	@SuppressWarnings("rawtypes")
+	@TableField(exist = false)
+	private Map optionMap;
+	
+	@SuppressWarnings("rawtypes")
+	public void setOptions(String options) {
+	      if (StringUtils.isNotBlank(options)) {
+	         this.optionMap = (Map)JsonMapper.fromJson(options, Map.class);
+	      }
+
+	      this.options = options;
+	}
+	
+	@JsonIgnore
+	public String getOptions() {
+		if (this.optionMap != null) {
+			this.options = JsonMapper.toJson(this.optionMap);
+		}
+		return this.options;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public Map getOptionMap() {
+		if (this.optionMap == null) {
+			this.optionMap = MapUtils.newHashMap();
+		}
+		return this.optionMap;
+	}
+	
+	@JsonIgnore	
+	@XmlTransient	
+	public Global getGlobal() {	
+		return Global.getInstance();	
+	}
 	
 	public GenTable() {
 		super();
@@ -50,15 +106,6 @@ public class GenTable extends DataEntity<GenTable> {
 
 	public GenTable(String id){
 		super(id);
-	}
-
-	@Length(min=1, max=200)
-	public String getName() {
-		return StringUtils.lowerCase(name);
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getComments() {
@@ -93,22 +140,6 @@ public class GenTable extends DataEntity<GenTable> {
 		this.parentTableFk = parentTableFk;
 	}
 
-	public List<String> getPkList() {
-		return pkList;
-	}
-
-	public void setPkList(List<String> pkList) {
-		this.pkList = pkList;
-	}
-
-	public String getNameLike() {
-		return nameLike;
-	}
-
-	public void setNameLike(String nameLike) {
-		this.nameLike = nameLike;
-	}
-
 	public GenTable getParent() {
 		return parent;
 	}
@@ -137,8 +168,8 @@ public class GenTable extends DataEntity<GenTable> {
 	 * 获取列名和说明
 	 * @return
 	 */
-	public String getNameAndComments() {
-		return getName() + (comments == null ? "" : "  :  " + comments);
+	public String getTableNameAndComments() {
+		return getTableName() + (comments == null ? "" : "  :  " + comments);
 	}
 
 	/**
@@ -185,9 +216,9 @@ public class GenTable extends DataEntity<GenTable> {
 	 * 是否存在create_date列
 	 * @return
 	 */
-	public Boolean getCreateDateExists(){
+	public Boolean getCreateTimeExists(){
 		for (GenTableColumn c : columnList){
-			if ("create_date".equals(c.getName())){
+			if ("create_time".equals(c.getColumnName())){
 				return true;
 			}
 		}
@@ -198,9 +229,9 @@ public class GenTable extends DataEntity<GenTable> {
 	 * 是否存在update_date列
 	 * @return
 	 */
-	public Boolean getUpdateDateExists(){
+	public Boolean getUpdateTimeExists(){
 		for (GenTableColumn c : columnList){
-			if ("update_date".equals(c.getName())){
+			if ("update_time".equals(c.getColumnName())){
 				return true;
 			}
 		}
@@ -208,17 +239,27 @@ public class GenTable extends DataEntity<GenTable> {
 	}
 
 	/**
-	 * 是否存在del_flag列
+	 * 是否存在status列
 	 * @return
 	 */
-	public Boolean getDelFlagExists(){
+	public Boolean getStatusExists(){
 		for (GenTableColumn c : columnList){
-			if ("del_flag".equals(c.getName())){
+			if ("status".equals(c.getColumnName())){
 				return true;
 			}
 		}
 		return false;
 	}
 
+	public Boolean getReplaceFile() {
+		if(replaceFile==null){
+			return false;
+		}
+		return replaceFile;
+	}
+	
+	public String getParentTableName() {
+		return StringUtils.lowerCase(this.parentTable);
+	}
 
 }

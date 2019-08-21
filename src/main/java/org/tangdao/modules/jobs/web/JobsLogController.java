@@ -32,7 +32,7 @@ public class JobsLogController extends BaseController {
     
     @RequestMapping(value = "list")
    	public String list(JobsLog jobsLog, Model model){
-   		return "modules/jobs/jobsLogList";
+   		return "modules/jobs/logList";
    	}
 
     @RequestMapping(value = "listData")
