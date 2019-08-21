@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.tangdao.modules.jobs.service.vo.JobsDateTempVO;
+import org.tangdao.modules.jobs.model.vo.JobsDateTempVO;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tangdao.jobs.model.JobsLog;

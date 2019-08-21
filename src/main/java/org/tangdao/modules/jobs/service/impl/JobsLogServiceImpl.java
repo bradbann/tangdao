@@ -8,9 +8,9 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.tangdao.modules.jobs.mapper.JobsLogMapper;
+import org.tangdao.modules.jobs.model.vo.JobsDateDistributionVO;
+import org.tangdao.modules.jobs.model.vo.JobsDateTempVO;
 import org.tangdao.modules.jobs.service.IJobsLogService;
-import org.tangdao.modules.jobs.service.vo.JobsDateDistributionVO;
-import org.tangdao.modules.jobs.service.vo.JobsDateTempVO;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

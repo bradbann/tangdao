@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.tangdao.modules.jobs.model.vo.JobsDateDistributionVO;
+import org.tangdao.modules.jobs.model.vo.JobsImportantNumVO;
+import org.tangdao.modules.jobs.model.vo.JobsSuccessRatioVO;
 import org.tangdao.modules.jobs.service.IJobsLogService;
 import org.tangdao.modules.jobs.service.IJobsRegistryService;
 import org.tangdao.modules.jobs.service.IJobsStatisticsService;
-import org.tangdao.modules.jobs.service.vo.JobsDateDistributionVO;
-import org.tangdao.modules.jobs.service.vo.JobsImportantNumVO;
-import org.tangdao.modules.jobs.service.vo.JobsSuccessRatioVO;
 
 @Service
 public class JobsStatisticsServiceImpl implements IJobsStatisticsService {

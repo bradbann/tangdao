@@ -1,4 +1,4 @@
-package org.tangdao.modules.jobs.service.vo;
+package org.tangdao.modules.jobs.model.vo;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

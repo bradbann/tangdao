@@ -2,7 +2,7 @@ package org.tangdao.modules.jobs.service;
 
 import java.util.List;
 
-import org.tangdao.modules.jobs.service.vo.JobsDateDistributionVO;
+import org.tangdao.modules.jobs.model.vo.JobsDateDistributionVO;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

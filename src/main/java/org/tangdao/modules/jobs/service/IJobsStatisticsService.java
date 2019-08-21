@@ -2,9 +2,9 @@ package org.tangdao.modules.jobs.service;
 
 import java.util.List;
 
-import org.tangdao.modules.jobs.service.vo.JobsDateDistributionVO;
-import org.tangdao.modules.jobs.service.vo.JobsImportantNumVO;
-import org.tangdao.modules.jobs.service.vo.JobsSuccessRatioVO;
+import org.tangdao.modules.jobs.model.vo.JobsDateDistributionVO;
+import org.tangdao.modules.jobs.model.vo.JobsImportantNumVO;
+import org.tangdao.modules.jobs.model.vo.JobsSuccessRatioVO;
 
 /**
  * 统计接口
