@@ -39,12 +39,13 @@ if(isNotEmpty(p.dictType)){
 		}
 	}
 }
+
 %>
 <select class="${class!}" id="${id}" name="${name}"<%if(@ObjectUtils.toBoolean(p.multiple)){%> multiple<%}%><%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly="readonly"<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled="disabled"<%}%><%if(isNotEmpty(style!)){%> style="${style!}"<%}%>>
 <% if(@ListUtils.isNotEmpty(p.items)){ %>
 <% if(p.blankOption){ %>
 <option value="">${p.blankOptionLabel}</option>
 <%}for(item in p.items){%>
-<option  <%if(@StringUtils.inString(item[p.itemValue], @StringUtils.split(value!,','))){%>selected="selected"<%}%> value="${item[p.itemValue]}">${item[p.itemLabel]}</option>
+<option  <%if(@StringUtils.inString(item[p.itemValue], @StringUtils.split(@ObjectUtils.toString(value!),','))){%>selected="selected"<%}%> value="${item[p.itemValue]}">${item[p.itemLabel]}</option>
 <%}} %>
 </select>

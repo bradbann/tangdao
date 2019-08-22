@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.tangdao.common.config.Global;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.gen.mapper.GenDataDictMapper;
@@ -58,7 +59,12 @@ public class GenTableService extends CrudServiceImpl<GenTableMapper, GenTable>{
 			return true;
 		}
 		QueryWrapper<GenTable> queryWrapper = new QueryWrapper<GenTable>();
+		queryWrapper.eq("table_name", tableName);
 		return genTableMapper.selectCount(queryWrapper)==0;
+	}
+	
+	public List<GenTable> findGenBaseDirList(){
+		return genTableMapper.findGenBaseDirList();
 	}
 	
 	/**
@@ -72,7 +78,6 @@ public class GenTableService extends CrudServiceImpl<GenTableMapper, GenTable>{
 			
 			List<GenTable> list = genDataDictMapper.findTableList(genTable);
 			if (list.size() > 0){
-				
 				// 如果是新增，初始化表属性
 				if (genTable.getIsNewRecord()){
 					genTable = list.get(0);
@@ -81,6 +86,18 @@ public class GenTableService extends CrudServiceImpl<GenTableMapper, GenTable>{
 						genTable.setComments(genTable.getTableName());
 					}
 					genTable.setClassName(StringUtils.capCamelCase(genTable.getTableName()));
+					genTable.setFunctionName(genTable.getComments());
+					genTable.setFunctionNameSimple(genTable.getComments());
+					
+					if(StringUtils.isBlank(genTable.getPackageName())) {
+						genTable.setPackageName(Global.getConfig("gen.defaultPackageName"));
+					}
+					if(StringUtils.isBlank(genTable.getPackageName())) {
+						genTable.setPackageName("org.tangdao.modules");
+					}
+					if(StringUtils.isBlank(genTable.getModuleName())) {
+						genTable.setModuleName(StringUtils.substringBefore(genTable.getTableName(), "_"));	
+					}
 				}
 				
 				// 添加新列
@@ -126,11 +143,16 @@ public class GenTableService extends CrudServiceImpl<GenTableMapper, GenTable>{
 		super.saveOrUpdate(genTable);
 		// 保存列
 		for (GenTableColumn column : genTable.getColumnList()){
+			column.setTableName(genTable.getTableName());
 			column.setGenTable(genTable);
 			if (StringUtils.isBlank(column.getId())){
 				column.preInsert();
 				genTableColumnMapper.insert(column);
-			}else{
+				continue;
+			}
+			if ("1".equals(column.getStatus())) {	
+				genTableColumnMapper.deleteById(column);
+			} else{
 				column.preUpdate();
 				genTableColumnMapper.updateById(column);
 			}
@@ -165,22 +187,21 @@ public class GenTableService extends CrudServiceImpl<GenTableMapper, GenTable>{
 			queryWrapper.eq("parent_table", genTable.getTableName());
 			genTable.setChildList(genTableMapper.selectList(queryWrapper));
 		}
-		String projectPath = GenUtils.getProjectPath(null);
-		System.out.println("----------------------------------"+projectPath);
+//		String projectPath = GenUtils.getProjectPath(null);
 		// 生成子表模板代码
-		for (GenTable childTable : genTable.getChildList()){
-			childTable.setParent(genTable);
-			childTable.setColumnList(genTableColumnMapper.findList(new GenTableColumn(childTable)));
-			Map<String, Object> childTableModel = GenUtils.getDataModel(childTable);
-			for (GenTemplate tpl : childTableTemplateList){
-				result.append(GenUtils.generateToFile(projectPath, tpl, childTableModel, genTable.getReplaceFile()));
-			}
-		}
-		
+//		for (GenTable childTable : genTable.getChildList()){
+//			childTable.setParent(genTable);
+//			childTable.setColumnList(genTableColumnMapper.findList(new GenTableColumn(childTable)));
+//			Map<String, Object> childTableModel = GenUtils.getDataModel(childTable);
+//			for (GenTemplate tpl : childTableTemplateList){
+//				result.append(GenUtils.generateToFile(projectPath, tpl, childTableModel, genTable.getReplaceFile()));
+//			}
+//		}
+//		System.out.println(projectPath);
 		// 生成主表模板代码
 		Map<String, Object> model = GenUtils.getDataModel(genTable);
 		for (GenTemplate tpl : templateList){
-			result.append(GenUtils.generateToFile(projectPath, tpl, model, genTable.getReplaceFile()));
+			result.append(GenUtils.generateToFile(tpl, model, genTable));
 		}
 		return result.toString();
 	}

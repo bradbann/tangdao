@@ -35,7 +35,8 @@
             	<% for(subItem in item.children){ %>
             		<% if(@ListUtils.isEmpty(subItem.children)){  %>
 	            	<li class="nav-item treeview">
-	            		<a href="javascript:;" data-href="${ctx}${subItem.menuHref}" class="nav-link addTabPage" data-code="${subItem.menuCode}">
+	            		
+	            		<a href="javascript:;" data-href="${strutil.startWith(subItem.menuHref,'//')?'':ctx}${@StringUtils.replace(subItem.menuHref,'//','/')}" class="nav-link addTabPage" data-code="${subItem.menuCode}">
 	            			<i class="${isEmpty(subItem.menuIcon)?'la la-code':subItem.menuIcon}"></i>
 	                		<span>${subItem.menuName}</span>
 	                	</a>
@@ -50,7 +51,7 @@
 		                	<% for(thrItem in subItem.children){ %>
 		                		<% if(@ListUtils.isEmpty(thrItem.children)){ %>
 			                    <li class="treeview">
-			                    	<a href="javascript:;" data-href="${ctx}${thrItem.menuHref}" class="addTabPage" data-code="${thrItem.menuCode}">
+			                    	<a href="javascript:;" data-href="${strutil.startWith(thrItem.menuHref,'//')?'':ctx}${@StringUtils.replace(thrItem.menuHref,'//','/')}" class="addTabPage" data-code="${thrItem.menuCode}">
 			                    		<i class="badge badge-dot"><span></span></i>${thrItem.menuName}
 			                    	</a>
 			                    </li>

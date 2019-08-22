@@ -24,6 +24,6 @@
 		<if test="genTable != null and genTable.tableName != null and genTable.tableName != ''">
 			AND a.table_name = #{genTable.tableName}
 		</if>
-		ORDER BY a.sort ASC
+		ORDER BY a.column_sort ASC
 	</select>
 </mapper>

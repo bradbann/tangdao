@@ -214,9 +214,12 @@ Class.pt.vessel = function(conType, callback){
   var that = this, times = that.index, config = that.config;
   var zIndex = config.zIndex + times, titype = typeof config.title === 'object';
   var ismax = config.maxmin && (config.type === 1 || config.type === 2);
+  //var titleHTML = (config.title ? '<div class="layui-layer-title" style="'+ (titype ? config.title[1] : '') +'">' 
+  //  + (titype ? config.title[0] : layer.i18n.title) 
+  //+ '</div>' : '');
   var titleHTML = (config.title ? '<div class="layui-layer-title" style="'+ (titype ? config.title[1] : '') +'">' 
-    + (titype ? config.title[0] : layer.i18n.title) 
-  + '</div>' : '');
+		    + (titype ? config.title[0] : config.title) 
+		  + '</div>' : '');
   
   config.zIndex = zIndex;
   callback([
@@ -273,7 +276,6 @@ Class.pt.creat = function(){
   if(layer.ie == 6){
     config.fixed = false;
   }
-  
   switch(config.type){
     case 0:
       //config.btn = ('btn' in config) ? config.btn : ready.btn[0]; ThinkGem
@@ -308,7 +310,6 @@ Class.pt.creat = function(){
       config.tipsMore || layer.closeAll('tips');
     break;
   }
-  
   //建立容器
   that.vessel(conType, function(html, titleHTML, moveElem){
     body.append(html[0]);

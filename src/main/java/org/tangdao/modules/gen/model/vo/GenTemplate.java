@@ -1,11 +1,11 @@
 package org.tangdao.modules.gen.model.vo;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.tangdao.common.suports.DataEntity;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.StringUtils;
 
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @XmlRootElement(name="template")
-public class GenTemplate extends DataEntity<GenTemplate> {
+public class GenTemplate implements Serializable {
 
 	/**
 	 * 
@@ -32,10 +32,6 @@ public class GenTemplate extends DataEntity<GenTemplate> {
 		super();
 	}
 
-	public GenTemplate(String id){
-		super(id);
-	}
-	
 	public String getName() {
 		return name;
 	}

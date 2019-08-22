@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
+import org.tangdao.common.beetl.BeetlUtils;
 import org.tangdao.common.utils.DateUtils;
 import org.tangdao.common.utils.FileUtils;
 import org.tangdao.common.utils.JaxbMapper;
@@ -43,7 +44,7 @@ public class GenUtils {
 			if (StringUtils.isNotBlank(column.getId())){
 				continue;
 			}
-			
+			Map<String, Object> optionMap = MapUtils.newHashMap();
 			// 设置字段说明
 			if (StringUtils.isBlank(column.getComments())){
 				column.setComments(column.getColumnName());
@@ -139,6 +140,13 @@ public class GenUtils {
 					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "title")){
 				column.setQueryType("like");
 			}
+			
+			// 
+			if (StringUtils.equalsIgnoreCase(column.getColumnName(), "tree_sort")
+					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "tree_level")){
+				optionMap.put("fieldValid", "digits");
+				column.setOptionMap(optionMap);
+			}
 
 			// 设置特定类型和字段名
 			
@@ -160,26 +168,29 @@ public class GenUtils {
 //				column.setJavaField(column.getJavaField().replaceAll("Id", ".id|name"));
 //				column.setShowType("areaselect");
 //			}
-			// 创建者、更新者
-//			else if (StringUtils.startsWithIgnoreCase(column.getName(), "create_by")
-//					|| StringUtils.startsWithIgnoreCase(column.getName(), "update_by")){
-//				column.setJavaType(SysUser.class.getName());
+//			// 创建者、更新者
+//			else if (StringUtils.startsWithIgnoreCase(column.getColumnName(), "create_by")
+//					|| StringUtils.startsWithIgnoreCase(column.getColumnName(), "update_by")){
+//				column.setJavaType(User.class.getName());
 //				column.setJavaField(column.getJavaField() + ".id");
 //			}
 			// 创建时间、更新时间
 			else if (StringUtils.startsWithIgnoreCase(column.getColumnName(), "create_time")
 					|| StringUtils.startsWithIgnoreCase(column.getColumnName(), "update_time")){
-				column.setShowType("dateselect");
+				column.setShowType("datetime");
 			}
 			// 备注、内容
 			else if (StringUtils.equalsIgnoreCase(column.getColumnName(), "remarks")
 					|| StringUtils.equalsIgnoreCase(column.getColumnName(), "content")){
 				column.setShowType("textarea");
+				optionMap.put("gridRowCol", "12/2/10");
+				optionMap.put("isNewLine", 1);
+				column.setOptionMap(optionMap);
 			}
 			// 父级ID
 			else if (StringUtils.equalsIgnoreCase(column.getColumnName(), "parent_code")){
 				column.setJavaType("This");
-				column.setJavaField("parent.key|name");
+				column.setJavaField("parentCode");
 				column.setShowType("treeselect");
 			}
 			// 所有父级ID
@@ -188,9 +199,18 @@ public class GenUtils {
 			}
 			// 删除标记
 			else if (StringUtils.equalsIgnoreCase(column.getColumnName(), "status")){
-				column.setShowType("radiobox");
-				column.setDictType("status");
+				column.setShowType("radio");
+				
+				optionMap.put("dictType", "sys_status");
+				optionMap.put("dictName", "sys_status");
+				column.setOptionMap(optionMap);
 			}
+			if (StringUtils.equalsIgnoreCase(column.getIsNull(), "1")){
+				column.setIsNull("0");
+			}else {
+				column.setIsNull("1");
+			}
+			
 		}
 	}
 	
@@ -372,29 +392,37 @@ public class GenUtils {
 	 * @param replaceFile
 	 * @return
 	 */
-	public static String generateToFile(String projectPath,GenTemplate tpl, Map<String, Object> model, boolean isReplaceFile){
+	public static String generateToFile(GenTemplate tpl, Map<String, Object> model, GenTable genTable){
+		if (StringUtils.isBlank(genTable.getGenBaseDir())) {	
+            genTable.setGenBaseDir(FileUtils.getProjectPath());	
+        }	
+		
 		// 获取生成文件
-		String fileName = projectPath + File.separator + StringUtils.replaceEach(FreeMarkers.renderString(tpl.getFilePath() + "/", model), new String[]{"//", "/", "."}, new String[]{File.separator, File.separator, File.separator}) + FreeMarkers.renderString(tpl.getFileName(), model);
+		String fileName = genTable.getGenBaseDir() 
+				+ File.separator 
+				+ StringUtils.replaceEach(BeetlUtils.renderFromString(tpl.getFilePath() + "/", model), new String[]{"//", "/", "."}, new String[]{File.separator, File.separator, File.separator}) 
+				+ BeetlUtils.renderFromString(tpl.getFileName(), model);
 		logger.debug(" fileName === " + fileName);
 
 		// 获取生成文件内容
-		String content = FreeMarkers.renderString(StringUtils.trimToEmpty(tpl.getContent()), model);
+		String content = BeetlUtils.renderFromString(StringUtils.trimToEmpty(tpl.getContent()), model);
 		logger.debug(" content === \r\n" + content);
 		
-		// 如果选择替换文件，则删除原文件
-		if (isReplaceFile){
-			FileUtils.deleteFile(fileName);
-		}
-		
-		// 创建并写入文件
-		if (FileUtils.createFile(fileName)){
-			FileUtils.writeToFile(fileName, content, true);
-			logger.debug(" file create === " + fileName);
-			return "生成成功："+fileName+"<br/>";
-		}else{
-			logger.debug(" file extents === " + fileName);
-			return "文件已存在："+fileName+"<br/>";
-		}
+//		// 如果选择替换文件，则删除原文件
+//		if (genTable.getReplaceFile()){
+//			FileUtils.deleteFile(fileName);
+//		}
+//		
+//		// 创建并写入文件
+//		if (FileUtils.createFile(fileName)){
+//			FileUtils.writeToFile(fileName, content, true);
+//			logger.debug(" file create === " + fileName);
+//			return "生成成功："+fileName+"<br/>";
+//		}else{
+//			logger.debug(" file extents === " + fileName);
+//			return "文件已存在："+fileName+"<br/>";
+//		}
+		return "生成成功："+fileName+"<br/>";
 	}
 //	
 //	public static void main(String[] args) {

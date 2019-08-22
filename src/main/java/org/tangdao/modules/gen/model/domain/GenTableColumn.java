@@ -36,6 +36,7 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	private String tableName; //所属表
 	
 	@JsonIgnore
+	@TableField(exist = false)
 	private GenTable genTable;	// 归属表
 	private String columnName; 		// 列名
 	private String comments;	// 描述
@@ -50,7 +51,6 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 	private String isQuery;		// 是否查询字段（1：查询字段）
 	private String queryType;	// 查询方式（等于、不等于、大于、小于、范围、左LIKE、右LIKE、左右LIKE）
 	private String showType;	// 字段生成方案（文本框、文本域、下拉框、复选框、单选框、字典选择、人员选择、部门选择、区域选择）
-	private String dictType;	// 字典类型
 	private Integer columnSort;		// 排序（升序）
 	private String isUpdate;
 	
@@ -114,15 +114,6 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 
 	public void setJdbcType(String jdbcType) {
 		this.jdbcType = jdbcType;
-	}
-
-
-	public String getDictType() {
-		return dictType == null ? "" : dictType;
-	}
-
-	public void setDictType(String dictType) {
-		this.dictType = dictType;
 	}
 
 	/**
