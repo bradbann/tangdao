@@ -48,7 +48,7 @@
 	             <div class="form-row">
 	                <div class="form-group col-md-6">
 	                    <label for="parentCode">生成模板 <span class="tx-danger">*</span></label>
-	                    <#form:select path="tplCategory" items="${config.tplCategoryList}" itemLabel="label" itemValue="value" blankOption="true" class="form-control select2 select2-no-search required"/>
+	                    <#form:select path="tplCategory" items="${config.tplCategoryList}" itemLabel="label" itemValue="value" blankOption="true" style="width:100%" class="form-control select2 select2-no-search required"/>
 	                </div>
 	                <div class="form-group col-md-6">
 	                    <label for="menuType">生成包路径 <span class="tx-danger">*</span></label>
@@ -89,17 +89,15 @@
 	            <div class="form-row options treeGrid d-none">
 		            <div class="form-group  col-md-6">
 		                <label>树显示编码字段 <span class="tx-danger">*</span></label>
-		                <div class="radio-list d-flex pd-t-10">
-		                <#form:select name="optionMap['treeViewCode']" items="${genTable.columnList}"
+		                <#form:select  style="width:100%" name="optionMap['treeViewCode']" items="${genTable.columnList}"
 											itemLabel="columnNameAndComments" itemValue="columnName" blankOption="true"
-											value="${genTable.optionMap['treeViewCode']}" class="form-control select2 required"/></div>
+											value="${genTable.optionMap['treeViewCode']}" class="form-control select2 required"/>
 		            </div>
 		            <div class="form-group  col-md-6">
 		                <label>树显示名称字段 <span class="tx-danger">*</span></label>
-		                <div class="radio-list d-flex pd-t-10">
-		                <#form:select name="optionMap['treeViewName']" items="${genTable.columnList}"
+		                <#form:select  style="width:100%" name="optionMap['treeViewName']" items="${genTable.columnList}"
 											itemLabel="columnNameAndComments" itemValue="columnName" blankOption="true"
-											value="${genTable.optionMap['treeViewName']}" class="form-control select2 required"/></div>
+											value="${genTable.optionMap['treeViewName']}" class="form-control select2 required"/>
 		            </div>
 	            </div>
 	            <div class="form-row">

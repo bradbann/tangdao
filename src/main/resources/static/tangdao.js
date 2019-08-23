@@ -36,7 +36,7 @@ $(function() {
         $("select.select2:not(.noselect2)").each(function() {
             $(this).select2({
                 minimumResultsForSearch: 10,
-                width: '100%',
+                //width: '100%',
                 templateResult: function(result, container) {
                     var element = $(result.element)
                       , parent = $(container)

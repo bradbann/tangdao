@@ -13,38 +13,30 @@
       </div>
     </div>
     <div class="card-body pd-10">
-       <#form:form id="searchForm" model="${company}" action="${ctx}/sys/company/listData" method="post" class="form-inline hide"
+       <#form:form id="searchForm" model="${company}" action="${ctx}/sys/company/listData" method="post" class="form-horizontal"
 					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
 		<div class="form-group">
 			<div class="input-group wd-250">
 				<div class="input-group-prepend">
-					<span class="input-group-text">父级编号</span>
+					<span class="input-group-text">公司代码</span>
          		</div>
-				<#form:input path="parentCode" maxlength="64" class="form-control"/>
+				<#form:input path="viewCode" maxlength="100" class="form-control"/>
 			</div>
 		</div>
 		<div class="form-group">
 			<div class="input-group wd-250">
 				<div class="input-group-prepend">
-					<span class="input-group-text">所有父级编号</span>
+					<span class="input-group-text">公司名称</span>
          		</div>
-				<#form:input path="parentCodes" maxlength="1000" class="form-control"/>
+				<#form:input path="companyName" maxlength="200" class="form-control"/>
 			</div>
 		</div>
 		<div class="form-group">
 			<div class="input-group wd-250">
 				<div class="input-group-prepend">
-					<span class="input-group-text">全节点名</span>
+					<span class="input-group-text">状态</span>
          		</div>
-				<#form:input path="treeNames" maxlength="1000" class="form-control"/>
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="input-group wd-250">
-				<div class="input-group-prepend">
-					<span class="input-group-text">状态（0正常 1删除 2停用）</span>
-         		</div>
-				<#form:radio path="status" dictType="sys_status" blankOption="true" class="form-control"/>
+				<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control select2"/>
 			</div>
 		</div>
 		<div class="form-group">
@@ -69,13 +61,13 @@ $('#dataGrid').dataGrid({
 		{header:'公司名称', name:'companyName', index:'company_name', width:150, align:"left"},
 		{header:'公司全称', name:'fullName', index:'full_name', width:150, align:"left"},
 		{header:'区域编码', name:'areaCode', index:'area_code', width:150, align:"left"},
-		{header:'状态（0正常 1删除 2停用）', name:'status', index:'status', width:150, align:"center", formatter: function(val, obj, row, act){
-			return js.getDictLabel(${@DictUtils.getDictListJson('sys_status')}, val, '未知}', true);
+		{header:'状态', name:'status', index:'status', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '未知}', true);
 		}},
 		{header:'更新时间', name:'updateTime', index:'update_time', width:150, align:"left"},
 		{header:'操作', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
-			<% if(expIf("hasAuthority('sys:company:edit')"){ %>
+			<% if(expIf("hasAuthority('sys:company:edit')")){ %>
 				actions.push('<a href="${ctx}/sys/company/form?companyCode='+row.companyCode+'" class="btnList" title="编辑公司"><i class="la la-edit"></i></a>&nbsp;');
 				if (row.status == Global.STATUS_NORMAL){
 					actions.push('<a href="${ctx}/sys/company/disable?companyCode='+row.companyCode+'" class="btnList" title="停用公司" data-confirm="确认要停用该公司吗？")}"><i class="la la-minus-circle"></i></a>&nbsp;');
@@ -89,7 +81,7 @@ $('#dataGrid').dataGrid({
 			return actions.join('');
 		}}
 	],
-	dataId: 'companyCode'
+	dataId: 'companyCode',
 	treeGrid: true,			// 启用树结构表格
 	defaultExpandLevel: 0,	// 默认展开的层次
 	expandNodeClearPostData: 'companyName', // 展开节点清理请求参数数据（一般设置查询条件的字段属性，否则在查询后，不能展开子节点数据）

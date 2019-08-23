@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="card-body pd-10">
-       <${'#'}form:form id="searchForm" model="\${${className}}" action="\${ctx}/${urlPrefix}/listData" method="post" class="form-inline hide"
+       <${'#'}form:form id="searchForm" model="\${${className}}" action="\${ctx}/${urlPrefix}/listData" method="post" class="form-horizontal"
 					data-page-no="\${parameter.pageNo}" data-page-size="\${parameter.pageSize}" data-order-by="\${parameter.orderBy}">
 		<% for(c in table.columnList){ %>
 			<% if(c.isQuery == "1"){ %>
@@ -40,7 +40,7 @@
 				<% } %>
 		<% }else if(c.showType == 'select' || c.showType == 'select_multiple'){
 				var isMultiple = (c.showType == 'select_multiple'); %>
-				<${'#'}form:select path="${c.javaField}" dictType="${c.optionMap['dictType']}"${isMultiple?' multiple="true"':''} blankOption="true" class="form-control"/>
+				<${'#'}form:select path="${c.javaField}" dictType="${c.optionMap['dictType']}"${isMultiple?' multiple="true"':''} blankOption="true" class="form-control select2"/>
 		<% }else if(c.showType == 'radio'){ %>
 				<${'#'}form:radio path="${c.javaField}" dictType="${c.optionMap['dictType']}" blankOption="true" class="form-control"/>
 		<% }else if(c.showType == 'checkbox'){ %>
@@ -159,7 +159,7 @@ $('#dataGrid').dataGrid({
 			<% if(isQueryTpl){ %>
 			actions.push('<a href="\${ctx}/${urlPrefix}/form?${idParam}" class="btnList" title="查看${functionNameSimple}"><i class="la la-file-o"></i></a>&nbsp;');
 			<% }else{ %>
-			\<% if(expIf("hasAuthority('${permissionPrefix}:edit')"){ %>
+			\<% if(expIf("hasAuthority('${permissionPrefix}:edit')")){ %>
 				actions.push('<a href="\${ctx}/${urlPrefix}/form?${idParam}" class="btnList" title="编辑${functionNameSimple}"><i class="la la-edit"></i></a>&nbsp;');
 				<% if(@ObjectUtils.toBoolean(table.optionMap['isHaveDisableEnable'])){ %>
 				if (row.status == Global.STATUS_NORMAL){
@@ -181,7 +181,7 @@ $('#dataGrid').dataGrid({
 		}}
 	],
 	<% if(table.isTreeEntity){ %>
-	dataId: '${table.treeViewCodeJavaField}'
+	dataId: '${table.treeViewCodeJavaField}',
 	treeGrid: true,			// 启用树结构表格
 	defaultExpandLevel: 0,	// 默认展开的层次
 	expandNodeClearPostData: '${table.treeViewNameJavaField}', // 展开节点清理请求参数数据（一般设置查询条件的字段属性，否则在查询后，不能展开子节点数据）

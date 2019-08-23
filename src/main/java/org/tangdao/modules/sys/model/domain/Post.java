@@ -20,8 +20,8 @@ public class Post extends DataEntity<Post> {
 	@TableId
 	private String postCode;		// 岗位编码
 	private String postName;		// 岗位名称
-	private String postType;		// 岗位分类（高管、中层、基层）
-	private Integer postSort;		// 岗位排序（升序）
+	private String postType;		// 岗位分类
+	private Integer postSort;		// 岗位排序
 	
 	public Post() {
 		super();
@@ -49,7 +49,7 @@ public class Post extends DataEntity<Post> {
 		this.postName = postName;
 	}
 	
-	@Length(min=1, max=1, message="岗位分类（高管、中层、基层）长度必须介于 1 和 1 之间")
+	@Length(min=1, max=1, message="岗位分类长度必须介于 1 和 1 之间")
 	public String getPostType() {
 		return postType;
 	}
@@ -58,7 +58,7 @@ public class Post extends DataEntity<Post> {
 		this.postType = postType;
 	}
 	
-	@NotNull(message="岗位排序（升序）不能为空")
+	@NotNull(message="岗位排序不能为空")
 	public Integer getPostSort() {
 		return postSort;
 	}
