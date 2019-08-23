@@ -3,9 +3,6 @@ package org.tangdao.modules.sys.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -15,13 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
-import org.tangdao.common.utils.ListUtils;
-import org.tangdao.common.utils.MapUtils;
-import org.tangdao.common.utils.StringUtils;
-
 import org.tangdao.modules.sys.model.domain.Post;
 import org.tangdao.modules.sys.service.IPostService;
 
@@ -74,12 +66,6 @@ public class PostController extends BaseController {
 	@PreAuthorize("hasAuthority('sys:post:view')")
 	@RequestMapping(value = "form")
 	public String form(Post post, Model model) {
-		if (StringUtils.isNotBlank(post.getParentCode())) {
-			post.setParent(postService.get(post.getParentCode()));
-		}
-		if (post.getParent() == null) {
-			post.setParent(new Post(Post.ROOT_CODE));
-		}
 		model.addAttribute("post", post);
 		return "modules/sys/postForm";
 	}
