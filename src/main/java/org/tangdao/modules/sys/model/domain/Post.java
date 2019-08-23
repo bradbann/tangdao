@@ -1,7 +1,6 @@
 package org.tangdao.modules.sys.model.domain;
 
 import org.hibernate.validator.constraints.Length;
-import javax.validation.constraints.NotNull;
 
 import org.tangdao.common.suports.DataEntity;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -49,7 +48,7 @@ public class Post extends DataEntity<Post> {
 		this.postName = postName;
 	}
 	
-	@Length(min=1, max=1, message="岗位分类长度必须介于 1 和 1 之间")
+	@Length(min=0, max=1, message="岗位分类长度必须介于 0 和 1 之间")
 	public String getPostType() {
 		return postType;
 	}
@@ -58,7 +57,6 @@ public class Post extends DataEntity<Post> {
 		this.postType = postType;
 	}
 	
-	@NotNull(message="岗位排序不能为空")
 	public Integer getPostSort() {
 		return postSort;
 	}
