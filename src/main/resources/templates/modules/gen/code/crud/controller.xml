@@ -98,6 +98,12 @@ public class ${ClassName}Controller extends BaseController {
 	@PreAuthorize("hasAuthority('${permissionPrefix}:view')")
 	@RequestMapping(value = "form")
 	public String form(${ClassName} ${className}, Model model) {
+		if (StringUtils.isNotBlank(${className}.getParentCode())) {
+			${className}.setParent(${className}Service.get(${className}.getParentCode()));
+		}
+		if (${className}.getParent() == null) {
+			${className}.setParent(new ${ClassName}(${ClassName}.ROOT_CODE));
+		}
 		model.addAttribute("${className}", ${className});
 		return "${lastPackageName}/${viewPrefix}Form";
 	}

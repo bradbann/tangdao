@@ -71,6 +71,12 @@ public class CompanyController extends BaseController {
 	@PreAuthorize("hasAuthority('sys:company:view')")
 	@RequestMapping(value = "form")
 	public String form(Company company, Model model) {
+		if (StringUtils.isNotBlank(company.getParentCode())) {
+			company.setParent(companyService.get(company.getParentCode()));
+		}
+		if (company.getParent() == null) {
+			company.setParent(new Company(Company.ROOT_CODE));
+		}
 		model.addAttribute("company", company);
 		return "modules/sys/companyForm";
 	}
