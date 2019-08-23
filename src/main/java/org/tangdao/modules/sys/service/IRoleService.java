@@ -2,7 +2,7 @@ package org.tangdao.modules.sys.service;
 
 import java.util.List;
 
-import org.tangdao.common.service.ICurdService;
+import org.tangdao.common.service.ICrudService;
 import org.tangdao.modules.sys.model.domain.Role;
 
 /**
@@ -13,7 +13,7 @@ import org.tangdao.modules.sys.model.domain.Role;
  * @author ruyang
  * @since 2019-07-02
  */
-public interface IRoleService extends ICurdService<Role> {
+public interface IRoleService extends ICrudService<Role> {
 
 	public List<Role> findByUserCode(String userCode);
 	

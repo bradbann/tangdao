@@ -1,12 +1,20 @@
 package org.tangdao.modules.gen.model.domain;
 
+import static java.util.stream.Collectors.toCollection;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.DataEntity;
+import org.tangdao.common.suports.TreeEntity;
 import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
@@ -15,6 +23,7 @@ import org.tangdao.common.utils.StringUtils;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.core.toolkit.ClassUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -261,5 +270,90 @@ public class GenTable extends DataEntity<GenTable> {
 	public String getParentTableName() {
 		return StringUtils.lowerCase(this.parentTable);
 	}
+	
+	
+	@TableField(exist = false)
+	private Boolean isTreeEntity;
+	
+	public Boolean getIsTreeEntity() {
+		if (this.isTreeEntity == null) {
+			this.isTreeEntity = this.getIsEntityClass(TreeEntity.class);
+		}
 
+		return this.isTreeEntity;
+   }
+	
+	private Boolean getIsEntityClass(Class<?> entityClass) {
+		
+		List<Field> fieldList = Stream.of(ClassUtils.getUserClass(entityClass).getDeclaredFields())
+                /* 过滤静态属性 */
+                .filter(field -> !Modifier.isStatic(field.getModifiers()))
+                /* 过滤 transient关键字修饰的属性 */
+                .filter(field -> !Modifier.isTransient(field.getModifiers()))
+                .collect(toCollection(LinkedList::new));
+		
+//		List<Field> fieldList = ReflectionKit.getFieldList(ClassUtils.getUserClass(entityClass));
+		List<GenTableColumn> columns =  this.getColumnList();
+		
+		for (Field field : fieldList) {
+			for (GenTableColumn column : columns) {
+				if(field.getName()!=null&&field.getName().equalsIgnoreCase(column.getJavaField())) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public List<GenTableColumn> getPkList() {
+		if (this.pkList == null) {
+			this.pkList = ListUtils.newArrayList();
+			Iterator<GenTableColumn> var1 = this.columnList.iterator();
+	         while(var1.hasNext()) {
+	            GenTableColumn a = (GenTableColumn)var1.next();
+	            if ("1".equals(a.getIsPk())) {
+	               this.pkList.add(a);
+	            }
+	         }
+		}
+		return this.pkList;
+	}
+	
+	public GenTableColumn getColumn(String columnName) {
+		Iterator<GenTableColumn> columns = this.columnList.iterator();
+
+		GenTableColumn column;
+		do {
+			if (!columns.hasNext()) {
+				return new GenTableColumn();
+			}
+		} while(!(column = columns.next()).getColumnName().equals(columnName));
+		return column;
+	}
+	
+	@TableField(exist = false)
+	private String treeViewNameJavaField;
+	
+	public String getTreeViewNameJavaField() {
+		String columnName;
+		if (this.getIsTreeEntity() && this.treeViewNameJavaField == null && StringUtils.isNotBlank(columnName = (String)this.optionMap.get("treeViewName"))) {
+			this.treeViewNameJavaField = this.getColumn(columnName).getJavaField();
+		}
+		
+		return this.treeViewNameJavaField;
+	}
+	@TableField(exist = false)
+	private String treeViewCodeJavaField;
+	
+	public String getTreeViewCodeJavaField() {
+		String columnName;
+		if (this.getIsTreeEntity() && this.treeViewCodeJavaField == null && StringUtils.isNotBlank(columnName = (String)this.optionMap.get("treeViewCode"))) {
+			this.treeViewCodeJavaField = this.getColumn(columnName).getJavaField();
+		}
+		
+		return this.treeViewCodeJavaField;
+	}
+	
+	
 }

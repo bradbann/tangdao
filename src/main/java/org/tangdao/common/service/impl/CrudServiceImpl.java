@@ -17,7 +17,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.tangdao.common.service.ICurdService;
+import org.tangdao.common.service.ICrudService;
 import org.tangdao.common.suports.DataEntity;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
@@ -34,7 +34,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 
 @SuppressWarnings("unchecked")
-public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> implements ICurdService<T> {
+public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> implements ICrudService<T> {
 
 	protected Log log = LogFactory.getLog(getClass());
 

@@ -1,6 +1,6 @@
 package org.tangdao.modules.sys.service;
 
-import org.tangdao.common.service.ICurdService;
+import org.tangdao.common.service.ICrudService;
 import org.tangdao.modules.sys.model.domain.User;
 
 /**
@@ -11,7 +11,7 @@ import org.tangdao.modules.sys.model.domain.User;
  * @author ruyang
  * @since 2019-07-02
  */
-public interface IUserService extends ICurdService<User> {
+public interface IUserService extends ICrudService<User> {
 
 	boolean checkUsernameExists(String oldUsername, String username);
 	

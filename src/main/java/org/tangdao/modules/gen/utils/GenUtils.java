@@ -343,8 +343,7 @@ public class GenUtils {
 		model.put("functionAuthor", StringUtils.isNotBlank(genTable.getFunctionAuthor())?genTable.getFunctionAuthor():UserUtils.getUser().getUsername());
 		model.put("functionVersion", DateUtils.getDate());
 		
-//		model.put("urlPrefix", model.get("moduleName")+(StringUtils.isNotBlank(genScheme.getSubModuleName()) ?"/"+StringUtils.lowerCase(genScheme.getSubModuleName()):"")+"/"+model.get("className"));
-		model.put("urlPrefix", model.get("moduleName")+(StringUtils.isNotBlank(genTable.getSubModuleName()) ?"/"+StringUtils.lowerCase(genTable.getSubModuleName()):""));
+		model.put("urlPrefix", model.get("moduleName")+(StringUtils.isNotBlank(genTable.getSubModuleName()) ?"/"+StringUtils.lowerCase(genTable.getSubModuleName()):"")+"/"+model.get("className"));
 		model.put("viewPrefix", model.get("urlPrefix"));
 		model.put("permissionPrefix", model.get("moduleName")+(StringUtils.isNotBlank(genTable.getSubModuleName()) ?":"+StringUtils.lowerCase(genTable.getSubModuleName()):"")+":"+model.get("className"));
 		
@@ -408,21 +407,21 @@ public class GenUtils {
 		String content = BeetlUtils.renderFromString(StringUtils.trimToEmpty(tpl.getContent()), model);
 		logger.debug(" content === \r\n" + content);
 		
-//		// 如果选择替换文件，则删除原文件
+		// 如果选择替换文件，则删除原文件
 //		if (genTable.getReplaceFile()){
-//			FileUtils.deleteFile(fileName);
+			FileUtils.deleteFile(fileName);
 //		}
-//		
-//		// 创建并写入文件
-//		if (FileUtils.createFile(fileName)){
-//			FileUtils.writeToFile(fileName, content, true);
-//			logger.debug(" file create === " + fileName);
-//			return "生成成功："+fileName+"<br/>";
-//		}else{
-//			logger.debug(" file extents === " + fileName);
-//			return "文件已存在："+fileName+"<br/>";
-//		}
-		return "生成成功："+fileName+"<br/>";
+		
+		// 创建并写入文件
+		if (FileUtils.createFile(fileName)){
+			FileUtils.writeToFile(fileName, content, true);
+			logger.debug(" file create === " + fileName);
+			return "生成成功："+fileName+"<br/>";
+		}else{
+			logger.debug(" file extents === " + fileName);
+			return "文件已存在："+fileName+"<br/>";
+		}
+//		return "生成成功："+fileName+"<br/>";
 	}
 //	
 //	public static void main(String[] args) {

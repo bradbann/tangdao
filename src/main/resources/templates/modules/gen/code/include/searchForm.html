@@ -4,7 +4,7 @@
 		<% for(c in table.columnList){ %>
 			<% if(c.isQuery == "1" && !c.isTreeEntityColumn){ %>
 				<div class="form-group">
-					<label class="control-label">\${text('${c.columnLabel}')}：</label>
+					<label class="control-label">\${${c.columnLabel}}：</label>
 				<% if(c.showType == 'input' || c.showType == 'textarea'){ %>
 					<div class="control-inline">
 						<% if (c.queryType == 'BETWEEN'){ %>
@@ -65,8 +65,8 @@
 			<% } %>
 		<% } %>
 				<div class="form-group">
-					<button type="submit" class="btn btn-primary btn-sm">\${text('查询')}</button>
-					<button type="reset" class="btn btn-default btn-sm">\${text('重置')}</button>
+					<button type="submit" class="btn btn-primary btn-sm">查询</button>
+					<button type="reset" class="btn btn-default btn-sm">重置</button>
 				</div>
 			</${'#'}form:form>
 <% /* 查询表单 end // 此行是为了去除空行 */ %>

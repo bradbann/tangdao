@@ -17,7 +17,7 @@ import com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryCha
 import com.baomidou.mybatisplus.extension.service.additional.update.impl.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.additional.update.impl.UpdateChainWrapper;
 
-public interface ICurdService<T> {
+public interface ICrudService<T> {
 
 	/**
      * 插入一条记录（选择字段，策略插入）

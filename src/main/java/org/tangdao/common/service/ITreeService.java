@@ -2,7 +2,7 @@ package org.tangdao.common.service;
 
 import java.util.List;
 
-public interface ITreeService<T> extends ICurdService<T>{
+public interface ITreeService<T> extends ICrudService<T>{
 
 	/**
 	 * 

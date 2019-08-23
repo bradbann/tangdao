@@ -1,16 +1,13 @@
 package org.tangdao.modules.sys.service;
 
-import org.tangdao.common.service.ICurdService;
+import org.tangdao.common.service.ICrudService;
 import org.tangdao.modules.sys.model.domain.Post;
 
 /**
- * <p>
- * 员工岗位表 服务类
- * </p>
- *
+ * 岗位Service
  * @author ruyang
- * @since 2019-08-20
+ * @version 2019-08-23
  */
-public interface IPostService extends ICurdService<Post> {
-
+public interface IPostService extends ICrudService<Post> {
+		
 }

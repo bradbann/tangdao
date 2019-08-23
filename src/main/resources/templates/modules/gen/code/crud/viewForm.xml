@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <template>
 	<name>viewForm</name>
-	<filePath>src/main/resources/views/${lastPackageName}/${moduleName}/${subModuleName}</filePath>
+	<filePath>src/main/resources/templates/${lastPackageName}/${moduleName}/${subModuleName}</filePath>
 	<fileName>${className}Form.html</fileName>
 	<content><![CDATA[
 <%

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <template>
 	<name>dao</name>
-	<filePath>src/main/java/${packageName}/${moduleName}/dao/${subModuleName}</filePath>
-	<fileName>${ClassName}Dao.java</fileName>
+	<filePath>src/main/java/${packageName}/${moduleName}/mapper/${subModuleName}</filePath>
+	<fileName>${ClassName}Mapper.java</fileName>
 	<content><![CDATA[
-package ${packageName}.${moduleName}.dao${isNotEmpty(subModuleName)?'.'+subModuleName:''};
+package ${packageName}.${moduleName}.mapper${isNotEmpty(subModuleName)?'.'+subModuleName:''};
 
-import com.jeesite.common.dao.${table.isTreeEntity?'Tree':'Crud'}Dao;
-import com.jeesite.common.mybatis.annotation.MyBatisDao;
-import ${packageName}.${moduleName}.entity${isNotEmpty(subModuleName)?'.'+subModuleName:''}.${ClassName};
+import org.apache.ibatis.annotations.Mapper;
+import ${packageName}.${moduleName}.model.domain${isNotEmpty(subModuleName)?'.'+subModuleName:''}.${ClassName};
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
- * ${functionName}DAO接口
+ * ${functionName}Mapper接口
  * @author ${functionAuthor}
  * @version ${functionVersion}
  */
-@MyBatisDao<% if(isNotBlank(table.dataSourceName)){ %>(dataSourceName="${table.dataSourceName}")<% } %>
-public interface ${ClassName}Dao extends ${table.isTreeEntity?'Tree':'Crud'}Dao<${ClassName}> {
+@Mapper
+public interface ${ClassName}Mapper extends BaseMapper<${ClassName}> {
 	
 }]]>
 	</content>

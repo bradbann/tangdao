@@ -1,49 +1,70 @@
 package org.tangdao.modules.sys.model.domain;
 
-import org.tangdao.common.suports.DataEntity;
+import org.hibernate.validator.constraints.Length;
+import javax.validation.constraints.NotNull;
 
+import org.tangdao.common.suports.DataEntity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
-
 /**
- * <p>
- * 员工岗位表
- * </p>
- *
+ * 岗位Entity
  * @author ruyang
- * @since 2019-08-20
+ * @version 2019-08-23
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("sys_post")
 public class Post extends DataEntity<Post> {
+	
+	private static final long serialVersionUID = 1L;
+	
+	@TableId
+	private String postCode;		// 岗位编码
+	private String postName;		// 岗位名称
+	private String postType;		// 岗位分类（高管、中层、基层）
+	private Integer postSort;		// 岗位排序（升序）
+	
+	public Post() {
+		super();
+	}
 
-    private static final long serialVersionUID = 1L;
+	public Post(String postCode){
+		super(postCode);
+	}
+	
+	@Length(min=0, max=64, message="岗位编码长度必须介于 0 和 64 之间")
+	public String getPostCode() {
+		return postCode;
+	}
 
-    /**
-     * 岗位编码
-     */
-    @TableId
-    private String postCode;
+	public void setPostCode(String postCode) {
+		this.postCode = postCode;
+	}
+	
+	@Length(min=0, max=100, message="岗位名称长度必须介于 0 和 100 之间")
+	public String getPostName() {
+		return postName;
+	}
 
-    /**
-     * 岗位名称
-     */
-    private String postName;
+	public void setPostName(String postName) {
+		this.postName = postName;
+	}
+	
+	@Length(min=1, max=1, message="岗位分类（高管、中层、基层）长度必须介于 1 和 1 之间")
+	public String getPostType() {
+		return postType;
+	}
 
-    /**
-     * 岗位分类（高管、中层、基层）
-     */
-    private String postType;
+	public void setPostType(String postType) {
+		this.postType = postType;
+	}
+	
+	@NotNull(message="岗位排序（升序）不能为空")
+	public Integer getPostSort() {
+		return postSort;
+	}
 
-    /**
-     * 岗位排序（升序）
-     */
-    private Integer postSort;
-
+	public void setPostSort(Integer postSort) {
+		this.postSort = postSort;
+	}
+	
 }

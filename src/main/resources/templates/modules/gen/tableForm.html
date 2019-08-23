@@ -57,40 +57,49 @@
 	            </div>
 	            <div class="form-row">
 		            <div class="form-group  col-md-6">
-		                <label>生成模块名 <span class="tx-danger">*</span></label>
-		                <#form:input path="moduleName" maxlength="100" class="form-control required"/>
-		            </div>
-		            <div class="form-group  col-md-6">
-		                <label>生成子模块名</label>
-		                <#form:input path="subModuleName" maxlength="30" class="form-control"/>
-		            </div>
-	            </div>
-	            <div class="form-row">
-		            <div class="form-group  col-md-6">
 		                <label>生成功能名</label>
 		                <#form:input path="functionName" maxlength="200" class="form-control required"/>
 		            </div>
 		            <div class="form-group  col-md-6">
-		                <label>功能名（简写）</label>
-		                <#form:input path="functionNameSimple" maxlength="50" class="form-control required"/>
+		                <label>生成模块名 <span class="tx-danger">*</span></label>
+		                <#form:input path="moduleName" maxlength="100" class="form-control required"/>
 		            </div>
 	            </div>
 	            <div class="form-row">
-		            
-		            <div class="form-group  col-md-12">
+		            <div class="form-group  col-md-6">
+		                <label>功能名（简写）</label>
+		                <#form:input path="functionNameSimple" maxlength="50" class="form-control required"/>
+		            </div>
+		            <div class="form-group  col-md-6">
 		                <label>生成基础路径 <span class="tx-danger">*</span></label>
 		                <div class="input-group">
 						  <div class="input-group-prepend">
 						    <button class="btn btn-outline-light dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">最近路径快速选择</button>
 						    <div class="dropdown-menu tx-13">
 						      <a class="dropdown-item" href="javascript:;" onclick="genBaseDirVal('${@StringUtils.replace(defaultGenBaseDir,"\\","\\\\")}')">恢复默认的生成基础路径</a>
-						      <% for(var e in genBaseDirList){ if (e != null && e.genBaseDir != defaultGenBaseDir){ %>
-								<li><a  class="dropdown-item" href="javascript:;" onclick="genBaseDirVal('${@StringUtils.replace(e.genBaseDir,"\\","\\\\")}')">${e.genBaseDir}</a></li>
+						      <% for(var e in genBaseDirList){ if (isNotEmpty(e.genBaseDir) && e.genBaseDir != defaultGenBaseDir){ %>
+								<a  class="dropdown-item" href="javascript:;" onclick="genBaseDirVal('${@StringUtils.replace(e.genBaseDir,"\\","\\\\")}')">${e.genBaseDir}</a>
 							  <% } } %>
 						    </div>
 						  </div>
 						  <#form:input path="genBaseDir" maxlength="2000" class="form-control"/>
 						</div>
+		            </div>
+	            </div>
+	            <div class="form-row options treeGrid d-none">
+		            <div class="form-group  col-md-6">
+		                <label>树显示编码字段 <span class="tx-danger">*</span></label>
+		                <div class="radio-list d-flex pd-t-10">
+		                <#form:select name="optionMap['treeViewCode']" items="${genTable.columnList}"
+											itemLabel="columnNameAndComments" itemValue="columnName" blankOption="true"
+											value="${genTable.optionMap['treeViewCode']}" class="form-control select2 required"/></div>
+		            </div>
+		            <div class="form-group  col-md-6">
+		                <label>树显示名称字段 <span class="tx-danger">*</span></label>
+		                <div class="radio-list d-flex pd-t-10">
+		                <#form:select name="optionMap['treeViewName']" items="${genTable.columnList}"
+											itemLabel="columnNameAndComments" itemValue="columnName" blankOption="true"
+											value="${genTable.optionMap['treeViewName']}" class="form-control select2 required"/></div>
 		            </div>
 	            </div>
 	            <div class="form-row">
@@ -126,8 +135,8 @@
 		            </div>
 	            </div>
 	        </div>
+          </div>
          </div>
-        </div>
         <div class="card-footer pd-sm-l-30">
             <div class="row">
                 <div class="col-sm-offset-2 col-sm-10">

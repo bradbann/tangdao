@@ -7,6 +7,7 @@
 		<category value="crud" label="单表/主子表 （增删改查）">
 			<template>category-ref:dao</template>
 			<template>crud/service.xml</template>
+			<template>crud/serviceImpl.xml</template>
 			<template>crud/controller.xml</template>
 			<template>crud/viewList.xml</template>
 			<template>crud/viewForm.xml</template>
@@ -26,20 +27,6 @@
 			<template>crud/entity.xml</template>
 			<template>crud/dao.xml</template>
 		</category>
-		<category value="query" label="仅查询功能（不含增删改）">
-			<template>crud/mapper.xml</template>
-			<template>crud/entity.xml</template>
-			<template>query/dao.xml</template>
-			<template>query/service.xml</template>
-			<template>query/controller.xml</template>
-			<template>query/viewList.xml</template>
-			<template>query/viewForm.xml</template>
-			<childTable>
-				<template>crud/mapper.xml</template>
-				<template>crud/entity.xml</template>
-				<template>query/dao.xml</template>
-			</childTable>
-		</category>
 	</tplCategory>
 	<!-- 属性类型 -->
 	<javaType>
@@ -49,8 +36,6 @@
 		<dict value="Double" label="Double"/>
 		<dict value="java.math.BigDecimal" label="BigDecimal"/>
 		<dict value="java.util.Date" label="Date"/>
-		<dict value="com.jeesite.modules.sys.entity.User" label="User"/>
-		<dict value="com.jeesite.modules.sys.entity.Office" label="Office"/>
 		<dict value="This" label="This" description="生成当前对象"/>
 	</javaType>
 	<!-- 查询类型 -->
@@ -77,9 +62,6 @@
 		<dict value="checkbox" label="复选框"/>
 		<dict value="date" label="日期选择"/>
 		<dict value="datetime" label="日期时间"/>
-		<dict value="userselect" label="人员选择"/>
-		<dict value="officeselect" label="机构选择"/>
-		<dict value="areaselect" label="区域选择"/>
 	</showType>
 	<!-- 字段验证 -->
 	<fieldValid>

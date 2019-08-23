@@ -1,6 +1,6 @@
 package org.tangdao.modules.sys.service;
 
-import org.tangdao.common.service.ICurdService;
+import org.tangdao.common.service.ICrudService;
 import org.tangdao.modules.sys.model.domain.DictData;
 
 /**
@@ -11,6 +11,6 @@ import org.tangdao.modules.sys.model.domain.DictData;
  * @author ruyang
  * @since 2019-07-02
  */
-public interface IDictDataService extends ICurdService<DictData> {
+public interface IDictDataService extends ICrudService<DictData> {
 
 }

@@ -243,7 +243,15 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 				&& !StringUtils.equals(getSimpleJavaField(), "createTime")
 				&& !StringUtils.equals(getSimpleJavaField(), "updateBy")
 				&& !StringUtils.equals(getSimpleJavaField(), "updateTime")
-				&& !StringUtils.equals(getSimpleJavaField(), "status");
+				&& !StringUtils.equals(getSimpleJavaField(), "status")
+				&& !StringUtils.equals(getSimpleJavaField(), "treeSort")
+				&& !StringUtils.equals(getSimpleJavaField(), "treeNames")
+				&& !StringUtils.equals(getSimpleJavaField(), "treeLeaf")
+				&& !StringUtils.equals(getSimpleJavaField(), "treeLevel")
+				&& !StringUtils.equals(getSimpleJavaField(), "parent")
+				&& !StringUtils.equals(getSimpleJavaField(), "parentCode")
+				&& !StringUtils.equals(getSimpleJavaField(), "parentCodes")
+				;
 	}
 
 

@@ -1,6 +1,6 @@
 package org.tangdao.modules.sys.service;
 
-import org.tangdao.common.service.ICurdService;
+import org.tangdao.common.service.ICrudService;
 import org.tangdao.modules.sys.model.domain.Config;
 
 /**
@@ -11,6 +11,6 @@ import org.tangdao.modules.sys.model.domain.Config;
  * @author ruyang
  * @since 2019-07-02
  */
-public interface IConfigService extends ICurdService<Config> {
+public interface IConfigService extends ICrudService<Config> {
 
 }
