@@ -74,7 +74,7 @@ public class JobsInfoServiceImpl implements IJobsInfoService {
             return false;
         }
 
-        jobsInfo.setStatus("1");
+        jobsInfo.setStatus(JobsInfo.STATUS_START);
         jobsInfo.setLastTime(0L);
         jobsInfo.setNextTime(nextTriggerTime);
         return jobInfoMapper.updateById(jobsInfo) > 0;
@@ -84,7 +84,7 @@ public class JobsInfoServiceImpl implements IJobsInfoService {
     public boolean stop(String id) {
         JobsInfo jobsInfo = new JobsInfo();
         jobsInfo.setId(id);
-        jobsInfo.setStatus("0");
+        jobsInfo.setStatus(JobsInfo.STATUS_STOP);
         jobsInfo.setLastTime(0L);
         jobsInfo.setNextTime(0L);
         return jobInfoMapper.updateById(jobsInfo) > 0;

@@ -153,7 +153,7 @@
 					} else if (c.showType == 'select' || c.showType == 'select_multiple') {
 						var isMultiple = (c.showType == 'select_multiple');
 				%>
-<${'#'}form:select path="${c.javaField}" dictType="${c.optionMap['dictType']}"${isMultiple?' multiple="true"':''}${c.isNull != '1'?' blankOption="true"':''} class="form-control select2${cssClass}" />
+<${'#'}form:select path="${c.javaField}" dictType="${c.optionMap['dictType']}"${isMultiple?' multiple="true"':''}${c.isNull != '1'?' blankOption="true"':''} class="form-control select2 ${cssClass}" />
 				<%
 					} else if (c.showType == 'radio') {
 				%>

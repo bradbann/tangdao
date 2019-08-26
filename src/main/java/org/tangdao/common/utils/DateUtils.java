@@ -7,6 +7,7 @@ import java.lang.management.ManagementFactory;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -296,6 +297,110 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 	}
 	
 	/**
+	 * 
+	 * 获取指定日期年份开始日
+	 *
+	 * @param date
+	 * @return
+	 * 
+	 * @author qianjie
+	 * @date 2018年11月19日 上午11:24:53
+	 */
+	public static Date getBeginOfYear(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		if (date != null) {
+			calendar.setTime(date);
+		}
+		calendar.set(Calendar.MONTH, Calendar.JANUARY);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 000);
+		return calendar.getTime();
+	}
+	
+	/**
+	 * 获取两个日期之间的日期，包括开始结束日期
+	 * @param start 开始日期
+	 * @param end 结束日期
+	 * @return 日期集合
+	 */
+	public static List<Date> getBetweenDates(Date start, Date end) {
+	    List<Date> result = ListUtils.newLinkedList();
+	    Calendar tempStart = Calendar.getInstance();
+	    tempStart.setTime(start);
+	    tempStart.add(Calendar.DAY_OF_YEAR, 1);
+	    
+	    Calendar tempEnd = Calendar.getInstance();
+	    tempEnd.setTime(end);
+	    result.add(start);
+	    while (tempStart.before(tempEnd)) {
+	        result.add(tempStart.getTime());
+	        tempStart.add(Calendar.DAY_OF_YEAR, 1);
+	    }
+	    return result;
+	}
+	
+	/**
+	 * 上一年
+	 * @param year -1
+	 * @return
+	 */
+	public static Date getLastYears(int year) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		c.add(Calendar.YEAR, year);
+		return c.getTime();
+	}
+	
+	/**
+	 * 上一月
+	 * @param month -1
+	 * @return
+	 */
+	public static Date getLastMonth(int month) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		c.add(Calendar.MONTH, month);
+		return c.getTime();
+	}
+	
+	/**
+	 * 上一日
+	 * @param month -1
+	 * @return
+	 */
+	public static Date getLastDay(int day) {
+		return getLastDay(new Date(), day);
+	}
+	
+	/**
+	 * 指定日期 上一日
+	 * @param month -1
+	 * @return
+	 */
+	public static Date getLastDay(Date date, int day) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.add(Calendar.DATE, day);
+		return c.getTime();
+	}
+	
+	
+	/**
+	 * 返回上一日 
+	 * @param day
+	 * @return 返回 YYYY-MM-dd
+	 */
+	public static String getLastFormatDate(int day) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		c.add(Calendar.DATE, day);
+		return formatDate(c.getTime());
+	}
+	
+	/**
 	 * 解析日期范围字符串为日期对象
 	 * @param dateString 2018-01-01 ~ 2018-01-31
 	 * @return new Date[]{2018-01-01, 2018-01-31}
@@ -316,6 +421,48 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 		}
 		return new Date[]{beginDate, endDate};
 	}
+	
+	/**
+     * 计算两个时间差
+     */
+    public static String getDatePoor(Date endDate, Date nowDate){
+        long nd = 1000 * 24 * 60 * 60;
+        long nh = 1000 * 60 * 60;
+        long nm = 1000 * 60;
+        // long ns = 1000;
+        // 获得两个时间的毫秒时间差异
+        long diff = endDate.getTime() - nowDate.getTime();
+        // 计算差多少天
+        long day = diff / nd;
+        // 计算差多少小时
+        long hour = diff % nd / nh;
+        // 计算差多少分钟
+        long min = diff % nd % nh / nm;
+        // 计算差多少秒//输出结果
+        // long sec = diff % nd % nh % nm / ns;
+        return day + "天" + hour + "小时" + min + "分钟";
+    }
+    
+    /**
+     * 
+     * @param diff 单位秒
+     * @return
+     */
+    public static String getDatePoor(Long diff){
+        long nd = 1000 * 24 * 60 * 60;
+        long nh = 1000 * 60 * 60;
+        long nm = 1000 * 60;
+//        long ns = 1000;
+        // 计算差多少天
+        long day = diff / nd;
+        // 计算差多少小时
+        long hour = diff % nd / nh;
+        // 计算差多少分钟
+        long min = diff % nd % nh / nm;
+        // 计算差多少秒//输出结果
+//        long sec = diff % nd % nh % nm / ns;
+        return day + "天" + hour + "小时" + min + "分钟";
+    }
 	
 //	public static void main(String[] args) throws ParseException {
 //		System.out.println(formatDate(parseDate("2010/3/6")));
