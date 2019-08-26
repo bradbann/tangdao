@@ -197,8 +197,10 @@ public class WebSecurityConfig {
 			String sessionId = request.getSession().getId();
 			sessionRedisOperations.boundValueOps("spring:session:sessions:"+sessionId).expire(0, TimeUnit.SECONDS);
 			sessionRedisOperations.boundValueOps("spring:session:sessions:expires:"+sessionId).expire(0, TimeUnit.SECONDS);
-			String key = RedisOperationsSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisOperationsSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
-			sessionRedisOperations.boundValueOps(key+":" + name(authentication.getPrincipal())).expire(0, TimeUnit.SECONDS);
+			if(authentication!=null) {
+				String key = RedisOperationsSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisOperationsSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
+				sessionRedisOperations.boundValueOps(key+":" + name(authentication.getPrincipal())).expire(0, TimeUnit.SECONDS);
+			}
 		}
 		
 		private String name(Object principal) {
