@@ -46,6 +46,15 @@ public class OfficeController extends BaseController {
 	}
 	
 	/**
+	 * 机构管理主页面
+	 */
+	@PreAuthorize("hasAuthority('sys:office:view')")
+	@RequestMapping(value = "index")
+	public String index(Model model) {
+		return "modules/sys/officeIndex";
+	}
+	
+	/**
 	 * 查询列表
 	 */
 	@PreAuthorize("hasAuthority('sys:office:view')")
@@ -131,13 +140,23 @@ public class OfficeController extends BaseController {
 	}
 	
 	/**
-	 * 获取树结构数据
-	 * @param excludeCode 排除的Code
-	 * @param isShowCode 是否显示编码（true or 1：显示在左侧；2：显示在右侧；false or null：不显示）
+	 * 获取机构树结构数据
+	 * @param excludeCode		排除的ID
+	 * @param parentCode	上级Code
+	 * @param isAll			是否显示所有机构（true：不进行权限过滤）
+	 * @param officeTypes	机构类型（1：省级公司；2：市级公司；3：部门）
+	 * @param companyCode	仅查询公司下的机构
+	 * @param isShowCode	是否显示编码（true or 1：显示在左侧；2：显示在右侧；false or null：不显示）
+	 * @param isShowFullName 是否显示全机构名称
+	 * @param isLoadUser	是否加载机构下的用户
+	 * @param postCode		机构下的用户过滤岗位
+	 * @param roleCode		机构下的用户过滤角色
 	 * @return
 	 */
 	@RequestMapping(value = "treeData")
-	public @ResponseBody List<Map<String, Object>> treeData(String excludeCode, String isShowCode) {
+	public @ResponseBody List<Map<String, Object>> treeData(String excludeCode, String parentCode, Boolean isAll,
+			String officeTypes, String companyCode, String isShowCode, String isShowFullName,
+			Boolean isLoadUser, String postCode, String roleCode, String ctrlPermi) {
 		QueryWrapper<Office> queryWrapper = new QueryWrapper<Office>();
 		if (StringUtils.isNotBlank(excludeCode)) {
 			queryWrapper.ne("office_code", excludeCode);
@@ -146,6 +165,9 @@ public class OfficeController extends BaseController {
 		queryWrapper.ne("status", Office.STATUS_DELETE);
 		
 		queryWrapper.orderByAsc("tree_sort");
+//		if (!(isAll != null && isAll) || Global.isStrictMode()){
+//			officeService.addDataScopeFilter(where, ctrlPermi);
+//		}
 		List<Office> sourceList = officeService.select(queryWrapper);
 		List<Map<String, Object>> targetList = ListUtils.newArrayList();
 		Map<String, Object> tempMap = null;
@@ -159,11 +181,39 @@ public class OfficeController extends BaseController {
 					continue;
 				}
 			}
+			// 根据父节点过滤数据
+			if (StringUtils.isNotBlank(parentCode)){
+				if (!office.getOfficeCode().equals(parentCode)){
+					continue;
+				}
+				if (!office.getParentCodes().contains("," + parentCode + ",")){
+					continue;
+				}
+			}
+			// 根据部门类型过滤数据
+			if (StringUtils.isNotBlank(officeTypes)){
+				if (!StringUtils.inString(office.getOfficeType(), officeTypes.split(","))){
+					continue;
+				}
+			}
 		
 			tempMap = MapUtils.newHashMap();
 			tempMap.put("id", office.getOfficeCode());
 			tempMap.put("pId", office.getParentCode());
-			tempMap.put("name", office.getOfficeName());
+			String name = office.getOfficeName();
+			if ("true".equals(isShowFullName) || "1".equals(isShowFullName)){
+				name = office.getFullName();
+			}
+			tempMap.put("name", StringUtils.getTreeNodeName(isShowCode, office.getViewCode(), name));
+			tempMap.put("title", office.getFullName());
+			// 一次性后台加载用户，提高性能(推荐方法)
+			if (isLoadUser != null && isLoadUser) {
+				tempMap.put("isParent", true);
+//				List<Map<String, Object>> userList;
+//				userList = empUserController.treeData("u_", office.getOfficeCode(), office.getOfficeCode(), 
+//						companyCode, postCode, roleCode, isAll, isShowCode, ctrlPermi);
+//				targetList.addAll(userList);
+			}
 			targetList.add(tempMap);
 		}
 		return targetList;

@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<div class="input-group wd-250">
+			<div class="input-group">
 				<div class="input-group-prepend">
 					<span class="input-group-text">岗位分类</span>
          		</div>
@@ -29,7 +29,7 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<div class="input-group wd-250">
+			<div class="input-group">
 				<div class="input-group-prepend">
 					<span class="input-group-text">状态</span>
          		</div>
@@ -51,17 +51,19 @@
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
-		{header:'岗位名称', name:'postName', index:'post_name', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+		{header:'岗位名称', name:'postName', index:'post_name', width:120, align:"left", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/sys/post/form?postCode='+row.postCode+'" class="btnList" data-title="编辑岗位">'+(val||row.id)+'</a>';
 		}},
-		{header:'岗位分类', name:'postType', index:'post_type', width:150, align:"center", formatter: function(val, obj, row, act){
+		{header:'岗位编码', name:'postCode', index:'post_code', width:100, align:"center"},
+		{header:'岗位排序', name:'postSort', index:'post_sort', width:80, align:"center"},
+		{header:'岗位分类', name:'postType', index:'post_type', width:80, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_post_type')}, val, '未知}', true);
 		}},
-		{header:'岗位排序', name:'postSort', index:'post_sort', width:150, align:"center"},
-		{header:'状态', name:'status', index:'status', width:150, align:"center", formatter: function(val, obj, row, act){
+		{header:'更新时间', name:'updateTime', index:'update_time', width:150, align:"center"},
+		{header:'备注', name:'remarks', index:'remarks', width:150, align:"left"},
+		{header:'状态', name:'status', index:'status', width:80, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '未知}', true);
 		}},
-		{header:'更新时间', name:'updateTime', index:'update_time', width:150, align:"left"},
 		{header:'操作', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(expIf("hasAuthority('sys:post:edit')")){ %>

@@ -28,7 +28,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 /**
  * 公司Controller
  * @author ruyang
- * @version 2019-08-23
+ * @version 2019-08-28
  */
 @Controller
 @RequestMapping(value = "${adminPath}/sys/company")

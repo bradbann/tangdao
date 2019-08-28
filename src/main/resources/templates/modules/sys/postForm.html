@@ -6,28 +6,26 @@
         </div>
     </div>
     <#form:form id="inputForm" model="${post}" action="${ctx}/sys/post/save" method="post">
-    	<#form:hidden path="postCode" />
         <div class="card-body card-content-fixed pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label>岗位编码 <span class="tx-danger ">*</span></label>
-				
 					<#form:hidden path="isNewRecord"/>
-<#form:input path="postCode" maxlength="64" readonly="${!post.isNewRecord}" class="form-control required"/>
+					<#form:input path="postCode" maxlength="64" readonly="${!post.isNewRecord}" class="form-control required"/>
 				</div>
 				<div class="form-group col-md-6">
 					<label>岗位名称 <span class="tx-danger ">*</span></label>
-				<#form:input path="postName" maxlength="100" class="form-control required"/>
+					<#form:input path="postName" maxlength="100" class="form-control required"/>
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label>岗位分类 <span class="tx-danger ">*</span></label>
-				<#form:select path="postType" dictType="sys_post_type" class="form-control required" />
+					<#form:select path="postType" dictType="sys_post_type" class="form-control select2 required" />
 				</div>
 				<div class="form-group col-md-6">
 					<label>岗位排序 <span class="tx-danger ">*</span></label>
-				<#form:input path="postSort" class="form-control required"/>
+					<#form:input path="postSort" class="form-control required"/>
 				</div>
 			</div>
 			<div class="form-row">

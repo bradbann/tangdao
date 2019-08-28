@@ -6,7 +6,7 @@ import org.tangdao.modules.sys.model.domain.Company;
 /**
  * 公司Service
  * @author ruyang
- * @version 2019-08-23
+ * @version 2019-08-28
  */
 public interface ICompanyService extends ITreeService<Company> {
 		

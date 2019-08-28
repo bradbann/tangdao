@@ -42,7 +42,7 @@ public class JobsInfoServiceImpl implements IJobsInfoService {
     @Override
     public List<JobsInfo> listNextTime(long nextTime) {
         return jobInfoMapper.selectList(Wrappers.<JobsInfo>lambdaQuery()
-                .le(JobsInfo::getNextTime, nextTime));
+                .le(JobsInfo::getNextTime, nextTime).eq(JobsInfo::getStatus, JobsInfo.STATUS_START));
     }
 
     @Override

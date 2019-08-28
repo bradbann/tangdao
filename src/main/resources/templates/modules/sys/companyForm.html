@@ -6,11 +6,10 @@
         </div>
     </div>
     <#form:form id="inputForm" model="${company}" action="${ctx}/sys/company/save" method="post">
-    	<#form:hidden path="companyCode" />
         <div class="card-body card-content-fixed pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
 			<div class="form-row">
 				<div class="form-group col-md-6">
-					<label>上级公司</label>
+					<label>上级公司 <span class="tx-danger d-none">*</span></label>
 					<#form:treeselect id="parent" title="上级公司"
 						path="parentCode" 
 						value="${company.parentCode}"
@@ -22,13 +21,22 @@
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-6">
+					<label>公司名称 <span class="tx-danger ">*</span></label>
+				<#form:input path="companyName" maxlength="200" class="form-control required"/>
+				</div>
+				<div class="form-group col-md-6">
 					<label>公司编码 <span class="tx-danger ">*</span></label>
-				
 					<#form:hidden path="isNewRecord"/>
 					<#form:input path="companyCode" maxlength="64" readonly="${!company.isNewRecord}" class="form-control required"/>
 				</div>
+			</div>
+			<div class="form-row">
 				<div class="form-group col-md-6">
-					<label>本级排序号（升序） <span class="tx-danger ">*</span></label>
+					<label>公司全称 <span class="tx-danger ">*</span></label>
+					<#form:input path="fullName" maxlength="200" class="form-control required"/>
+				</div>
+				<div class="form-group col-md-6">
+					<label>排序号 <span class="tx-danger ">*</span></label>
 					<#form:input path="treeSort" class="form-control required digits"/>
 				</div>
 			</div>
@@ -38,16 +46,6 @@
 					<#form:input path="viewCode" maxlength="100" class="form-control"/>
 				</div>
 				<div class="form-group col-md-6">
-					<label>公司名称 <span class="tx-danger ">*</span></label>
-					<#form:input path="companyName" maxlength="200" class="form-control required"/>
-				</div>
-			</div>
-			<div class="form-row">
-				<div class="form-group col-md-6">
-					<label>公司全称 <span class="tx-danger d-none">*</span></label>
-					<#form:input path="fullName" maxlength="200" class="form-control"/>
-				</div>
-				<div class="form-group col-md-6">
 					<label>区域编码 <span class="tx-danger d-none">*</span></label>
 					<#form:input path="areaCode" maxlength="100" class="form-control"/>
 				</div>
@@ -55,7 +53,7 @@
 			<div class="form-row">
 				<div class="form-group col-md-12">
 					<label>备注信息 <span class="tx-danger d-none">*</span></label>
-				<#form:textarea path="remarks" rows="4" maxlength="500" class="form-control"/>
+					<#form:textarea path="remarks" rows="4" maxlength="500" class="form-control"/>
 				</div>
 			</div>
         </div>

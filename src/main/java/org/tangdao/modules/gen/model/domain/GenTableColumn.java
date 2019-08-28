@@ -204,18 +204,23 @@ public class GenTableColumn extends DataEntity<GenTableColumn> {
 		if ("java.util.Date".equals(getJavaType())){
 			list.add("com.fasterxml.jackson.annotation.JsonFormat(pattern = \"yyyy-MM-dd HH:mm:ss\")");
 		}
-		// 导入JSR303验证依赖包
-		if (!"1".equals(getIsNull()) && !"String".equals(getJavaType())){
-			list.add("javax.validation.constraints.NotNull(message=\""+getComments()+"不能为空\")");
+		
+		if (!"1".equals(this.getIsPk()) && !"hidden".equals(this.getShowType())) {	
+			// 导入JSR303验证依赖包
+			if ("1".equals(getIsNull())){
+				
+				if ("String".equals(getJavaType())){
+					list.add("javax.validation.constraints.NotBlank(message=\""+getComments()+"不能为空\")");
+				} else {
+					list.add("javax.validation.constraints.NotNull(message=\""+getComments()+"不能为空\")");
+				}
+			}
+			if ("String".equals(getJavaType()) && !"0".equals(getDataLength()) && !"-1".equals(this.getDataLength())){
+				list.add("org.hibernate.validator.constraints.Length(min=0, max="+getDataLength()
+						+", message=\""+getComments()+"长度不能超过  "+getDataLength()+" 个字符\")");
+			}
 		}
-		else if (!"1".equals(getIsNull()) && "String".equals(getJavaType()) && !"0".equals(getDataLength())){
-			list.add("org.hibernate.validator.constraints.Length(min=1, max="+getDataLength()
-					+", message=\""+getComments()+"长度必须介于 1 和 "+getDataLength()+" 之间\")");
-		}
-		else if ("String".equals(getJavaType()) && !"0".equals(getDataLength())){
-			list.add("org.hibernate.validator.constraints.Length(min=0, max="+getDataLength()
-					+", message=\""+getComments()+"长度必须介于 0 和 "+getDataLength()+" 之间\")");
-		}
+		
 		return list;
 	}
 	

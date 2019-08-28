@@ -24,7 +24,7 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<div class="input-group wd-250">
+			<div class="input-group">
 				<div class="input-group-prepend">
 					<span class="input-group-text">机构类型</span>
          		</div>
@@ -32,9 +32,9 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<div class="input-group wd-250">
+			<div class="input-group">
 				<div class="input-group-prepend">
-					<span class="input-group-text">状态（0正常 1删除 2停用）</span>
+					<span class="input-group-text">状态</span>
          		</div>
 				<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control select2"/>
 			</div>
@@ -56,22 +56,17 @@ $('#dataGrid').dataGrid({
 		{header:'机构名称', name:'officeName', index:'office_name', width:250, align:"left", frozen:true, formatter: function(val, obj, row, act){
 			return '( '+row.officeCode+' ) '+'<a href="${ctx}/sys/office/form?officeCode='+row.officeCode+'" class="btnList" data-title="编辑机构")}">'+(val||row.id)+'</a>';
 		}},
-		{header:'本级排序号（升序）', name:'treeSort', index:'tree_sort', width:150, align:"center"},
-		{header:'机构代码', name:'viewCode', index:'view_code', width:150, align:"left"},
-		{header:'机构名称', name:'officeName', index:'office_name', width:150, align:"left"},
 		{header:'机构全称', name:'fullName', index:'full_name', width:150, align:"left"},
+		{header:'排序号', name:'treeSort', index:'tree_sort', width:150, align:"center"},
 		{header:'机构类型', name:'officeType', index:'office_type', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_office_type')}, val, '未知}', true);
 		}},
 		{header:'负责人', name:'leader', index:'leader', width:150, align:"left"},
 		{header:'办公电话', name:'phone', index:'phone', width:150, align:"left"},
-		{header:'联系地址', name:'address', index:'address', width:150, align:"left"},
-		{header:'邮政编码', name:'zipCode', index:'zip_code', width:150, align:"left"},
-		{header:'电子邮箱', name:'email', index:'email', width:150, align:"left"},
-		{header:'状态（0正常 1删除 2停用）', name:'status', index:'status', width:150, align:"center", formatter: function(val, obj, row, act){
+		{header:'更新时间', name:'updateTime', index:'update_time', width:150, align:"left"},
+		{header:'状态', name:'status', index:'status', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '未知}', true);
 		}},
-		{header:'更新时间', name:'updateTime', index:'update_time', width:150, align:"left"},
 		{header:'操作', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(expIf("hasAuthority('sys:office:edit')")){ %>

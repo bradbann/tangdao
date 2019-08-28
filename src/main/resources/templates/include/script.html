@@ -1,5 +1,8 @@
 <script src="${ctxStatic}/vendors.js"></script>
 <script src="${ctxStatic}/vendors/select2/js/select2.min.js"></script>
+<% if (@ListUtils.inString('layout', libs!)){ %>
+<script src="${ctxStatic}/vendors/jquery.plugins/jquery.layout-latest.js"></script>
+<% } %>
 <% if (@ListUtils.inString('validate', libs!)){ %>
 <script src="${ctxStatic}/vendors/jquery.validation/1.16/jquery.validate.js"></script>
 <script src="${ctxStatic}/vendors/jquery.validation/1.16/jquery.validate.extend.js"></script>

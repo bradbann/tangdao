@@ -22,66 +22,61 @@
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-6">
-					<label>机构编码 <span class="tx-danger ">*</span></label>
-				
-					<#form:hidden path="isNewRecord"/>
-<#form:input path="officeCode" maxlength="64" readonly="${!office.isNewRecord}" class="form-control required"/>
+					<label>机构名称 <span class="tx-danger ">*</span></label>
+					<#form:input path="officeName" maxlength="100" class="form-control required"/>
 				</div>
-				<div class="form-group col-md-6">
-					<label>本级排序号（升序） <span class="tx-danger ">*</span></label>
-				<#form:input path="treeSort" class="form-control required digits"/>
-				</div>
-			</div>
-			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label>机构代码 <span class="tx-danger ">*</span></label>
-				<#form:input path="viewCode" maxlength="100" class="form-control required"/>
-				</div>
-				<div class="form-group col-md-6">
-					<label>机构名称 <span class="tx-danger ">*</span></label>
-				<#form:input path="officeName" maxlength="100" class="form-control required"/>
+					<#form:input path="viewCode" maxlength="100" class="form-control required"/>
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label>机构全称 <span class="tx-danger ">*</span></label>
-				<#form:input path="fullName" maxlength="200" class="form-control required"/>
+					<#form:input path="fullName" maxlength="200" class="form-control required"/>
 				</div>
 				<div class="form-group col-md-6">
-					<label>机构类型 <span class="tx-danger ">*</span></label>
-				<#form:select path="officeType" dictType="sys_office_type" class="form-control select2 required" />
+					<label>排序号 <span class="tx-danger ">*</span></label>
+					<#form:input path="treeSort" class="form-control required digits"/>
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-6">
+					<label>机构类型 <span class="tx-danger ">*</span></label>
+					<#form:select path="officeType" dictType="sys_office_type" class="form-control select2 required" />
+				</div>
+			</div>
+			<div class="divider-text">详细信息</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
 					<label>负责人 <span class="tx-danger d-none">*</span></label>
-				<#form:input path="leader" maxlength="100" class="form-control"/>
+					<#form:input path="leader" maxlength="100" class="form-control"/>
 				</div>
 				<div class="form-group col-md-6">
 					<label>办公电话 <span class="tx-danger d-none">*</span></label>
-				<#form:input path="phone" maxlength="100" class="form-control"/>
+					<#form:input path="phone" maxlength="100" class="form-control"/>
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label>联系地址 <span class="tx-danger d-none">*</span></label>
-				<#form:input path="address" maxlength="255" class="form-control"/>
+					<#form:input path="address" maxlength="255" class="form-control"/>
 				</div>
 				<div class="form-group col-md-6">
 					<label>邮政编码 <span class="tx-danger d-none">*</span></label>
-				<#form:input path="zipCode" maxlength="100" class="form-control"/>
+					<#form:input path="zipCode" maxlength="100" class="form-control"/>
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label>电子邮箱 <span class="tx-danger d-none">*</span></label>
-				<#form:input path="email" maxlength="300" class="form-control"/>
+					<#form:input path="email" maxlength="300" class="form-control"/>
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-12">
 					<label>备注信息 <span class="tx-danger d-none">*</span></label>
-				<#form:textarea path="remarks" rows="4" maxlength="500" class="form-control"/>
+					<#form:textarea path="remarks" rows="4" maxlength="500" class="form-control"/>
 				</div>
 			</div>
         </div>
