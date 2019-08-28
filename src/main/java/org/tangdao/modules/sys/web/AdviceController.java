@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.WebDataBinder;
@@ -33,7 +34,7 @@ public class AdviceController {
 		return "error/400";
 	}
 
-	@ExceptionHandler({ AuthenticationException.class})
+	@ExceptionHandler({ AuthenticationException.class, AccessDeniedException.class})
 	protected String exceptionHandlerTo403Page() {
 		return "error/403";
 	}

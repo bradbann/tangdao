@@ -1,26 +1,3 @@
-<%
-@servlet.getResponse().setStatus(responseStatus!500);
-var message = @ObjectUtils.toString(@request.getAttribute("message"));
-
-var ex;
-if (isEmpty(message)){
-	ex = @ExceptionUtils.getThrowable(request);
-	if (ex != null){
-		for (e in [ex, ex.cause!, ex.cause.cause!]){
-			if (@StringUtils.startsWith(e.message!, "msg:")){
-				message = @StringUtils.replace(e.message!, "msg:", "");
-				break;
-			}
-		}
-		@org.slf4j.LoggerFactory.getLogger("error/500").error(ex.message, ex);
-	}
-}
-if (isEmpty(message)){
-	message = "您访问的页面出错啦！";
-}
-if (@ServletUtils.isAjaxRequest(request)) {
-	print(@ServletUtils.renderResult(@Global.FALSE, message));
-}else{%>
 <% layout('/layouts/default.html', {title: '500 - 您请求异常！'}){ %>
 <link rel="stylesheet" href="${ctxStatic}/css/tangdao.auth.css">
 <div class="content content-fixed content-auth-alt">
@@ -36,5 +13,4 @@ if (@ServletUtils.isAjaxRequest(request)) {
          </div>
      </div><!-- container -->
 </div><!-- content -->
-<% } %>
 <% } %>

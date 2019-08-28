@@ -26,6 +26,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -136,12 +138,13 @@ public class WebConfig implements WebMvcConfigurer {
 		return new ErrorPageRegistrar() {
 			public void registerErrorPages(ErrorPageRegistry e) {
 				ErrorPage badRequest = new ErrorPage(HttpStatus.BAD_REQUEST, "/error/400");
-				ErrorPage unauthorized = new ErrorPage(HttpStatus.UNAUTHORIZED, "/error/403");
+				ErrorPage unauthorized = new ErrorPage(HttpStatus.UNAUTHORIZED, "/error/401");
 				ErrorPage forbidden = new ErrorPage(HttpStatus.FORBIDDEN, "/error/403");
 				ErrorPage notFound = new ErrorPage(HttpStatus.NOT_FOUND, "/error/404");
+				ErrorPage methodNotAllowed = new ErrorPage(HttpStatus.METHOD_NOT_ALLOWED, "/error/405");
 				ErrorPage internalServerError = new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/error/500");
 				ErrorPage throwable = new ErrorPage(Throwable.class, "/error/500");
-				e.addErrorPages(badRequest, unauthorized, forbidden, notFound, internalServerError, throwable);
+				e.addErrorPages(badRequest, unauthorized, forbidden, notFound, methodNotAllowed, internalServerError, throwable);
 			}
 		};
 	}
@@ -186,6 +189,14 @@ public class WebConfig implements WebMvcConfigurer {
 				}
 			}
 		}
+	}
+	
+	@Bean
+	public TaskScheduler scheduledExecutorService() {
+		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+		scheduler.setPoolSize(8);
+		scheduler.setThreadNamePrefix("scheduled-thread-");
+		return scheduler;
 	}
 	
 }

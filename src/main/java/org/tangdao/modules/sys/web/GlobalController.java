@@ -1,14 +1,27 @@
 package org.tangdao.modules.sys.web;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.config.Global;
+import org.tangdao.common.exception.ServiceException;
 import org.tangdao.common.suports.BaseController;
+import org.tangdao.common.utils.ExceptionUtils;
+import org.tangdao.common.utils.ListUtils;
+import org.tangdao.common.utils.ServletUtils;
 import org.tangdao.common.utils.StringUtils;
 
 /**
@@ -27,8 +40,91 @@ public class GlobalController extends BaseController {
 	}
 
 	@RequestMapping({ "error/{status}" })
-	public String error(@PathVariable String status) {
-		return "error/" + status;
+	public String error(@PathVariable String status, HttpServletRequest request, HttpServletResponse response, Model model) {
+		String message = (String)request.getAttribute("message");
+		Throwable ex = ExceptionUtils.getThrowable(request);
+		if(StringUtils.isBlank(message)) {
+			if(ex!=null) {
+				if("400".equals(status)) {
+					if(StringUtils.startsWith(ex.getMessage(), "msg:")){
+						message = StringUtils.replace(ex.getMessage(), "msg:", "");
+					}else if (ex instanceof BindException){
+						BindException be = (BindException) ex;
+						for (ObjectError e : be.getGlobalErrors()) {
+							message = message + "☆" + e.getDefaultMessage() + "(" + e.getObjectName() + ")<br/>";
+						}
+						for (FieldError e : be.getFieldErrors()) {
+							message = message + "☆" + e.getDefaultMessage() + "(" + e.getField() + ")<br/>";
+						}
+					}else if (ex instanceof ConstraintViolationException){
+						ConstraintViolationException cve = (ConstraintViolationException) ex;
+						Iterator<ConstraintViolation<?>> iterator = cve.getConstraintViolations().iterator();
+						while (iterator.hasNext()) {
+							ConstraintViolation<?> e = iterator.next();
+							message = message + "☆" + e.getMessage() + "(" + e.getPropertyPath() + ")<br/>";
+						}
+					}else{
+						message = message + ex.getMessage();
+					}
+					org.slf4j.LoggerFactory.getLogger("Error[400]").info(ex.getMessage(), ex);
+				} else if(StringUtils.inString(status, "403","500")) {
+					List<Throwable> throwables = ListUtils.newArrayList();
+					if(ex.getCause()!=null) {
+						throwables.add(ex.getCause());
+						if(ex.getCause().getCause()!=null) {
+							throwables.add(ex.getCause().getCause());
+							if(ex.getCause().getCause().getCause()!=null) {
+								throwables.add(ex.getCause().getCause().getCause());
+							}
+						}
+					}
+					for (Throwable throwable : throwables) {
+						if (StringUtils.startsWith(throwable.getMessage(), "msg:")){
+							message = StringUtils.replace(throwable.getMessage(), "msg:", "");
+							break;
+						}else if (ex instanceof ServiceException){
+							message = ((ServiceException) ex).getMessage();
+							break;
+						}
+					}
+					org.slf4j.LoggerFactory.getLogger("Error["+status+"]").info(ex.getMessage(), ex);
+				}
+			}
+			
+		}
+		if(StringUtils.isBlank(message)) {
+			if("400".equals(status)) {
+				message = "请求参数错误，服务器无法解析！";
+				response.setStatus(400);
+			}else if("401".equals(status)) {
+				message = "认证请求失败！";
+				response.setStatus(401);
+			}else if("403".equals(status)) {
+				message = "您的操作权限不足！";
+				response.setStatus(403);
+			}else if("404".equals(status)) {
+				message = "您访问的地址不存在！";
+				response.setStatus(404);
+			}else if("405".equals(status)) {
+				message = "您请求的方法不允许！";
+				response.setStatus(405);
+			}else {
+				message = "您访问的页面出错啦！";
+				response.setStatus(500);
+			}
+		}
+		
+		if(ServletUtils.isAjaxRequest(request)) {
+			return ServletUtils.renderResult(response, Global.FALSE, message);
+		}
+		
+		model.addAttribute("ex", ex);
+		model.addAttribute("message", message);
+		model.addAttribute("status", status);
+		if(StringUtils.inString(status, "405","401")) {
+			return "error/other";
+		}
+		return "error/"+status;
 	}
 	
 	@RequestMapping({ "/global.min.js" })

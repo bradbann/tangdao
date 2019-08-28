@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -24,6 +25,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,13 +54,31 @@ public class WebSecurityConfig {
 	@Configuration
 	@Order(1)                                                        
 	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+		
 		protected void configure(HttpSecurity http) throws Exception {
 			http
-				.antMatcher("/api/**")                               
-				.authorizeRequests()
-					.anyRequest().hasRole("APP")
-					.and()
-				.httpBasic();
+	            .csrf()
+	            .disable()
+	            .authorizeRequests()
+	            .antMatchers(HttpMethod.POST, "/api/token").permitAll()
+	            .antMatchers("/api/**", "/v1/**").hasAnyRole("APP");
+//			http
+//				.antMatcher("/api/**")                               
+//				.authorizeRequests()
+//					.antMatchers("/api/auth").permitAll()
+//					.anyRequest().hasRole("APP")
+//					.and()
+//				.httpBasic()
+			http
+				// session失效跳转的链接
+				.sessionManagement()
+					// Spring Security的默认启用防止固化session攻击
+					.sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//			.and().requestCache().disable();
+			.and()
+  				// 解决不允许显示在iFrame的问题
+				.headers().frameOptions().disable()
+				.cacheControl().disable();
 		}
 	}
     
