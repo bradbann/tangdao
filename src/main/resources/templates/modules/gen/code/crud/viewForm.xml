@@ -27,7 +27,6 @@
         </div>
     </div>
     <${'#'}form:form id="inputForm" model="\${${className}}" action="\${ctx}/${urlPrefix}/save" method="post">
-    	<${'#'}form:hidden path="${idParam}" />
         <div class="card-body card-content-fixed pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
         	<% if(table.isTreeEntity){ %>
 			<div class="form-row">
