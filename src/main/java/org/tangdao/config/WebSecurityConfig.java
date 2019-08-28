@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -55,26 +56,29 @@ public class WebSecurityConfig {
 	@Order(1)                                                        
 	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 		
+		@Bean
+	    public AuthenticationManager authenticationManagerBean() throws Exception {
+	        return super.authenticationManagerBean();
+	    }
+		
+//		@Bean
+//	    public AuthenticationTokenFilter authenticationTokenFilterBean() {
+//	        return new AuthenticationTokenFilter();
+//	    }
+		
 		protected void configure(HttpSecurity http) throws Exception {
 			http
 	            .csrf()
 	            .disable()
+				.antMatcher("/api/**")
 	            .authorizeRequests()
 	            .antMatchers(HttpMethod.POST, "/api/token").permitAll()
-	            .antMatchers("/api/**", "/v1/**").hasAnyRole("APP");
-//			http
-//				.antMatcher("/api/**")                               
-//				.authorizeRequests()
-//					.antMatchers("/api/auth").permitAll()
-//					.anyRequest().hasRole("APP")
-//					.and()
-//				.httpBasic()
+	            .anyRequest().hasRole("APP");
 			http
 				// session失效跳转的链接
 				.sessionManagement()
 					// Spring Security的默认启用防止固化session攻击
 					.sessionFixation().migrateSession().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//			.and().requestCache().disable();
 			.and()
   				// 解决不允许显示在iFrame的问题
 				.headers().frameOptions().disable()

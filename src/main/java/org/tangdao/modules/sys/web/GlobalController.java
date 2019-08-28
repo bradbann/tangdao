@@ -40,9 +40,14 @@ public class GlobalController extends BaseController {
 	}
 
 	@RequestMapping({ "error/{status}" })
-	public String error(@PathVariable String status, HttpServletRequest request, HttpServletResponse response, Model model) {
-		String message = (String)request.getAttribute("message");
-		Throwable ex = ExceptionUtils.getThrowable(request);
+	public String error(@PathVariable String status, Throwable ex, HttpServletRequest request, HttpServletResponse response, Model model) {
+		String message = "";
+		if(request.getAttribute("message")!=null) {
+			message = (String)request.getAttribute("message");
+		}
+		if(ex==null) {
+			ex = ExceptionUtils.getThrowable(request);
+		}
 		if(StringUtils.isBlank(message)) {
 			if(ex!=null) {
 				if("400".equals(status)) {
@@ -67,6 +72,12 @@ public class GlobalController extends BaseController {
 						message = message + ex.getMessage();
 					}
 					org.slf4j.LoggerFactory.getLogger("Error[400]").info(ex.getMessage(), ex);
+				} else if("401".equals(status)) {
+					if(StringUtils.startsWith(ex.getMessage(), "msg:")){
+						message = StringUtils.replace(ex.getMessage(), "msg:", "");
+					}else{
+						message = message + ex.getMessage();
+					}
 				} else if(StringUtils.inString(status, "403","500")) {
 					List<Throwable> throwables = ListUtils.newArrayList();
 					if(ex.getCause()!=null) {
@@ -92,26 +103,36 @@ public class GlobalController extends BaseController {
 			}
 			
 		}
-		if(StringUtils.isBlank(message)) {
-			if("400".equals(status)) {
+		if("400".equals(status)) {
+			if(StringUtils.isBlank(message)) {
 				message = "请求参数错误，服务器无法解析！";
-				response.setStatus(400);
-			}else if("401".equals(status)) {
-				message = "认证请求失败！";
-				response.setStatus(401);
-			}else if("403".equals(status)) {
-				message = "您的操作权限不足！";
-				response.setStatus(403);
-			}else if("404".equals(status)) {
-				message = "您访问的地址不存在！";
-				response.setStatus(404);
-			}else if("405".equals(status)) {
-				message = "您请求的方法不允许！";
-				response.setStatus(405);
-			}else {
-				message = "您访问的页面出错啦！";
-				response.setStatus(500);
 			}
+			response.setStatus(400);
+		}else if("401".equals(status)) {
+			if(StringUtils.isBlank(message)) {
+				message = "认证请求失败！";
+			}
+			response.setStatus(401);
+		}else if("403".equals(status)) {
+			if(StringUtils.isBlank(message)) {
+				message = "您的操作权限不足！";
+			}
+			response.setStatus(403);
+		}else if("404".equals(status)) {
+			if(StringUtils.isBlank(message)) {
+				message = "您访问的地址不存在！";
+			}
+			response.setStatus(404);
+		}else if("405".equals(status)) {
+			if(StringUtils.isBlank(message)) {
+				message = "您请求的方法不允许！";
+			}
+			response.setStatus(405);
+		}else {
+			if(StringUtils.isBlank(message)) {
+				message = "您访问的页面出错啦！";
+			}
+			response.setStatus(500);
 		}
 		
 		if(ServletUtils.isAjaxRequest(request)) {

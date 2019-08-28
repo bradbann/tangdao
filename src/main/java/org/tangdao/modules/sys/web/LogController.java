@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.tangdao.common.annotation.DbSaveLog;
 import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.suports.Page;
 import org.tangdao.modules.sys.model.domain.Log;
@@ -36,6 +37,7 @@ public class LogController extends BaseController {
 	/**
      * 查询列表
      */
+    @DbSaveLog(logIgnore = true)
     @RequestMapping(value = "list")
     public String list(Log log, Model model) {
         return "modules/sys/logList";
@@ -44,6 +46,7 @@ public class LogController extends BaseController {
     /**
      * 查询列表数据
      */
+    @DbSaveLog(logIgnore = true)
     @RequestMapping(value = "listData")
     public @ResponseBody IPage<Log> listData(Log log, HttpServletRequest request, HttpServletResponse response) {
     	QueryWrapper<Log> queryWrapper = new QueryWrapper<Log>();
@@ -55,6 +58,7 @@ public class LogController extends BaseController {
     /**
      * 查看编辑表单
      */
+    @DbSaveLog(logIgnore = true)
     @RequestMapping(value = "form")
     public String form(Log log, Model model) {
         model.addAttribute("log", log);

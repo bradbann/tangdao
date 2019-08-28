@@ -4,11 +4,15 @@ import java.beans.PropertyEditorSupport;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,14 +33,20 @@ import org.tangdao.common.utils.EncodeUtils;
 @ControllerAdvice
 public class AdviceController {
 	
+	@Autowired
+	private GlobalController globalController;
+	
 	@ExceptionHandler({ BindException.class, ConstraintViolationException.class, ValidationException.class })
-	protected String exceptionHandlerTo400Page() {
-		return "error/400";
+	protected String exceptionHandlerTo400Page(Exception ex,HttpServletRequest request, HttpServletResponse response, Model model) {
+		return globalController.error("400", ex, request, response, model);
 	}
 
 	@ExceptionHandler({ AuthenticationException.class, AccessDeniedException.class})
-	protected String exceptionHandlerTo403Page() {
-		return "error/403";
+	protected String exceptionHandlerTo403Page(Exception ex,HttpServletRequest request, HttpServletResponse response, Model model) {
+		if(ex instanceof BadCredentialsException) {
+			return globalController.error("401", ex, request, response, model);
+		}
+		return globalController.error("403", ex, request, response, model);
 	}
 	
 	@InitBinder
