@@ -28,6 +28,8 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -197,6 +199,15 @@ public class WebConfig implements WebMvcConfigurer {
 		scheduler.setPoolSize(8);
 		scheduler.setThreadNamePrefix("scheduled-thread-");
 		return scheduler;
+	}
+	
+	@Bean
+	public CookieSerializer cookieSerializer() {
+	    DefaultCookieSerializer serializer = new DefaultCookieSerializer();
+	    serializer.setCookieName("JSESSIONID");
+	    serializer.setCookiePath("/");
+	    serializer.setDomainNamePattern("^.+?\\.(\\w+\\.[a-z]+)$");
+	    return serializer;
 	}
 	
 }
