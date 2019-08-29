@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -31,6 +30,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
@@ -38,6 +38,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.session.Session;
 import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
+import org.tangdao.common.security.AuthenticationTokenFilter;
 import org.tangdao.common.utils.IpUtils;
 import org.tangdao.common.utils.UserAgentUtils;
 import org.tangdao.modules.sys.model.domain.Log;
@@ -53,26 +54,34 @@ import eu.bitwalker.useragentutils.UserAgent;
 public class WebSecurityConfig {
 	
 	@Configuration
-	@Order(1)                                                        
+	@Order(1)
 	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+		
+		@Value("${security.api.antMatchers}")
+    	private String antMatchers;
+    	
+    	@Value("${security.api.authorizeUrl}")
+    	private String authorizeUrl;
 		
 		@Bean
 	    public AuthenticationManager authenticationManagerBean() throws Exception {
 	        return super.authenticationManagerBean();
 	    }
 		
-//		@Bean
-//	    public AuthenticationTokenFilter authenticationTokenFilterBean() {
-//	        return new AuthenticationTokenFilter();
-//	    }
+		@Bean
+	    public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+	        return new AuthenticationTokenFilter();
+	    }
 		
 		protected void configure(HttpSecurity http) throws Exception {
+			System.out.println(authorizeUrl);
+			System.out.println(antMatchers);
 			http
 	            .csrf()
 	            .disable()
-				.antMatcher("/api/**")
+				.antMatcher(authorizeUrl)
 	            .authorizeRequests()
-	            .antMatchers(HttpMethod.POST, "/api/token").permitAll()
+	            .antMatchers(antMatchers).permitAll()
 	            .anyRequest().hasRole("APP");
 			http
 				// session失效跳转的链接
@@ -83,7 +92,12 @@ public class WebSecurityConfig {
   				// 解决不允许显示在iFrame的问题
 				.headers().frameOptions().disable()
 				.cacheControl().disable();
+			
+			// Custom JWT based security filter
+	        http
+	        	.addFilterBefore(authenticationTokenFilterBean(), FilterSecurityInterceptor.class);
 		}
+		
 	}
     
     @Configuration

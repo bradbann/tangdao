@@ -40,14 +40,12 @@ public class GlobalController extends BaseController {
 	}
 
 	@RequestMapping({ "error/{status}" })
-	public String error(@PathVariable String status, Throwable ex, HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String error(@PathVariable String status, HttpServletRequest request, HttpServletResponse response, Model model) {
 		String message = "";
 		if(request.getAttribute("message")!=null) {
 			message = (String)request.getAttribute("message");
 		}
-		if(ex==null) {
-			ex = ExceptionUtils.getThrowable(request);
-		}
+		Throwable ex = ExceptionUtils.getThrowable(request);
 		if(StringUtils.isBlank(message)) {
 			if(ex!=null) {
 				if("400".equals(status)) {
@@ -71,15 +69,17 @@ public class GlobalController extends BaseController {
 					}else{
 						message = message + ex.getMessage();
 					}
-					org.slf4j.LoggerFactory.getLogger("Error[400]").info(ex.getMessage(), ex);
+					org.slf4j.LoggerFactory.getLogger("Status code [400]").info(ex.getMessage(), ex);
 				} else if("401".equals(status)) {
 					if(StringUtils.startsWith(ex.getMessage(), "msg:")){
 						message = StringUtils.replace(ex.getMessage(), "msg:", "");
 					}else{
 						message = message + ex.getMessage();
 					}
+					org.slf4j.LoggerFactory.getLogger("Status code [401]").error(ex.getMessage());
 				} else if(StringUtils.inString(status, "403","500")) {
 					List<Throwable> throwables = ListUtils.newArrayList();
+					throwables.add(ex);
 					if(ex.getCause()!=null) {
 						throwables.add(ex.getCause());
 						if(ex.getCause().getCause()!=null) {
@@ -98,7 +98,7 @@ public class GlobalController extends BaseController {
 							break;
 						}
 					}
-					org.slf4j.LoggerFactory.getLogger("Error["+status+"]").info(ex.getMessage(), ex);
+					org.slf4j.LoggerFactory.getLogger("Status code ["+status+"]").error(ex.getMessage(), ex);
 				}
 			}
 			

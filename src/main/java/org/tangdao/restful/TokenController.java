@@ -25,11 +25,6 @@ public class TokenController extends BaseController{
      */
     @Autowired
     private AuthenticationManager authenticationManager;
-//    /**
-//     * 用户信息服务
-//     */
-//    @Autowired
-//    private UserDetailsService userDetailsService;
 
 	@PostMapping("/api/token")
 	public String token(
