@@ -1,6 +1,7 @@
 package org.tangdao.common.security;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.servlet.FilterChain;
@@ -8,6 +9,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.tangdao.common.config.Contents;
 import org.tangdao.common.config.Global;
@@ -19,16 +26,27 @@ import io.jsonwebtoken.Jwts;
 
 public class AuthenticationTokenFilter extends OncePerRequestFilter {
 	
-//	@Autowired
-//	private RedisTemplate<String, Object> redisTemplate;
-
+	private String[] antPatterns;
+	
+	private RedisOperations<String, Serializable> sessionRedisOperations;
+	
+	private AntPathMatcher pathMatcher = new AntPathMatcher();
+	
+	public AuthenticationTokenFilter(RedisOperations<String, Serializable> sessionRedisOperations, String ...antPatterns) {
+		this.sessionRedisOperations = sessionRedisOperations;
+		this.antPatterns = antPatterns;
+	}
+	
 	@Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         //过滤掉不需要token验证的url
-        /*if(authenticationRequestMatcher != null && !authenticationRequestMatcher.matches(httpServletRequest)){
-            filterChain.doFilter(request, response);
-            return;
-        }*/
+		for (String pattern : antPatterns) {
+			if (pathMatcher.match(pattern, request.getServletPath())) {
+				filterChain.doFilter(request, response);
+				return;
+			}
+		}
+        
 		String tokenHeader = request.getHeader("Authorization");
 		String accessToken = request.getParameter("access_token");
 		if (StringUtils.isBlank(accessToken)) {
@@ -65,13 +83,18 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 			ServletUtils.renderResult(response, Contents.EC_TOKEN_EXPIRATION, "认证信息已经过期，请重新登录！");
 			return;
 		}
-		final String username = claims.getSubject();
-		System.out.println(username);
-//		UserDetails userDetails = (UserDetails) redisTemplate.opsForValue().get(Contents.TANGDAO_SECURITY_TOKENS + username);
-//		
-//		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//		SecurityContextHolder.getContext().setAuthentication(authentication);
-//		filterChain.doFilter(request, response);
+		UserDetails userDetails = (UserDetails)sessionRedisOperations.boundHashOps(Contents.TANGDAO_SECURITY_TOKENS + tokenValue).get("tokenAttr:SPRING_SECURITY_CONTEXT");
+		if(userDetails==null) {
+			response.setStatus(401);
+			org.slf4j.LoggerFactory.getLogger("Status code [401]").error("用户信息获取失败，请重新登录！");
+			ServletUtils.renderResult(response, Contents.EC_TOKENATTR_NOTFOND, "用户信息获取失败，请重新登录！");
+			return;
+		}
+		//刷新token时间
+		
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		filterChain.doFilter(request, response);
     }
 }

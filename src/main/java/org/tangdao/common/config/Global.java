@@ -97,6 +97,10 @@ public class Global implements PropertySourceLoader {
 		return ObjectUtils.toInteger(getConfig(key, defValue));
 	}
 	
+	public static Long getConfigToLong(String key, String defValue) {
+		return ObjectUtils.toLong(getConfig(key, defValue));
+	}
+	
 	public static Object getConst(String field) {
 		try {
 			if (!"Global.Fields".equals(field)) {	

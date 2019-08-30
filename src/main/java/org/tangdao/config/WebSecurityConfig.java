@@ -62,6 +62,9 @@ public class WebSecurityConfig {
     	
     	@Value("${security.api.authorizeUrl}")
     	private String authorizeUrl;
+    	
+    	@Autowired
+    	private RedisOperations<String, Serializable> sessionRedisOperations;
 		
 		@Bean
 	    public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -70,18 +73,16 @@ public class WebSecurityConfig {
 		
 		@Bean
 	    public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-	        return new AuthenticationTokenFilter();
+	        return new AuthenticationTokenFilter(sessionRedisOperations, antMatchers.split(","));
 	    }
 		
 		protected void configure(HttpSecurity http) throws Exception {
-			System.out.println(authorizeUrl);
-			System.out.println(antMatchers);
 			http
 	            .csrf()
 	            .disable()
 				.antMatcher(authorizeUrl)
 	            .authorizeRequests()
-	            .antMatchers(antMatchers).permitAll()
+	            .antMatchers(antMatchers.split(",")).permitAll()
 	            .anyRequest().hasRole("APP");
 			http
 				// session失效跳转的链接
@@ -92,7 +93,6 @@ public class WebSecurityConfig {
   				// 解决不允许显示在iFrame的问题
 				.headers().frameOptions().disable()
 				.cacheControl().disable();
-			
 			// Custom JWT based security filter
 	        http
 	        	.addFilterBefore(authenticationTokenFilterBean(), FilterSecurityInterceptor.class);

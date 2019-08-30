@@ -9,8 +9,9 @@ public final class Contents {
 	public static String menuNamePathMap = DEFAULT_NAMESPACE + "sysCache:menuNamePathMap";
 
 	public static String TANGDAO_SECURITY_TOKENS = DEFAULT_NAMESPACE + "security:tokens:";
-	public static String SECURITY_AUTH_INFO = DEFAULT_NAMESPACE + "security:authInfo:";
 	
+	
+	public static String EC_TOKENATTR_NOTFOND = "401004";
 	
 	public static String EC_TOKEN_EXPIRATION = "401007";
 }
