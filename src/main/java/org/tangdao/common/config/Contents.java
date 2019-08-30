@@ -12,5 +12,5 @@ public final class Contents {
 	public static String SECURITY_AUTH_INFO = DEFAULT_NAMESPACE + "security:authInfo:";
 	
 	
-	public static String EC_TOKEN_EXPIRATION = "401001";
+	public static String EC_TOKEN_EXPIRATION = "401007";
 }

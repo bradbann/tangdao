@@ -2,7 +2,6 @@ package org.tangdao.common.security;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -12,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.tangdao.common.config.Contents;
 import org.tangdao.common.config.Global;
-import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.ServletUtils;
 import org.tangdao.common.utils.StringUtils;
 
@@ -64,10 +62,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 		if(claims!=null && claims.getExpiration().before(new Date())) {
 			response.setStatus(401);
 			org.slf4j.LoggerFactory.getLogger("Status code [401]").error("认证信息已经过期，请重新登录！");
-			Map<String, Object> data = MapUtils.newLinkedHashMap();
-			data.put("error_code", Contents.EC_TOKEN_EXPIRATION);
-			data.put("expiration", claims.getExpiration());
-			ServletUtils.renderResult(response, Global.FALSE, "认证信息已经过期，请重新登录！");
+			ServletUtils.renderResult(response, Contents.EC_TOKEN_EXPIRATION, "认证信息已经过期，请重新登录！");
 			return;
 		}
 		final String username = claims.getSubject();
