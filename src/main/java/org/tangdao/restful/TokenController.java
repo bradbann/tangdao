@@ -66,12 +66,12 @@ public class TokenController extends BaseController{
         final String secret = Global.getConfig("security.jwt.secret");
         final Long expiration = Global.getConfigToLong("security.jwt.expiration","1728000");
 //        Map<String, Object> claims = MapUtils.newHashMap();
-        
+        final Date expirationDate = new Date(System.currentTimeMillis() + expiration.intValue());
         final String token = Jwts.builder()
 //	        .setClaims(claims)
 	        .setSubject(username)
-	        .setIssuedAt(new Date(expiration))
-	        .setExpiration(new Date())
+	        .setIssuedAt(new Date())
+	        .setExpiration(expirationDate)
 	        .signWith(SignatureAlgorithm.HS512, secret)
 	        .compact();
         

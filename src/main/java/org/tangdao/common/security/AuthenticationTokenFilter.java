@@ -47,6 +47,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 			}
 		}
         
+		//获取认证的token信息
 		String tokenHeader = request.getHeader("Authorization");
 		String accessToken = request.getParameter("access_token");
 		if (StringUtils.isBlank(accessToken)) {
@@ -62,6 +63,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			return;
 		}
+		//获取token解密信息
 		final String secret = Global.getConfig("security.jwt.secret");
 		Claims claims = null;
 		try {
@@ -76,13 +78,14 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 			ServletUtils.renderResult(response, Global.FALSE, "Claims信息获取失败，原因：" + e.getMessage());
 			return;
 		}
-		
+		//检查token是否过期
 		if(claims!=null && claims.getExpiration().before(new Date())) {
 			response.setStatus(401);
 			org.slf4j.LoggerFactory.getLogger("Status code [401]").error("认证信息已经过期，请重新登录！");
 			ServletUtils.renderResult(response, Contents.EC_TOKEN_EXPIRATION, "认证信息已经过期，请重新登录！");
 			return;
 		}
+		//获取用户上下文信息
 		UserDetails userDetails = (UserDetails)sessionRedisOperations.boundHashOps(Contents.TANGDAO_SECURITY_TOKENS + tokenValue).get("tokenAttr:SPRING_SECURITY_CONTEXT");
 		if(userDetails==null) {
 			response.setStatus(401);
@@ -90,11 +93,13 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 			ServletUtils.renderResult(response, Contents.EC_TOKENATTR_NOTFOND, "用户信息获取失败，请重新登录！");
 			return;
 		}
-		//刷新token时间
-		
+		//用户信息认证
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+		//延长token时间
+//		final Long expiration = Global.getConfigToLong("security.jwt.expiration","1728000");
+//		sessionRedisOperations.boundHashOps(Contents.TANGDAO_SECURITY_TOKENS + tokenValue).expire(expiration, TimeUnit.SECONDS);
 		filterChain.doFilter(request, response);
     }
 }
