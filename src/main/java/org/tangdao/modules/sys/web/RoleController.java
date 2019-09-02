@@ -24,6 +24,7 @@ import org.tangdao.modules.sys.service.IRoleService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
  * <p>
@@ -124,6 +125,11 @@ public class RoleController extends BaseController {
 //			return renderResult(Global.TRUE, "启用成功");
 //		}
 //	}
+	
+	@RequestMapping(value = "listDataNp")
+	public @ResponseBody List<Role> listDataNormal(Role role){
+		return roleService.select(Wrappers.<Role>lambdaQuery().eq(Role::getStatus, Role.STATUS_NORMAL));
+	}
 	
 	@RequestMapping(value = "menuTreeData")
 	public @ResponseBody Map<String, Object> treeMenu(Role role){

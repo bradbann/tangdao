@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.utils.StringUtils;
-import org.tangdao.modules.sys.model.domain.Role;
+import org.tangdao.modules.sys.model.domain.Post;
 import org.tangdao.modules.sys.model.domain.User;
+import org.tangdao.modules.sys.service.IPostService;
 import org.tangdao.modules.sys.service.IRoleService;
 import org.tangdao.modules.sys.service.IUserService;
 import org.tangdao.modules.sys.utils.UserUtils;
@@ -41,6 +42,9 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private IRoleService roleService;
+	
+	@Autowired
+	private IPostService postService;
 
 	@ModelAttribute
 	public User get(String userCode, boolean isNewRecord) {
@@ -66,12 +70,14 @@ public class UserController extends BaseController {
 	}
 
 	@GetMapping("/form")
-	public String form(User user, Model model) {
-		model.addAttribute("roles",
-				roleService.select(Wrappers.<Role>lambdaQuery().eq(Role::getStatus, Role.STATUS_NORMAL)));
-//		Role r = new Role();
-//		r.setUserCode(user.getUserCode());
-//		user.setRoles(roleService.findByUserCode(user));
+	public String form(User user, String op, Model model) {
+		model.addAttribute("postList", postService.select(Wrappers.<Post>lambdaQuery().eq(Post::getStatus, Post.STATUS_NORMAL)));
+		
+		if (StringUtils.inString(op, Global.OP_AUTH)) {
+			user.setRoles(roleService.findByUserCode(user.getUserCode()));
+		}
+		// 操作类型：add: 全部； edit: 编辑； auth: 授权
+		model.addAttribute("op", op);
 		model.addAttribute("user", user);
 		return "modules/sys/userForm";
 	}

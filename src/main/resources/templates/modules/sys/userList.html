@@ -5,7 +5,7 @@
       <div class="d-flex">
           <button type="button" id="btnSearch" title="查询" class="btn btn-xs btn-default"><i  class="fa fa-filter"></i>查询</button>
           <% if(expIf("hasAuthority('sys:user:edit')")){ %>
-          <button type="button" href="${ctx}/sys/user/form" class="btn btn-xs btn-primary mg-l-10 btnTool" title="新增用户"><i  class="fa fa-plus"></i>新增</button>
+          <button type="button" href="${ctx}/sys/user/form?op=add" class="btn btn-xs btn-primary mg-l-10 btnTool" title="新增用户"><i  class="fa fa-plus"></i>新增</button>
           <% } %>
       </div>
     </div>
@@ -36,7 +36,7 @@ $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
 		{header:'登录账号', name:'username', index:'username', width:200, align:"center", frozen:true, formatter: function(val, obj, row, act){
-			return '<a href="${ctx}/sys/empUser/form?userCode='+row.userCode+'&op=edit" class="btnList" data-title="编辑用户">'+(val||row.id)+'</a>';
+			return '<a href="${ctx}/sys/user/form?userCode='+row.userCode+'&op=edit" class="btnList" data-title="编辑用户">'+(val||row.id)+'</a>';
 		}},
 		{header:'用户昵称', name:'nickname', index:'nickname', width:200, align:"center"},
 		{header:'电子邮箱', name:'email', index:'email', width:200, align:"center"},
@@ -51,30 +51,30 @@ $('#dataGrid').dataGrid({
 		{header:'操作', name:'actions', width:260, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(expIf("hasAuthority('sys:user:edit')")){ %>
-				actions.push('<a href="${ctx}/sys/empUser/form?userCode='+row.userCode+'&op=edit" class="btnList" title="编辑用户"><i class="la la-edit"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/sys/user/form?userCode='+row.userCode+'&op=edit" class="btnList" title="编辑用户"><i class="la la-edit"></i></a>&nbsp;');
 			<% } %>
 			<% if(expIf("hasAuthority('sys:user:updateStatus')")){ %>
 				if (row.status == Global.STATUS_NORMAL){
-					actions.push('<a href="${ctx}/sys/empUser/disable?userCode='+row.userCode+'" class="btnList" title="停用用户" data-confirm="确认要停用该用户吗？"><i class="la la-minus-circle"></i></a>&nbsp;');
+					actions.push('<a href="${ctx}/sys/user/disable?userCode='+row.userCode+'" class="btnList" title="停用用户" data-confirm="确认要停用该用户吗？"><i class="la la-minus-circle"></i></a>&nbsp;');
 				}
 				if (row.status == Global.STATUS_DISABLE){
-					actions.push('<a href="${ctx}/sys/empUser/enable?userCode='+row.userCode+'" class="btnList" title="启用用户" data-confirm="确认要启用该用户吗？"><i class="la la-check-circle"></i></a>&nbsp;');
+					actions.push('<a href="${ctx}/sys/user/enable?userCode='+row.userCode+'" class="btnList" title="启用用户" data-confirm="确认要启用该用户吗？"><i class="la la-check-circle"></i></a>&nbsp;');
 				}
 			<% } %>
 			<% if(expIf("hasAuthority('sys:user:edit')")){ %>
-				actions.push('<a href="${ctx}/sys/empUser/delete?userCode='+row.userCode+'" class="btnList" title="删除用户" data-confirm="确认要删除该用户吗？"><i class="la la-trash"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/sys/user/delete?userCode='+row.userCode+'" class="btnList" title="删除用户" data-confirm="确认要删除该用户吗？"><i class="la la-trash"></i></a>&nbsp;');
 			<% } %>
 			
 			actions.push('<a href="" class="dropdown-link" data-toggle="dropdown"><i class="la la-ellipsis-v"></i></a>');
 			actions.push('<div class="dropdown-menu dropdown-menu-right">');
 			<% if(expIf("hasAuthority('sys:user:authRole')")){ %>
-					actions.push('<a href="${ctx}/sys/empUser/form?userCode='+row.userCode+'&op=auth" class="dropdown-item btnList" title="用户分配角色"><i class="la la-cube"></i> 分配角色</a>');
+					actions.push('<a href="${ctx}/sys/user/form?userCode='+row.userCode+'&op=auth" class="dropdown-item btnList" title="用户分配角色"><i class="la la-cube"></i> 分配角色</a>');
 			<% } %>
 			<% if(expIf("hasAuthority('sys:user:authDataScope')")){ %>
-					actions.push('<a href="${ctx}/sys/empUser/formAuthDataScope?userCode='+row.userCode+'" class="dropdown-item btnList" title="用户分配数据权限"><i class="la la-cogs"></i> 数据权限</a>');
+					actions.push('<a href="${ctx}/sys/user/formAuthDataScope?userCode='+row.userCode+'" class="dropdown-item btnList" title="用户分配数据权限"><i class="la la-cogs"></i> 数据权限</a>');
 			<% } %>
 			<% if(expIf("hasAuthority('sys:user:resetpwd')")){ %>
-					actions.push('<a href="${ctx}/sys/empUser/resetpwd?userCode='+row.userCode+'" class="dropdown-item btnList" title="用户密码重置" data-confirm="确认要将该用户密码重置到初始状态吗？"><i class="la la-mail-reply"></i> 重置密码</a>');
+					actions.push('<a href="${ctx}/sys/user/resetpwd?userCode='+row.userCode+'" class="dropdown-item btnList" title="用户密码重置" data-confirm="确认要将该用户密码重置到初始状态吗？"><i class="la la-mail-reply"></i> 重置密码</a>');
 			<% } %>
 			actions.push('</div>');
 			
