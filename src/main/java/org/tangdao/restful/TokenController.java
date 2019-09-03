@@ -29,7 +29,6 @@ import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.utils.LogUtils;
 import org.tangdao.modules.sys.utils.UserUtils;
 
-import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -83,13 +82,14 @@ public class TokenController extends BaseController{
 		LogUtils.saveLog(user, request, "Token授权登录", Log.TYPE_ACCESS);
 		//存储token对应的用户信息
 		long time = new Date().getTime();
-		sessionRedisOperations.boundHashOps(Contents.TANGDAO_SECURITY_TOKENS + token).put("tokenAttr:SPRING_SECURITY_CONTEXT", user);
-		sessionRedisOperations.boundHashOps(Contents.TANGDAO_SECURITY_TOKENS + token).put("lastAccessedTime", time);
-		sessionRedisOperations.boundHashOps(Contents.TANGDAO_SECURITY_TOKENS + token).put("maxInactiveInterval", expiration);
-		sessionRedisOperations.boundHashOps(Contents.TANGDAO_SECURITY_TOKENS + token).put("creationTime", time);
-		sessionRedisOperations.boundHashOps(Contents.TANGDAO_SECURITY_TOKENS + token).put("tokenAttr:host", IpUtils.getRemoteAddr(request));
-		UserAgent userAgent = UserAgentUtils.getUserAgent(request);
-		sessionRedisOperations.boundHashOps(Contents.TANGDAO_SECURITY_TOKENS + token).put("tokenAttr:deviceName", userAgent.getOperatingSystem().getName());
+		Map<String, Object> tokenInfo = MapUtils.newHashMap();
+		tokenInfo.put("tokenAttr:SPRING_SECURITY_CONTEXT", user);
+		tokenInfo.put("lastAccessedTime", time);
+		tokenInfo.put("maxInactiveInterval", expiration);
+		tokenInfo.put("creationTime", time);
+		tokenInfo.put("tokenAttr:host", IpUtils.getRemoteAddr(request));
+		tokenInfo.put("tokenAttr:deviceName", UserAgentUtils.getUserAgent(request).getOperatingSystem().getName());
+		sessionRedisOperations.boundHashOps(Contents.TANGDAO_SECURITY_TOKENS + token).putAll(tokenInfo);
 		sessionRedisOperations.expire(Contents.TANGDAO_SECURITY_TOKENS + token,  expiration, TimeUnit.SECONDS);
         
         Map<String, Object> data = MapUtils.newLinkedHashMap();
