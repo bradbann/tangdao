@@ -128,7 +128,7 @@ public class RoleController extends BaseController {
 	
 	@RequestMapping(value = "listDataNp")
 	public @ResponseBody List<Role> listDataNormal(Role role){
-		return roleService.select(Wrappers.<Role>lambdaQuery().eq(Role::getStatus, Role.STATUS_NORMAL));
+		return roleService.select(Wrappers.<Role>lambdaQuery().eq(Role::getStatus, Role.STATUS_NORMAL).eq(Role::getUserType, role.getUserType()));
 	}
 	
 	@RequestMapping(value = "menuTreeData")

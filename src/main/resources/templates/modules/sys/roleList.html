@@ -40,6 +40,9 @@ $('#dataGrid').dataGrid({
 		}},
 		{header:'角色编码', name:'roleCode', index:'role_code', width:150, align:"center"},
 		{header:'排序号', name:'roleSort', index:'role_sort', width:80, align:"center"},
+		{header:'用户类型', name:'userType', index:'user_type', width:100, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('sys_user_type')}, val, '未设置', true);
+		}},
 		{header:'数据范围', name:'dataScope', index:'data_scope', width:100, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_role_data_scope')}, val, '未设置', true);
 		}},
