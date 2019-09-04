@@ -2,6 +2,7 @@ package org.tangdao.config;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.ext.spring.AccessExpressionIfFunction;
@@ -191,11 +192,22 @@ public class WebConfig implements WebMvcConfigurer {
 		}
 	}
 	
-	@Bean
+	/**
+     * 自定义异步线程池
+     * 
+     * @return
+     */
+	@Bean(name = "scheduledExecutorService")
 	public TaskScheduler scheduledExecutorService() {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+		scheduler.setThreadNamePrefix("Scheduled-Thread-");
 		scheduler.setPoolSize(8);
-		scheduler.setThreadNamePrefix("scheduled-thread-");
+		
+		// rejection-policy：当pool已经达到max size的时候，如何处理新任务
+        // CALLER_RUNS：不在新线程中执行任务，而是有调用者所在的线程来执
+        // 设置拒绝策略
+		scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+		scheduler.initialize();
 		return scheduler;
 	}
 	
