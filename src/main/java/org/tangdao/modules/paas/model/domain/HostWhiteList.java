@@ -10,20 +10,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@TableName("paas_user_developer")
-public class UserDeveloper extends DataEntity<UserDeveloper>{
-	
-	private static final long serialVersionUID = 1652989610979690232L;
+@TableName("paas_host_whitelist")
+public class HostWhiteList extends DataEntity<HostWhiteList> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9097531341163310828L;
+	
 	@TableId
 	private String id;
-
-    private String userCode;
-
-    private String appKey;
-
-    private String appSecret;
-
-    private String salt;
+	private String ip;
+	private String userCode;
 
 }

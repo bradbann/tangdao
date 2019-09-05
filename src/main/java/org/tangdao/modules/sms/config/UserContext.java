@@ -96,17 +96,17 @@ public class UserContext {
 	  * @date 2017年2月21日 下午9:44:22
 	 */
 	public enum BalancePayType {
-		PREPAY("1", "预付"), POSTPAY("2", "后付");
+		PREPAY(1, "预付"), POSTPAY(2, "后付");
 
-		private String value;
+		private int	   value;
 		private String title;
 
-		private BalancePayType(String value, String title) {
+		private BalancePayType(int value, String title) {
 			this.value = value;
 			this.title = title;
 		}
 
-		public String getValue() {
+		public int getValue() {
 			return value;
 		}
 

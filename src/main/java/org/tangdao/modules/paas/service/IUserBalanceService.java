@@ -2,6 +2,7 @@ package org.tangdao.modules.paas.service;
 
 import java.util.List;
 
+import org.tangdao.common.service.ICrudService;
 import org.tangdao.modules.exchanger.config.CommonContext.PlatformType;
 import org.tangdao.modules.paas.config.PayContext.PaySource;
 import org.tangdao.modules.paas.config.PayContext.PayType;
@@ -10,7 +11,7 @@ import org.tangdao.modules.paas.model.vo.P2pBalanceResponse;
 
 import com.alibaba.fastjson.JSONObject;
 
-public interface IUserBalanceService {
+public interface IUserBalanceService extends ICrudService<UserBalance>{
 
 	/**
 	 * 
@@ -30,6 +31,8 @@ public interface IUserBalanceService {
 	 * @return
 	 */
 	UserBalance getByUserCode(String userCode, PlatformType type);
+	
+	public UserBalance getByUserCode(String userCode, int type);
 
 	/**
 	 * 
@@ -74,22 +77,22 @@ public interface IUserBalanceService {
 	 * @param userCode
 	 * @param amount
 	 * @param platformType
-	 * @param remark
+	 * @param remarks
 	 * @return
 	 */
-	boolean deductBalance(String userCode, int amount, int platformType, String remark);
+	boolean deductBalance(String userCode, int amount, int platformType, String remarks);
 
 	/**
 	 * 
 	 * TODO 余额转赠
 	 * 
 	 * @param userCode
-	 * @param fromuserCode
+	 * @param fromUserCode
 	 * @param platformType
 	 * @param amount
 	 * @return
 	 */
-	boolean exchange(String userCode, int fromuserCode, int platformType, int amount);
+	public boolean exchange(String userCode, String fromUserCode, int platformType, int amount);
 
 	/**
 	 * 
@@ -128,17 +131,6 @@ public interface IUserBalanceService {
 	 */
 	List<UserBalance> findAvaibleUserBalace();
 	
-	/**
-	 * 
-	   * TODO 请在此处添加注释
-	   * @param id
-	   * @param status
-	   * 	状态：0：正常，1：高警中
-	   * @return
-	 */
-	boolean updateStatus(Integer id, Integer status);
-	
-
     /**
      * 
      * TODO 根据用户传递的短信内容计算短信计费数

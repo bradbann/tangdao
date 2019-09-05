@@ -147,9 +147,11 @@ public abstract class BaseEntity<T> implements Serializable {
 			String value = null;
 			try {
 				TableInfo tableInfo = TableInfoHelper.getTableInfo(this.getClass());
+				if(tableInfo==null) {
+					return null;
+				}
 				value = ReflectUtils.invokeGetter(this, tableInfo.getKeyProperty());
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 			if (StringUtils.isBlank(value)) {
 				return null;

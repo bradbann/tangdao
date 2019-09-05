@@ -85,7 +85,7 @@ public class AuthorizationValidator extends Validator {
         }
 
         // 账号冻结
-        if (developer.getStatus() != UserStatus.YES.getValue()) {
+        if (!UserStatus.YES.getValue().equals(developer.getStatus())) {
             throw new ValidateException(CommonApiCode.COMMON_APPKEY_NOT_AVAIABLE);
         }
 

@@ -10,6 +10,7 @@ import org.tangdao.modules.sms.config.TaskContext.PacketsActionPosition;
 import org.tangdao.modules.sms.config.TaskContext.TaskSubmitType;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.annotation.TableId;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class SmsMtTask extends DataEntity<SmsMtTask> {
 
 	private static final long serialVersionUID = -3844143801379748603L;
 
+	@TableId
 	private String id;
 
 	private String userCode;
@@ -77,8 +79,6 @@ public class SmsMtTask extends DataEntity<SmsMtTask> {
 	// 用户原提交手机号码，未进行黑名单等处理的号码
 	private String originMobile;
 	
-	private Long createUnixtime;
-
 	// 点对点短信用户原内容
 	private String p2pBody;
 	// 点对点短信分析后报文内容

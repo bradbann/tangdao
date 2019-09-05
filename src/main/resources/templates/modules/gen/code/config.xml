@@ -21,6 +21,7 @@
 		<category value="service" label="业务层和持久层（不含控制器和视图）">
 			<template>category-ref:dao</template>
 			<template>crud/service.xml</template>
+			<template>crud/serviceImpl.xml</template>
 		</category>
 		<category value="dao" label="仅持久层（dao/mapper/entity）">
 			<template>crud/mapper.xml</template>

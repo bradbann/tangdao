@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.modules.developer.config.RabbitConstant;
 import org.tangdao.modules.developer.config.RabbitConstant.WordsPriority;
@@ -201,7 +202,6 @@ public class SmsPrervice {
 
             task.setSid(IdWorker.getId());
             task.setCreateTime(new Date());
-            task.setCreateUnixtime(task.getCreateTime().getTime());
 
             // 插入TASK任务（异步）
 
@@ -213,7 +213,10 @@ public class SmsPrervice {
                 || TaskSubmitType.TEMPLATE_POINT_TO_POINT.getCode() == task.getSubmitType()) {
                 queueName = RabbitConstant.MQ_SMS_MT_P2P_WAIT_PROCESS;
             }
-            System.out.println("smsRabbitTemplate:" + priority +" - "+queueName);
+            System.out.println("priority:" +priority);
+            System.out.println("queueName:" +queueName);
+            System.out.println("task:" +JsonMapper.toJson(task));
+            System.out.println("sid:" +task.getSid());
 //            smsRabbitTemplate.convertAndSend(queueName, task, (message) -> {
 //                message.getMessageProperties().setPriority(priority);
 //                return message;

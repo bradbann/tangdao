@@ -1,7 +1,6 @@
 package org.tangdao.modules.paas.service;
 
-import java.util.List;
-
+import org.tangdao.common.service.ICrudService;
 import org.tangdao.modules.paas.model.domain.UserDeveloper;
 
 /**
@@ -10,7 +9,7 @@ import org.tangdao.modules.paas.model.domain.UserDeveloper;
  * 
  */
 
-public interface IUserDeveloperService {
+public interface IUserDeveloperService extends ICrudService<UserDeveloper>{
 
 	/**
 	 * 
@@ -19,7 +18,7 @@ public interface IUserDeveloperService {
 	 * @param userId
 	 * @return
 	 */
-	UserDeveloper getByUserId(int userId);
+	UserDeveloper getByUserCode(String userCode);
 
 	/**
 	 * 
@@ -44,35 +43,10 @@ public interface IUserDeveloperService {
 	 * 
 	   * TODO 保存开发者信息
 	   * 
-	   * @param userId
+	   * @param userCode
 	   * @return
 	 */
-	UserDeveloper saveWithReturn(int userId);
-	
-	/**
-	 * 
-	   * TODO 查询所有的开发者信息
-	   * @return
-	 */
-	List<UserDeveloper> findAll();
-	
-	/**
-	 * 
-	   * TODO 保存开发者信息
-	   * 
-	   * @param userId
-	   * @return
-	 */
-	boolean save(int userId);
-	
-	/**
-	 * 
-	   * TODO 修改用户开发者信息
-	   * 
-	   * @param developer
-	   * @return
-	 */
-	boolean update(UserDeveloper developer);
+	UserDeveloper saveWithReturn(String userCode);
 	
 	/**
 	 * 
@@ -82,13 +56,4 @@ public interface IUserDeveloperService {
 	 */
 	boolean reloadToRedis();
 	
-	/**
-	 * 
-	   * TODO 更新开发者账号状态信息
-	   * 
-	   * @param userId
-	   * @param status
-	   * @return
-	 */
-	boolean updateStatus(int userId, int status);
 }
