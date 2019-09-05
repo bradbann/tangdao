@@ -19,9 +19,9 @@ import io.swagger.annotations.ApiModelProperty;
 public class SmsSendResponse {
 
     /**
-     * 状态码 #com.huashi.constants.OpenApiCode
+     * 状态码 
      */
-	@ApiModelProperty(value = "code 200:登录成功 100:登录失败，服务异常 101:手机号码不存在 102:账号或密码错误，请重新输入 103:请求参数异常 104:手机号码格式错误 105:请获取短信验证码", required = true)
+	@ApiModelProperty(value = "0:调用成功", required = true)
 	private String code;
 	
 	/**

@@ -124,21 +124,21 @@ public class TaskContext {
 	 * @date 2016年11月12日 下午3:39:24
 	 */
 	public enum PacketsActionPosition {
-		SMS_TEMPLATE_MISSED("0", "短信模板未报备"), FOBIDDEN_WORDS("1", "短信存在敏感词"), PASSAGE_NOT_AVAIABLE("2", "通道不可用");
+		SMS_TEMPLATE_MISSED(0, "短信模板未报备"), FOBIDDEN_WORDS(1, "短信存在敏感词"), PASSAGE_NOT_AVAIABLE(2, "通道不可用");
 
-		private String position;
+		private int position;
 		private String title;
 
-		private PacketsActionPosition(String position, String title) {
+		private PacketsActionPosition(int position, String title) {
 			this.position = position;
 			this.title = title;
 		}
 
-		public String getPosition() {
+		public int getPosition() {
 			return position;
 		}
 
-		public void setPosition(String position) {
+		public void setPosition(int position) {
 			this.position = position;
 		}
 

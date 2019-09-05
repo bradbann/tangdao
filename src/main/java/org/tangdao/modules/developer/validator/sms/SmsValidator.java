@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.tangdao.common.utils.MobileGroupUtils;
 import org.tangdao.modules.developer.exception.ValidateException;
 import org.tangdao.modules.developer.request.AuthorizationRequest;
 import org.tangdao.modules.developer.request.sms.SmsSendRequest;
@@ -64,7 +65,7 @@ public class SmsValidator extends Validator {
         }
         
         // 总手机号码数量
-        int mobiles = smsSendRequest.getMobile().split(MobileCatagory.MOBILE_SPLIT_CHARCATOR).length;
+        int mobiles = smsSendRequest.getMobile().split(MobileGroupUtils.DATA_SPLIT_CHARCATOR).length;
         
         // 暂时先不加
 //        isBeyondMobileSize(mobiles);

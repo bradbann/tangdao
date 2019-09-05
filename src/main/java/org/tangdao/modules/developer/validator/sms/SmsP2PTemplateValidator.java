@@ -8,28 +8,28 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.tangdao.modules.developer.exception.ValidateException;
+import org.tangdao.modules.developer.request.AuthorizationRequest;
+import org.tangdao.modules.developer.request.sms.SmsP2PTemplateSendRequest;
+import org.tangdao.modules.developer.validator.AuthorizationValidator;
+import org.tangdao.modules.developer.validator.Validator;
+import org.tangdao.modules.exchanger.config.CommonContext.PlatformType;
+import org.tangdao.modules.exchanger.config.OpenApiCode.CommonApiCode;
+import org.tangdao.modules.exchanger.config.OpenApiCode.SmsApiCode;
+import org.tangdao.modules.paas.model.vo.P2pBalanceResponse;
+import org.tangdao.modules.paas.service.IUserBalanceService;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.huashi.common.user.model.P2pBalanceResponse;
-import com.huashi.common.user.service.IUserBalanceService;
-import com.huashi.constants.CommonContext.PlatformType;
-import com.huashi.constants.OpenApiCode.CommonApiCode;
-import com.huashi.constants.OpenApiCode.SmsApiCode;
-import com.huashi.developer.exception.ValidateException;
-import com.huashi.developer.request.AuthorizationRequest;
-import com.huashi.developer.request.sms.SmsP2PTemplateSendRequest;
-import com.huashi.developer.validator.AuthorizationValidator;
-import com.huashi.developer.validator.Validator;
 
 @Component
 public class SmsP2PTemplateValidator extends Validator {
 
     @Autowired
     private AuthorizationValidator   passportValidator;
-    @Reference
+    
+    @Autowired
     private IUserBalanceService userBalanceService;
 
     /**
@@ -49,9 +49,7 @@ public class SmsP2PTemplateValidator extends Validator {
         AuthorizationRequest passportModel = passportValidator.validate(paramMap, ip);
 
         smsP2PTemplateSendRequest.setIp(ip);
-        smsP2PTemplateSendRequest.setUserId(passportModel.getUserId());
-
-        smsP2PTemplateSendRequest.setUserId(passportModel.getUserId());
+        smsP2PTemplateSendRequest.setUserCode(passportModel.getUserCode());
 
         // 点对点短信如果内容为空，则返回错误码
         String body = smsP2PTemplateSendRequest.getBody();
@@ -72,7 +70,7 @@ public class SmsP2PTemplateValidator extends Validator {
         P2pBalanceResponse p2pBalanceResponse = null;
         try {
             // 获取本次短信内容计费条数
-            p2pBalanceResponse = userBalanceService.calculateP2ptSmsAmount(passportModel.getUserId(),
+            p2pBalanceResponse = userBalanceService.calculateP2ptSmsAmount(passportModel.getUserCode(),
                                                                            paramMap.get("content")[0], p2pBodies);
 
             if (p2pBalanceResponse == null || p2pBalanceResponse.getTotalFee() == 0) {
@@ -83,7 +81,7 @@ public class SmsP2PTemplateValidator extends Validator {
         }
 
         // f.用户余额不足（通过计费微服务判断，结合4.1.6中的用户计费规则）
-        boolean balanceEnough = userBalanceService.isBalanceEnough(passportModel.getUserId(),
+        boolean balanceEnough = userBalanceService.isBalanceEnough(passportModel.getUserCode(),
                                                                    PlatformType.SEND_MESSAGE_SERVICE,
                                                                    (double) p2pBalanceResponse.getTotalFee());
         if (!balanceEnough) {
@@ -93,7 +91,7 @@ public class SmsP2PTemplateValidator extends Validator {
         smsP2PTemplateSendRequest.setFee(p2pBalanceResponse.getTotalFee());
         smsP2PTemplateSendRequest.setTotalFee(p2pBalanceResponse.getTotalFee());
         smsP2PTemplateSendRequest.setIp(ip);
-        smsP2PTemplateSendRequest.setUserId(passportModel.getUserId());
+        smsP2PTemplateSendRequest.setUserCode(passportModel.getUserCode());
         smsP2PTemplateSendRequest.setP2pBodies(p2pBalanceResponse.getP2pBodies());
 
         return smsP2PTemplateSendRequest;

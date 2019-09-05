@@ -35,7 +35,6 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -92,8 +91,9 @@ public class WebConfig implements WebMvcConfigurer {
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		ResourceHandlerRegistration resource = registry.addResourceHandler("/static/**");
-		resource.addResourceLocations("/static/", "classpath:/static/");
+		registry.addResourceHandler("/static/**").addResourceLocations("/static/", "classpath:/static/");
+		registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
+		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 	}
 	
 	@Bean

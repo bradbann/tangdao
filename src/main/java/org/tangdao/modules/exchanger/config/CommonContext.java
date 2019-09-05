@@ -25,29 +25,29 @@ public class CommonContext {
         /**
          * 针对无法识别的运营商
          */
-        UNRECOGNIZED("0", "无法识别", null),
+        UNRECOGNIZED(0, "无法识别", null),
 
-        CHINA_MOBILE("1", "移动",
+        CHINA_MOBILE(1, "移动",
                      "^((134|135|136|137|138|139|150|151|152|157|158|159|182|183|184|187|188|178|147|198)[0-9]{8}|1705[0-9]{7})$"),
 
-        CHINA_TELECOM("2", "电信", "^((133|149|153|180|181|189||173|177|199|191)[0-9]{8}|(1700|1701)[0-9]{7})$"),
+        CHINA_TELECOM(2, "电信", "^((133|149|153|180|181|189||173|177|199|191)[0-9]{8}|(1700|1701)[0-9]{7})$"),
 
-        CHINA_UNICOM("3", "联通",
+        CHINA_UNICOM(3, "联通",
                      "^((130|131|132|155|156|185|186|175|176|145|166|171)[0-9]{8}|(1709|1707|1708|1704)[0-9]{7})$"),
 
-        GLOBAL("4", "全网", "^(13[0-9]|15[012356789]|166|17[05678]|18[0-9]|14[579]|19[89])[0-9]{8}$");
+        GLOBAL(4, "全网", "^(13[0-9]|15[012356789]|166|17[05678]|18[0-9]|14[579]|19[89])[0-9]{8}$");
 
-        CMCP(String code, String title, String localRegex) {
+        CMCP(int code, String title, String localRegex) {
             this.code = code;
             this.title = title;
             this.localRegex = localRegex;
         }
 
-        private String    code;
+        private int    code;
         private String title;
         private String localRegex;
 
-        public String getCode() {
+        public int getCode() {
             return code;
         }
 
@@ -59,9 +59,9 @@ public class CommonContext {
             return localRegex;
         }
 
-        public static CMCP getByCode(String code) {
+        public static CMCP getByCode(int code) {
             for (CMCP cmcp : CMCP.values()) {
-                if (cmcp.getCode().equals(code)) {
+                if (cmcp.getCode() == code) {
                     return cmcp;
                 }
             }
@@ -115,23 +115,23 @@ public class CommonContext {
         /**
          * 未定义
          */
-        UNDEFINED("0", "未定义"),
+        UNDEFINED(0, "未定义"),
 
         /**
          * SEND_MESSAGE_SERVICE同 SHORT_MESSAGE_SERVICE (SMS)
          */
-        SEND_MESSAGE_SERVICE("1", "短信服务"), FLUX_SERVICE("2", "流量服务"), VOICE_SERVICE("3", "语音服务"),
-        MULTIMEDIA_MESSAGE_SERVICE("4", "彩信服务");
+        SEND_MESSAGE_SERVICE(1, "短信服务"), FLUX_SERVICE(2, "流量服务"), VOICE_SERVICE(3, "语音服务"),
+        MULTIMEDIA_MESSAGE_SERVICE(4, "彩信服务");
 
-        private String    code;
+        private int    code;
         private String name;
 
-        PlatformType(String code, String name) {
+        PlatformType(int code, String name) {
             this.code = code;
             this.name = name;
         }
 
-        public String getCode() {
+        public int getCode() {
             return code;
         }
 
@@ -139,9 +139,9 @@ public class CommonContext {
             return name;
         }
 
-        public static PlatformType parse(String code) {
+        public static PlatformType parse(int code) {
             for (PlatformType pt : PlatformType.values()) {
-                if (pt.getCode().equals(code)) {
+                if (pt.getCode() == code) {
                     return pt;
                 }
             }
@@ -153,8 +153,8 @@ public class CommonContext {
          *
          * @return
          */
-        public static List<String> allCodes() {
-            List<String> all = new ArrayList<>();
+        public static List<Integer> allCodes() {
+            List<Integer> all = new ArrayList<>();
             for (PlatformType pt : PlatformType.values()) {
                 if (pt == PlatformType.UNDEFINED) {
                     continue;
@@ -172,18 +172,18 @@ public class CommonContext {
      * @date 2016年9月5日 下午9:57:52
      */
     public enum CallbackUrlType {
-        SMS_STATUS("1", "短信状态报告"), SMS_MO("2", "短信上行报告"), FLUX_CHARGE_RESULT("3", "流量充值结果"),
-        VOICE_SEND_STATUS("4", "语音验证码发送报告"), MMS_STATUS("5", "彩信状态报告"), MMS_MO("6", "彩信上行报告");
+        SMS_STATUS(1, "短信状态报告"), SMS_MO(2, "短信上行报告"), FLUX_CHARGE_RESULT(3, "流量充值结果"),
+        VOICE_SEND_STATUS(4, "语音验证码发送报告"), MMS_STATUS(5, "彩信状态报告"), MMS_MO(6, "彩信上行报告");
 
-        private String    code;
+        private int    code;
         private String name;
 
-        CallbackUrlType(String code, String name) {
+        CallbackUrlType(int code, String name) {
             this.code = code;
             this.name = name;
         }
 
-        public String getCode() {
+        public int getCode() {
             return code;
         }
 
@@ -191,9 +191,9 @@ public class CommonContext {
             return name;
         }
 
-        public static PlatformType parse(String code) {
+        public static PlatformType parse(int code) {
             for (PlatformType pt : PlatformType.values()) {
-                if (pt.getCode().equals(code)) {
+                if (pt.getCode() == code) {
                     return pt;
                 }
             }

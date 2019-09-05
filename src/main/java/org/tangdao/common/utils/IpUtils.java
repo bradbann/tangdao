@@ -18,7 +18,7 @@ public class IpUtils {
 		}
 		String ip = null;
 		String xffName = PropertiesUtils.getInstance()
-				.getProperty("shiro.remoteAddrHeaderName");
+				.getProperty("security.remoteAddrHeaderName");
 		if (StringUtils.isNotBlank(xffName)){
 			ip = request.getHeader(xffName);
 		}

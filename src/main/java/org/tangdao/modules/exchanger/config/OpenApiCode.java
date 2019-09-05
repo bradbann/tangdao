@@ -26,12 +26,12 @@ public class OpenApiCode {
      * @date 2016年9月21日 上午12:00:33
      */
     public enum CommonApiCode {
-        COMMON_SUCCESS("0", "调用成功"), COMMON_REQUEST_EXCEPTION("H0001", "用户请求参数不匹配"),
-        COMMON_REQUEST_ENCODING_ERROR("H0002", "参数内容编码不正确"), COMMON_REQUEST_TIMESTAMPS_EXPIRED("H0003", "时间戳已过期"),
-        COMMON_REQUEST_IP_INVALID("H0004", "IP未报备"), COMMON_APPKEY_INVALID("H0005", "账户无效"),
-        COMMON_APPKEY_NOT_AVAIABLE("H0006", "账户冻结或停用"), COMMON_AUTHENTICATION_FAILED("H0007", "账户鉴权失败"),
-        COMMON_BALANCE_EXCEPTION("H0008", "账户计费异常"), COMMON_BALANCE_NOT_ENOUGH("H0009", "账户余额不足"),
-        COMMON_BEYOND_MOBILE_THRESHOLD("H0010", "手机号码数量超限（1000个）"), COMMON_SERVER_EXCEPTION("H0100", "未知异常");
+        COMMON_SUCCESS("0", "调用成功"), COMMON_REQUEST_EXCEPTION("P0001", "用户请求参数不匹配"),
+        COMMON_REQUEST_ENCODING_ERROR("P0002", "参数内容编码不正确"), COMMON_REQUEST_TIMESTAMPS_EXPIRED("P0003", "时间戳已过期"),
+        COMMON_REQUEST_IP_INVALID("P0004", "IP未报备"), COMMON_APPKEY_INVALID("P0005", "账户无效"),
+        COMMON_APPKEY_NOT_AVAIABLE("P0006", "账户冻结或停用"), COMMON_AUTHENTICATION_FAILED("P0007", "账户鉴权失败"),
+        COMMON_BALANCE_EXCEPTION("P0008", "账户计费异常"), COMMON_BALANCE_NOT_ENOUGH("P0009", "账户余额不足"),
+        COMMON_BEYOND_MOBILE_THRESHOLD("P0010", "手机号码数量超限（1000个）"), COMMON_SERVER_EXCEPTION("P0100", "未知异常");
 
         private String code;
         private String message;

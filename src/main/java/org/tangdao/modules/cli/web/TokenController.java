@@ -1,4 +1,4 @@
-package org.tangdao.restful;
+package org.tangdao.modules.cli.web;
 
 import java.io.Serializable;
 import java.util.Date;

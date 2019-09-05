@@ -15,7 +15,7 @@ public class SmsMtMessageDeliver extends DataEntity<SmsMtMessageDeliver> {
 
     private String msgId;
 
-    private String cmcp;
+    private int cmcp;
 
     private String mobile;
 
