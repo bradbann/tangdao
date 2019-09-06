@@ -178,7 +178,6 @@ public class ZhangsPassageResolver extends AbstractPassageResolver{
 			response.setDestnationNo(destId);
 			response.setReceiveTime(DateUtils.getDateTime());
 			response.setCreateTime(new Date());
-			response.setCreateUnixtime(response.getCreateTime().getTime());
 			list.add(response);
 
 			// 解析返回结果并返回

@@ -5,50 +5,50 @@ import java.util.Date;
 import org.tangdao.common.suports.DataEntity;
 import org.tangdao.common.utils.StringUtils;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 下行失败短信Entity
+ * @author ruyang
+ * @version 2019-09-06
+ */
 @Getter
 @Setter
+@TableName("sms_api_failed_record")
 public class SmsApiFailedRecord extends DataEntity<SmsApiFailedRecord> {
-
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
-
+	
+	@TableId
 	private String id;
+	
+	private String userCode;		// 用户编码
+	private String appType;		// 调用类型
+	private String submitType;		// 请求类型
+	private String appKey;		// 接口账号
+	private String appSecret;		// 接口密码
+	private String mobile;		// 手机号
+	private String timestamps;		// 提交时间戳
+	private String content;		// content
+	private String extNumber;		// 拓展号码
+	private String attach;		// 自定义内容
+	private String callback;		// 回调URL
+	private String submitUrl;		// 程序调用URL
+	private String ip;		// 提交IP
+	private String respCode;		// 错误码
+	
+	public SmsApiFailedRecord() {
+		super();
+	}
 
-	private String usrCode;
-
-	private String appType;
-
-	private String submitType;
-
-	private String appKey;
-
-	private String appSecret;
-
-	private String mobile;
-
-	private String timestamps;
-
-	private String content;
-
-	private String extNumber;
-
-	private String attach;
-
-	private String callback;
-
-	private String submitUrl;
-
-	private String ip;
-
-	private String respCode;
-
-	private String errorCodeText;
-
+	public SmsApiFailedRecord(String id){
+		super(id);
+	}
+	
 	public String[] getMobiles(){
 		if(StringUtils.isNotBlank(mobile)){
 			return mobile.split(",");
@@ -71,4 +71,5 @@ public class SmsApiFailedRecord extends DataEntity<SmsApiFailedRecord> {
 		}
 		return null;
 	}
+	
 }

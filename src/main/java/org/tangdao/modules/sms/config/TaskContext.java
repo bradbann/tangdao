@@ -10,17 +10,17 @@ public class TaskContext {
 	 * @date 2016年10月28日 上午12:21:17
 	 */
 	public enum PacketsProcessStatus {
-		DOING("0", "正在分包"), PROCESS_COMPLETE("1", "分包完成，待提交网关"), PROCESS_EXCEPTION("2", "分包异常，待处理");
+		DOING(0, "正在分包"), PROCESS_COMPLETE(1, "分包完成，待提交网关"), PROCESS_EXCEPTION(2, "分包异常，待处理");
 
-		private String code;
+		private int    code;
 		private String name;
 
-		private PacketsProcessStatus(String code, String name) {
+		private PacketsProcessStatus(int code, String name) {
 			this.code = code;
 			this.name = name;
 		}
 
-		public String getCode() {
+		public int getCode() {
 			return code;
 		}
 
@@ -28,9 +28,9 @@ public class TaskContext {
 			return name;
 		}
 
-		public static PacketsProcessStatus parse(String code) {
+		public static PacketsProcessStatus parse(int code) {
 			for (PacketsProcessStatus pt : PacketsProcessStatus.values()) {
-				if (pt.getCode().equals(code)) {
+				if (pt.getCode() == code) {
                     {
                         return pt;
                     }
@@ -48,17 +48,17 @@ public class TaskContext {
 	 * @date 2016年10月28日 上午12:22:54
 	 */
 	public enum PacketsApproveStatus {
-		WAITING("0", "待审核"), AUTO_COMPLETE("1", "自动通过"), HANDLING_COMPLETE("2", "手动通过"), REJECT("3", "驳回");
+		WAITING(0, "待审核"), AUTO_COMPLETE(1, "自动通过"), HANDLING_COMPLETE(2, "手动通过"), REJECT(3, "驳回");
 
-		private String code;
+		private int    code;
 		private String name;
 
-		private PacketsApproveStatus(String code, String name) {
+		private PacketsApproveStatus(int code, String name) {
 			this.code = code;
 			this.name = name;
 		}
 
-		public String getCode() {
+		public int getCode() {
 			return code;
 		}
 
@@ -66,9 +66,9 @@ public class TaskContext {
 			return name;
 		}
 
-		public static PacketsApproveStatus parse(String code) {
+		public static PacketsApproveStatus parse(int code) {
 			for (PacketsApproveStatus pt : PacketsApproveStatus.values()) {
-				if (pt.getCode().equals(code)) {
+				if (pt.getCode() == code) {
                     {
                         return pt;
                     }

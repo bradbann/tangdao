@@ -1,0 +1,105 @@
+<% layout('/layouts/default.html', {title: '短信接口提供商管理', libs: ['validate']}){ %>
+<div class="card bd-0">
+    <div class="card-header d-flex align-items-start justify-content-between pd-10-f">
+        <div class="pt-1">${smsProvider.isNewRecord ? '新增短信接口提供商' : '编辑短信接口提供商'}</div>
+        <div class="d-flex">
+        </div>
+    </div>
+    <#form:form id="inputForm" model="${smsProvider}" action="${ctx}/sms/smsProvider/save" method="post">
+        <div class="card-body card-content-fixed pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label>id <span class="tx-danger ">*</span></label>
+				
+					<#form:hidden path="isNewRecord"/>
+<#form:input path="id" maxlength="64" readonly="${!smsProvider.isNewRecord}" class="form-control required"/>
+				</div>
+				<div class="form-group col-md-6">
+					<label>提供商类型0:运营商1:第三方 <span class="tx-danger ">*</span></label>
+				<#form:input path="type" maxlength="4" class="form-control required"/>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label>提供商名称 <span class="tx-danger ">*</span></label>
+				<#form:input path="name" maxlength="45" class="form-control required"/>
+				</div>
+				<div class="form-group col-md-6">
+					<label>提供商编号 <span class="tx-danger ">*</span></label>
+				<#form:input path="code" maxlength="45" class="form-control required"/>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label>是否启用(0:启用1:停用) <span class="tx-danger ">*</span></label>
+				<#form:input path="isApplied" maxlength="4" class="form-control required"/>
+				</div>
+				<div class="form-group col-md-6">
+					<label>优先级(相同产品调用优先级) <span class="tx-danger ">*</span></label>
+				<#form:input path="priority" maxlength="4" class="form-control required"/>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label>contact <span class="tx-danger ">*</span></label>
+				<#form:input path="contact" maxlength="45" class="form-control required"/>
+				</div>
+				<div class="form-group col-md-6">
+					<label>phone <span class="tx-danger d-none">*</span></label>
+				<#form:input path="phone" maxlength="45" class="form-control"/>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label>mobile <span class="tx-danger d-none">*</span></label>
+				<#form:input path="mobile" maxlength="45" class="form-control"/>
+				</div>
+				<div class="form-group col-md-6">
+					<label>fax <span class="tx-danger d-none">*</span></label>
+				<#form:input path="fax" maxlength="45" class="form-control"/>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label>address <span class="tx-danger ">*</span></label>
+				<#form:input path="address" maxlength="45" class="form-control required"/>
+				</div>
+				<div class="form-group col-md-6">
+					<label>zip <span class="tx-danger d-none">*</span></label>
+				<#form:input path="zip" maxlength="45" class="form-control"/>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-12">
+					<label>备注信息 <span class="tx-danger d-none">*</span></label>
+				<#form:textarea path="remarks" rows="4" maxlength="500" class="form-control"/>
+				</div>
+			</div>
+        </div>
+        <div class="card-footer pd-sm-l-30">
+            <div class="row">
+                <div class="col-sm-offset-2 col-sm-10">
+                	<% if(expIf("hasAuthority('sms:smsProvider:edit')")){ %>
+                    <button type="submit" class="btn btn-sm btn-primary">保存提交</button>
+                    <% } %>
+                    <button type="button" class="btn btn-sm btn-default" onclick="js.closeCurrentTabPage()">关闭窗口</button>
+                </div>
+            </div>
+        </div>
+   </#form:form>
+</div>
+<% } %>
+<script>
+$("#inputForm").validate({
+	submitHandler: function(form){
+		js.ajaxSubmitForm($(form), function(data){
+			js.showMessage(data.message);
+			if(data.result == Global.TRUE){
+				js.closeCurrentTabPage(function(contentWindow){
+					contentWindow.page();
+				});
+			}
+		}, "json");
+    }
+});
+</script>

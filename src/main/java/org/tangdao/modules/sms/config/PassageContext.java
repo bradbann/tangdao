@@ -20,18 +20,18 @@ public class PassageContext {
      * @date 2016年10月7日 下午8:48:03
      */
     public enum RouteType {
-        DEFAULT("0", "默认路由"), VALIDATE_CODE("1", "验证码路由"), QUIK_NOTIFICATION("2", "即时通知路由"), BATCH_NOTIFICATION("3", "批量通知路由"), HIGH_DANGER("4", "高风险投诉路由");
+        DEFAULT(0, "默认路由"), VALIDATE_CODE(1, "验证码路由"), QUIK_NOTIFICATION(2, "即时通知路由"), BATCH_NOTIFICATION(3, "批量通知路由"), HIGH_DANGER(4, "高风险投诉路由");
 
-        private String value;
+        private int    value;
 
         private String name;
 
-        RouteType(String value, String name) {
+        RouteType(int value, String name) {
             this.name = name;
             this.value = value;
         }
 
-        public String getValue() {
+        public int getValue() {
             return value;
         }
 
@@ -39,7 +39,7 @@ public class PassageContext {
             return name;
         }
 
-        public static RouteType parse(String value) {
+        public static RouteType parse(int value) {
             for (RouteType type : RouteType.values()) {
                 if (type.getValue() == value) {
                     return type;
@@ -56,17 +56,17 @@ public class PassageContext {
      * @date 2016年10月7日 下午10:28:04
      */
     public enum PassageStatus {
-        ACTIVE("0", "有效"), HANGUP("1", "暂停使用"), SERVER_EXCEPTION("2", "服务器异常停用");
+        ACTIVE(0, "有效"), HANGUP(2, "暂停使用"), SERVER_EXCEPTION(9, "服务器异常停用");
 
-        private String value;
+        private int    value;
         private String title;
 
-        PassageStatus(String value, String title) {
+        PassageStatus(int value, String title) {
             this.title = title;
             this.value = value;
         }
 
-        public String getValue() {
+        public int getValue() {
             return value;
         }
 
@@ -74,13 +74,13 @@ public class PassageContext {
             return title;
         }
 
-        public static RouteType getByValue(String value) {
-            for (RouteType type : RouteType.values()) {
+        public static PassageStatus getByValue(int value) {
+            for (PassageStatus type : PassageStatus.values()) {
                 if (type.getValue() == value) {
                     return type;
                 }
             }
-            return RouteType.DEFAULT;
+            return PassageStatus.ACTIVE;
         }
     }
 

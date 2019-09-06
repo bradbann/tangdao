@@ -10,83 +10,79 @@ import org.tangdao.modules.sms.config.TaskContext.PacketsActionPosition;
 import org.tangdao.modules.sms.config.TaskContext.TaskSubmitType;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 下行短信任务Entity
+ * @author ruyang
+ * @version 2019-09-06
+ */
 @Getter
 @Setter
+@TableName("sms_mt_task")
 public class SmsMtTask extends DataEntity<SmsMtTask> {
-
-	private static final long serialVersionUID = -3844143801379748603L;
-
+	
+	private static final long serialVersionUID = 1L;
+	
 	@TableId
 	private String id;
-
-	private String userCode;
-
-	private Long sid;
-
-	private String appType;
-
-	private String mobile;
-
-	private String content;
-
-	private String extNumber;
-
-	private String attach;
-
-	private String callback;
-
-	private Integer fee;
-
-	private Integer totalFee;
-
-	private String submitUrl;
-
-	private String ip;
-
-	private Integer processStatus;
-
-	private Integer approveStatus;
-
-	private String errorMobiles;
-
-	private String repeatMobiles;
-
-	private String finalContent;
-
-	private Date processTime;
-
-	private Long messageTemplateId;
-
-	private String forceActions;
-
-	// 黑名单手机号码（暂存）
-	private String blackMobiles;
 	
-	// 敏感词
-	private String forbiddenWords;
-
+	private String userCode;		// 用户编码
+	private Long sid;		// 消息ID
+	private String appType;		// 调用类型 1:融合WEB平台,2:开发者平台,3:运营支撑系统
+	private String mobile;		// 手机号
+	private String content;		// content
+	private String extNumber;		// 拓展号码
+	private String attach;		// 自定义内容
+	private String callback;		// 回调URL（选填）
+	private Integer fee;		// 计费条数
+	private Integer returnFee;		// 返还条数
+	private String submitUrl;		// 程序调用URL
+	private String ip;		// 提交IP
 	// 提交类型：Enum@TaskSubmitType
-	private String submitType = TaskSubmitType.BATCH_MESSAGE.getCode();
-
-	// 返还条数
-	private Integer returnFee;
-
-	// 用户原提交手机号码，未进行黑名单等处理的号码
-	private String originMobile;
+	private String submitType = TaskSubmitType.BATCH_MESSAGE.getCode();;		// 提交类型：0：批量短信，1：普通点对点，2：模板点对点
+	private Integer processStatus;		// 分包状态,0:正在分包，1：分包完成，待发送，2:分包异常，待处理，3:分包失败，终止
+	private Integer approveStatus;		// 0：待审核，1：自动通过，2：手动通过，3：审核未通过
+	private String errorMobiles;		// 错号手机号码
+	private String repeatMobiles;		// 重复手机号码
+	private String blackMobiles;		// 黑名单手机号码
+	private String finalContent;		// final_content
+	private Date processTime;		// 分包完成时间
+	private String forceActions;		// 异常分包情况下允许的操作，如000,010，第一位:未报备模板，第二位：敏感词，第三位：通道不可用
+	private String messageTemplateId;		// 短信模板ID
+	private String forbiddenWords;		// 敏感词
 	
+	public SmsMtTask() {
+		super();
+	}
+
+	public SmsMtTask(String id){
+		super(id);
+	}
+	
+	@TableField(exist = false)
+	private Integer totalFee;
+	
+	// 用户原提交手机号码，未进行黑名单等处理的号码
+	@TableField(exist = false)
+	private String originMobile;
 	// 点对点短信用户原内容
+	@TableField(exist = false)
 	private String p2pBody;
 	// 点对点短信分析后报文内容
+	@TableField(exist = false)
 	private List<JSONObject> p2pBodies;
 	
 	// 敏感词标签
+	@TableField(exist = false)
 	private List<SmsForbiddenWords> forbiddenWordLabels;
 	
+	@TableField(exist = false)
 	private List<SmsMtTaskPackets> packets;
 
 	// 汇总错误信息

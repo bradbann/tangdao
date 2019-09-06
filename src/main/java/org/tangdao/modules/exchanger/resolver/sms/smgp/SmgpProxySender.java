@@ -370,7 +370,6 @@ public class SmgpProxySender extends AbstractSmsProxySender {
             response.setDestnationNo(report.getDestTermID());
             response.setReceiveTime(DateUtils.getDateTime());
             response.setCreateTime(new Date());
-            response.setCreateUnixtime(response.getCreateTime().getTime());
             // 编号方式
             if (SgipConstant.MSG_FMT_UCS2 == report.getMsgFormat()) {
                 response.setContent(new String(report.getMsgContent(), "UTF-16"));

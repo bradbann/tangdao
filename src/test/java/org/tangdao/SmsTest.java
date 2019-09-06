@@ -17,7 +17,7 @@ public class SmsTest {
 		String content="test";
 		String extNumber=null;
 		String attach="";
-		Map<String, String> params = new HashMap<>();
+		Map<String, Object> params = new HashMap<>();
 		params.put("appkey", appkey);
 		params.put("appsecret", DigestUtils.md5Hex(appsecret + mobile + timestamps));
 		params.put("mobile", mobile);
@@ -26,7 +26,7 @@ public class SmsTest {
 		params.put("extNumber", extNumber == null ? "" : extNumber);
 		params.put("attach", attach);
 		
-		String ret = HttpClientUtils.ajaxPost(url, params);
+		String ret = HttpClientUtils.post(url, params);
 		System.out.println("ret:"+ret);
 	}
 }

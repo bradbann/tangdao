@@ -1,0 +1,57 @@
+<% layout('/layouts/default.html', {title: '通道支持省份管理', libs: ['dataGrid']}){ %>
+ <div class="card bd-0">
+    <div class="card-header d-flex align-items-start justify-content-between pd-10-f">
+      <div class="pt-1">通道支持省份管理</div>
+      <div class="d-flex">
+          <button type="button" id="btnSearch" title="查询" class="btn btn-xs btn-default"><i class="fa fa-filter"></i>查询</button>
+          <% if(expIf("hasAuthority('sms:smsPassageProvince:edit')")){ %>
+          <a href="${ctx}/sms/smsPassageProvince/form" class="btn btn-xs btn-primary mg-l-10 btnTool" title="新增通道支持省份"><i class="fa fa-plus"></i>新增</a>
+          <% } %>
+      </div>
+    </div>
+    <div class="card-body pd-10">
+       <#form:form id="searchForm" model="${smsPassageProvince}" action="${ctx}/sms/smsPassageProvince/listData" method="post" class="form-horizontal"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+		<div class="form-group">
+			<div class="input-group wd-250">
+				<div class="input-group-prepend">
+					<span class="input-group-text">省份代码</span>
+         		</div>
+				<#form:input path="provinceCode" maxlength="11" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary btn-sm">查询</button>
+			<button type="reset" class="btn btn-default btn-sm">重置</button>
+		</div>
+		</#form:form>
+		<table id="dataGrid"></table>
+		<div id="dataGridPage"></div>
+    </div>
+  </div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'通道ID', name:'passageId', index:'passage_id', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/sms/smsPassageProvince/form?id='+row.id+'" class="btnList" data-title="编辑通道支持省份">'+(val||row.id)+'</a>';
+		}},
+		{header:'省份代码', name:'provinceCode', index:'province_code', width:150, align:"left"},
+		{header:'操作', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(expIf("hasAuthority('sms:smsPassageProvince:edit')")){ %>
+				actions.push('<a href="${ctx}/sms/smsPassageProvince/form?id='+row.id+'" class="btnList" title="编辑通道支持省份"><i class="la la-edit"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/sms/smsPassageProvince/delete?id='+row.id+'" class="btnList" title="删除通道支持省份" data-confirm="确认要删除该通道支持省份吗？")}"><i class="la la-trash"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>
+</body></html>

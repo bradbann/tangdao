@@ -1,64 +1,80 @@
 package org.tangdao.modules.sms.model.domain;
 
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.tangdao.common.suports.DataEntity;
 import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.exchanger.model.dto.ParseParamDto;
 import org.tangdao.modules.exchanger.model.dto.RequestParamDto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 通道消息模板参数Entity
+ * @author ruyang
+ * @version 2019-09-06
+ */
 @Getter
 @Setter
-public class SmsPassageParameter implements Serializable {
-
-	private static final long serialVersionUID = 7911727707980440841L;
-
+@TableName("sms_passage_parameter")
+public class SmsPassageParameter extends DataEntity<SmsPassageParameter> {
+	
+	private static final long serialVersionUID = 1L;
+	
+	@TableId
 	private String id;
+	
+	private String passageId;		// 通道ID
+	private String protocol;		// 协议类型
+	private String callType;		// 1-发送 2-状态回执推送 3-状态回执自取 4-上行推送 5-上行自取 6-余额查询
+	private String url;		// url
+	private String paramsDefinition;		// 定义，直接取模板里的值
+	private String params;		// 具体的参数值，取模板中的key作为KEY，如{＂username＂:＂test＂, ＂password＂:＂123456＂}
+	private String resultFormat;		// result_format
+	private String successCode;		// success_code
+	private String position;		// 返回值的具体位置，json存储
+	
+	public SmsPassageParameter() {
+		super();
+	}
 
-	private String passageId;
-
-	private String protocol;
-
-	private String callType;
-
-	private String url;
-
-	private String paramsDefinition;
-
-	private String params;
-
-	private String resultFormat;
-
-	private String successCode;
-
-	private String position;
-
-	private Date createTime;
-
+	public SmsPassageParameter(String id){
+		super(id);
+	}
+	
 	// 通道代码（伪列）
+	@TableField(exist = false)
 	private String passageCode;
 	// 限流速度
+	@TableField(exist = false)
 	private Integer packetsSize;
 	// 第一条计费字数（针对一客一签有意义）
+	@TableField(exist = false)
 	private Integer feeByWords;
 	// 通道方短信模板ID（提前报备）
+	@TableField(exist = false)
 	private String smsTemplateId;
 	// 变量参数，专指用于类似点对点短信数组/或者JSON变量传递 add by zhengying 20170825
+	@TableField(exist = false)
 	private String[] variableParamNames;
 	
+	@TableField(exist = false)
 	private String[] variableParamValues;
 	
 	
 	// 最大连接数
+	@TableField(exist = false)
 	private Integer connectionSize;
 	// 读取数据流超时时间（针对已经和目标服务器建立连接，对方处理时间过慢，相应超时时间）
+	@TableField(exist = false)
 	private Integer readTimeout;
 
 
@@ -137,5 +153,4 @@ public class SmsPassageParameter implements Serializable {
 	public void setVariableParamValues(String[] variableParamValues) {
 		this.variableParamValues = variableParamValues;
 	}
-
 }

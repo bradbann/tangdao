@@ -2,7 +2,6 @@ package org.tangdao.config;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.ext.spring.AccessExpressionIfFunction;
@@ -27,8 +26,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -190,25 +187,6 @@ public class WebConfig implements WebMvcConfigurer {
 				}
 			}
 		}
-	}
-	
-	/**
-     * 自定义异步线程池
-     * 
-     * @return
-     */
-	@Bean(name = "scheduledExecutorService")
-	public TaskScheduler scheduledExecutorService() {
-		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-		scheduler.setThreadNamePrefix("Scheduled-Thread-");
-		scheduler.setPoolSize(8);
-		
-		// rejection-policy：当pool已经达到max size的时候，如何处理新任务
-        // CALLER_RUNS：不在新线程中执行任务，而是有调用者所在的线程来执
-        // 设置拒绝策略
-		scheduler.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-		scheduler.initialize();
-		return scheduler;
 	}
 	
 }

@@ -111,7 +111,7 @@ public class DictUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, List<Map<String, Object>>> getDictList(DictData dictData, boolean reload) {
-		Map<String, List<Map<String, Object>>> dictDataMap = (Map<String, List<Map<String, Object>>>) Static.redis.opsForValue().get(Contents.dictMap);
+		Map<String, List<Map<String, Object>>> dictDataMap = (Map<String, List<Map<String, Object>>>) Static.redis.opsForValue().get(Contents.CACHE_DICT_MAP);
 		
 //		Map<String, List<Map<String, Object>>> dictDataMap = (Map<String, List<Map<String, Object>>>) CacheUtils.get(CACHE_DICT);
 //		Map<String, List<Map<String, Object>>> dictDataMap = null;
@@ -165,13 +165,13 @@ public class DictUtils {
 			}
 			// 存储
 //			Static.redis.opsForValue().set("tangdao:sysCache:dictMap", dictDataMap, -1L, TimeUnit.DAYS);
-			Static.redis.opsForValue().set(Contents.dictMap, dictDataMap);
+			Static.redis.opsForValue().set(Contents.CACHE_DICT_MAP, dictDataMap);
 //			CacheUtils.put(CACHE_DICT, dictDataMap);
 		}
 		return dictDataMap;
 	}
 
 	public static void clearCache() {
-		Static.redis.expire(Contents.dictMap, 0L, TimeUnit.SECONDS);
+		Static.redis.expire(Contents.CACHE_DICT_MAP, 0L, TimeUnit.SECONDS);
 	}
 }

@@ -1,0 +1,67 @@
+<% layout('/layouts/default.html', {title: '优先级词库配置管理', libs: ['validate']}){ %>
+<div class="card bd-0">
+    <div class="card-header d-flex align-items-start justify-content-between pd-10-f">
+        <div class="pt-1">${smsPriorityWords.isNewRecord ? '新增优先级词库配置' : '编辑优先级词库配置'}</div>
+        <div class="d-flex">
+        </div>
+    </div>
+    <#form:form id="inputForm" model="${smsPriorityWords}" action="${ctx}/sms/smsPriorityWords/save" method="post">
+        <div class="card-body card-content-fixed pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label>id <span class="tx-danger ">*</span></label>
+				
+					<#form:hidden path="isNewRecord"/>
+<#form:input path="id" maxlength="64" readonly="${!smsPriorityWords.isNewRecord}" class="form-control required"/>
+				</div>
+				<div class="form-group col-md-6">
+					<label>用户编码 <span class="tx-danger ">*</span></label>
+				<#form:input path="userCode" maxlength="64" class="form-control required"/>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-12">
+					<label>内容 <span class="tx-danger ">*</span></label>
+				<#form:textarea path="content" rows="4" maxlength="64" class="form-control required"/>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label>优先级 <span class="tx-danger ">*</span></label>
+				<#form:input path="priority" maxlength="4" class="form-control required"/>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-12">
+					<label>备注信息 <span class="tx-danger d-none">*</span></label>
+				<#form:textarea path="remarks" rows="4" maxlength="500" class="form-control"/>
+				</div>
+			</div>
+        </div>
+        <div class="card-footer pd-sm-l-30">
+            <div class="row">
+                <div class="col-sm-offset-2 col-sm-10">
+                	<% if(expIf("hasAuthority('sms:smsPriorityWords:edit')")){ %>
+                    <button type="submit" class="btn btn-sm btn-primary">保存提交</button>
+                    <% } %>
+                    <button type="button" class="btn btn-sm btn-default" onclick="js.closeCurrentTabPage()">关闭窗口</button>
+                </div>
+            </div>
+        </div>
+   </#form:form>
+</div>
+<% } %>
+<script>
+$("#inputForm").validate({
+	submitHandler: function(form){
+		js.ajaxSubmitForm($(form), function(data){
+			js.showMessage(data.message);
+			if(data.result == Global.TRUE){
+				js.closeCurrentTabPage(function(contentWindow){
+					contentWindow.page();
+				});
+			}
+		}, "json");
+    }
+});
+</script>

@@ -151,14 +151,14 @@ public interface ICrudService<T> {
      *
      * @param idList 主键ID列表
      */
-    Collection<T> selectByIds(Collection<? extends Serializable> idList);
+    List<T> selectByIds(Collection<? extends Serializable> idList);
 
     /**
      * 查询（根据 columnMap 条件）
      *
      * @param columnMap 表字段 map 对象
      */
-    Collection<T> selectByMap(Map<String, Object> columnMap);
+    List<T> selectByMap(Map<String, Object> columnMap);
 
     /**
      * 根据 Wrapper，查询一条记录 <br/>

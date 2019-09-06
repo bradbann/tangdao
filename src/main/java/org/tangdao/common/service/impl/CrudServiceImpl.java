@@ -240,12 +240,12 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 //	}
 
 	@Override
-	public Collection<T> selectByIds(Collection<? extends Serializable> idList) {
+	public List<T> selectByIds(Collection<? extends Serializable> idList) {
 		return baseMapper.selectBatchIds(idList);
 	}
 
 	@Override
-	public Collection<T> selectByMap(Map<String, Object> columnMap) {
+	public List<T> selectByMap(Map<String, Object> columnMap) {
 		return baseMapper.selectByMap(columnMap);
 	}
 

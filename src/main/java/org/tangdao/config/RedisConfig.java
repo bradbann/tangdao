@@ -6,17 +6,21 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.core.serializer.support.DeserializingConverter;
-import org.springframework.core.serializer.support.SerializingConverter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.SerializationException;
+import org.springframework.data.redis.listener.Topic;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.tangdao.modules.sms.redis.constant.SmsRedisConstant;
+import org.tangdao.modules.sms.redis.pubsub.SmsMessageTemplateListener;
+import org.tangdao.modules.sms.redis.pubsub.SmsMobileBlacklistListener;
+import org.tangdao.modules.sms.redis.pubsub.SmsPassageAccessListener;
+import org.tangdao.modules.sms.redis.serializer.RedisObjectSerializer;
 
 @Configuration
 @EnableCaching
@@ -31,46 +35,80 @@ public class RedisConfig {
 		RedisTemplate<String, Serializable> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
 		redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-		redisTemplate.setDefaultSerializer(this.redisSerializer());
+		redisTemplate.setDefaultSerializer(new RedisObjectSerializer());
 		redisTemplate.setConnectionFactory(redisConnectionFactory);
 		return redisTemplate;
 	}
-
-	public RedisSerializer<Object> redisSerializer() {
-		return new RedisSerializer<Object>() {
-
-			// 为了方便进行对象与字节数组的转换，所以应该首先准备出两个转换器
-			private Converter<Object, byte[]> serializingConverter = new SerializingConverter();
-			private Converter<byte[], Object> deserializingConverter = new DeserializingConverter();
-
-			@Override
-			public byte[] serialize(Object obj) throws SerializationException {
-				if (obj == null) { // 这个时候没有要序列化的对象出现，所以返回的字节数组应该就是一个空数组
-					return new byte[0];
-				}
-				return this.serializingConverter.convert(obj); // 将对象变为字节数组
-			}
-
-			@Override
-			public Object deserialize(byte[] data) throws SerializationException {
-				if (data == null || data.length == 0) { // 此时没有对象的内容信息
-					return null;
-				}
-				return this.deserializingConverter.convert(data);
-			}
-		};
-	}
-
-	@Bean
-	RedisMessageListenerContainer container(RedisConnectionFactory redisConnectionFactory) {
-		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-		container.setConnectionFactory(redisConnectionFactory);
-		return container;
-	}
 	
+	@Primary
+	@Bean(name = "stringRedisTemplate")
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
+        StringRedisTemplate redisTemplate = new StringRedisTemplate();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+		redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+		redisTemplate.setDefaultSerializer(new RedisObjectSerializer());
+		redisTemplate.setConnectionFactory(connectionFactory);
+        return redisTemplate;
+    }
+
 	@Bean
 	public static ConfigureRedisAction configureRedisAction() {
 		return ConfigureRedisAction.NO_OP;
 	}
 	
+	/**
+     * 黑名单数据变更广播通知监听配置
+     * 
+     * @return 消息监听适配器
+     */
+    @Bean
+    MessageListenerAdapter smsMobileBlacklistMessageListener(StringRedisTemplate stringRedisTemplate) {
+        return new SmsMobileBlacklistListener(stringRedisTemplate);
+    }
+
+    /**
+     * 短信模板变更广播通知监听配置
+     * 
+     * @return 短信模板监听器
+     */
+    @Bean
+    MessageListenerAdapter smsMessageTemplateMessageListener() {
+        return new SmsMessageTemplateListener();
+    }
+
+    /**
+     * 可用通道变更广播通知监听配置
+     * 
+     * @return 可用通道监听器
+     */
+    @Bean
+    MessageListenerAdapter smsPassageAccessMessageListener() {
+        return new SmsPassageAccessListener();
+    }
+
+    @Bean
+    RedisMessageListenerContainer redisContainer(StringRedisTemplate stringRedisTemplate,
+    			RedisConnectionFactory connectionFactory) {
+        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(smsMobileBlacklistMessageListener(stringRedisTemplate), mobileBlacklistTopic());
+        container.addMessageListener(smsMessageTemplateMessageListener(), messageTemplateTopic());
+        container.addMessageListener(smsPassageAccessMessageListener(), passageAccessTopic());
+        return container;
+    }
+
+    @Bean
+    Topic mobileBlacklistTopic() {
+        return new PatternTopic(SmsRedisConstant.BROADCAST_MOBILE_BLACKLIST_TOPIC);
+    }
+
+    @Bean
+    Topic messageTemplateTopic() {
+        return new PatternTopic(SmsRedisConstant.BROADCAST_MESSAGE_TEMPLATE_TOPIC);
+    }
+
+    @Bean
+    Topic passageAccessTopic() {
+        return new PatternTopic(SmsRedisConstant.BROADCAST_PASSAGE_ACCESS_TOPIC);
+    }
 }

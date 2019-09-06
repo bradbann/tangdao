@@ -478,7 +478,6 @@ public class CmppProxySender extends AbstractSmsProxySender {
             response.setDestnationNo(report.getDestnationId());
             response.setReceiveTime(DateUtils.getDateTime());
             response.setCreateTime(new Date());
-            response.setCreateUnixtime(response.getCreateTime().getTime());
             // 编号方式
             if (CmppConstant.MSG_FMT_UCS2 == report.getMsgFmt()) {
                 response.setContent(new String(report.getMsgContent(), "UTF-16"));

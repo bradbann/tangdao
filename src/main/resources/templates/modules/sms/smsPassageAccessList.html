@@ -1,0 +1,88 @@
+<% layout('/layouts/default.html', {title: '通道资产管理', libs: ['dataGrid']}){ %>
+ <div class="card bd-0">
+    <div class="card-header d-flex align-items-start justify-content-between pd-10-f">
+      <div class="pt-1">通道资产管理</div>
+      <div class="d-flex">
+          <button type="button" id="btnSearch" title="查询" class="btn btn-xs btn-default"><i class="fa fa-filter"></i>查询</button>
+          <% if(expIf("hasAuthority('sms:smsPassageAccess:edit')")){ %>
+          <a href="${ctx}/sms/smsPassageAccess/form" class="btn btn-xs btn-primary mg-l-10 btnTool" title="新增通道资产"><i class="fa fa-plus"></i>新增</a>
+          <% } %>
+      </div>
+    </div>
+    <div class="card-body pd-10">
+       <#form:form id="searchForm" model="${smsPassageAccess}" action="${ctx}/sms/smsPassageAccess/listData" method="post" class="form-horizontal"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+		<div class="form-group">
+			<div class="input-group wd-250">
+				<div class="input-group-prepend">
+					<span class="input-group-text">状态（0正常 1删除 2停用）</span>
+         		</div>
+				<#form:radio path="status" dictType="sys_status" blankOption="true" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary btn-sm">查询</button>
+			<button type="reset" class="btn btn-default btn-sm">重置</button>
+		</div>
+		</#form:form>
+		<table id="dataGrid"></table>
+		<div id="dataGridPage"></div>
+    </div>
+  </div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'用户编码', name:'userCode', index:'user_code', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/sms/smsPassageAccess/form?id='+row.id+'" class="btnList" data-title="编辑通道资产">'+(val||row.id)+'</a>';
+		}},
+		{header:'通道组id', name:'groupId', index:'group_id', width:150, align:"left"},
+		{header:'路由类型', name:'routeType', index:'route_type', width:150, align:"left"},
+		{header:'运营商', name:'cmcp', index:'cmcp', width:150, align:"left"},
+		{header:'省份', name:'provinceCode', index:'province_code', width:150, align:"left"},
+		{header:'通道ID', name:'passageId', index:'passage_id', width:150, align:"left"},
+		{header:'通道代码', name:'passageCode', index:'passage_code', width:150, align:"left"},
+		{header:'协议类型', name:'protocol', index:'protocol', width:150, align:"left"},
+		{header:'1-发送2-下行推送 3-下行自取 4-上行推送 5-上行自取', name:'callType', index:'call_type', width:150, align:"left"},
+		{header:'url', name:'url', index:'url', width:150, align:"left"},
+		{header:'定义，直接取模板里的值', name:'paramsDefinition', index:'params_definition', width:150, align:"left"},
+		{header:'具体的参数值，取模板中的key作为KEY，如{＂username＂:＂test＂, ＂password＂:＂123456＂}', name:'params', index:'params', width:150, align:"left"},
+		{header:'result_format', name:'resultFormat', index:'result_format', width:150, align:"left"},
+		{header:'成功码', name:'successCode', index:'success_code', width:150, align:"left"},
+		{header:'返回值的具体位置，json存储', name:'position', index:'position', width:150, align:"left"},
+		{header:'手机号码分包数', name:'mobileSize', index:'mobile_size', width:150, align:"left"},
+		{header:'1秒钟允许提交的网络包数量', name:'packetsSize', index:'packets_size', width:150, align:"left"},
+		{header:'最大连接数', name:'connectionSize', index:'connection_size', width:150, align:"left"},
+		{header:'超时时间（毫秒）', name:'readTimeout', index:'read_timeout', width:150, align:"left"},
+		{header:'接入号码（10690...）', name:'accessCode', index:'access_code', width:150, align:"left"},
+		{header:'拓展号长度,0表示不允许拓展', name:'extNumber', index:'ext_number', width:150, align:"left"},
+		{header:'签名模式 0:不处理，1：自动前置，2：自动后置，3：自动去除签名', name:'signMode', index:'sign_mode', width:150, align:"left"},
+		{header:'是否需要短信模板参数信息', name:'smsTemplateParam', index:'sms_template_param', width:150, align:"left"},
+		{header:'状态（0正常 1删除 2停用）', name:'status', index:'status', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('sys_status')}, val, '未知}', true);
+		}},
+		{header:'更新时间', name:'updateTime', index:'update_time', width:150, align:"left"},
+		{header:'操作', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(expIf("hasAuthority('sms:smsPassageAccess:edit')")){ %>
+				actions.push('<a href="${ctx}/sms/smsPassageAccess/form?id='+row.id+'" class="btnList" title="编辑通道资产"><i class="la la-edit"></i></a>&nbsp;');
+				if (row.status == Global.STATUS_NORMAL){
+					actions.push('<a href="${ctx}/sms/smsPassageAccess/disable?id='+row.id+'" class="btnList" title="停用通道资产" data-confirm="确认要停用该通道资产吗？")}"><i class="la la-minus-circle"></i></a>&nbsp;');
+				}
+				if (row.status == Global.STATUS_DISABLE){
+					actions.push('<a href="${ctx}/sms/smsPassageAccess/enable?id='+row.id+'" class="btnList" title="启用通道资产" data-confirm="确认要启用该通道资产吗？")}"><i class="la la-check-circle"></i></a>&nbsp;');
+				}
+				actions.push('<a href="${ctx}/sms/smsPassageAccess/delete?id='+row.id+'" class="btnList" title="删除通道资产" data-confirm="确认要删除该通道资产吗？")}"><i class="la la-trash"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>
+</body></html>

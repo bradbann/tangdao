@@ -4,12 +4,11 @@ public final class Contents {
 
 	public static String DEFAULT_NAMESPACE = "tangdao:";
 
-	public static String configMap = DEFAULT_NAMESPACE + "sysCache:configMap";
-	public static String dictMap = DEFAULT_NAMESPACE + "sysCache:dictMap";
-	public static String menuNamePathMap = DEFAULT_NAMESPACE + "sysCache:menuNamePathMap";
+	public static String CACHE_CONFIG_MAP = DEFAULT_NAMESPACE + "sys_cache:configMap";
+	public static String CACHE_DICT_MAP = DEFAULT_NAMESPACE + "sys_cache:dictMap";
+	public static String CACHE_MENU_NAME_PATH_MAP = DEFAULT_NAMESPACE + "sys_cache:menuNamePathMap";
 
 	public static String TANGDAO_SECURITY_TOKENS = DEFAULT_NAMESPACE + "security:tokens:";
-	
 	
 	public static String EC_TOKENATTR_NOTFOND = "401004";
 	

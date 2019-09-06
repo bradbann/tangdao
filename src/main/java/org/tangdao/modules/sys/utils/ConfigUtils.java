@@ -30,12 +30,12 @@ public class ConfigUtils {
 	}
 
 	public static void clearCache() {
-		Static.redis.expire(Contents.configMap, 0L, TimeUnit.SECONDS);
+		Static.redis.expire(Contents.CACHE_CONFIG_MAP, 0L, TimeUnit.SECONDS);
 	}
 
 	@SuppressWarnings("unchecked")
 	public static synchronized Config getConfig(String key) {
-		Map<String, Config> cacheMap = (Map<String, Config>) Static.redis.opsForValue().get(Contents.configMap);
+		Map<String, Config> cacheMap = (Map<String, Config>) Static.redis.opsForValue().get(Contents.CACHE_CONFIG_MAP);
 		
 		if (cacheMap == null) {
 			cacheMap = MapUtils.newHashMap();
@@ -45,7 +45,7 @@ public class ConfigUtils {
 			for (Config item : list) {
 				cacheMap.put(item.getConfigKey(), item);
 			}
-			Static.redis.opsForValue().set(Contents.configMap, cacheMap);
+			Static.redis.opsForValue().set(Contents.CACHE_CONFIG_MAP, cacheMap);
 		}
 		Config config;
 		if ((config = (Config) cacheMap.get(key)) == null) {

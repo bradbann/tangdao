@@ -98,7 +98,7 @@ public class MenuServiceImpl extends TreeServiceImpl<MenuMapper, Menu> implement
 	
 	@SuppressWarnings("unchecked")
 	public String getMenuNamePath(String href, String permission) {	
-		Map<String, String> menuNamePathMap = (Map<String, String>) this.redisTemplate.opsForValue().get(Contents.menuNamePathMap);
+		Map<String, String> menuNamePathMap = (Map<String, String>) this.redisTemplate.opsForValue().get(Contents.CACHE_MENU_NAME_PATH_MAP);
 		if(menuNamePathMap==null) {
 			menuNamePathMap = MapUtils.newLinkedHashMap();
 			List<Menu> menuList = this.findByStatusNormal(new Menu());
@@ -118,7 +118,7 @@ public class MenuServiceImpl extends TreeServiceImpl<MenuMapper, Menu> implement
 					 menuNamePathMap.put(StringUtils.substringBeforeLast(p, ":"), StringUtils.substringBeforeLast(menu.getTreeNames(), "/"));	
 				 }
 			}
-			this.redisTemplate.opsForValue().set(Contents.menuNamePathMap, menuNamePathMap);
+			this.redisTemplate.opsForValue().set(Contents.CACHE_MENU_NAME_PATH_MAP, menuNamePathMap);
 		}
 		if (StringUtils.endsWith(href, "/")) {	
             String string = href;	
