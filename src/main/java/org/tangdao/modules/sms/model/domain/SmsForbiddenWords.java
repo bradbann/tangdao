@@ -24,7 +24,7 @@ public class SmsForbiddenWords extends DataEntity<SmsForbiddenWords> {
 	private String id;
 	
 	private String word;		// 敏感词
-	private String level;		// 告警级别，区分颜色
+	private int    level;		// 告警级别，区分颜色
 	private String label;		// 标签
 	
 	public SmsForbiddenWords() {

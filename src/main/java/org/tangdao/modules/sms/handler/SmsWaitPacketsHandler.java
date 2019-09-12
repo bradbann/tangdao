@@ -284,37 +284,37 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
         return mobileNumberResponse;
     }
 
-    /**
-     * 校验数据
-     * 
-     * @param message 队列中的消息
-     * @return 校验结果
-     */
-    private boolean validate(Message message) {
-        if (message == null) {
-            return false;
-        }
-
-        SmsMtTask smsMtTask = (SmsMtTask) messageConverter.fromMessage(message);
-        if (smsMtTask == null) {
-            logger.error("待处理任务数据为空");
-            return false;
-        }
-
-        smsMtTask.setOriginMobile(smsMtTask.getMobile());
-
-        smsMtTaskLocal.set(smsMtTask);
-
-        return true;
-    }
+//    /**
+//     * 校验数据
+//     * 
+//     * @param message 队列中的消息
+//     * @return 校验结果
+//     */
+//    private boolean validate(Message message) {
+//        if (message == null) {
+//            return false;
+//        }
+//
+//        SmsMtTask smsMtTask = (SmsMtTask) messageConverter.fromMessage(message);
+//        if (smsMtTask == null) {
+//            logger.error("待处理任务数据为空");
+//            return false;
+//        }
+//
+//        smsMtTask.setOriginMobile(smsMtTask.getMobile());
+//
+//        smsMtTaskLocal.set(smsMtTask);
+//
+//        return true;
+//    }
 
 //    @RabbitListener(queues = RabbitConstant.MQ_SMS_MT_WAIT_PROCESS)
 //    public void onMessage(Message message, Channel channel) throws Exception {
     @Override
     public void onMessage() throws Exception {
-        if (!validate(message)) {
-            return;
-        }
+//        if (!validate(message)) {
+//            return;
+//        }
 
         checkIsStartingConsumeMessage();
 
@@ -615,7 +615,7 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
      */
     private SmsRoutePassage getUserRoutePassage(MobileCatagory mobileCatagory) {
         SmsRoutePassage routePassage = new SmsRoutePassage();
-        routePassage.setUserId(smsMtTaskLocal.get().getUserId());
+        routePassage.setUserCode(smsMtTaskLocal.get().getUserCode());
 
         Integer routeType = getMessageRouteType();
         Map<Integer, String> provinceCmcpMobileNumbers;

@@ -17,6 +17,7 @@ import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.developer.config.RabbitConstant;
 import org.tangdao.modules.exchanger.config.CommonContext.PlatformType;
 import org.tangdao.modules.paas.model.vo.ConsumptionReport;
+import org.tangdao.modules.sms.config.PassageContext;
 import org.tangdao.modules.sms.config.PassageContext.DeliverStatus;
 import org.tangdao.modules.sms.mapper.SmsMtMessageSubmitMapper;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
@@ -29,8 +30,12 @@ import org.tangdao.modules.sms.service.ISmsMtDeliverService;
 import org.tangdao.modules.sms.service.ISmsMtPushService;
 import org.tangdao.modules.sms.service.ISmsMtSubmitService;
 import org.tangdao.modules.sms.service.ISmsPassageService;
+import org.tangdao.modules.sys.model.domain.User;
+import org.tangdao.modules.sys.service.IUserService;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
  * 下行短信提交ServiceImpl
@@ -42,26 +47,25 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 	
 	@Autowired
     private IUserService              userService;
-    @Autowired
-    private SmsMtMessageSubmitMapper  smsMtMessageSubmitMapper;
-    @Autowired
-    private SmsMtMessagePushMapper    pushMapper;
+//    @Autowired
+//    private SmsMtMessageSubmitMapper  smsMtMessageSubmitMapper;
+//    @Autowired
+//    private SmsMtMessagePushMapper    pushMapper;
+	@Autowired
+    private ISmsMtPushService         smsMtPushService;
     @Autowired
     private ISmsMtDeliverService      smsMtDeliverService;
     @Autowired
     private ISmsPassageService        smsPassageService;
 
-    @Autowired
-    private ISmsMtPushService         smsMtPushService;
+//    @Resource
+//    private RabbitTemplate            rabbitTemplate;
 
-    @Resource
-    private RabbitTemplate            rabbitTemplate;
+//    @Autowired
+//    private SmsWaitSubmitListener     smsWaitSubmitListener;
 
-    @Autowired
-    private SmsWaitSubmitListener     smsWaitSubmitListener;
-
-    @Autowired
-    private RabbitMessageQueueManager rabbitMessageQueueManager;
+//    @Autowired
+//    private RabbitMessageQueueManager rabbitMessageQueueManager;
     private final Logger              logger = LoggerFactory.getLogger(getClass());
 
 	
@@ -76,14 +80,14 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 
     @Override
     public List<SmsMtMessageSubmit> findBySid(long sid) {
-        return smsMtMessageSubmitMapper.findBySid(sid);
+    	return this.select(Wrappers.<SmsMtMessageSubmit>lambdaQuery().eq(SmsMtMessageSubmit::getSid, sid));
     }
 
-    @Override
-    public boolean save(SmsMtMessageSubmit submit) {
-        submit.setCreateTime(new Date());
-        return smsMtMessageSubmitMapper.insertSelective(submit) > 0;
-    }
+//    @Override
+//    public boolean save(SmsMtMessageSubmit submit) {
+//        submit.setCreateTime(new Date());
+//        return smsMtMessageSubmitMapper.insertSelective(submit) > 0;
+//    }
 
 //    @Override
 //    public List<SmsMtMessageSubmit> findList(Map<String, Object> queryParams) {
@@ -121,26 +125,26 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
         Map<String, SmsMtMessagePush> pushMap = new HashMap<>();
 
         // 加入内存对象，减少DB的查询次数
-        Map<Integer, UserModel> userModelMap = new HashMap<>();
-        Map<Integer, String> passageMap = new HashMap<>();
+//        Map<String, User> userModelMap = new HashMap<>();
+        Map<String, String> passageMap = new HashMap<>();
 
         String key;
         for (SmsMtMessageSubmit record : submits) {
             key = String.format("%s_%s", record.getMsgId(), record.getMobile());
-            if (record.getUserId() != null) {
-                if (userModelMap.containsKey(record.getUserId())) {
-                    record.setUserModel(userModelMap.get(record.getUserId()));
-                } else {
-                    record.setUserModel(userService.getByUserId(record.getUserId()));
-                    userModelMap.put(record.getUserId(), record.getUserModel());
-                }
-            }
+//            if (record.getUserCode() != null) {
+//                if (userModelMap.containsKey(record.getUserCode())) {
+//                    record.setUserModel(userModelMap.get(record.getUserCode()));
+//                } else {
+//                    record.setUserModel(userService.getByUserId(record.getUserId()));
+//                    userModelMap.put(record.getUserId(), record.getUserModel());
+//                }
+//            }
 
             if (record.getNeedPush()) {
                 if (pushMap.containsKey(key)) {
                     record.setMessagePush(pushMap.get(key));
                 } else {
-                    record.setMessagePush(pushMapper.findByMobileAndMsgid(record.getMobile(), record.getMsgId()));
+                    record.setMessagePush(smsMtPushService.findByMobileAndMsgid(record.getMobile(), record.getMsgId()));
                     pushMap.put(key, record.getMessagePush());
                 }
             }
@@ -156,7 +160,7 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
                 if (record.getPassageId() == PassageContext.EXCEPTION_PASSAGE_ID) {
                     record.setPassageName(PassageContext.EXCEPTION_PASSAGE_NAME);
                 } else {
-                    if (passageMap.containsKey(record.getUserId())) {
+                    if (passageMap.containsKey(record.getUserCode())) {
                         record.setPassageName(passageMap.get(record.getPassageId()));
                     } else {
                         SmsPassage passage = smsPassageService.findById(record.getPassageId());

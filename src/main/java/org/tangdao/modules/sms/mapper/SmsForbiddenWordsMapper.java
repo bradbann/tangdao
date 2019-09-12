@@ -1,5 +1,7 @@
 package org.tangdao.modules.sms.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.tangdao.modules.sms.model.domain.SmsForbiddenWords;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -12,4 +14,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 @Mapper
 public interface SmsForbiddenWordsMapper extends BaseMapper<SmsForbiddenWords> {
 	
+	public List<String> selectAllWords();
 }

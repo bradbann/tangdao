@@ -34,13 +34,13 @@ public interface ISmsMtSubmitService extends ICrudService<SmsMtMessageSubmit> {
      */
     List<SmsMtMessageSubmit> findBySid(long sid);
 
-    /**
-     * 保存发送记录
-     * 
-     * @param submit 发送记录
-     * @return 成功标识
-     */
-    boolean save(SmsMtMessageSubmit submit);
+//    /**
+//     * 保存发送记录
+//     * 
+//     * @param submit 发送记录
+//     * @return 成功标识
+//     */
+//    boolean save(SmsMtMessageSubmit submit);
 
     /**
      * 获取昨日消费短信条数

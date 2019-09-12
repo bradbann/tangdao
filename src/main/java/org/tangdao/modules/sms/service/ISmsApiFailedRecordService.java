@@ -9,5 +9,5 @@ import org.tangdao.modules.sms.model.domain.SmsApiFailedRecord;
  * @version 2019-09-06
  */
 public interface ISmsApiFailedRecordService extends ICrudService<SmsApiFailedRecord> {
-		
+	
 }
