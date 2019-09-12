@@ -46,7 +46,7 @@ public class SmsMtTaskPackets extends DataEntity<SmsMtTaskPackets> {
 	private String priority;		// 优先级
 	private String forceActions;		// 异常分包情况下允许的操作，如000,010，第一位:未报备模板，第二位：敏感词，第三位：通道不可用
 	private Integer retryTimes;		// 调用上家重试次数
-	private String provinceCode;		// 省份代码
+	private String areaCode;		// 省份代码
 	
 	@TableField(exist = false)
 	private String userCode;

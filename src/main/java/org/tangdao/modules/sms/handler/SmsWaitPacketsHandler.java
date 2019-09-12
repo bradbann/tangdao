@@ -424,7 +424,7 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
         // 本次通道对应的运营商和省份代码
         if (passageAccess != null) {
             smsMtTaskPackets.setCmcp(passageAccess.getCmcp());
-            smsMtTaskPackets.setProvinceCode(passageAccess.getProvinceCode());
+            smsMtTaskPackets.setAreaCode(passageAccess.getAreaCode());
         } else {
             smsMtTaskPackets.setCmcp(CMCP.local(mobile).getCode());
         }
@@ -668,7 +668,7 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
         }
 
         //如果省份代码查不到相关可用通道则按照'全国'的代码查询可用通道
-        passageAccess = smsPassageAccessService.get(userCode, routeType, cmcp, Province.PROVINCE_CODE_ALLOVER_COUNTRY);
+        passageAccess = smsPassageAccessService.get(userCode, routeType, cmcp, SettingsContext.AREA_CODE_ALLOVER_COUNTRY);
         if (isSmsPassageAccessAvaiable(passageAccess)) {
             return passageAccess;
         }
