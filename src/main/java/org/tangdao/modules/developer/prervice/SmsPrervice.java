@@ -25,7 +25,7 @@ import org.tangdao.modules.sms.config.TaskContext.TaskSubmitType;
 import org.tangdao.modules.sms.exception.QueueProcessException;
 import org.tangdao.modules.sms.model.domain.SmsApiFailedRecord;
 import org.tangdao.modules.sms.model.domain.SmsMtTask;
-import org.tangdao.modules.sms.service.ISmsApiFaildRecordService;
+import org.tangdao.modules.sms.service.ISmsApiFailedRecordService;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -48,7 +48,7 @@ public class SmsPrervice {
     private IUserBalanceService       userBalanceService;
     
     @Autowired
-    private ISmsApiFaildRecordService smsApiFaildRecordService;
+    private ISmsApiFailedRecordService smsApiFailedRecordService;
 
     /**
      * 发送短信信息
@@ -148,7 +148,7 @@ public class SmsPrervice {
         // 暂时默认开发者模式
         record.setAppType(appType);
         if (MapUtils.isEmpty(paramMap)) {
-            smsApiFaildRecordService.save(record);
+        	smsApiFailedRecordService.save(record);
             return;
         }
 
@@ -159,7 +159,7 @@ public class SmsPrervice {
         record.setContent(getAttribute(paramMap, "content"));
         record.setRemarks(JSON.toJSONString(paramMap));
 
-        smsApiFaildRecordService.save(record);
+        smsApiFailedRecordService.save(record);
     }
 
     private String getAttribute(Map<String, String[]> paramMap, String elementId) {
