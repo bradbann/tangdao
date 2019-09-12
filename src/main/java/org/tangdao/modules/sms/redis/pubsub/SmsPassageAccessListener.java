@@ -48,7 +48,7 @@ public class SmsPassageAccessListener extends MessageListenerAdapter {
     }
 
     private String getAssistKey(SmsPassageAccess access) {
-        return String.format("%d:%d:%d", access.getRouteType(), access.getCmcp(), access.getProvinceCode());
+        return String.format("%d:%d:%d", access.getRouteType(), access.getCmcp(), access.getAreaCode());
     }
 
     /**

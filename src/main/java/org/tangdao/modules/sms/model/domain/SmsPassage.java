@@ -58,7 +58,7 @@ public class SmsPassage extends DataEntity<SmsPassage> {
      * 省份集合信息
      */
 	@TableField(exist = false)
-    private List<SmsPassageProvince>  provinceList     = new ArrayList<>();
+    private List<SmsPassageArea>  areaList     = new ArrayList<>();
 
 	
 	public SmsPassage() {

@@ -34,7 +34,7 @@ public class SmsPassageParameter extends DataEntity<SmsPassageParameter> {
 	
 	private String passageId;		// 通道ID
 	private String protocol;		// 协议类型
-	private String callType;		// 1-发送 2-状态回执推送 3-状态回执自取 4-上行推送 5-上行自取 6-余额查询
+	private int     callType;		// 1-发送 2-状态回执推送 3-状态回执自取 4-上行推送 5-上行自取 6-余额查询
 	private String url;		// url
 	private String paramsDefinition;		// 定义，直接取模板里的值
 	private String params;		// 具体的参数值，取模板中的key作为KEY，如{＂username＂:＂test＂, ＂password＂:＂123456＂}

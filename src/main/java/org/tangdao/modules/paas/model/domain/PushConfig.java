@@ -25,7 +25,7 @@ public class PushConfig extends DataEntity<PushConfig> {
 	
 	private String userCode;		// 用户编码
 	private String url;		// 状态报告地址/上行地址
-	private String type;		// 类型 1:短信状态报告,2:短信上行回执报告,3:流量充值报告,4:语音发送报告
+	private int    type;		// 类型 1:短信状态报告,2:短信上行回执报告,3:流量充值报告,4:语音发送报告
 	private String retryTimes;		// 重推次数
 	
 	public PushConfig() {

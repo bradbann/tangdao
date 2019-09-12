@@ -48,7 +48,7 @@ public class SmsMobileTablesServiceImpl implements ISmsMobileTablesService {
 	   * @param mobile
 	   * @return
 	 */
-	private String getAssistKey(String keyname, String userCode, Long templateId, String mobile) {
+	private String getAssistKey(String keyname, String userCode, String templateId, String mobile) {
 		return String.format("%s:%d:%d:%s", keyname, userCode, templateId, mobile);
 	}
 
@@ -70,7 +70,7 @@ public class SmsMobileTablesServiceImpl implements ISmsMobileTablesService {
 	}
 	
 	@Override
-	public void setMobileSendRecord(String userCode, Long templateId, String mobile, int sendCount) {
+	public void setMobileSendRecord(String userCode, String templateId, String mobile, int sendCount) {
 		if(StringUtils.isEmpty(userCode) || templateId == null || StringUtils.isEmpty(mobile)) {
 			logger.error("参数数据为空，无法匹配该用户：{}, 模板：{}，手机号码：{} ", userCode, templateId, mobile);
 			return;
@@ -92,7 +92,7 @@ public class SmsMobileTablesServiceImpl implements ISmsMobileTablesService {
 	}
 	
 	@Override
-	public int checkMobileIsBeyondExpected(String userCode, Long templateId, String mobile, 
+	public int checkMobileIsBeyondExpected(String userCode, String templateId, String mobile, 
 			int maxSpeed, int maxLimit) {
 		
 		Integer _sendTotalCount = null;

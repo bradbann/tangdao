@@ -212,33 +212,33 @@ public class CommonContext {
         /**
          * 数据发送
          */
-        DATA_SEND("1", "数据发送"),
+        DATA_SEND(1, "数据发送"),
 
-        MT_STATUS_RECEIPT_WITH_PUSH("2", "状态报告网关推送"),
+        MT_STATUS_RECEIPT_WITH_PUSH(2, "状态报告网关推送"),
 
-        MT_STATUS_RECEIPT_WITH_SELF_GET("3", "状态回执自取"),
+        MT_STATUS_RECEIPT_WITH_SELF_GET(3, "状态回执自取"),
 
-        MO_REPORT_WITH_PUSH("4", "上行推送"),
+        MO_REPORT_WITH_PUSH(4, "上行推送"),
 
-        MO_REPORT_WITH_SELF_GET("5", "上行自取"),
+        MO_REPORT_WITH_SELF_GET(5, "上行自取"),
 
-        MODEL_REPORT_SUBMIT("6", "模板报备"),
+        MODEL_REPORT_SUBMIT(6, "模板报备"),
 
-        MODEL_REPORT_CALLBACK_WITH_PUSH("7", "模板回执推送"),
+        MODEL_REPORT_CALLBACK_WITH_PUSH(7, "模板回执推送"),
 
-        MODEL_REPORT_CALLBACK_WITH_SELF_GET("8", "模板回执自取"),
+        MODEL_REPORT_CALLBACK_WITH_SELF_GET(8, "模板回执自取"),
 
-        PASSAGE_BALANCE_GET("100", "通道余额查询");
+        PASSAGE_BALANCE_GET(100, "通道余额查询");
 
-        private String    code;
+        private int    code;
         private String name;
 
-        PassageCallType(String code, String name) {
+        PassageCallType(int code, String name) {
             this.code = code;
             this.name = name;
         }
 
-        public String getCode() {
+        public int getCode() {
             return code;
         }
 
@@ -246,9 +246,9 @@ public class CommonContext {
             return name;
         }
 
-        public static PassageCallType parse(String code) {
+        public static PassageCallType parse(int code) {
             for (PassageCallType pt : PassageCallType.values()) {
-                if (pt.getCode().equals(code)) {
+                if (pt.getCode() == code) {
                     return pt;
                 }
             }

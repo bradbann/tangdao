@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableName("sms_passage_province")
-public class SmsPassageProvince extends DataEntity<SmsPassageProvince> {
+public class SmsPassageArea extends DataEntity<SmsPassageArea> {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -25,15 +25,15 @@ public class SmsPassageProvince extends DataEntity<SmsPassageProvince> {
 	private String passageId;		// 通道ID
 	private String provinceCode;		// 省份代码
 	
-	public SmsPassageProvince() {
+	public SmsPassageArea() {
 		super();
 	}
 
-	public SmsPassageProvince(String id){
+	public SmsPassageArea(String id){
 		super(id);
 	}
 	
-	public SmsPassageProvince(String passageId,String provinceCode){
+	public SmsPassageArea(String passageId,String provinceCode){
         this.passageId = passageId;
         this.provinceCode = provinceCode;
     }

@@ -1,6 +1,9 @@
 package org.tangdao.modules.sms.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.tangdao.modules.sms.model.domain.SmsMobileWhitelist;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -12,4 +15,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 @Mapper
 public interface SmsMobileWhitelistMapper extends BaseMapper<SmsMobileWhitelist> {
 	
+	public List<String> selectDistinctMobilesByUserCode(@Param("userCode") String userCode);
 }

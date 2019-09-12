@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
-import org.tangdao.modules.sms.model.domain.SmsPassageProvince;
-import org.tangdao.modules.sms.service.ISmsPassageProvinceService;
+import org.tangdao.modules.sms.model.domain.SmsPassageArea;
+import org.tangdao.modules.sms.service.ISmsPassageAreaService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -30,13 +30,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public class SmsPassageProvinceController extends BaseController {
 
 	@Autowired
-	private ISmsPassageProvinceService smsPassageProvinceService;
+	private ISmsPassageAreaService smsPassageProvinceService;
 	
 	/**
 	 * 获取数据
 	 */
 	@ModelAttribute
-	public SmsPassageProvince get(String id, boolean isNewRecord) {
+	public SmsPassageArea get(String id, boolean isNewRecord) {
 		return smsPassageProvinceService.get(id, isNewRecord);
 	}
 	
@@ -45,7 +45,7 @@ public class SmsPassageProvinceController extends BaseController {
 	 */
 	@PreAuthorize("hasAuthority('sms:smsPassageProvince:view')")
 	@RequestMapping(value = {"list", ""})
-	public String list(SmsPassageProvince smsPassageProvince, Model model) {
+	public String list(SmsPassageArea smsPassageProvince, Model model) {
 		model.addAttribute("smsPassageProvince", smsPassageProvince);
 		return "modules/sms/PassageProvinceList";
 	}
@@ -55,8 +55,8 @@ public class SmsPassageProvinceController extends BaseController {
 	 */
 	@PreAuthorize("hasAuthority('sms:smsPassageProvince:view')")
 	@RequestMapping(value = "listData")
-	public @ResponseBody IPage<SmsPassageProvince> listData(SmsPassageProvince smsPassageProvince, HttpServletRequest request, HttpServletResponse response) {
-		QueryWrapper<SmsPassageProvince> queryWrapper = new QueryWrapper<SmsPassageProvince>();
+	public @ResponseBody IPage<SmsPassageArea> listData(SmsPassageArea smsPassageProvince, HttpServletRequest request, HttpServletResponse response) {
+		QueryWrapper<SmsPassageArea> queryWrapper = new QueryWrapper<SmsPassageArea>();
 		return smsPassageProvinceService.page(smsPassageProvince.getPage(), queryWrapper);
 	}
 
@@ -65,7 +65,7 @@ public class SmsPassageProvinceController extends BaseController {
 	 */
 	@PreAuthorize("hasAuthority('sms:smsPassageProvince:view')")
 	@RequestMapping(value = "form")
-	public String form(SmsPassageProvince smsPassageProvince, Model model) {
+	public String form(SmsPassageArea smsPassageProvince, Model model) {
 		model.addAttribute("smsPassageProvince", smsPassageProvince);
 		return "modules/sms/PassageProvinceForm";
 	}
@@ -75,7 +75,7 @@ public class SmsPassageProvinceController extends BaseController {
 	 */
 	@PreAuthorize("hasAuthority('sms:smsPassageProvince:edit')")
 	@PostMapping(value = "save")
-	public @ResponseBody String save(@Validated SmsPassageProvince smsPassageProvince) {
+	public @ResponseBody String save(@Validated SmsPassageArea smsPassageProvince) {
 		smsPassageProvinceService.saveOrUpdate(smsPassageProvince);
 		return renderResult(Global.TRUE, "保存成功！");
 	}
@@ -85,7 +85,7 @@ public class SmsPassageProvinceController extends BaseController {
 	 */
 	@PreAuthorize("hasAuthority('sms:smsPassageProvince:edit')")
 	@RequestMapping(value = "delete")
-	public @ResponseBody String delete(SmsPassageProvince smsPassageProvince) {
+	public @ResponseBody String delete(SmsPassageArea smsPassageProvince) {
 		smsPassageProvinceService.deleteById(smsPassageProvince);
 		return renderResult(Global.TRUE, "删除成功！");
 	}

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.tangdao.common.service.ICrudService;
 import org.tangdao.modules.sms.model.domain.SmsPassage;
-import org.tangdao.modules.sms.model.domain.SmsPassageProvince;
+import org.tangdao.modules.sms.model.domain.SmsPassageArea;
 
 /**
  * 通道管理Service
@@ -129,7 +129,7 @@ public interface ISmsPassageService extends ICrudService<SmsPassage> {
 	 * @param passageId
 	 * @return
 	 */
-	List<SmsPassageProvince> getPassageProvinceById(String passageId);
+	List<SmsPassageArea> getPassageProvinceById(String passageId);
 
 	/**
 	 * 根据省份代码和运营商获取通道信息

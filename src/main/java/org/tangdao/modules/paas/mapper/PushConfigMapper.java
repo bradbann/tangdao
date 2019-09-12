@@ -2,6 +2,7 @@ package org.tangdao.modules.paas.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.tangdao.modules.paas.model.domain.PushConfig;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -12,4 +13,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 @Mapper
 public interface PushConfigMapper extends BaseMapper<PushConfig> {
 	
+	public int updateByUserCode(PushConfig pushConfig);
 }

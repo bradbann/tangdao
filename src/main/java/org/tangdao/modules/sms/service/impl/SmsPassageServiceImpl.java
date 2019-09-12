@@ -32,11 +32,11 @@ import org.tangdao.modules.sms.config.UserContext.UserStatus;
 import org.tangdao.modules.sms.mapper.SmsPassageMapper;
 import org.tangdao.modules.sms.model.domain.SmsPassage;
 import org.tangdao.modules.sms.model.domain.SmsPassageParameter;
-import org.tangdao.modules.sms.model.domain.SmsPassageProvince;
+import org.tangdao.modules.sms.model.domain.SmsPassageArea;
 import org.tangdao.modules.sms.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.service.ISmsMtSubmitService;
 import org.tangdao.modules.sms.service.ISmsPassageParameterService;
-import org.tangdao.modules.sms.service.ISmsPassageProvinceService;
+import org.tangdao.modules.sms.service.ISmsPassageAreaService;
 import org.tangdao.modules.sms.service.ISmsPassageService;
 
 import com.alibaba.fastjson.JSON;
@@ -61,7 +61,7 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
     private StringRedisTemplate       stringRedisTemplate;
     
     @Autowired
-    private ISmsPassageProvinceService smsPassageProvinceService;
+    private ISmsPassageAreaService smsPassageProvinceService;
     
     @Autowired
     private ISmsPassageParameterService smsPassageParameterService;
@@ -121,7 +121,7 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
         }
 
         for (String code : codeArray) {
-            passage.getProvinceList().add(new SmsPassageProvince(passage.getId(), code));
+            passage.getProvinceList().add(new SmsPassageArea(passage.getId(), code));
         }
 
         if (ListUtils.isNotEmpty(passage.getProvinceList())) {
@@ -522,7 +522,7 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
     }
 
     @Override
-    public List<SmsPassageProvince> getPassageProvinceById(String passageId) {
+    public List<SmsPassageArea> getPassageProvinceById(String passageId) {
         return this.smsPassageProvinceService.getListByPassageId(passageId);
     }
 

@@ -1,4 +1,4 @@
-package org.tangdao.modules.sms.model.vo;
+package org.tangdao.modules.paas.model.vo;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -31,17 +31,17 @@ public class MobileCatagory implements Serializable {
 	/**
 	 * 移动号码，以半角逗号分隔
 	 */
-    private Map<Integer, String> cmNumbers;
+    private Map<String, String> cmNumbers;
 
 	/**
 	 * 联通号码
 	 */
-    private Map<Integer, String> cuNumbers;
+    private Map<String, String> cuNumbers;
 
 	/**
 	 * 电信号码
 	 */
-    private Map<Integer, String> ctNumbers;
+    private Map<String, String> ctNumbers;
 
 	/**
 	 * 过滤号码总数
@@ -95,27 +95,27 @@ public class MobileCatagory implements Serializable {
         this.filterSize = filterSize;
     }
 
-    public Map<Integer, String> getCmNumbers() {
+    public Map<String, String> getCmNumbers() {
         return cmNumbers;
     }
 
-    public void setCmNumbers(Map<Integer, String> cmNumbers) {
+    public void setCmNumbers(Map<String, String> cmNumbers) {
         this.cmNumbers = cmNumbers;
     }
 
-    public Map<Integer, String> getCuNumbers() {
+    public Map<String, String> getCuNumbers() {
         return cuNumbers;
     }
 
-    public void setCuNumbers(Map<Integer, String> cuNumbers) {
+    public void setCuNumbers(Map<String, String> cuNumbers) {
         this.cuNumbers = cuNumbers;
     }
 
-    public Map<Integer, String> getCtNumbers() {
+    public Map<String, String> getCtNumbers() {
         return ctNumbers;
     }
 
-    public void setCtNumbers(Map<Integer, String> ctNumbers) {
+    public void setCtNumbers(Map<String, String> ctNumbers) {
         this.ctNumbers = ctNumbers;
     }
 

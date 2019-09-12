@@ -24,7 +24,9 @@ import org.tangdao.modules.paas.config.PayContext.PayType;
 import org.tangdao.modules.paas.config.SettingsContext;
 import org.tangdao.modules.paas.model.domain.PushConfig;
 import org.tangdao.modules.paas.model.domain.UserSmsConfig;
+import org.tangdao.modules.paas.model.vo.MobileCatagory;
 import org.tangdao.modules.paas.service.IAreaLocalService;
+import org.tangdao.modules.paas.service.IMobileLocalService;
 import org.tangdao.modules.paas.service.IPushConfigService;
 import org.tangdao.modules.paas.service.IUserBalanceService;
 import org.tangdao.modules.paas.service.IUserPassageService;
@@ -48,7 +50,6 @@ import org.tangdao.modules.sms.model.domain.SmsMtMessageSubmit;
 import org.tangdao.modules.sms.model.domain.SmsMtTask;
 import org.tangdao.modules.sms.model.domain.SmsMtTaskPackets;
 import org.tangdao.modules.sms.model.domain.SmsPassageAccess;
-import org.tangdao.modules.sms.model.vo.MobileCatagory;
 import org.tangdao.modules.sms.model.vo.SmsRoutePassage;
 import org.tangdao.modules.sms.service.ISmsForbiddenWordsService;
 import org.tangdao.modules.sms.service.ISmsMobileBlackListService;
@@ -99,6 +100,8 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
     private IUserPassageService                userPassageService;
     @Autowired
     private IUserSmsConfigService              userSmsConfigService;
+    @Autowired
+    private IMobileLocalService                mobileLocalService;
 
     /**
      * 根据当前用户ID和短信内容提取出的短信模板信息
@@ -590,7 +593,7 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
      * @param mobileCatagory 手机号码包
      * @return 运营商对应的路由通道映射
      */
-    private Map<Integer, String> getCmcpMobileNumbers(CMCP cmcp, MobileCatagory mobileCatagory) {
+    private Map<String, String> getCmcpMobileNumbers(CMCP cmcp, MobileCatagory mobileCatagory) {
         if (CMCP.CHINA_MOBILE == cmcp) {
             return mobileCatagory.getCmNumbers();
         } else if (CMCP.CHINA_TELECOM == cmcp) {
@@ -618,15 +621,15 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
         routePassage.setUserCode(smsMtTaskLocal.get().getUserCode());
 
         Integer routeType = getMessageRouteType();
-        Map<Integer, String> provinceCmcpMobileNumbers;
+        Map<String, String> provinceCmcpMobileNumbers;
         for (CMCP cmcp : CMCPS) {
             provinceCmcpMobileNumbers = getCmcpMobileNumbers(cmcp, mobileCatagory);
             if (MapUtils.isEmpty(provinceCmcpMobileNumbers)) {
                 continue;
             }
 
-            Set<Integer> provinceCodes = provinceCmcpMobileNumbers.keySet();
-            for (Integer provinceCode : provinceCodes) {
+            Set<String> provinceCodes = provinceCmcpMobileNumbers.keySet();
+            for (String provinceCode : provinceCodes) {
                 // 获取可用通道
                 SmsPassageAccess passageAccess = getPassageAccess(routePassage.getUserCode(), routeType, cmcp.getCode(),
                                                                   provinceCode);
@@ -847,7 +850,7 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
         submit.setCallback(task.getCallback());
 
         // 省份代码默认 为 0（全国）
-        submit.setProvinceCode(Province.PROVINCE_CODE_ALLOVER_COUNTRY);
+        submit.setAreaCode(SettingsContext.AREA_CODE_ALLOVER_COUNTRY);
 
         // add by zhengying 2017-03-28 针对用户WEB平台发送的数据，则不进行推送，直接在平台看推送记录
         if (task.getAppType() != null && AppType.DEVELOPER.getCode() != task.getAppType()) {
@@ -869,8 +872,7 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
             submit.setMobile(mobile);
             submit.setCmcp(CMCP.local(mobile).getCode());
 
-            rabbitTemplate.convertAndSend(RabbitConstant.EXCHANGE_SMS, RabbitConstant.MQ_SMS_MT_PACKETS_EXCEPTION,
-                                          submit);
+            rabbitTemplate.convertAndSend(RabbitConstant.EXCHANGE_SMS, RabbitConstant.MQ_SMS_MT_PACKETS_EXCEPTION, submit);
         }
     }
 

@@ -2,6 +2,7 @@ package org.tangdao.modules.sms.model.domain;
 
 import org.tangdao.common.suports.DataEntity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -25,13 +26,13 @@ public class SmsPassageAccess extends DataEntity<SmsPassageAccess> {
 	
 	private String userCode;		// 用户编码
 	private String groupId;		// 通道组id
-	private String routeType;		// 路由类型
-	private Integer cmcp;		// 运营商
-	private String provinceCode;		// 省份
+	private int    routeType;		// 路由类型
+	private int    cmcp;		// 运营商
+	private String areaCode;		// 省份
 	private String passageId;		// 通道ID
 	private String passageCode;		// 通道代码
 	private String protocol;		// 协议类型
-	private String callType;		// 1-发送2-下行推送 3-下行自取 4-上行推送 5-上行自取
+	private int    callType;		// 1-发送2-下行推送 3-下行自取 4-上行推送 5-上行自取
 	private String url;		// url
 	private String paramsDefinition;		// 定义，直接取模板里的值
 	private String params;		// 具体的参数值，取模板中的key作为KEY，如{＂username＂:＂test＂, ＂password＂:＂123456＂}
@@ -46,6 +47,17 @@ public class SmsPassageAccess extends DataEntity<SmsPassageAccess> {
 	private String extNumber;		// 拓展号长度,0表示不允许拓展
 	private Integer signMode;		// 签名模式 0:不处理，1：自动前置，2：自动后置，3：自动去除签名
 	private String smsTemplateParam;		// 是否需要短信模板参数信息
+	
+	@TableField(exist = false)
+	private String userIdText;
+	@TableField(exist = false)
+	private String passageIdText;
+	@TableField(exist = false)
+	private String areaName;
+	@TableField(exist = false)
+	private String cmcpName;
+	@TableField(exist = false)
+	private String routeTypeText;
 	
 	public SmsPassageAccess() {
 		super();

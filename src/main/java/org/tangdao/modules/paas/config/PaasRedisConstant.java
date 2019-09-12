@@ -1,5 +1,10 @@
 package org.tangdao.modules.paas.config;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.tangdao.modules.paas.model.domain.AreaLocal;
+
 public class PaasRedisConstant {
 
 	/**
@@ -60,10 +65,10 @@ public class PaasRedisConstant {
     /**
      * 手机归属地
      */
-    public static final String               RED_PROVINCE_MOBILES_LOCAL = "red_province_mobiles_local";
+    public static final String               RED_AREA_MOBILES_LOCAL = "red_area_mobiles_local";
 
-//    /**
-//     * 全局手机归属号码
-//     */
-//    public static Map<String, ProvinceLocal> GLOBAL_MOBILES_LOCAL       = new ConcurrentHashMap<>();
+    /**
+     * 全局手机归属号码
+     */
+    public static Map<String, AreaLocal> GLOBAL_MOBILES_LOCAL       = new ConcurrentHashMap<>();
 }

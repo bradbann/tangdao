@@ -1,7 +1,7 @@
 package org.tangdao.modules.sms.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.tangdao.modules.sms.model.domain.SmsPassageProvince;
+import org.tangdao.modules.sms.model.domain.SmsPassageArea;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -10,6 +10,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @version 2019-09-06
  */
 @Mapper
-public interface SmsPassageProvinceMapper extends BaseMapper<SmsPassageProvince> {
+public interface SmsPassageAreaMapper extends BaseMapper<SmsPassageArea> {
 	
 }

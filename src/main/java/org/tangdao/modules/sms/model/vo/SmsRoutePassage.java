@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.MapUtils;
 import org.tangdao.common.utils.StringUtils;
+import org.tangdao.modules.paas.model.vo.MobileCatagory;
 import org.tangdao.modules.sms.model.domain.SmsPassageAccess;
 
 import lombok.Getter;

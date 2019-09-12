@@ -27,7 +27,7 @@ public class SmsMtMessageSubmit extends DataEntity<SmsMtMessageSubmit> {
 	private String userCode;		// 用户编码
 	private Long sid;		// 消息ID
 	private String mobile;		// 手机号码
-	private String provinceCode;		// 省份代码
+	private String areaCode;		// 省份代码
 	private Integer cmcp;		// 运营商
 	private String content;		// 短信内容
 	private Integer fee;		// 计费条数

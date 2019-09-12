@@ -2,6 +2,7 @@ package org.tangdao.modules.paas.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.tangdao.modules.paas.model.domain.UserSmsConfig;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

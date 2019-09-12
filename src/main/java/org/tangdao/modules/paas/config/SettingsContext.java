@@ -194,4 +194,9 @@ public class SettingsContext {
      * 针对一条配置存在多个值分隔符（默认，可根据特殊情况另行自定义）
      */
     public static final String MULTI_VALUE_SEPERATOR = ",";
+    
+    /**
+     * 全国通用的省份代码
+     */
+ 	public static final String AREA_CODE_ALLOVER_COUNTRY = "0";
 }

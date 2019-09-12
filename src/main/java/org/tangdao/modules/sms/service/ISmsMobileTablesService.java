@@ -19,7 +19,7 @@ public interface ISmsMobileTablesService {
 	 * @param mobile
 	 * @param sendCount
 	 */
-	void setMobileSendRecord(String userCode, Long templateId, String mobile, int sendCount);
+	void setMobileSendRecord(String userCode, String templateId, String mobile, int sendCount);
 
 	/**
 	 * 
@@ -32,7 +32,7 @@ public interface ISmsMobileTablesService {
 	 * @param maxLimit
 	 * @return
 	 */
-	int checkMobileIsBeyondExpected(String userCode, Long templateId, String mobile, int maxSpeed, int maxLimit);
+	int checkMobileIsBeyondExpected(String userCode, String templateId, String mobile, int maxSpeed, int maxLimit);
 
 	public static final int NICE_PASSED = 0;
 	public static final int MOBILE_BEYOND_SPEED = 1;
