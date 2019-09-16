@@ -267,21 +267,21 @@ public class CommonContext {
         /**
          * web 网页，简码W
          */
-        WEB("1", "融合WEB平台"),
+        WEB(1, "融合WEB平台"),
 
-        DEVELOPER("2", "开发者平台"),
+        DEVELOPER(2, "开发者平台"),
 
-        BOSS("3", "运营支撑系统");
+        BOSS(3, "运营支撑系统");
 
-        private String    code;
+        private int    code;
         private String name;
 
-        AppType(String code, String name) {
+        AppType(int code, String name) {
             this.code = code;
             this.name = name;
         }
 
-        public String getCode() {
+        public int getCode() {
             return code;
         }
 
@@ -289,9 +289,9 @@ public class CommonContext {
             return name;
         }
 
-        public static AppType parse(String code) {
+        public static AppType parse(int code) {
             for (AppType at : AppType.values()) {
-                if (at.getCode().equals(code)) {
+                if (at.getCode() == code) {
                     {
                         return at;
                     }

@@ -30,28 +30,28 @@ public class SmsRoutePassage implements Serializable {
     private String                        userCode;
 
     // 通道手机号码信息（手机号码以逗号分割）
-    private Map<Integer, String>           passageMobiles   = new HashMap<>();
+    private Map<String, String>           passageMobiles   = new HashMap<>();
     // 未找到对应通道手机号码集合
     private Set<String>                    unkonwnMobiles   = new HashSet<>();
     // 通道信息
-    private Map<Integer, SmsPassageAccess> passaegAccesses  = new HashMap<>();
+    private Map<String, SmsPassageAccess> passaegAccesses  = new HashMap<>();
 
     // 错误信息
     private String                         errorMessage;
 
-    public Map<Integer, String> getPassageMobiles() {
+    public Map<String, String> getPassageMobiles() {
         return passageMobiles;
     }
 
-    public void setPassageMobiles(Map<Integer, String> passageMobiles) {
+    public void setPassageMobiles(Map<String, String> passageMobiles) {
         this.passageMobiles = passageMobiles;
     }
 
-    public Map<Integer, SmsPassageAccess> getPassaegAccesses() {
+    public Map<String, SmsPassageAccess> getPassaegAccesses() {
         return passaegAccesses;
     }
 
-    public void setPassaegAccesses(Map<Integer, SmsPassageAccess> passaegAccesses) {
+    public void setPassaegAccesses(Map<String, SmsPassageAccess> passaegAccesses) {
         this.passaegAccesses = passaegAccesses;
     }
 
@@ -62,7 +62,7 @@ public class SmsRoutePassage implements Serializable {
      * @param passageId
      * @param mobiles
      */
-    public void addPassageMobilesMapping(Integer passageId, String mobiles) {
+    public void addPassageMobilesMapping(String passageId, String mobiles) {
         if (MapUtils.isEmpty(passageMobiles) || !passageMobiles.containsKey(passageId)) {
             passageMobiles.put(passageId, mobiles);
             return;

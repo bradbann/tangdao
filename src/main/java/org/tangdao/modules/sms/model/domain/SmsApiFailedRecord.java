@@ -27,7 +27,7 @@ public class SmsApiFailedRecord extends DataEntity<SmsApiFailedRecord> {
 	private String id;
 	
 	private String userCode;		// 用户编码
-	private String appType;		// 调用类型
+	private Integer appType;		// 调用类型
 	private String submitType;		// 请求类型
 	private String appKey;		// 接口账号
 	private String appSecret;		// 接口密码

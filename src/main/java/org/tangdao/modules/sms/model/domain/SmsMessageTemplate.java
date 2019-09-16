@@ -40,7 +40,7 @@ public class SmsMessageTemplate extends DataEntity<SmsMessageTemplate> {
 	private Integer limitTimes;		// 短信每天提交次数上限（同一号码）
 	private String whiteWord;		// 敏感词白名单 |符号隔开
 	private Integer routeType;		// 模板路由类型
-	private String priority;		// 优先级（越大越优先）
+	private Integer priority;		// 优先级（越大越优先）
 	private String extNumber;		// 扩展号
 	 /**
      * 忽略手机黑名单拦截 add by 2018-05-02

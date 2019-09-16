@@ -36,7 +36,7 @@ public class BasicApiSupport {
      *
      * @return
      */
-    protected String getAppType() {
+    protected int getAppType() {
         String appType = request.getHeader("apptype");
         if (StringUtils.isEmpty(appType)) {
             return AppType.DEVELOPER.getCode();

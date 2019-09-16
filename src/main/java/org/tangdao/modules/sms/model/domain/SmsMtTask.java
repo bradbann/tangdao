@@ -34,7 +34,7 @@ public class SmsMtTask extends DataEntity<SmsMtTask> {
 	
 	private String userCode;		// 用户编码
 	private Long sid;		// 消息ID
-	private String appType;		// 调用类型 1:融合WEB平台,2:开发者平台,3:运营支撑系统
+	private Integer appType;		// 调用类型 1:融合WEB平台,2:开发者平台,3:运营支撑系统
 	private String mobile;		// 手机号
 	private String content;		// content
 	private String extNumber;		// 拓展号码

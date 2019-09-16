@@ -3,9 +3,6 @@ package org.tangdao.modules.paas.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -15,13 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
-import org.tangdao.common.utils.ListUtils;
-import org.tangdao.common.utils.MapUtils;
-import org.tangdao.common.utils.StringUtils;
-
 import org.tangdao.modules.paas.model.domain.AreaLocal;
 import org.tangdao.modules.paas.service.IAreaLocalService;
 

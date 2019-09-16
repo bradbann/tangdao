@@ -14,6 +14,7 @@ import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.PatternUtils;
 import org.tangdao.common.utils.StringUtils;
+import org.tangdao.modules.developer.config.RabbitConstant;
 import org.tangdao.modules.exchanger.config.CommonContext.AppType;
 import org.tangdao.modules.exchanger.config.CommonContext.CMCP;
 import org.tangdao.modules.exchanger.config.CommonContext.CallbackUrlType;
@@ -661,8 +662,8 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
      * @param provinceCode 省份代码
      * @return 当前用户-路由-运营航-省份对应的可用通道
      */
-    private SmsPassageAccess getPassageAccess(String userCode, int routeType, int cmcp, int provinceCode) {
-        SmsPassageAccess passageAccess = smsPassageAccessService.get(userCode, routeType, cmcp, provinceCode);
+    private SmsPassageAccess getPassageAccess(String userCode, int routeType, int cmcp, String areaCode) {
+        SmsPassageAccess passageAccess = smsPassageAccessService.get(userCode, routeType, cmcp, areaCode);
         if (isSmsPassageAccessAvaiable(passageAccess)) {
             return passageAccess;
         }
@@ -885,7 +886,7 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
         String mobile;
         SmsPassageAccess passage;
 
-        for (Integer passageId : routePassage.getPassageMobiles().keySet()) {
+        for (String passageId : routePassage.getPassageMobiles().keySet()) {
             passage = routePassage.getPassaegAccesses().get(passageId);
             mobile = routePassage.getPassageMobiles().get(passageId);
 

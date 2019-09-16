@@ -140,7 +140,7 @@ public class SmsPrervice {
      * @param ip 调用者IP
      * @param paramMap 携带参数信息
      */
-    public void saveErrorLog(String errorCode, String url, String ip, Map<String, String[]> paramMap, String appType) {
+    public void saveErrorLog(String errorCode, String url, String ip, Map<String, String[]> paramMap, int appType) {
         SmsApiFailedRecord record = new SmsApiFailedRecord();
         record.setIp(ip);
         record.setSubmitUrl(url);

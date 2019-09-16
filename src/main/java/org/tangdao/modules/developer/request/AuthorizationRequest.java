@@ -39,6 +39,6 @@ public class AuthorizationRequest implements Serializable {
     private transient Integer fee;
     private transient Integer totalFee;
     private transient String  ip;
-    private transient String appType;
+    private transient Integer appType;
 
 }
