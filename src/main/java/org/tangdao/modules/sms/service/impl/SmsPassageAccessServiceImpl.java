@@ -31,13 +31,13 @@ import org.tangdao.modules.paas.service.IAreaLocalService;
 import org.tangdao.modules.paas.service.IUserPassageService;
 import org.tangdao.modules.sms.config.PassageContext.PassageStatus;
 import org.tangdao.modules.sms.config.PassageContext.RouteType;
+import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.mapper.SmsPassageAccessMapper;
 import org.tangdao.modules.sms.mapper.SmsPassageGroupDetailMapper;
 import org.tangdao.modules.sms.model.domain.SmsPassage;
 import org.tangdao.modules.sms.model.domain.SmsPassageAccess;
 import org.tangdao.modules.sms.model.domain.SmsPassageGroupDetail;
 import org.tangdao.modules.sms.model.domain.SmsPassageParameter;
-import org.tangdao.modules.sms.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.service.ISmsPassageAccessService;
 import org.tangdao.modules.sms.service.ISmsPassageParameterService;
 import org.tangdao.modules.sms.service.ISmsPassageService;
@@ -585,8 +585,9 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
 
         } catch (Exception e) {
             logger.warn("Redis 用户可用通道信息查询失败, userId : {}, 将在DB获取", userCode, e);
-            List<SmsPassageAccess> list = smsPassageAccessMapper.selectByUserIdAndCallType(userCode,
-                                                                                           PassageCallType.DATA_SEND.getCode());
+            List<SmsPassageAccess> list = super.select(Wrappers.<SmsPassageAccess>lambdaQuery()
+        			.eq(SmsPassageAccess::getUserCode, userCode)
+        			.eq(SmsPassageAccess::getCallType, PassageCallType.DATA_SEND.getCode()));
             if (ListUtils.isEmpty(list)) {
                 return null;
             }
@@ -641,8 +642,12 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
      */
     private SmsPassageAccess getAccessFromDb(String userCode, int routeType, int cmcp, String areaCode) {
         try {
-            SmsPassageAccess passageAccess = smsPassageAccessMapper.selectByUserIdAndRouteCmcp(userCode, routeType, cmcp,
-            		areaCode);
+        	
+        	SmsPassageAccess passageAccess = super.getOne(Wrappers.<SmsPassageAccess>lambdaQuery()
+        			.eq(SmsPassageAccess::getUserCode, userCode)
+        			.eq(SmsPassageAccess::getRouteType, routeType)
+        			.eq(SmsPassageAccess::getCmcp, cmcp)
+        			.eq(SmsPassageAccess::getAreaCode, areaCode));
             if (passageAccess == null) {
                 return null;
             }

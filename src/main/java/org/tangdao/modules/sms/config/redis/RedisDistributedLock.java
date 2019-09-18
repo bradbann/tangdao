@@ -1,4 +1,4 @@
-package org.tangdao.modules.sms.redis;
+package org.tangdao.modules.sms.config.redis;
 
 import org.springframework.stereotype.Component;
 

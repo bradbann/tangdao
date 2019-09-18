@@ -1,4 +1,4 @@
-package org.tangdao.modules.sms.handler;
+package org.tangdao.modules.sms.config.rabbit.listener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,12 +9,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.Resource;
+
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.PatternUtils;
 import org.tangdao.common.utils.StringUtils;
-import org.tangdao.modules.developer.config.RabbitConstant;
 import org.tangdao.modules.exchanger.config.CommonContext.AppType;
 import org.tangdao.modules.exchanger.config.CommonContext.CMCP;
 import org.tangdao.modules.exchanger.config.CommonContext.CallbackUrlType;
@@ -26,11 +32,9 @@ import org.tangdao.modules.paas.config.SettingsContext;
 import org.tangdao.modules.paas.model.domain.PushConfig;
 import org.tangdao.modules.paas.model.domain.UserSmsConfig;
 import org.tangdao.modules.paas.model.vo.MobileCatagory;
-import org.tangdao.modules.paas.service.IAreaLocalService;
 import org.tangdao.modules.paas.service.IMobileLocalService;
 import org.tangdao.modules.paas.service.IPushConfigService;
 import org.tangdao.modules.paas.service.IUserBalanceService;
-import org.tangdao.modules.paas.service.IUserPassageService;
 import org.tangdao.modules.paas.service.IUserSmsConfigService;
 import org.tangdao.modules.sms.config.PassageContext;
 import org.tangdao.modules.sms.config.PassageContext.PassageStatus;
@@ -45,6 +49,8 @@ import org.tangdao.modules.sms.config.TaskContext.PacketsApproveStatus;
 import org.tangdao.modules.sms.config.TaskContext.PacketsProcessStatus;
 import org.tangdao.modules.sms.config.UserBalanceConstant;
 import org.tangdao.modules.sms.config.UserSettingsContext.SmsSignatureSource;
+import org.tangdao.modules.sms.config.rabbit.AbstartRabbitListener;
+import org.tangdao.modules.sms.config.rabbit.constant.RabbitConstant;
 import org.tangdao.modules.sms.exception.QueueProcessException;
 import org.tangdao.modules.sms.model.domain.SmsMessageTemplate;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageSubmit;
@@ -61,18 +67,20 @@ import org.tangdao.modules.sms.service.ISmsMtTaskService;
 import org.tangdao.modules.sms.service.ISmsPassageAccessService;
 import org.tangdao.modules.sms.service.ISmsTemplateService;
 
+import com.rabbitmq.client.Channel;
+
 /**
  * 待消息分包处理
  * @author RuYang
  *
  */
+@Component
+public class SmsWaitPacketsListener extends AbstartRabbitListener {
 
-public class SmsWaitPacketsHandler extends AbstartMessageHandler {
-
-//	@Resource
-//    private RabbitTemplate                     rabbitTemplate;
-//    @Resource
-//    private Jackson2JsonMessageConverter       messageConverter;
+	@Resource
+    private RabbitTemplate                     rabbitTemplate;
+    @Resource
+    private Jackson2JsonMessageConverter       messageConverter;
 
     @Autowired
     private ISmsMtTaskService                  smsMtTaskService;
@@ -92,13 +100,9 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
     private ISmsMobileWhiteListService         smsMobileWhiteListService;
 
     @Autowired
-    private IAreaLocalService                  areaLocalService;
-    @Autowired
     private IPushConfigService                 pushConfigService;
     @Autowired
     private IUserBalanceService                userBalanceService;
-    @Autowired
-    private IUserPassageService                userPassageService;
     @Autowired
     private IUserSmsConfigService              userSmsConfigService;
     @Autowired
@@ -288,37 +292,35 @@ public class SmsWaitPacketsHandler extends AbstartMessageHandler {
         return mobileNumberResponse;
     }
 
-//    /**
-//     * 校验数据
-//     * 
-//     * @param message 队列中的消息
-//     * @return 校验结果
-//     */
-//    private boolean validate(Message message) {
-//        if (message == null) {
-//            return false;
-//        }
-//
-//        SmsMtTask smsMtTask = (SmsMtTask) messageConverter.fromMessage(message);
-//        if (smsMtTask == null) {
-//            logger.error("待处理任务数据为空");
-//            return false;
-//        }
-//
-//        smsMtTask.setOriginMobile(smsMtTask.getMobile());
-//
-//        smsMtTaskLocal.set(smsMtTask);
-//
-//        return true;
-//    }
+    /**
+     * 校验数据
+     * 
+     * @param message 队列中的消息
+     * @return 校验结果
+     */
+    private boolean validate(Message message) {
+        if (message == null) {
+            return false;
+        }
 
-//    @RabbitListener(queues = RabbitConstant.MQ_SMS_MT_WAIT_PROCESS)
-//    public void onMessage(Message message, Channel channel) throws Exception {
-    @Override
-    public void onMessage() throws Exception {
-//        if (!validate(message)) {
-//            return;
-//        }
+        SmsMtTask smsMtTask = (SmsMtTask) messageConverter.fromMessage(message);
+        if (smsMtTask == null) {
+            logger.error("待处理任务数据为空");
+            return false;
+        }
+
+        smsMtTask.setOriginMobile(smsMtTask.getMobile());
+
+        smsMtTaskLocal.set(smsMtTask);
+
+        return true;
+    }
+
+    @RabbitListener(queues = RabbitConstant.MQ_SMS_MT_WAIT_PROCESS)
+    public void onMessage(Message message, Channel channel) throws Exception {
+        if (!validate(message)) {
+            return;
+        }
 
         checkIsStartingConsumeMessage();
 

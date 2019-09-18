@@ -1,4 +1,4 @@
-package org.tangdao.modules.sms.redis.serializer;
+package org.tangdao.modules.sms.config.redis.serializer;
 
 import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageSubmit;

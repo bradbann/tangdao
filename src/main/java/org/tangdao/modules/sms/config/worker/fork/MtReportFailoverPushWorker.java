@@ -1,13 +1,13 @@
-package org.tangdao.modules.sms.worker.fork;
+package org.tangdao.modules.sms.config.worker.fork;
 
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.tangdao.common.utils.SpringUtils;
+import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
+import org.tangdao.modules.sms.config.worker.AbstractWorker;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
-import org.tangdao.modules.sms.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.service.ISmsMtPushService;
-import org.tangdao.modules.sms.worker.AbstractWorker;
 
 /**
  * TODO 针对短信下行报告推送（首次数据未入库或者REDIS无相关数据，后续追加推送）

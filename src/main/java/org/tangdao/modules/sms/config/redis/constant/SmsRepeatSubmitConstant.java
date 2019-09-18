@@ -1,4 +1,4 @@
-package org.tangdao.modules.sms.redis.constant;
+package org.tangdao.modules.sms.config.redis.constant;
 
 /**
  * TODO 短信REDIS防止重复提交常量类

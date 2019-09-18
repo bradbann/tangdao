@@ -1,4 +1,4 @@
-package org.tangdao.modules.sms.redis.serializer;
+package org.tangdao.modules.sms.config.redis.serializer;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.serializer.support.DeserializingConverter;

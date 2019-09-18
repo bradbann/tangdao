@@ -1,4 +1,4 @@
-package org.tangdao.modules.sms.redis.pubsub;
+package org.tangdao.modules.sms.config.redis.pubsub;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

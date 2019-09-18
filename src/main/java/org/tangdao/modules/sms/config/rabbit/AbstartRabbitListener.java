@@ -1,13 +1,16 @@
-package org.tangdao.modules.sms.handler;
+package org.tangdao.modules.sms.config.rabbit;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.tangdao.modules.sms.runner.SmsInitializeRunner;
+import org.springframework.amqp.core.Message;
+import org.tangdao.modules.sms.config.runner.SmsInitializeRunner;
 
-public abstract class AbstartMessageHandler {
+import com.rabbitmq.client.Channel;
+
+public abstract class AbstartRabbitListener {
 
 	protected Logger              logger                              = LoggerFactory.getLogger(getClass());
 
@@ -74,8 +77,9 @@ public abstract class AbstartMessageHandler {
      * @param message
      * @param channel
      * @throws Exception
+     * com.rabbitmq.client.Channel)
      */
-    public abstract void onMessage() throws Exception;
+    public abstract void onMessage(Message message, Channel channel) throws Exception;
 
 //    public static void main(String[] args) {
 //        String[] mobile = { "1", "2", "3", "4", "5", "6", "7", "8" };

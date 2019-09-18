@@ -1,4 +1,4 @@
-package org.tangdao.modules.sms.worker.hook;
+package org.tangdao.modules.sms.config.worker.hook;
 
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 

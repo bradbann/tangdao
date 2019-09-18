@@ -18,9 +18,9 @@ import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.PatternUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sms.config.PassageContext.PassageMessageTemplateStatus;
+import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.mapper.SmsPassageMessageTemplateMapper;
 import org.tangdao.modules.sms.model.domain.SmsPassageMessageTemplate;
-import org.tangdao.modules.sms.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.service.ISmsPassageMessageTemplateService;
 
 import com.alibaba.fastjson.JSON;

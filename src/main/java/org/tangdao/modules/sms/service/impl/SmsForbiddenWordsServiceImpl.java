@@ -16,10 +16,10 @@ import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.paas.config.SettingsContext;
+import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.filter.SensitiveWordFilter;
 import org.tangdao.modules.sms.mapper.SmsForbiddenWordsMapper;
 import org.tangdao.modules.sms.model.domain.SmsForbiddenWords;
-import org.tangdao.modules.sms.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.service.ISmsForbiddenWordsService;
 
 import com.alibaba.fastjson.JSON;

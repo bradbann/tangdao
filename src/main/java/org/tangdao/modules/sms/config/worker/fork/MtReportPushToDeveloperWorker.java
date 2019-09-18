@@ -1,11 +1,11 @@
-package org.tangdao.modules.sms.worker.fork;
+package org.tangdao.modules.sms.config.worker.fork;
 
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.tangdao.common.utils.SpringUtils;
+import org.tangdao.modules.sms.config.worker.AbstractWorker;
 import org.tangdao.modules.sms.service.ISmsMtPushService;
-import org.tangdao.modules.sms.worker.AbstractWorker;
 
 import com.alibaba.fastjson.JSONObject;
 

@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.utils.DateUtils;
-import org.tangdao.modules.sms.redis.constant.SmsRedisConstant;
+import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.service.ISmsMobileTablesService;
 
 /**

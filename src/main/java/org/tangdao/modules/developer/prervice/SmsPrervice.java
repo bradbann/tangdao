@@ -3,15 +3,16 @@ package org.tangdao.modules.developer.prervice;
 import java.util.Date;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.MapUtils;
-import org.tangdao.modules.developer.config.RabbitConstant;
-import org.tangdao.modules.developer.config.RabbitConstant.WordsPriority;
 import org.tangdao.modules.developer.request.sms.SmsP2PSendRequest;
 import org.tangdao.modules.developer.request.sms.SmsP2PTemplateSendRequest;
 import org.tangdao.modules.developer.request.sms.SmsSendRequest;
@@ -22,6 +23,8 @@ import org.tangdao.modules.exchanger.config.OpenApiCode.CommonApiCode;
 import org.tangdao.modules.paas.model.domain.UserBalance;
 import org.tangdao.modules.paas.service.IUserBalanceService;
 import org.tangdao.modules.sms.config.TaskContext.TaskSubmitType;
+import org.tangdao.modules.sms.config.rabbit.constant.RabbitConstant;
+import org.tangdao.modules.sms.config.rabbit.constant.RabbitConstant.WordsPriority;
 import org.tangdao.modules.sms.exception.QueueProcessException;
 import org.tangdao.modules.sms.model.domain.SmsApiFailedRecord;
 import org.tangdao.modules.sms.model.domain.SmsMtTask;
@@ -42,8 +45,9 @@ public class SmsPrervice {
 
     private final Logger              logger = LoggerFactory.getLogger(getClass());
 
-//    @Resource(name = "smsRabbitTemplate")
-//    private RabbitTemplate            smsRabbitTemplate;
+    @Resource(name = "rabbitTemplate")
+    private RabbitTemplate            rabbitTemplate;
+    
     @Autowired
     private IUserBalanceService       userBalanceService;
     
@@ -213,14 +217,10 @@ public class SmsPrervice {
                 || TaskSubmitType.TEMPLATE_POINT_TO_POINT.getCode() == task.getSubmitType()) {
                 queueName = RabbitConstant.MQ_SMS_MT_P2P_WAIT_PROCESS;
             }
-            System.out.println("priority:" +priority);
-            System.out.println("queueName:" +queueName);
-            System.out.println("task:" +JsonMapper.toJson(task));
-            System.out.println("sid:" +task.getSid());
-//            smsRabbitTemplate.convertAndSend(queueName, task, (message) -> {
-//                message.getMessageProperties().setPriority(priority);
-//                return message;
-//            }, new CorrelationData(task.getSid().toString()));
+            rabbitTemplate.convertAndSend(queueName, task, (message) -> {
+                message.getMessageProperties().setPriority(priority);
+                return message;
+            }, new CorrelationData(task.getSid().toString()));
 
             return task.getSid();
         } catch (Exception e) {

@@ -1,11 +1,11 @@
-package org.tangdao.modules.sms.redis.pubsub;
+package org.tangdao.modules.sms.config.redis.pubsub;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.model.domain.SmsPassageAccess;
-import org.tangdao.modules.sms.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.service.impl.SmsPassageAccessServiceImpl;
 
 import com.alibaba.fastjson.JSON;

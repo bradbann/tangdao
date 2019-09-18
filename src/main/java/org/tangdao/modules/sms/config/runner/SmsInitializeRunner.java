@@ -1,4 +1,4 @@
-package org.tangdao.modules.sms.runner;
+package org.tangdao.modules.sms.config.runner;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -13,6 +13,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.tangdao.modules.sms.config.worker.hook.ShutdownHookWorker;
 import org.tangdao.modules.sms.service.ISmsForbiddenWordsService;
 import org.tangdao.modules.sms.service.ISmsMobileBlackListService;
 import org.tangdao.modules.sms.service.ISmsMobileWhiteListService;
@@ -21,7 +22,6 @@ import org.tangdao.modules.sms.service.ISmsMtSubmitService;
 import org.tangdao.modules.sms.service.ISmsPassageAccessService;
 import org.tangdao.modules.sms.service.ISmsPassageService;
 import org.tangdao.modules.sms.service.ISmsTemplateService;
-import org.tangdao.modules.sms.worker.hook.ShutdownHookWorker;
 
 /**
  * 初始化项目依赖的资源，如REDIS/自定义线程开启等

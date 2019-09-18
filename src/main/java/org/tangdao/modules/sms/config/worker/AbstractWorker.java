@@ -1,4 +1,4 @@
-package org.tangdao.modules.sms.worker;
+package org.tangdao.modules.sms.config.worker;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.tangdao.common.utils.SpringUtils;
 import org.tangdao.common.utils.StringUtils;
-import org.tangdao.modules.sms.worker.hook.ShutdownHookWorker;
+import org.tangdao.modules.sms.config.worker.hook.ShutdownHookWorker;
 
 import com.alibaba.fastjson.JSON;
 

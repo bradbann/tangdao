@@ -15,9 +15,9 @@ import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sms.config.MobileBlacklistType;
+import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.mapper.SmsMobileBlacklistMapper;
 import org.tangdao.modules.sms.model.domain.SmsMobileBlacklist;
-import org.tangdao.modules.sms.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.service.ISmsMobileBlackListService;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;

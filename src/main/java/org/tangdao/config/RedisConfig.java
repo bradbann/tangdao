@@ -16,11 +16,11 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
-import org.tangdao.modules.sms.redis.constant.SmsRedisConstant;
-import org.tangdao.modules.sms.redis.pubsub.SmsMessageTemplateListener;
-import org.tangdao.modules.sms.redis.pubsub.SmsMobileBlacklistListener;
-import org.tangdao.modules.sms.redis.pubsub.SmsPassageAccessListener;
-import org.tangdao.modules.sms.redis.serializer.RedisObjectSerializer;
+import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
+import org.tangdao.modules.sms.config.redis.pubsub.SmsMessageTemplateListener;
+import org.tangdao.modules.sms.config.redis.pubsub.SmsMobileBlacklistListener;
+import org.tangdao.modules.sms.config.redis.pubsub.SmsPassageAccessListener;
+import org.tangdao.modules.sms.config.redis.serializer.RedisObjectSerializer;
 
 @Configuration
 @EnableCaching

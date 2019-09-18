@@ -113,7 +113,7 @@ public class WebConfig implements WebMvcConfigurer {
 		return this.beanValidator();
 	}
 	
-	@Bean
+	@Bean("objectMapper")
 	public ObjectMapper objectMapper() {
 		return new JsonMapper();
 	}
