@@ -11,13 +11,13 @@ import org.tangdao.modules.exchanger.config.CommonContext.PlatformType;
 public class SettingsContext {
 
     /**
-     * TODO 系统参数类型
+     * TODO 系统常量类型
      *
      * @author ruyang
      * @version V1.0.0
      * @date 2016年6月30日 下午11:43:24
      */
-    public enum SystemConfigType {
+    public enum SysDictType {
 
         // 用户注册/平台开户 余额初始化设置
         USER_REGISTER_BALANCE("余额初始化设置"),
@@ -48,7 +48,7 @@ public class SettingsContext {
 
         private String title;
 
-        SystemConfigType(String title) {
+        SysDictType(String title) {
             this.title = title;
         }
 

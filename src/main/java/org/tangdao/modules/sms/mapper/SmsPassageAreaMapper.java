@@ -1,6 +1,7 @@
 package org.tangdao.modules.sms.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.tangdao.modules.sms.model.domain.SmsPassageArea;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -11,5 +12,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface SmsPassageAreaMapper extends BaseMapper<SmsPassageArea> {
-	
+
+	public int deleteByPassageId(@Param("passageId") String passageId);
 }

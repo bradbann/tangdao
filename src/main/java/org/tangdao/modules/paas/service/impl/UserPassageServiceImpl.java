@@ -2,6 +2,7 @@ package org.tangdao.modules.paas.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,15 +13,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
+import org.tangdao.common.utils.ObjectUtils;
 import org.tangdao.common.utils.StringUtils;
-import org.tangdao.modules.paas.service.IUserPassageService;
-
-import com.alibaba.fastjson.JSON;
-
-import org.tangdao.modules.paas.model.domain.UserPassage;
 import org.tangdao.modules.exchanger.config.CommonContext.PlatformType;
 import org.tangdao.modules.paas.config.PaasRedisConstant;
+import org.tangdao.modules.paas.config.SettingsContext.SysDictType;
+import org.tangdao.modules.paas.config.SettingsContext.UserDefaultPassageGroupKey;
 import org.tangdao.modules.paas.mapper.UserPassageMapper;
+import org.tangdao.modules.paas.model.domain.UserPassage;
+import org.tangdao.modules.paas.service.IUserPassageService;
+import org.tangdao.modules.sys.utils.DictUtils;
+
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
  * 用户通道配置ServiceImpl
@@ -37,7 +43,7 @@ public class UserPassageServiceImpl extends CrudServiceImpl<UserPassageMapper, U
 
     @Override
     public List<UserPassage> findByUserCode(String userCode) {
-        return userPassageMapper.findByUserId(userCode);
+    	return this.select(Wrappers.<UserPassage>lambdaQuery().eq(UserPassage::getUserCode, userCode));
     }
 
     private String getKey(String userCode, int type) {
@@ -45,20 +51,23 @@ public class UserPassageServiceImpl extends CrudServiceImpl<UserPassageMapper, U
     }
 
     @Override
-    public Integer getByUserCodeAndType(String userCode, int type) {
+    public String getByUserCodeAndType(String userCode, int type) {
         if (StringUtils.isEmpty(userCode) || type == 0) {
             return null;
         }
 
         try {
             String passageGroupId = stringRedisTemplate.opsForValue().get(getKey(userCode, type));
-            if (StringUtils.isNotBlank(passageGroupId)) return Integer.parseInt(passageGroupId);
+            if (StringUtils.isNotBlank(passageGroupId)) return passageGroupId;
 
         } catch (Exception e) {
             logger.warn("REDIS中查询用户通道信息失败 ：{}", e.getMessage());
         }
-
-        UserPassage userPassage = userPassageMapper.selectByUserIdAndType(userCode, type);
+        QueryWrapper<UserPassage> queryWrapper = new QueryWrapper<UserPassage>();
+        queryWrapper.eq("user_code", userCode);
+        queryWrapper.eq("type", type);
+        queryWrapper.orderByDesc("id").last(" limit 1");
+        UserPassage userPassage =  this.getOne(queryWrapper);
         if (userPassage == null) {
             return null;
         }
@@ -68,7 +77,7 @@ public class UserPassageServiceImpl extends CrudServiceImpl<UserPassageMapper, U
 
     @Override
     public List<UserPassage> getPassageGroupListByGroupId(String passageGroupId) {
-        return userPassageMapper.getPassageGroupListByGroupId(passageGroupId);
+    	return this.select(Wrappers.<UserPassage>lambdaQuery().eq(UserPassage::getPassageGroupId, passageGroupId));
     }
 
     @Override
@@ -90,20 +99,20 @@ public class UserPassageServiceImpl extends CrudServiceImpl<UserPassageMapper, U
      * @param userId 用户ID
      * @param type 平台类型：短信/语音/...
      */
-    private void save(Integer passageGroupId, String userId, Integer type) {
+    private void save(String passageGroupId, String userCode, Integer type) {
         try {
-            if (passageGroupId == null || userId == null || type == null) {
-                logger.error("插入用户通道失败，passageGroupId: {}, userId:{}, type: {}", passageGroupId, userId, type);
+            if (passageGroupId == null || userCode == null || type == null) {
+                logger.error("插入用户通道失败，passageGroupId: {}, userCode:{}, type: {}", passageGroupId, userCode, type);
                 return;
             }
             UserPassage userPassage = new UserPassage();
             userPassage.setPassageGroupId(passageGroupId);
             userPassage.setType(type);
-            userPassage.setUserId(userId);
+            userPassage.setUserCode(userCode);
             userPassage.setCreateTime(new Date());
 
-            int effect = userPassageMapper.insertSelective(userPassage);
-            if (effect > 0) {
+            boolean effect = super.save(userPassage);
+            if (effect) {
                 pushToRedis(userPassage);
             }
 
@@ -117,23 +126,23 @@ public class UserPassageServiceImpl extends CrudServiceImpl<UserPassageMapper, U
         try {
             if (ListUtils.isEmpty(passageList)) {
                 // 如果传递的用户通道集合为空，则根据系统参数配置查询平台所有业务的默认可用通道信息，插入值用户通道关系表中
-                List<SystemConfig> systemConfigs = systemConfigService.findByType(SystemConfigType.USER_DEFAULT_PASSAGE_GROUP.name());
-
-                if (ListUtils.isEmpty(systemConfigs)) {
+//                List<SystemConfig> systemConfigs = systemConfigService.findByType(SystemConfigType.USER_DEFAULT_PASSAGE_GROUP.name());
+            	List<Map<String, Object>> dictTypes = DictUtils.getDictList(SysDictType.USER_DEFAULT_PASSAGE_GROUP.name());
+                if (ListUtils.isEmpty(dictTypes)) {
                     throw new RuntimeException("没有可用默认通道组，请配置");
                 }
 
                 Integer type = null;
-                for (SystemConfig config : systemConfigs) {
-                    if (UserDefaultPassageGroupKey.SMS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(config.getAttrKey())) {
+                for (Map<String, Object> map : dictTypes) {
+                    if (UserDefaultPassageGroupKey.SMS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(ObjectUtils.toString(map.get("dictLabel")))) {
                         type = PlatformType.SEND_MESSAGE_SERVICE.getCode();
-                    } else if (UserDefaultPassageGroupKey.FS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(config.getAttrKey())) {
+                    } else if (UserDefaultPassageGroupKey.FS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(ObjectUtils.toString(map.get("dictLabel")))) {
                         type = PlatformType.FLUX_SERVICE.getCode();
-                    } else if (UserDefaultPassageGroupKey.VS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(config.getAttrKey())) {
+                    } else if (UserDefaultPassageGroupKey.VS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(ObjectUtils.toString(map.get("dictLabel")))) {
                         type = PlatformType.VOICE_SERVICE.getCode();
                     }
 
-                    save(StringUtils.isEmpty(config.getAttrValue()) ? null : Integer.parseInt(config.getAttrValue()), userCode, type);
+                    save(ObjectUtils.toString(map.get("dictValue")), userCode, type);
                 }
                 return true;
             }
@@ -141,12 +150,12 @@ public class UserPassageServiceImpl extends CrudServiceImpl<UserPassageMapper, U
             List<Integer> busiCodes = PlatformType.allCodes();
             // 如果传递的通道和不为空，则遍历传递的通道信息，并对平台所有业务代码进行 差值比较
             for (UserPassage passage : passageList) {
-                save(passage.getPassageGroupId(), userId, passage.getType());
+                save(passage.getPassageGroupId(), userCode, passage.getType());
                 busiCodes.remove(passage.getType());
             }
 
             // busiCodes 为空则表明，传递的通道集合包含平台所有业务的通道信息，无需补齐
-            if (CollectionUtils.isEmpty(busiCodes)) {
+            if (ListUtils.isEmpty(busiCodes)) {
                 return true;
             }
 
@@ -156,15 +165,15 @@ public class UserPassageServiceImpl extends CrudServiceImpl<UserPassageMapper, U
                 if (StringUtils.isEmpty(key)) {
                     continue;
                 }
-
-                SystemConfig config = systemConfigService.findByTypeAndKey(SystemConfigType.USER_DEFAULT_PASSAGE_GROUP.name(),
-                                                                           key);
-                if (config == null) {
+                
+                String passageGroupId = DictUtils.getDictValue(SysDictType.USER_DEFAULT_PASSAGE_GROUP.name(), key, null);
+//                SystemConfig config = systemConfigService.findByTypeAndKey(SysDictType.USER_DEFAULT_PASSAGE_GROUP.name(), key);
+                if (passageGroupId == null) {
                     logger.warn("没有可用默认通道组，请配置");
                     continue;
                 }
 
-                save(Integer.parseInt(config.getAttrValue()), userId, code);
+                save(passageGroupId, userCode, code);
             }
 
             return true;
@@ -195,7 +204,7 @@ public class UserPassageServiceImpl extends CrudServiceImpl<UserPassageMapper, U
     @Override
     public boolean update(String userCode, int type, String passageGroupId) {
     	
-        int effect = userPassageMapper.updateByUserIdAndType(passageGroupId, userCode,
+        int effect = this.getBaseMapper().updateByUserCodeAndType(passageGroupId, userCode,
                                                              PlatformType.SEND_MESSAGE_SERVICE.getCode());
         if (effect > 0) {
             pushToRedis(new UserPassage(userCode, type, passageGroupId));

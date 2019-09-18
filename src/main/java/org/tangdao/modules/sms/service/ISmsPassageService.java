@@ -21,7 +21,7 @@ public interface ISmsPassageService extends ICrudService<SmsPassage> {
 	 * @param provinceCodes
 	 * @return
 	 */
-	Map<String, Object> create(SmsPassage passage, String provinceCodes);
+	Map<String, Object> create(SmsPassage passage, String areaCodes);
 
 	/**
 	 * 修改通道
@@ -30,7 +30,7 @@ public interface ISmsPassageService extends ICrudService<SmsPassage> {
 	 * @param provinceCodes
 	 * @return
 	 */
-	Map<String, Object> update(SmsPassage passage, String provinceCodes);
+	Map<String, Object> update(SmsPassage passage, String areaCodes);
 
 	/**
 	 * 删除通道
@@ -129,7 +129,7 @@ public interface ISmsPassageService extends ICrudService<SmsPassage> {
 	 * @param passageId
 	 * @return
 	 */
-	List<SmsPassageArea> getPassageProvinceById(String passageId);
+	List<SmsPassageArea> getPassageAreaById(String passageId);
 
 	/**
 	 * 根据省份代码和运营商获取通道信息
@@ -138,7 +138,7 @@ public interface ISmsPassageService extends ICrudService<SmsPassage> {
 	 * @param cmcp
 	 * @return
 	 */
-	List<SmsPassage> getByProvinceAndCmcp(Integer provinceCode, String cmcp);
+	List<SmsPassage> getByAreaAndCmcp(String areaCode, String cmcp);
 
 	/**
 	 * 测试通道
@@ -151,7 +151,7 @@ public interface ISmsPassageService extends ICrudService<SmsPassage> {
 	 *            短信内容
 	 * @return
 	 */
-	boolean doTestPassage(Integer passageId, String mobile, String content);
+	boolean doTestPassage(String passageId, String mobile, String content);
 
 	/**
 	 * 

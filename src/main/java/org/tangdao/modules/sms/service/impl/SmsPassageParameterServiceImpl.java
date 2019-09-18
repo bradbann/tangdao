@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.modules.sms.service.ISmsPassageParameterService;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import org.tangdao.modules.sms.model.domain.SmsPassageParameter;
@@ -37,6 +38,14 @@ public class SmsPassageParameterServiceImpl extends CrudServiceImpl<SmsPassagePa
 	public boolean deleteByPassageId(String passageId) {
 		// TODO Auto-generated method stub
 		return this.delete(Wrappers.<SmsPassageParameter>lambdaQuery().eq(SmsPassageParameter::getPassageId, passageId));
+	}
+	
+	public SmsPassageParameter selectSendProtocol(String passageId) {
+		QueryWrapper<SmsPassageParameter> queryWrapper = new QueryWrapper<SmsPassageParameter>();
+		queryWrapper.eq("passage_id", passageId);
+		queryWrapper.eq("call_type", 1);
+		queryWrapper.orderByDesc("id").last(" limit 1");
+		return this.getOne(queryWrapper);
 	}
 		
 }

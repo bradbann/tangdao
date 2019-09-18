@@ -34,4 +34,6 @@ public interface ISmsPassageParameterService extends ICrudService<SmsPassagePara
 	SmsPassageParameter getByType(PassageCallType callType, String passageCode);
 	
 	boolean deleteByPassageId(String passageId);
+	
+	public SmsPassageParameter selectSendProtocol(String passageId);
 }

@@ -105,7 +105,7 @@ public interface ISmsPassageAccessService extends ICrudService<SmsPassageAccess>
 	 * @param passageGroupId
 	 * @return
 	 */
-	boolean updateByModifyPassageGroup(int passageGroupId);
+	boolean updateByModifyPassageGroup(String passageGroupId);
 
 	/**
 	 * 当更新通道时，通道信息发生变化，更新access

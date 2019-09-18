@@ -1,5 +1,7 @@
 package org.tangdao.modules.sms.service;
 
+import java.util.List;
+
 import org.tangdao.common.service.ICrudService;
 import org.tangdao.modules.sms.model.domain.SmsPassageArea;
 
@@ -10,4 +12,7 @@ import org.tangdao.modules.sms.model.domain.SmsPassageArea;
  */
 public interface ISmsPassageAreaService extends ICrudService<SmsPassageArea> {
 		
+	public List<SmsPassageArea> selectSmsPassageAreaByPassageId(String passageId);
+	
+	public boolean deleteByPassageId(String passageId);
 }

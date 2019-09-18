@@ -33,16 +33,17 @@ import org.tangdao.modules.sms.config.PassageContext.PassageStatus;
 import org.tangdao.modules.sms.config.PassageContext.RouteType;
 import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.mapper.SmsPassageAccessMapper;
-import org.tangdao.modules.sms.mapper.SmsPassageGroupDetailMapper;
 import org.tangdao.modules.sms.model.domain.SmsPassage;
 import org.tangdao.modules.sms.model.domain.SmsPassageAccess;
 import org.tangdao.modules.sms.model.domain.SmsPassageGroupDetail;
 import org.tangdao.modules.sms.model.domain.SmsPassageParameter;
 import org.tangdao.modules.sms.service.ISmsPassageAccessService;
+import org.tangdao.modules.sms.service.ISmsPassageGroupDetailService;
 import org.tangdao.modules.sms.service.ISmsPassageParameterService;
 import org.tangdao.modules.sms.service.ISmsPassageService;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -81,7 +82,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
     @Autowired
     private SmsPassageAccessMapper               smsPassageAccessMapper;
     @Autowired
-    private SmsPassageGroupDetailMapper          smsPassageGroupDetailMapper;
+    private ISmsPassageGroupDetailService        smsPassageGroupDetailService;
     @Autowired
     private ISmsPassageParameterService          smsPassageParameterService;
     @Resource
@@ -199,8 +200,8 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
     public boolean updateByModifyUser(String userCode) {
         try {
             // 根据userId 获取用户短信通道组关系信息
-            Integer passageGroupId = userPassageService.getByUserIdAndType(userCode, PassageTemplateType.SMS.getValue());
-            if (passageGroupId == null) {
+            String passageGroupId = userPassageService.getByUserCodeAndType(userCode, PassageTemplateType.SMS.getValue());
+            if (StringUtils.isEmpty(passageGroupId)) {
                 logger.error("根据用户：{} 查不到相关短信通道对应关系", userCode);
                 return false;
             }
@@ -222,10 +223,10 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
      * @param userId 用户ID
      * @param passageGroupId 通道组ID
      */
-    private void rebandPassageAccessInGroup(String userCode, int passageGroupId) {
+    private void rebandPassageAccessInGroup(String userCode, String passageGroupId) {
         try {
             // 根据用户ID删除所有的可用通道信息
-            smsPassageAccessMapper.deleteByUserId(userCode);
+            smsPassageAccessMapper.deleteByUserCode(userCode);
             // 删除该用户的ACCESS Redis中信息
             stringRedisTemplate.delete(stringRedisTemplate.keys(getMainLikeKey(userCode)));
 
@@ -241,7 +242,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
 
                 // 如果通道状态为不可用，直接忽略
                 if (detail == null || detail.getSmsPassage() == null || detail.getSmsPassage().getStatus() == null
-                    || PassageStatus.ACTIVE.getValue() != detail.getSmsPassage().getStatus()) {
+                    || PassageStatus.ACTIVE.getValue() != Integer.valueOf(detail.getSmsPassage().getStatus()).intValue()) {
                     continue;
                 }
 
@@ -298,7 +299,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
      * @param userId 用户ID
      * @param passageGroupId 通道组ID
      */
-    private void replacePassageValue2Access(SmsPassageGroupDetail detail, String userCode, Integer passageGroupId) {
+    private void replacePassageValue2Access(SmsPassageGroupDetail detail, String userCode, String passageGroupId) {
         SmsPassage smsPassage = detail.getSmsPassage();
 
         try {
@@ -353,7 +354,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
 
     @Override
     @Transactional
-    public boolean updateByModifyPassageGroup(int passageGroupId) {
+    public boolean updateByModifyPassageGroup(String passageGroupId) {
         try {
             List<UserPassage> userPassageList = userPassageService.getPassageGroupListByGroupId(passageGroupId);
             for (UserPassage userPassage : userPassageList) {
@@ -372,8 +373,8 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
     @Transactional
     public boolean updateByModifyPassage(String passageId) {
         try {
-            List<Integer> groupIdList = smsPassageGroupDetailMapper.getGroupIdByPassageId(passageId);
-            for (Integer groupId : groupIdList) {
+            List<String> groupIdList = smsPassageGroupDetailService.selectGroupIdByPassageId(passageId);
+            for (String groupId : groupIdList) {
                 this.updateByModifyPassageGroup(groupId);
             }
 
@@ -387,11 +388,12 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
 
     @Override
     public SmsPassageAccess get(String id) {
-        SmsPassageAccess access = smsPassageAccessMapper.selectByPrimaryKey(id);
+        SmsPassageAccess access = smsPassageAccessMapper.selectById(id);
         if (access != null) {
             // 根据省份代码查询省份名称
-            Province province = provinceService.get(access.getAreaCode());
-            access.setProvinceName(province == null ? "未知" : province.getName());
+//            Province province = provinceService.get(access.getAreaCode());
+//            
+//            access.setProvinceName(province == null ? "未知" : province.getName());
             // 设置路由类型名称
             access.setRouteTypeText(RouteType.parse(access.getRouteType()).getName());
 
@@ -407,12 +409,19 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
 
     @Override
     public List<SmsPassageAccess> findWaitPulling(PassageCallType callType) {
-        return smsPassageAccessMapper.selectWaitPulling(callType.getCode());
+    	QueryWrapper<SmsPassageAccess> queryWrapper = new QueryWrapper<SmsPassageAccess>();
+    	queryWrapper.eq("call_type", callType.getCode());
+    	queryWrapper.eq("status", SmsPassageAccess.STATUS_NORMAL);
+    	queryWrapper.groupBy("passage_id","protocol","call_type","url","params","success_code");
+        return super.select(queryWrapper);
     }
 
     @Override
     public List<SmsPassageAccess> findPassageBalace() {
-        return smsPassageAccessMapper.selectByType(PassageCallType.PASSAGE_BALANCE_GET.getCode());
+    	QueryWrapper<SmsPassageAccess> queryWrapper = new QueryWrapper<SmsPassageAccess>();
+    	queryWrapper.eq("call_type", PassageCallType.PASSAGE_BALANCE_GET.getCode());
+    	queryWrapper.orderByAsc("user_code");
+    	return super.select(queryWrapper);
     }
 
     /**
@@ -433,7 +442,11 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
             return CODE_TYPE_ACCESS_CONTAINER.get(passageAccessKey);
         }
 
-        SmsPassageAccess access = smsPassageAccessMapper.getByTypeAndUrl(callType.getCode(), passageCode);
+        QueryWrapper<SmsPassageAccess> queryWrapper = new QueryWrapper<SmsPassageAccess>();
+    	queryWrapper.eq("call_type", callType.getCode());
+    	queryWrapper.eq("url", passageCode);
+    	queryWrapper.orderByAsc("user_code").last(" limit 1");
+        SmsPassageAccess access = this.getOne(queryWrapper);
         if (access != null) {
             CODE_TYPE_ACCESS_CONTAINER.put(passageAccessKey, access);
             return access;
@@ -467,11 +480,15 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
         smsPassageAccess.setSuccessCode(passageParameter.getSuccessCode());
         return smsPassageAccess;
     }
+    
+    public List<SmsPassageAccess> selectByPassageId(String passageId){
+    	return smsPassageAccessMapper.selectList(Wrappers.<SmsPassageAccess>lambdaQuery().eq(SmsPassageAccess::getPassageId, passageId));
+    }
 
     @Override
     public boolean deletePassageAccess(String passageId) {
         try {
-            List<SmsPassageAccess> list = smsPassageAccessMapper.selectByPassageId(passageId);
+            List<SmsPassageAccess> list = selectByPassageId(passageId);
             if (ListUtils.isEmpty(list)) {
                 return true;
             }
@@ -513,7 +530,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
         }
 
         try {
-            List<SmsPassageAccess> list = smsPassageAccessMapper.selectByPassageId(passageId);
+            List<SmsPassageAccess> list = selectByPassageId(passageId);
             if (ListUtils.isEmpty(list)) {
                 return true;
             }

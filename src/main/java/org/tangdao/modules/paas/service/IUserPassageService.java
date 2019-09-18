@@ -49,11 +49,11 @@ public interface IUserPassageService extends ICrudService<UserPassage> {
     /**
      * TODO 根据用户ID和平台类型获取通道组信息
      * 
-     * @param userId
+     * @param userCode
      * @param type
      * @return
      */
-    Integer getByUserCodeAndType(String userCode, int type);
+    String getByUserCodeAndType(String userCode, int type);
 
     /**
      * TODO 根据通道组ID获取所有的用户通道信息

@@ -34,5 +34,10 @@ public class UserPassage extends DataEntity<UserPassage> {
 	public UserPassage(String id){
 		super(id);
 	}
-	
+	public UserPassage(String userCode, Integer type, String passageGroupId) {
+
+        this.userCode = userCode;
+        this.type = type;
+        this.passageGroupId = passageGroupId;
+    }
 }

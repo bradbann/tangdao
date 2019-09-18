@@ -23,24 +23,26 @@ import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.exchanger.config.CommonContext.PassageCallType;
 import org.tangdao.modules.exchanger.config.CommonContext.PlatformType;
 import org.tangdao.modules.exchanger.config.CommonContext.ProtocolType;
-import org.tangdao.modules.exchanger.config.OpenApiCode;
 import org.tangdao.modules.exchanger.service.ISmsProxyManager;
 import org.tangdao.modules.paas.config.SettingsContext;
-import org.tangdao.modules.paas.config.SettingsContext.SystemConfigType;
+import org.tangdao.modules.paas.config.SettingsContext.SysDictType;
 import org.tangdao.modules.paas.model.domain.UserDeveloper;
+import org.tangdao.modules.paas.service.IUserDeveloperService;
+import org.tangdao.modules.paas.service.IUserPassageService;
 import org.tangdao.modules.sms.config.UserContext.UserStatus;
 import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.mapper.SmsPassageMapper;
 import org.tangdao.modules.sms.model.domain.SmsPassage;
-import org.tangdao.modules.sms.model.domain.SmsPassageParameter;
 import org.tangdao.modules.sms.model.domain.SmsPassageArea;
+import org.tangdao.modules.sms.model.domain.SmsPassageParameter;
 import org.tangdao.modules.sms.service.ISmsMtSubmitService;
-import org.tangdao.modules.sms.service.ISmsPassageParameterService;
+import org.tangdao.modules.sms.service.ISmsPassageAccessService;
 import org.tangdao.modules.sms.service.ISmsPassageAreaService;
+import org.tangdao.modules.sms.service.ISmsPassageParameterService;
 import org.tangdao.modules.sms.service.ISmsPassageService;
+import org.tangdao.modules.sys.utils.DictUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -50,6 +52,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
  */
 @Service
 public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, SmsPassage> implements ISmsPassageService{
+	
 	private final Logger              logger            = LoggerFactory.getLogger(getClass());
 
     /**
@@ -61,7 +64,7 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
     private StringRedisTemplate       stringRedisTemplate;
     
     @Autowired
-    private ISmsPassageAreaService smsPassageProvinceService;
+    private ISmsPassageAreaService smsPassageAreaService;
     
     @Autowired
     private ISmsPassageParameterService smsPassageParameterService;
@@ -71,6 +74,17 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
     
     @Autowired
     private ISmsProxyManager smsProxyManager;
+    
+    @Autowired
+    private IUserPassageService       userPassageService;
+//    @Autowired
+//    private ISmsPassageGroupService   passageGroupService;
+//    @Autowired
+//    private ISmsMessageSendService       messageSendService;
+    @Autowired
+    private IUserDeveloperService     userDeveloperService;
+    @Autowired
+    private ISmsPassageAccessService  smsPassageAccessService;
     
     /**
      * 是否是中文字符
@@ -110,22 +124,22 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
      * @param passage 通道
      * @param provinceCodes 省份代码（半角分号分割）
      */
-    private void bindPassageProvince(SmsPassage passage, String provinceCodes) {
-        if (StringUtils.isEmpty(provinceCodes)) {
+    private void bindPassageProvince(SmsPassage passage, String areaCodes) {
+        if (StringUtils.isEmpty(areaCodes)) {
             return;
         }
 
-        String[] codeArray = provinceCodes.split(",");
+        String[] codeArray = areaCodes.split(",");
         if (codeArray.length == 0) {
             return;
         }
 
         for (String code : codeArray) {
-            passage.getProvinceList().add(new SmsPassageArea(passage.getId(), code));
+            passage.getAreaList().add(new SmsPassageArea(passage.getId(), code));
         }
 
-        if (ListUtils.isNotEmpty(passage.getProvinceList())) {
-        	smsPassageProvinceService.saveBatch(passage.getProvinceList());
+        if (ListUtils.isNotEmpty(passage.getAreaList())) {
+        	smsPassageAreaService.saveBatch(passage.getAreaList());
         }
     }
 
@@ -341,8 +355,8 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
                 throw new RuntimeException("删除通道参数失败");
             }
 
-            result = smsPassageProvinceMapper.deleteByPassageId(id);
-            if (result == 0) {
+            result = smsPassageAreaService.deleteByPassageId(id);
+            if (!result) {
                 throw new RuntimeException("删除通道省份关系数据失败");
             }
 
@@ -368,8 +382,9 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
             SmsPassage passage = new SmsPassage();
             passage.setId(passageId);
             passage.setStatus(status);
-            int result = smsPassageMapper.updateByPrimaryKeySelective(passage);
-            if (result == 0) {
+            boolean result = this.updateById(passage);
+//            int result = smsPassageMapper.updateByPrimaryKeySelective(passage);
+            if (!result) {
                 throw new RuntimeException("更新通道状态失败");
             }
 
@@ -457,10 +472,6 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
 
     }
 
-    @Override
-    public List<SmsPassage> findByGroupId(String groupId) {
-        return smsPassageMapper.selectByGroupId(groupId);
-    }
 
     @Override
     public SmsPassage getBestAvaiable(String groupId) {
@@ -481,19 +492,13 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
 
     @Override
     public List<SmsPassage> getByCmcp(String cmcp) {
-    	
-        return smsPassageMapper.getByCmcp(cmcp);
+    	return this.select(Wrappers.<SmsPassage>lambdaQuery().eq(SmsPassage::getStatus, SmsPassage.STATUS_NORMAL).eq(SmsPassage::getCmcp, cmcp).or().eq(SmsPassage::getCmcp, "4"));
     }
 
-    @Override
-    public List<SmsPassage> findAccessPassages(String groupId, String cmcp, int routeType) {
-        // 0代表可用状态
-        return smsPassageMapper.selectAvaiablePassages(groupId, cmcp, routeType, 0);
-    }
 
     @Override
     public List<SmsPassage> findByCmcpOrAll(String cmcp) {
-        return smsPassageMapper.findByCmcpOrAll(cmcp);
+    	return this.select(Wrappers.<SmsPassage>lambdaQuery().eq(SmsPassage::getStatus, SmsPassage.STATUS_NORMAL).eq(SmsPassage::getType, "0").eq(SmsPassage::getCmcp, cmcp).or().eq(SmsPassage::getCmcp, "4"));
     }
 
     @Override
@@ -522,13 +527,8 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
     }
 
     @Override
-    public List<SmsPassageArea> getPassageProvinceById(String passageId) {
-        return this.smsPassageProvinceService.getListByPassageId(passageId);
-    }
-
-    @Override
-    public List<SmsPassage> getByProvinceAndCmcp(String provinceCode, String cmcp) {
-        return smsPassageMapper.getByProvinceAndCmcp(provinceCode, cmcp);
+    public List<SmsPassageArea> getPassageAreaById(String passageId) {
+        return this.smsPassageAreaService.selectSmsPassageAreaByPassageId(passageId);
     }
 
     private boolean pushToRedis(SmsPassage smsPassage) {
@@ -573,37 +573,30 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
     @Override
     @Transactional
     public boolean doMonitorSmsSend(String mobile, String content) {
-        SystemConfig systemConfig = systemConfigService.findByTypeAndKey(SystemConfigType.SMS_ALARM_USER.name(),
-                                                                         "user_id");
-        if (systemConfig == null) {
-            logger.error("告警用户未配置，请于系统配置表进行配置");
-            return false;
-        }
-
-        String userId = systemConfig.getAttrValue();
-        if (StringUtils.isEmpty(userId)) {
+        String userCode = DictUtils.getDictValue(SysDictType.SMS_ALARM_USER.name(), SettingsContext.USER_CODE_KEY_NAME, null);
+        if (StringUtils.isEmpty(userCode)) {
             logger.error("告警用户数据为空，请配置");
             return false;
         }
 
         try {
             // 根据用户ID获取开发者相关信息
-            UserDeveloper developer = userDeveloperService.getByUserId(Integer.parseInt(userId));
+            UserDeveloper developer = userDeveloperService.getByUserCode(userCode);
             if (developer == null) {
-                logger.error("用户ID：{}，开发者信息为空", userId);
+                logger.error("用户：{}，开发者信息为空", userCode);
                 return false;
             }
 
             // 如果用户无效则报错
-            if (UserStatus.YES.getValue() != developer.getStatus()) {
-                logger.error("用户ID：{}，开发者信息状态[" + developer.getStatus() + "]无效", userId);
+            if (!UserStatus.YES.getValue().equals(developer.getStatus())) {
+                logger.error("用户：{}，开发者信息状态[" + developer.getStatus() + "]无效", userCode);
                 return false;
             }
 
             // 调用发送短信接口
-            SmsResponse response = messageSendService.sendCustomMessage(developer.getAppKey(), developer.getAppSecret(),
-                                                                        mobile, content);
-            return OpenApiCode.SUCCESS.equals(response.getCode());
+//            SmsResponse response = messageSendService.sendCustomMessage(developer.getAppKey(), developer.getAppSecret(), mobile, content);
+//            return OpenApiCode.SUCCESS.equals(response.getCode());
+            return false;
         } catch (Exception e) {
             logger.error("通道告警逻辑失败", e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -614,51 +607,46 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
     @Override
     @Transactional
     public boolean doTestPassage(String passageId, String mobile, String content) {
-        SystemConfig systemConfig = systemConfigService.findByTypeAndKey(SystemConfigType.PASSAGE_TEST_USER.name(),
-                                                                         SettingsContext.USER_ID_KEY_NAME);
-        if (systemConfig == null) {
-            logger.error("通道测试用户未配置，请于系统配置表进行配置");
-            return false;
-        }
+//        String  systemConfig = systemConfigService.findByTypeAndKey(SystemConfigType.PASSAGE_TEST_USER.name(),
+//                                                                         SettingsContext.USER_ID_KEY_NAME);
+        String userCode = DictUtils.getDictValue(SysDictType.PASSAGE_TEST_USER.name(), SettingsContext.USER_CODE_KEY_NAME, null);
 
-        String userId = systemConfig.getAttrValue();
-        if (StringUtils.isEmpty(userId)) {
+        if (StringUtils.isEmpty(userCode)) {
             logger.error("通道测试用户数据为空，请配置");
             return false;
         }
 
         try {
-            Integer passageGroupId = userPassageService.getByUserIdAndType(Integer.parseInt(userId),
-                                                                           PlatformType.SEND_MESSAGE_SERVICE.getCode());
-            if (passageGroupId == null) {
+            String passageGroupId = userPassageService.getByUserCodeAndType(userCode, PlatformType.SEND_MESSAGE_SERVICE.getCode());
+            if (StringUtils.isEmpty(passageGroupId)) {
                 logger.error("通道测试用户未配置短信通道组信息");
                 return false;
             }
 
-            boolean result = passageGroupService.doChangeGroupPassage(passageGroupId, passageId);
-            if (!result) {
-                logger.error("通道组ID：{}，切换通道ID：{} 失败", passageGroupId, passageId);
-                return false;
-            }
-
-            // 更新通道组下 的可用通道相关
-            result = smsPassageAccessService.updateByModifyPassageGroup(passageGroupId);
-            if (!result) {
-                logger.error("通道组ID：{}，切换可用通道失败", passageGroupId);
-                return false;
-            }
-
-            // 根据用户ID获取开发者相关信息
-            UserDeveloper developer = userDeveloperService.getByUserId(Integer.parseInt(userId));
-            if (developer == null) {
-                logger.error("用户ID：{}，开发者信息为空", userId);
-                return false;
-            }
-
-            // 调用发送短信接口
-            SmsResponse response = messageSendService.sendCustomMessage(developer.getAppKey(), developer.getAppSecret(),
-                                                                        mobile, content);
-            return OpenApiCode.SUCCESS.equals(response.getCode());
+//            boolean result = passageGroupService.doChangeGroupPassage(passageGroupId, passageId);
+//            if (!result) {
+//                logger.error("通道组ID：{}，切换通道ID：{} 失败", passageGroupId, passageId);
+//                return false;
+//            }
+//
+//            // 更新通道组下 的可用通道相关
+//            result = smsPassageAccessService.updateByModifyPassageGroup(passageGroupId);
+//            if (!result) {
+//                logger.error("通道组ID：{}，切换可用通道失败", passageGroupId);
+//                return false;
+//            }
+//
+//            // 根据用户ID获取开发者相关信息
+//            UserDeveloper developer = userDeveloperService.getByUserCode(userCode);
+//            if (developer == null) {
+//                logger.error("用户：{}，开发者信息为空", userCode);
+//                return false;
+//            }
+//
+//            // 调用发送短信接口
+//            SmsResponse response = messageSendService.sendCustomMessage(developer.getAppKey(), developer.getAppSecret(),  mobile, content);
+//            return OpenApiCode.SUCCESS.equals(response.getCode());
+            return false;
         } catch (Exception e) {
             logger.error("通道测试逻辑失败", e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -668,7 +656,7 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
 
     @Override
     public List<String> findPassageCodes() {
-        return smsPassageMapper.selectAvaiableCodes();
+        return this.getBaseMapper().selectAvaiableCodes();
     }
 
     @Override
@@ -676,13 +664,13 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
         if (StringUtils.isNotEmpty(protocol)) {
             return ProtocolType.isBelongtoDirect(protocol);
         }
-
-        SmsPassage passage = smsPassageMapper.getPassageByCode(passageCode.trim());
+        
+        SmsPassage passage = this.getBaseMapper().getPassageByCode(passageCode.trim());
         if (passage == null) {
             return false;
         }
 
-        SmsPassageParameter parameter = parameterMapper.selectSendProtocol(passage.getId());
+        SmsPassageParameter parameter = smsPassageParameterService.selectSendProtocol(passage.getId());
         if (parameter == null) {
             return false;
         }
@@ -713,4 +701,22 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
             return false;
         }
     }
+
+	@Override
+	public List<SmsPassage> findByGroupId(String groupId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<SmsPassage> findAccessPassages(String groupId, String cmcp, int routeType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<SmsPassage> getByAreaAndCmcp(String areaCode, String cmcp) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

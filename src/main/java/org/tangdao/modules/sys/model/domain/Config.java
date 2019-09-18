@@ -50,5 +50,5 @@ public class Config extends DataEntity<Config>{
      */
     @NotBlank(message="参数键值不能为空")
     private String configValue;
-
+    
 }

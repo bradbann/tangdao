@@ -2,6 +2,7 @@ package org.tangdao.modules.sms.model.domain;
 
 import org.tangdao.common.suports.DataEntity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -20,6 +21,8 @@ public class SmsPassageGroupDetail extends DataEntity<SmsPassageGroupDetail> {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private static final String SPLIT_TAG = "#passage_split#";
+	
 	@TableId
 	private String id;
 	
@@ -30,11 +33,40 @@ public class SmsPassageGroupDetail extends DataEntity<SmsPassageGroupDetail> {
 	private String priority;		// 优先级
 	private int    cmcp;		// 运营商1-移动 2-联通 3-电信
 	
+	@TableField(exist = false)
+	private SmsPassage smsPassage;
+	
 	public SmsPassageGroupDetail() {
 		super();
 	}
 
-	public SmsPassageGroupDetail(String id){
-		super(id);
-	}
+	public SmsPassageGroupDetail(String formData){
+        //passageId + split_tag + passageName + split_tag + provinceCode + split_tag + cmcp + split_tag + routeType;
+        String[] datas = formData.split(SPLIT_TAG);
+        this.passageId = datas[0];
+        this.areaCode = datas[2];
+        this.cmcp = Integer.parseInt(datas[3]);
+        this.routeType = Integer.parseInt(datas[4]);
+    }
+
+    public String disponsePassageToSplitStr(){
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(passageId);
+        buffer.append(SPLIT_TAG);
+        buffer.append(smsPassage.getName());
+        if(smsPassage.getType()== 1){
+            buffer.append(" [独]");
+        }
+        if(smsPassage.getCmcp() == 4){
+            buffer.append(" [全]");
+        }
+
+        buffer.append(SPLIT_TAG);
+        buffer.append(areaCode);
+        buffer.append(SPLIT_TAG);
+        buffer.append(cmcp);
+        buffer.append(SPLIT_TAG);
+        return buffer.toString();
+    }
+	
 }

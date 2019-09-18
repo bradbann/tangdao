@@ -29,7 +29,7 @@ public class SmsPassage extends DataEntity<SmsPassage> {
 	
 	private String name;		// 通道名称
 	private String code;		// 通道字母编码
-	private String cmcp;		// 运营商
+	private int    cmcp;		// 运营商
 	private int    wordNumber;		// 计费字数
 	private String priority;		// 优先级
 	private String paasTemplateId;		// 通道模板
