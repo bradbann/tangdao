@@ -6,11 +6,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.tangdao.modules.sms.config.runner.SmsInitializeRunner;
 
 import com.rabbitmq.client.Channel;
 
-public abstract class AbstartRabbitListener {
+public abstract class AbstartRabbitListener implements ChannelAwareMessageListener{
 
 	protected Logger              logger                              = LoggerFactory.getLogger(getClass());
 
@@ -81,13 +82,13 @@ public abstract class AbstartRabbitListener {
      */
     public abstract void onMessage(Message message, Channel channel) throws Exception;
 
-//    public static void main(String[] args) {
-//        String[] mobile = { "1", "2", "3", "4", "5", "6", "7", "8" };
-//        List<String> list = regroupMobiles(mobile, 4000);
-//        for (String m : list) {
-//            System.out.println(m);
-//        }
-//
-//        System.out.println(list.size());
-//    }
+    public static void main(String[] args) {
+        String[] mobile = { "1", "2", "3", "4", "5", "6", "7", "8" };
+        List<String> list = regroupMobiles(mobile, 4000);
+        for (String m : list) {
+            System.out.println(m);
+        }
+
+        System.out.println(list.size());
+    }
 }

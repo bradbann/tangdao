@@ -28,6 +28,7 @@ import org.tangdao.modules.sms.config.TaskContext.MessageSubmitStatus;
 import org.tangdao.modules.sms.config.rabbit.RabbitMessageQueueManager;
 import org.tangdao.modules.sms.config.rabbit.constant.RabbitConstant;
 import org.tangdao.modules.sms.config.rabbit.constant.RabbitConstant.WordsPriority;
+import org.tangdao.modules.sms.config.rabbit.listener.SmsWaitSubmitListener;
 import org.tangdao.modules.sms.mapper.SmsMtMessagePushMapper;
 import org.tangdao.modules.sms.mapper.SmsMtMessageSubmitMapper;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
@@ -55,24 +56,24 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 @Service
 public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageSubmitMapper, SmsMtMessageSubmit> implements ISmsMtSubmitService{
 	
-	@Autowired
-    private IUserService              userService;
-    @Autowired
-    private SmsMtMessageSubmitMapper  smsMtMessageSubmitMapper;
-    @Autowired
-    private SmsMtMessagePushMapper    pushMapper;
-	@Autowired
-    private ISmsMtPushService         smsMtPushService;
-    @Autowired
-    private ISmsMtDeliverService      smsMtDeliverService;
+//	@Autowired
+//    private IUserService              userService;
+//    @Autowired
+//    private SmsMtMessageSubmitMapper  smsMtMessageSubmitMapper;
+//    @Autowired
+//    private SmsMtMessagePushMapper    pushMapper;
+//	@Autowired
+//    private ISmsMtPushService         smsMtPushService;
+//    @Autowired
+//    private ISmsMtDeliverService      smsMtDeliverService;
     @Autowired
     private ISmsPassageService        smsPassageService;
 
     @Resource
     private RabbitTemplate            rabbitTemplate;
 
-//    @Autowired
-//    private SmsWaitSubmitListener     smsWaitSubmitListener;
+    @Autowired
+    private SmsWaitSubmitListener     smsWaitSubmitListener;
 
     @Autowired
     private RabbitMessageQueueManager rabbitMessageQueueManager;
@@ -88,290 +89,290 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 		return this.getOne(queryWrapper);
 	}
 
-    @Override
-    public List<SmsMtMessageSubmit> findBySid(long sid) {
-    	return this.select(Wrappers.<SmsMtMessageSubmit>lambdaQuery().eq(SmsMtMessageSubmit::getSid, sid));
-    }
-
 //    @Override
-//    public boolean save(SmsMtMessageSubmit submit) {
-//        submit.setCreateTime(new Date());
-//        return smsMtMessageSubmitMapper.insertSelective(submit) > 0;
+//    public List<SmsMtMessageSubmit> findBySid(long sid) {
+//    	return this.select(Wrappers.<SmsMtMessageSubmit>lambdaQuery().eq(SmsMtMessageSubmit::getSid, sid));
 //    }
-
-//    @Override
-//    public List<SmsMtMessageSubmit> findList(Map<String, Object> queryParams) {
 //
-//        changeTimestampeParamsIfExists(queryParams);
+////    @Override
+////    public boolean save(SmsMtMessageSubmit submit) {
+////        submit.setCreateTime(new Date());
+////        return smsMtMessageSubmitMapper.insertSelective(submit) > 0;
+////    }
 //
-//        return smsMtMessageSubmitMapper.findList(queryParams);
-//    }
+////    @Override
+////    public List<SmsMtMessageSubmit> findList(Map<String, Object> queryParams) {
+////
+////        changeTimestampeParamsIfExists(queryParams);
+////
+////        return smsMtMessageSubmitMapper.findList(queryParams);
+////    }
+////
+////    /**
+////     * 转换时间戳信息
+////     *
+////     * @param queryParams
+////     */
+////    private void changeTimestampeParamsIfExists(Map<String, Object> queryParams) {
+////        String startDate = queryParams.get("startDate") == null ? "" : queryParams.get("startDate").toString();
+////        String endDate = queryParams.get("endDate") == null ? "" : queryParams.get("endDate").toString();
+////
+////        if (StringUtils.isNotBlank(startDate)) {
+////            queryParams.put("startDate", DateUtil.getSecondDate(startDate).getTime());
+////        }
+////
+////        if (StringUtils.isNotBlank(endDate)) {
+////            queryParams.put("endDate", DateUtil.getSecondDate(endDate).getTime());
+////        }
+////
+////    }
 //
 //    /**
-//     * 转换时间戳信息
+//     * 加入记录关联列数据（主要针对回执数据和推送数据）
 //     *
-//     * @param queryParams
+//     * @param submits
 //     */
-//    private void changeTimestampeParamsIfExists(Map<String, Object> queryParams) {
-//        String startDate = queryParams.get("startDate") == null ? "" : queryParams.get("startDate").toString();
-//        String endDate = queryParams.get("endDate") == null ? "" : queryParams.get("endDate").toString();
+//    private void joinRecordFascade(List<SmsMtMessageSubmit> submits) {
+//        Map<String, SmsMtMessagePush> pushMap = new HashMap<>();
 //
-//        if (StringUtils.isNotBlank(startDate)) {
-//            queryParams.put("startDate", DateUtil.getSecondDate(startDate).getTime());
-//        }
+//        // 加入内存对象，减少DB的查询次数
+////        Map<String, User> userModelMap = new HashMap<>();
+//        Map<String, String> passageMap = new HashMap<>();
 //
-//        if (StringUtils.isNotBlank(endDate)) {
-//            queryParams.put("endDate", DateUtil.getSecondDate(endDate).getTime());
+//        String key;
+//        for (SmsMtMessageSubmit record : submits) {
+//            key = String.format("%s_%s", record.getMsgId(), record.getMobile());
+////            if (record.getUserCode() != null) {
+////                if (userModelMap.containsKey(record.getUserCode())) {
+////                    record.setUserModel(userModelMap.get(record.getUserCode()));
+////                } else {
+////                    record.setUserModel(userService.getByUserId(record.getUserId()));
+////                    userModelMap.put(record.getUserId(), record.getUserModel());
+////                }
+////            }
+//
+//            if (record.getNeedPush()) {
+//                if (pushMap.containsKey(key)) {
+//                    record.setMessagePush(pushMap.get(key));
+//                } else {
+//                    record.setMessagePush(smsMtPushService.findByMobileAndMsgid(record.getMobile(), record.getMsgId()));
+//                    pushMap.put(key, record.getMessagePush());
+//                }
+//            }
+//            // if(record.getStatus() == 0){
+//            // if(deliverMap.containsKey(key)) {
+//            // record.setMessageDeliver(deliverMap.get(key));
+//            // } else {
+//            // record.setMessageDeliver(smsMtDeliverService.findByMobileAndMsgid(record.getMobile(),record.getMsgId()));
+//            // deliverMap.put(key, record.getMessageDeliver());
+//            // }
+//            // }
+//            if (record.getPassageId() != null) {
+//                if (record.getPassageId() == PassageContext.EXCEPTION_PASSAGE_ID) {
+//                    record.setPassageName(PassageContext.EXCEPTION_PASSAGE_NAME);
+//                } else {
+//                    if (passageMap.containsKey(record.getUserCode())) {
+//                        record.setPassageName(passageMap.get(record.getPassageId()));
+//                    } else {
+//                        SmsPassage passage = smsPassageService.findById(record.getPassageId());
+//                        if (passage != null) {
+//                            record.setPassageName(passage.getName());
+//                            passageMap.put(record.getPassageId(), passage.getName());
+//                        }
+//                    }
+//                }
+//            }
 //        }
 //
 //    }
-
-    /**
-     * 加入记录关联列数据（主要针对回执数据和推送数据）
-     *
-     * @param submits
-     */
-    private void joinRecordFascade(List<SmsMtMessageSubmit> submits) {
-        Map<String, SmsMtMessagePush> pushMap = new HashMap<>();
-
-        // 加入内存对象，减少DB的查询次数
-//        Map<String, User> userModelMap = new HashMap<>();
-        Map<String, String> passageMap = new HashMap<>();
-
-        String key;
-        for (SmsMtMessageSubmit record : submits) {
-            key = String.format("%s_%s", record.getMsgId(), record.getMobile());
-//            if (record.getUserCode() != null) {
-//                if (userModelMap.containsKey(record.getUserCode())) {
-//                    record.setUserModel(userModelMap.get(record.getUserCode()));
-//                } else {
-//                    record.setUserModel(userService.getByUserId(record.getUserId()));
-//                    userModelMap.put(record.getUserId(), record.getUserModel());
-//                }
+//
+//    @Override
+//    public List<ConsumptionReport> getConsumeMessageInYestday() {
+//        Set<Integer> userList = userService.findAvaiableUserIds();
+//        if (ListUtils.isEmpty(userList)) {
+//            throw new RuntimeException("用户数据异常，请检修");
+//        }
+//
+//        List<ConsumptionReport> list = new ArrayList<>();
+//
+//        // 昨日日期
+//        String yestday = DateUtil.getDayGoXday(-1);
+//        List<SmsMtMessageSubmit> submits = smsMtMessageSubmitMapper.findByDate(yestday);
+//
+//        // 已存在的用户ID
+//        Set<Integer> existsUsers = new HashSet<>();
+//        ConsumptionReport report;
+//        for (SmsMtMessageSubmit submit : submits) {
+//            report = new ConsumptionReport();
+//            report.setAmount(submit.getFee());
+//            report.setType(PlatformType.SEND_MESSAGE_SERVICE.getCode());
+//            report.setRecordDate(DateUtil.getDayDate(yestday));
+//            report.setUserId(submit.getUserId());
+//
+//            existsUsers.add(submit.getUserId());
+//            list.add(report);
+//        }
+//
+//        userList.removeAll(existsUsers);
+//
+//        if (ListUtils.isNotEmpty(userList)) {
+//            for (Integer userId : userList) {
+//                report = new ConsumptionReport();
+//                report.setAmount(0);
+//                report.setType(PlatformType.SEND_MESSAGE_SERVICE.getCode());
+//                report.setRecordDate(DateUtil.getDayDate(yestday));
+//                report.setUserId(userId);
+//
+//                list.add(report);
 //            }
-
-            if (record.getNeedPush()) {
-                if (pushMap.containsKey(key)) {
-                    record.setMessagePush(pushMap.get(key));
-                } else {
-                    record.setMessagePush(smsMtPushService.findByMobileAndMsgid(record.getMobile(), record.getMsgId()));
-                    pushMap.put(key, record.getMessagePush());
-                }
-            }
-            // if(record.getStatus() == 0){
-            // if(deliverMap.containsKey(key)) {
-            // record.setMessageDeliver(deliverMap.get(key));
-            // } else {
-            // record.setMessageDeliver(smsMtDeliverService.findByMobileAndMsgid(record.getMobile(),record.getMsgId()));
-            // deliverMap.put(key, record.getMessageDeliver());
-            // }
-            // }
-            if (record.getPassageId() != null) {
-                if (record.getPassageId() == PassageContext.EXCEPTION_PASSAGE_ID) {
-                    record.setPassageName(PassageContext.EXCEPTION_PASSAGE_NAME);
-                } else {
-                    if (passageMap.containsKey(record.getUserCode())) {
-                        record.setPassageName(passageMap.get(record.getPassageId()));
-                    } else {
-                        SmsPassage passage = smsPassageService.findById(record.getPassageId());
-                        if (passage != null) {
-                            record.setPassageName(passage.getName());
-                            passageMap.put(record.getPassageId(), passage.getName());
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-    @Override
-    public List<ConsumptionReport> getConsumeMessageInYestday() {
-        Set<Integer> userList = userService.findAvaiableUserIds();
-        if (ListUtils.isEmpty(userList)) {
-            throw new RuntimeException("用户数据异常，请检修");
-        }
-
-        List<ConsumptionReport> list = new ArrayList<>();
-
-        // 昨日日期
-        String yestday = DateUtil.getDayGoXday(-1);
-        List<SmsMtMessageSubmit> submits = smsMtMessageSubmitMapper.findByDate(yestday);
-
-        // 已存在的用户ID
-        Set<Integer> existsUsers = new HashSet<>();
-        ConsumptionReport report;
-        for (SmsMtMessageSubmit submit : submits) {
-            report = new ConsumptionReport();
-            report.setAmount(submit.getFee());
-            report.setType(PlatformType.SEND_MESSAGE_SERVICE.getCode());
-            report.setRecordDate(DateUtil.getDayDate(yestday));
-            report.setUserId(submit.getUserId());
-
-            existsUsers.add(submit.getUserId());
-            list.add(report);
-        }
-
-        userList.removeAll(existsUsers);
-
-        if (ListUtils.isNotEmpty(userList)) {
-            for (Integer userId : userList) {
-                report = new ConsumptionReport();
-                report.setAmount(0);
-                report.setType(PlatformType.SEND_MESSAGE_SERVICE.getCode());
-                report.setRecordDate(DateUtil.getDayDate(yestday));
-                report.setUserId(userId);
-
-                list.add(report);
-            }
-
-        }
-        return list;
-    }
-
-    @Override
-    public SmsLastestRecordVo findLastestRecord(String userCode, String mobile) {
-        SmsLastestRecordVo vo = new SmsLastestRecordVo();
-        vo.setMobile(mobile);
-        vo.setUserId(userId);
-
-        Map<String, Object> map = smsMtMessageSubmitMapper.selectByUserIdAndMobile(userId, mobile);
-        if (MapUtils.isEmpty(map)) {
-            vo.setDescrption("未找到相关记录");
-            return vo;
-        }
-
-        vo.setContent(map.get("content") == null ? "" : map.get("content").toString());
-        vo.setCreateTime(map.get("create_time").toString());
-        vo.setMessageNode(MessageNode.SMS_COMPLETE);
-        vo.setNodeTime(map.get("deliver_time") == null ? "" : map.get("create_time").toString());
-        Object sendStatus = map.get("send_status");
-        Object deliverStatus = map.get("deliver_status");
-
-        if (sendStatus == null) {
-            vo.setDescrption("短信发送未知");
-
-            return vo;
-        } else if (Integer.parseInt(sendStatus.toString()) == MessageSubmitStatus.FAILED.getCode()) {
-            vo.setDescrption("短信发送失败");
-
-            return vo;
-        } else if (deliverStatus == null) {
-            vo.setDescrption("待网关发送");
-
-            return vo;
-        } else if (Integer.parseInt(deliverStatus.toString()) == DeliverStatus.FAILED.getValue()) {
-            vo.setDescrption("短信发送失败，错误码：" + map.get("status_code"));
-
-            return vo;
-        }
-
-        vo.setDescrption("发送成功");
-        return vo;
-    }
-
-    @Override
-    public void batchInsertSubmit(List<SmsMtMessageSubmit> list) {
-        if (ListUtils.isEmpty(list)) {
-            return;
-        }
-
-        smsMtMessageSubmitMapper.batchInsert(list);
-
-        // SqlSession session = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH, false);
-        // SmsMtMessagesmsMtMessageSubmitMapper smsMtMessageSubmitMapper =
-        // session.getMapper(SmsMtMessagesmsMtMessageSubmitMapper.class);
-        // int size = 0;
-        // try {
-        // size = smsMtMessageSubmitMapper.batchInsert(list);
-        // session.commit();
-        // // 清理缓存，防止溢出
-        // session.clearCache();
-        // } catch (Exception e) {
-        // // 没有提交的数据可以回滚
-        // // session.rollback();
-        // logger.error("短信提交数据入库失败", e);
-        // } finally {
-        // session.close();
-        // }
-        // return size;
-    }
-
-    @Override
-    public SmsMtMessageSubmit getSubmitWaitReceipt(String msgId, String mobile) {
-        return smsMtMessageSubmitMapper.selectByMsgIdAndMobile(msgId, mobile);
-    }
-
-    @Override
-    public SmsMtMessageSubmit getByMoMapping(Integer passageId, String msgId, String mobile, String spcode) {
-
-        SmsMtMessageSubmit smsMtMessageSubmit = null;
-        if (passageId != null && StringUtils.isNotEmpty(msgId)) {
-            smsMtMessageSubmit = smsMtMessageSubmitMapper.selectByPsm(passageId, msgId, mobile);
-        }
-        if (smsMtMessageSubmit == null && StringUtils.isNotEmpty(msgId)) {
-            smsMtMessageSubmit = smsMtMessageSubmitMapper.selectByMsgIdAndMobile(msgId, mobile);
-        }
-        if (smsMtMessageSubmit == null) {
-            return smsMtMessageSubmitMapper.selectByMobile(mobile);
-        }
-        return smsMtMessageSubmit;
-    }
-
-    @Override
-    public SmsMtMessageSubmit getByMsgidAndMobile(String msgId, String mobile) {
-        return smsMtMessageSubmitMapper.selectByMsgIdAndMobile(msgId, mobile);
-    }
-
-    @Override
-    public SmsMtMessageSubmit getByMsgid(String msgId) {
-        return smsMtMessageSubmitMapper.selectByMsgId(msgId);
-    }
-
-    @Override
-    public boolean doSmsException(List<SmsMtMessageSubmit> submits) {
-        List<SmsMtMessageDeliver> delivers = new ArrayList<>();
-        SmsMtMessageDeliver deliver;
-        for (SmsMtMessageSubmit submit : submits) {
-            deliver = new SmsMtMessageDeliver();
-            deliver.setCmcp(submit.getCmcp());
-            deliver.setMobile(submit.getMobile());
-            deliver.setMsgId(submit.getMsgId());
-            deliver.setStatusCode(StringUtils.isNotEmpty(submit.getPushErrorCode()) ? submit.getPushErrorCode() : submit.getRemark());
-            deliver.setStatus(DeliverStatus.FAILED.getValue());
-            deliver.setDeliverTime(DateUtil.getNow());
-            deliver.setCreateTime(new Date());
-            deliver.setRemarks(submit.getRemarks());
-            delivers.add(deliver);
-        }
-
-        batchInsertSubmit(submits);
-
-        // 判断短信是否需要推送，需要则设置推送设置信息
-        setPushConfigurationIfNecessary(submits);
-
-        try {
-            smsMtDeliverService.doFinishDeliver(delivers);
-            return true;
-        } catch (Exception e) {
-            logger.warn("伪造短信回执包信息错误", e);
-            return false;
-        }
-    }
-
-    @Override
-    public void setPushConfigurationIfNecessary(List<SmsMtMessageSubmit> submits) {
-        // add by 2018-03-24 取出第一个值的信息（推送设置一批任务为一致信息）
-        SmsMtMessageSubmit submit = submits.iterator().next();
-        if (submit.getNeedPush() == null || !submit.getNeedPush() || StringUtils.isEmpty(submit.getPushUrl())) {
-            return;
-        }
-
-        // 异步设置需要推送的信息
-        // threadPoolTaskExecutor.execute(new SetPushConfigThread(smsMtPushService, submits));
-
-        smsMtPushService.setMessageReadyPushConfigurations(submits);
-    }
+//
+//        }
+//        return list;
+//    }
+//
+//    @Override
+//    public SmsLastestRecordVo findLastestRecord(String userCode, String mobile) {
+//        SmsLastestRecordVo vo = new SmsLastestRecordVo();
+//        vo.setMobile(mobile);
+//        vo.setUserId(userId);
+//
+//        Map<String, Object> map = smsMtMessageSubmitMapper.selectByUserIdAndMobile(userId, mobile);
+//        if (MapUtils.isEmpty(map)) {
+//            vo.setDescrption("未找到相关记录");
+//            return vo;
+//        }
+//
+//        vo.setContent(map.get("content") == null ? "" : map.get("content").toString());
+//        vo.setCreateTime(map.get("create_time").toString());
+//        vo.setMessageNode(MessageNode.SMS_COMPLETE);
+//        vo.setNodeTime(map.get("deliver_time") == null ? "" : map.get("create_time").toString());
+//        Object sendStatus = map.get("send_status");
+//        Object deliverStatus = map.get("deliver_status");
+//
+//        if (sendStatus == null) {
+//            vo.setDescrption("短信发送未知");
+//
+//            return vo;
+//        } else if (Integer.parseInt(sendStatus.toString()) == MessageSubmitStatus.FAILED.getCode()) {
+//            vo.setDescrption("短信发送失败");
+//
+//            return vo;
+//        } else if (deliverStatus == null) {
+//            vo.setDescrption("待网关发送");
+//
+//            return vo;
+//        } else if (Integer.parseInt(deliverStatus.toString()) == DeliverStatus.FAILED.getValue()) {
+//            vo.setDescrption("短信发送失败，错误码：" + map.get("status_code"));
+//
+//            return vo;
+//        }
+//
+//        vo.setDescrption("发送成功");
+//        return vo;
+//    }
+//
+//    @Override
+//    public void batchInsertSubmit(List<SmsMtMessageSubmit> list) {
+//        if (ListUtils.isEmpty(list)) {
+//            return;
+//        }
+//
+//        smsMtMessageSubmitMapper.batchInsert(list);
+//
+//        // SqlSession session = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH, false);
+//        // SmsMtMessagesmsMtMessageSubmitMapper smsMtMessageSubmitMapper =
+//        // session.getMapper(SmsMtMessagesmsMtMessageSubmitMapper.class);
+//        // int size = 0;
+//        // try {
+//        // size = smsMtMessageSubmitMapper.batchInsert(list);
+//        // session.commit();
+//        // // 清理缓存，防止溢出
+//        // session.clearCache();
+//        // } catch (Exception e) {
+//        // // 没有提交的数据可以回滚
+//        // // session.rollback();
+//        // logger.error("短信提交数据入库失败", e);
+//        // } finally {
+//        // session.close();
+//        // }
+//        // return size;
+//    }
+//
+//    @Override
+//    public SmsMtMessageSubmit getSubmitWaitReceipt(String msgId, String mobile) {
+//        return smsMtMessageSubmitMapper.selectByMsgIdAndMobile(msgId, mobile);
+//    }
+//
+//    @Override
+//    public SmsMtMessageSubmit getByMoMapping(Integer passageId, String msgId, String mobile, String spcode) {
+//
+//        SmsMtMessageSubmit smsMtMessageSubmit = null;
+//        if (passageId != null && StringUtils.isNotEmpty(msgId)) {
+//            smsMtMessageSubmit = smsMtMessageSubmitMapper.selectByPsm(passageId, msgId, mobile);
+//        }
+//        if (smsMtMessageSubmit == null && StringUtils.isNotEmpty(msgId)) {
+//            smsMtMessageSubmit = smsMtMessageSubmitMapper.selectByMsgIdAndMobile(msgId, mobile);
+//        }
+//        if (smsMtMessageSubmit == null) {
+//            return smsMtMessageSubmitMapper.selectByMobile(mobile);
+//        }
+//        return smsMtMessageSubmit;
+//    }
+//
+//    @Override
+//    public SmsMtMessageSubmit getByMsgidAndMobile(String msgId, String mobile) {
+//        return smsMtMessageSubmitMapper.selectByMsgIdAndMobile(msgId, mobile);
+//    }
+//
+//    @Override
+//    public SmsMtMessageSubmit getByMsgid(String msgId) {
+//        return smsMtMessageSubmitMapper.selectByMsgId(msgId);
+//    }
+//
+//    @Override
+//    public boolean doSmsException(List<SmsMtMessageSubmit> submits) {
+//        List<SmsMtMessageDeliver> delivers = new ArrayList<>();
+//        SmsMtMessageDeliver deliver;
+//        for (SmsMtMessageSubmit submit : submits) {
+//            deliver = new SmsMtMessageDeliver();
+//            deliver.setCmcp(submit.getCmcp());
+//            deliver.setMobile(submit.getMobile());
+//            deliver.setMsgId(submit.getMsgId());
+//            deliver.setStatusCode(StringUtils.isNotEmpty(submit.getPushErrorCode()) ? submit.getPushErrorCode() : submit.getRemark());
+//            deliver.setStatus(DeliverStatus.FAILED.getValue());
+//            deliver.setDeliverTime(DateUtil.getNow());
+//            deliver.setCreateTime(new Date());
+//            deliver.setRemarks(submit.getRemarks());
+//            delivers.add(deliver);
+//        }
+//
+//        batchInsertSubmit(submits);
+//
+//        // 判断短信是否需要推送，需要则设置推送设置信息
+//        setPushConfigurationIfNecessary(submits);
+//
+//        try {
+//            smsMtDeliverService.doFinishDeliver(delivers);
+//            return true;
+//        } catch (Exception e) {
+//            logger.warn("伪造短信回执包信息错误", e);
+//            return false;
+//        }
+//    }
+//
+//    @Override
+//    public void setPushConfigurationIfNecessary(List<SmsMtMessageSubmit> submits) {
+//        // add by 2018-03-24 取出第一个值的信息（推送设置一批任务为一致信息）
+//        SmsMtMessageSubmit submit = submits.iterator().next();
+//        if (submit.getNeedPush() == null || !submit.getNeedPush() || StringUtils.isEmpty(submit.getPushUrl())) {
+//            return;
+//        }
+//
+//        // 异步设置需要推送的信息
+//        // threadPoolTaskExecutor.execute(new SetPushConfigThread(smsMtPushService, submits));
+//
+//        smsMtPushService.setMessageReadyPushConfigurations(submits);
+//    }
 
     @Override
     public boolean declareWaitSubmitMessageQueues() {
@@ -400,10 +401,10 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
         return String.format("%s.%s", RabbitConstant.MQ_SMS_MT_WAIT_SUBMIT, passageCode);
     }
 
-    @Override
-    public List<SmsMtMessageSubmit> getRecordListToMonitor(Long passageId, Long startTime, Long endTime) {
-        return smsMtMessageSubmitMapper.getRecordListToMonitor(passageId, startTime, endTime);
-    }
+//    @Override
+//    public List<SmsMtMessageSubmit> getRecordListToMonitor(Long passageId, Long startTime, Long endTime) {
+//        return smsMtMessageSubmitMapper.getRecordListToMonitor(passageId, startTime, endTime);
+//    }
 
     @Override
     public boolean declareNewSubmitMessageQueue(String protocol, String passageCode) {
@@ -441,7 +442,7 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
         }
 
         // 发送至待提交信息队列处理
-        Map<Integer, String> passageCodesMap = new HashMap<>();
+        Map<String, String> passageCodesMap = new HashMap<>();
         for (SmsMtTaskPackets packet : packets) {
             try {
                 String passageCode = getPassageCode(passageCodesMap, packet);
@@ -471,7 +472,7 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
      * @param packet
      * @return
      */
-    private String getPassageCode(Map<Integer, String> passageCodesMap, SmsMtTaskPackets packet) {
+    private String getPassageCode(Map<String, String> passageCodesMap, SmsMtTaskPackets packet) {
         if (StringUtils.isEmpty(packet.getPassageCode())) {
             if (passageCodesMap.containsKey(packet.getPassageId())) {
                 return passageCodesMap.get(packet.getPassageId());
@@ -488,38 +489,38 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 
         return packet.getPassageCode();
     }
-
-    @Override
-    public List<Map<String, Object>> getSubmitStatReport(Long startTime, Long endTime) {
-
-        if (startTime == null || endTime == null) {
-            return null;
-        }
-
-        List<Map<String, Object>> list = smsMtMessageSubmitMapper.selectSubmitReport(startTime, endTime);
-        if (ListUtils.isEmpty(list)) {
-            return null;
-        }
-
-        return list;
-    }
-
-    @Override
-    public List<Map<String, Object>> getLastHourSubmitReport() {
-        // 截止时间为前一个小时0分0秒
-        Long endTime = DateUtil.getXHourWithMzSzMillis(-1);
-        // 开始时间为前2个小时0分0秒
-        Long startTime = DateUtil.getXHourWithMzSzMillis(-2);
-
-        return getSubmitStatReport(startTime, endTime);
-    }
-
-    @Override
-    public List<Map<String, Object>> getSubmitCmcpReport(Long startTime, Long endTime) {
-        if (startTime == null || endTime == null) {
-            return null;
-        }
-
-        return smsMtMessageSubmitMapper.selectCmcpReport(startTime, endTime);
-    }
+//
+//    @Override
+//    public List<Map<String, Object>> getSubmitStatReport(Long startTime, Long endTime) {
+//
+//        if (startTime == null || endTime == null) {
+//            return null;
+//        }
+//
+//        List<Map<String, Object>> list = smsMtMessageSubmitMapper.selectSubmitReport(startTime, endTime);
+//        if (ListUtils.isEmpty(list)) {
+//            return null;
+//        }
+//
+//        return list;
+//    }
+//
+//    @Override
+//    public List<Map<String, Object>> getLastHourSubmitReport() {
+//        // 截止时间为前一个小时0分0秒
+//        Long endTime = DateUtil.getXHourWithMzSzMillis(-1);
+//        // 开始时间为前2个小时0分0秒
+//        Long startTime = DateUtil.getXHourWithMzSzMillis(-2);
+//
+//        return getSubmitStatReport(startTime, endTime);
+//    }
+//
+//    @Override
+//    public List<Map<String, Object>> getSubmitCmcpReport(Long startTime, Long endTime) {
+//        if (startTime == null || endTime == null) {
+//            return null;
+//        }
+//
+//        return smsMtMessageSubmitMapper.selectCmcpReport(startTime, endTime);
+//    }
 }

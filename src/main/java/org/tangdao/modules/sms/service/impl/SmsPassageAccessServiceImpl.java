@@ -27,7 +27,6 @@ import org.tangdao.modules.exchanger.config.CommonContext.CMCP;
 import org.tangdao.modules.exchanger.config.CommonContext.PassageCallType;
 import org.tangdao.modules.exchanger.config.TemplateEnum.PassageTemplateType;
 import org.tangdao.modules.paas.model.domain.UserPassage;
-import org.tangdao.modules.paas.service.IAreaLocalService;
 import org.tangdao.modules.paas.service.IUserPassageService;
 import org.tangdao.modules.sms.config.PassageContext.PassageStatus;
 import org.tangdao.modules.sms.config.PassageContext.RouteType;
@@ -40,7 +39,6 @@ import org.tangdao.modules.sms.model.domain.SmsPassageParameter;
 import org.tangdao.modules.sms.service.ISmsPassageAccessService;
 import org.tangdao.modules.sms.service.ISmsPassageGroupDetailService;
 import org.tangdao.modules.sms.service.ISmsPassageParameterService;
-import org.tangdao.modules.sms.service.ISmsPassageService;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -75,8 +73,8 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
     
 //    @Reference
 //    private IUserService                         userService;
-    @Autowired
-    private ISmsPassageService                   smsPassageService;
+//    @Autowired
+//    private ISmsPassageService                   smsPassageService;
     @Autowired
     private IUserPassageService                  userPassageService;
     @Autowired
@@ -89,8 +87,8 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
     private StringRedisTemplate                  stringRedisTemplate;
 //    @Autowired
 //    private IPassageMonitorService               passageMonitorService;
-    @Autowired
-    private IAreaLocalService                    areaLocalService;
+//    @Autowired
+//    private IAreaLocalService                    areaLocalService;
     
     @Override
     public List<SmsPassageAccess> findPassageAccess() {
@@ -231,7 +229,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
             stringRedisTemplate.delete(stringRedisTemplate.keys(getMainLikeKey(userCode)));
 
             // 根据通道组ID查询通道组详细信息
-            List<SmsPassageGroupDetail> detailList = smsPassageGroupDetailMapper.findPassageByGroupId(passageGroupId);
+            List<SmsPassageGroupDetail> detailList = smsPassageGroupDetailService.findPassageByGroupId(passageGroupId);
             if (ListUtils.isEmpty(detailList)) {
                 logger.warn("通道组ID：{} 查不到相关短信通道集合数据", passageGroupId);
             }
@@ -373,7 +371,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
     @Transactional
     public boolean updateByModifyPassage(String passageId) {
         try {
-            List<String> groupIdList = smsPassageGroupDetailService.selectGroupIdByPassageId(passageId);
+            List<String> groupIdList = smsPassageGroupDetailService.findGroupIdByPassageId(passageId);
             for (String groupId : groupIdList) {
                 this.updateByModifyPassageGroup(groupId);
             }
@@ -550,7 +548,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
 
                 loadToRedis(access);
 
-                monitorThreadNotice(access, status);
+                monitorThreadNotice(access, Integer.valueOf(status));
             }
 
             logger.info("更新可用通道: {} 状态：{} 成功", passageId, status);
@@ -574,9 +572,11 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
             if (PassageCallType.MT_STATUS_RECEIPT_WITH_SELF_GET.getCode() == access.getCallType()
                 || PassageCallType.MO_REPORT_WITH_SELF_GET.getCode() == access.getCallType()) {
                 if (PassageStatus.ACTIVE.getValue() == status) {
-                    passageMonitorService.addPassagePull(access);
+//                    passageMonitorService.addPassagePull(access);
+                    System.out.println("添加监控:"+JSON.toJSONString(access));
                 } else {
-                    passageMonitorService.removePasagePull(access);
+//                    passageMonitorService.removePasagePull(access);
+                    System.out.println("移除监控:"+JSON.toJSONString(access));
                 }
             }
         } catch (Exception e) {

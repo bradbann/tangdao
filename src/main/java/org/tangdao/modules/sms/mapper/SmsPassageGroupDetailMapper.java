@@ -16,5 +16,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface SmsPassageGroupDetailMapper extends BaseMapper<SmsPassageGroupDetail> {
 	
 	@Select("select distinct group_id from sms_passage_group_detail where passage_id =#{passageId}")
-	public List<String> selectGroupIdByPassageId(String passageId);
+	public List<String> findGroupIdByPassageId(String passageId);
+	
+	public List<SmsPassageGroupDetail> findPassageByGroupId(String passageGroupId);
 }
