@@ -1,5 +1,7 @@
 package org.tangdao.modules.sms.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,16 +15,20 @@ import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
+import org.tangdao.common.utils.DateUtils;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.StringUtils;
+import org.tangdao.modules.sms.config.PassageContext.DeliverStatus;
 import org.tangdao.modules.sms.config.rabbit.RabbitMessageQueueManager;
 import org.tangdao.modules.sms.config.rabbit.constant.RabbitConstant;
 import org.tangdao.modules.sms.config.rabbit.constant.RabbitConstant.WordsPriority;
 import org.tangdao.modules.sms.config.rabbit.listener.SmsWaitSubmitListener;
 import org.tangdao.modules.sms.mapper.SmsMtMessageSubmitMapper;
+import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageSubmit;
 import org.tangdao.modules.sms.model.domain.SmsMtTaskPackets;
 import org.tangdao.modules.sms.model.domain.SmsPassage;
+import org.tangdao.modules.sms.service.ISmsMtDeliverService;
 import org.tangdao.modules.sms.service.ISmsMtPushService;
 import org.tangdao.modules.sms.service.ISmsMtSubmitService;
 import org.tangdao.modules.sms.service.ISmsPassageService;
@@ -46,8 +52,8 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 //    private SmsMtMessagePushMapper    pushMapper;
 	@Autowired
     private ISmsMtPushService         smsMtPushService;
-//    @Autowired
-//    private ISmsMtDeliverService      smsMtDeliverService;
+    @Autowired
+    private ISmsMtDeliverService      smsMtDeliverService;
     @Autowired
     private ISmsPassageService        smsPassageService;
 
@@ -309,37 +315,37 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 //    public SmsMtMessageSubmit getByMsgid(String msgId) {
 //        return smsMtMessageSubmitMapper.selectByMsgId(msgId);
 //    }
-//
-//    @Override
-//    public boolean doSmsException(List<SmsMtMessageSubmit> submits) {
-//        List<SmsMtMessageDeliver> delivers = new ArrayList<>();
-//        SmsMtMessageDeliver deliver;
-//        for (SmsMtMessageSubmit submit : submits) {
-//            deliver = new SmsMtMessageDeliver();
-//            deliver.setCmcp(submit.getCmcp());
-//            deliver.setMobile(submit.getMobile());
-//            deliver.setMsgId(submit.getMsgId());
-//            deliver.setStatusCode(StringUtils.isNotEmpty(submit.getPushErrorCode()) ? submit.getPushErrorCode() : submit.getRemark());
-//            deliver.setStatus(DeliverStatus.FAILED.getValue());
-//            deliver.setDeliverTime(DateUtil.getNow());
-//            deliver.setCreateTime(new Date());
-//            deliver.setRemarks(submit.getRemarks());
-//            delivers.add(deliver);
-//        }
-//
-//        batchInsertSubmit(submits);
-//
-//        // 判断短信是否需要推送，需要则设置推送设置信息
-//        setPushConfigurationIfNecessary(submits);
-//
-//        try {
-//            smsMtDeliverService.doFinishDeliver(delivers);
-//            return true;
-//        } catch (Exception e) {
-//            logger.warn("伪造短信回执包信息错误", e);
-//            return false;
-//        }
-//    }
+
+    @Override
+    public boolean doSmsException(List<SmsMtMessageSubmit> submits) {
+        List<SmsMtMessageDeliver> delivers = new ArrayList<>();
+        SmsMtMessageDeliver deliver;
+        for (SmsMtMessageSubmit submit : submits) {
+            deliver = new SmsMtMessageDeliver();
+            deliver.setCmcp(submit.getCmcp());
+            deliver.setMobile(submit.getMobile());
+            deliver.setMsgId(submit.getMsgId());
+            deliver.setStatusCode(StringUtils.isNotEmpty(submit.getPushErrorCode()) ? submit.getPushErrorCode() : submit.getRemarks());
+            deliver.setStatus(DeliverStatus.FAILED.getValue());
+            deliver.setDeliverTime(DateUtils.getDate());
+            deliver.setCreateTime(new Date());
+            deliver.setRemarks(submit.getRemarks());
+            delivers.add(deliver);
+        }
+
+        batchInsertSubmit(submits);
+
+        // 判断短信是否需要推送，需要则设置推送设置信息
+        setPushConfigurationIfNecessary(submits);
+
+        try {
+            smsMtDeliverService.doFinishDeliver(delivers);
+            return true;
+        } catch (Exception e) {
+            logger.warn("伪造短信回执包信息错误", e);
+            return false;
+        }
+    }
 
     @Override
     public void setPushConfigurationIfNecessary(List<SmsMtMessageSubmit> submits) {

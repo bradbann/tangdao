@@ -40,12 +40,12 @@ import org.tangdao.modules.sms.config.PassageContext.PushStatus;
 import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.config.worker.fork.MtReportFailoverPushWorker;
 import org.tangdao.modules.sms.config.worker.fork.MtReportPushToDeveloperWorker;
+import org.tangdao.modules.sms.mapper.SmsMtMessageDeliverMapper;
 import org.tangdao.modules.sms.mapper.SmsMtMessagePushMapper;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
 import org.tangdao.modules.sms.model.domain.SmsMtMessagePush;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageSubmit;
 import org.tangdao.modules.sms.model.vo.SmsPushReport;
-import org.tangdao.modules.sms.service.ISmsMtDeliverService;
 import org.tangdao.modules.sms.service.ISmsMtPushService;
 import org.tangdao.modules.sms.service.ISmsMtSubmitService;
 
@@ -65,7 +65,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePushMapper, SmsMtMessagePush> implements ISmsMtPushService{
 	
     @Autowired
-    private ISmsMtDeliverService               smsMtDeliverService;
+    private SmsMtMessageDeliverMapper          smsMtMessageDeliverMapper;
     
     @Autowired
     private StringRedisTemplate                stringRedisTemplate;
@@ -119,11 +119,6 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
     private static final String                PUSH_BODY_SUBPACKAGE_KEY = "pushUrl";
 
     @Override
-    public void savePushMessage(List<SmsMtMessagePush> pushes) {
-    	super.saveBatch(pushes);
-    }
-
-    @Override
     public boolean doListenerAllUser() {
         // never invoke, add thread when userId has pushed data
         // Set<Integer> userIds = userService.findAvaiableUserIds();
@@ -153,7 +148,7 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
      */
     @Override
     public String getUserPushQueueName(String userCode) {
-        return String.format("%s:%d", SmsRedisConstant.RED_QUEUE_SMS_MT_WAIT_PUSH, userCode);
+        return String.format("%s:%s", SmsRedisConstant.RED_QUEUE_SMS_MT_WAIT_PUSH, userCode);
     }
 
     /**
@@ -244,8 +239,7 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
         boolean isOk = addUserMtPushListener(userCode);
         if (isOk) {
             USER_PUTH_THREAD_FLAG.putIfAbsent(userCode, System.currentTimeMillis());
-            logger.info("There are " + (USER_PUTH_THREAD_FLAG.size() * 2) + " threads[" + USER_PUTH_THREAD_FLAG.keySet()
-                        + "] joined");
+            logger.info("There are " + (USER_PUTH_THREAD_FLAG.size() * 2) + " threads[" + USER_PUTH_THREAD_FLAG.keySet() + "] joined");
         }
 
     }
@@ -454,7 +448,7 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
      * @return
      */
     private static String pushThreadName(String userCode, Integer sequence) {
-        return String.format("push-%d:%d", userCode, sequence == null ? 1 : sequence++);
+        return String.format("push-%s:%d", userCode, sequence == null ? 1 : sequence++);
     }
 
     @Override
@@ -592,7 +586,7 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
         // 删除待推送消息信息
         stringRedisTemplate.delete(waitPushMsgIdRedisKeys);
         // 发送数据至带持久队列中
-        savePushMessage(persistPushesList);
+        super.saveBatch(persistPushesList);
     }
 
     @Override
@@ -700,8 +694,7 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
                 logger.error("No data in redis [" + getRepushKey(serialNo) + "] found");
                 return false;
             }
-
-            List<SmsMtMessageDeliver> delivers =  smsMtDeliverService.selectByIds(deliverIds);
+            List<SmsMtMessageDeliver> delivers =  smsMtMessageDeliverMapper.selectBatchIds(deliverIds);
             if (CollectionUtils.isEmpty(delivers)) {
                 logger.error("Can't find any data in deliverIds [" + deliverIds + "]");
                 return false;
@@ -726,6 +719,6 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
 		QueryWrapper<SmsMtMessagePush> queryWrapper = new QueryWrapper<SmsMtMessagePush>();
 		queryWrapper.eq("mobile", mobile);
 		queryWrapper.eq("msg_id", msgId);
-		return this.getOne(queryWrapper);
+		return super.getOne(queryWrapper);
 	}
 }

@@ -98,14 +98,14 @@ public interface ISmsMtSubmitService extends ICrudService<SmsMtMessageSubmit> {
 //     * @return 发送记录
 //     */
 //    SmsMtMessageSubmit getByMsgid(String msgId);
-//
-//    /**
-//     * 异常短信处理，如黑名单/驳回/超时，超速
-//     * 
-//     * @param submits 发送记录集合
-//     * @return 成功标识
-//     */
-//    boolean doSmsException(List<SmsMtMessageSubmit> submits);
+
+    /**
+     * 异常短信处理，如黑名单/驳回/超时，超速
+     * 
+     * @param submits 发送记录集合
+     * @return 成功标识
+     */
+    boolean doSmsException(List<SmsMtMessageSubmit> submits);
 
     /**
      * 声明新的待提交队列

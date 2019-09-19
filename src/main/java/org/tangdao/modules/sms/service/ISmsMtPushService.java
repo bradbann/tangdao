@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSONObject;
  * @version 2019-09-06
  */
 public interface ISmsMtPushService extends ICrudService<SmsMtMessagePush> {
+	
 	/**
      * 根据手机号码和消息ID查询推送记录信息
      * 
@@ -28,13 +29,6 @@ public interface ISmsMtPushService extends ICrudService<SmsMtMessagePush> {
      */
     SmsMtMessagePush findByMobileAndMsgid(String mobile, String msgId);
 	
-	/**
-     * 保存推送记录
-     * 
-     * @param list
-     */
-    void savePushMessage(List<SmsMtMessagePush> pushes);
-
     /**
      * 监听所有用户信息
      * 
