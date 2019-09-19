@@ -58,7 +58,7 @@ public class SmsMessageTemplateServiceImpl extends CrudServiceImpl<SmsMessageTem
     private static final String                                SUPER_TEMPLATE_REGEX    = "^[\\s\\S]*$";
 
     private String getKey(String userCode) {
-        return String.format("%s:%d", SmsRedisConstant.RED_USER_MESSAGE_TEMPLATE, userCode);
+        return String.format("%s:%s", SmsRedisConstant.RED_USER_MESSAGE_TEMPLATE, userCode);
     }
 
     /**

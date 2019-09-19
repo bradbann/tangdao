@@ -1,12 +1,8 @@
 package org.tangdao.modules.sms.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -18,35 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
-import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
-import org.tangdao.modules.exchanger.config.CommonContext.PlatformType;
-import org.tangdao.modules.paas.model.vo.ConsumptionReport;
-import org.tangdao.modules.sms.config.PassageContext;
-import org.tangdao.modules.sms.config.PassageContext.DeliverStatus;
-import org.tangdao.modules.sms.config.TaskContext.MessageSubmitStatus;
 import org.tangdao.modules.sms.config.rabbit.RabbitMessageQueueManager;
 import org.tangdao.modules.sms.config.rabbit.constant.RabbitConstant;
 import org.tangdao.modules.sms.config.rabbit.constant.RabbitConstant.WordsPriority;
 import org.tangdao.modules.sms.config.rabbit.listener.SmsWaitSubmitListener;
-import org.tangdao.modules.sms.mapper.SmsMtMessagePushMapper;
 import org.tangdao.modules.sms.mapper.SmsMtMessageSubmitMapper;
-import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
-import org.tangdao.modules.sms.model.domain.SmsMtMessagePush;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageSubmit;
 import org.tangdao.modules.sms.model.domain.SmsMtTaskPackets;
 import org.tangdao.modules.sms.model.domain.SmsPassage;
-import org.tangdao.modules.sms.model.vo.SmsLastestRecordVo;
-import org.tangdao.modules.sms.model.vo.SmsLastestRecordVo.MessageNode;
-import org.tangdao.modules.sms.service.ISmsMtDeliverService;
-import org.tangdao.modules.sms.service.ISmsMtPushService;
 import org.tangdao.modules.sms.service.ISmsMtSubmitService;
 import org.tangdao.modules.sms.service.ISmsPassageService;
-import org.tangdao.modules.sys.service.IUserService;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
  * 下行短信提交ServiceImpl
@@ -455,7 +436,6 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
                                               packet, (message) -> {
 
                                                   message.getMessageProperties().setPriority(WordsPriority.getLevel(packet.getContent()));
-
                                                   return message;
                                               }, new CorrelationData(packet.getSid() + ""));
             } catch (Exception e) {

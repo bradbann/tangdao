@@ -37,7 +37,7 @@ public class PushConfigServiceImpl extends CrudServiceImpl<PushConfigMapper, Pus
     private Logger              logger = LoggerFactory.getLogger(getClass());
 
     private String getAssistKey(String userCode, int type) {
-        return String.format("%s:%d:%d", PaasRedisConstant.RED_USER_PUSH_CONFIG, userCode, type);
+        return String.format("%s:%s:%d", PaasRedisConstant.RED_USER_PUSH_CONFIG, userCode, type);
     }
 
     @Override

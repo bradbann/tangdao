@@ -107,7 +107,7 @@ public class SmsMobileWhitelistServiceImpl extends CrudServiceImpl<SmsMobileWhit
      * @return key
      */
     private String getKey(String UserCode) {
-        return String.format("%s:%d", SmsRedisConstant.RED_MOBILE_WHITELIST, UserCode);
+        return String.format("%s:%s", SmsRedisConstant.RED_MOBILE_WHITELIST, UserCode);
     }
 
     @Override

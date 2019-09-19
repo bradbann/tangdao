@@ -164,8 +164,7 @@ public class RabbitMqConfiguration {
 
         // 分包处理完成，待提交网关（上家通道）队列，因每个队列需要不同的消费者，所以动态控制@SmsWaitSubmitListener
 //		Queue smsWaitSubmitQueue = new Queue(RabbitConstant.MQ_SMS_MT_WAIT_SUBMIT, true, false, false, setQueueFeatures());
-//		Binding smsWaitSubmitBinding = BindingBuilder.bind(smsWaitSubmitQueue).to(exchange)
-//				.with(RabbitConstant.MQ_SMS_MT_WAIT_SUBMIT);
+//		Binding smsWaitSubmitBinding = BindingBuilder.bind(smsWaitSubmitQueue).to(exchange).with(RabbitConstant.MQ_SMS_MT_WAIT_SUBMIT);
 //		rabbitAdmin.declareQueue(smsWaitSubmitQueue);
 //		rabbitAdmin.declareBinding(smsWaitSubmitBinding);
 

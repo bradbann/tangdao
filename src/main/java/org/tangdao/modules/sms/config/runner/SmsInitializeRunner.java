@@ -100,31 +100,31 @@ public class SmsInitializeRunner implements CommandLineRunner {
     }
 
     private void initPassage() {
-//        smsPassageService.reloadToRedis();
+        smsPassageService.reloadToRedis();
         logger.info("短信通道初始化完成");
     }
 
     private void initAccessPassage() {
-//        smsPassageAccessService.reload();
+        smsPassageAccessService.reload();
         logger.info("短信热点通道初始化完成");
     }
 
     private void initMessageTemplate() {
-//        smsTemplateService.reloadToRedis();
+        smsTemplateService.reloadToRedis();
         logger.info("短信模板初始化完成");
     }
 
     private void initMobileBlacklist() {
         logger.info("手机号码黑名单初始化处理中...");
-//        boolean result = smsMobileBlackListService.reloadToRedis();
-//        logger.info("手机号码黑名单初始化{}", result ? "完成" : "失败");
+        boolean result = smsMobileBlackListService.reloadToRedis();
+        logger.info("手机号码黑名单初始化{}", result ? "完成" : "失败");
     }
 
     /**
      * 初始化短信敏感词信息
      */
     private void initForbiddenWordsList() {
-//        forbiddenWordsService.reloadRedisForbiddenWords();
+        forbiddenWordsService.reloadRedisForbiddenWords();
         logger.info("短信敏感词信息初始化完成");
     }
 
@@ -132,7 +132,7 @@ public class SmsInitializeRunner implements CommandLineRunner {
      * 初始化短信手机号码白名单数据
      */
     private void initMobileWhiteList() {
-//        mobileWhiteListService.reloadToRedis();
+        mobileWhiteListService.reloadToRedis();
         logger.info("短信手机号码白名单数据");
     }
 
@@ -140,8 +140,7 @@ public class SmsInitializeRunner implements CommandLineRunner {
      * 初始化待提交消息队列信息
      */
     private boolean initMessageQueues() {
-//        return smsMtSubmitService.declareWaitSubmitMessageQueues();
-    	return true;
+        return smsMtSubmitService.declareWaitSubmitMessageQueues();
     }
 
     private void initDeliverFailoverPushThreads() {

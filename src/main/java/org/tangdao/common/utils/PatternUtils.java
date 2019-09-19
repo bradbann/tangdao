@@ -216,20 +216,23 @@ public class PatternUtils {
 	
 	
 	public static void main(String[] args) {
+		String str1 = "您的验证码为1234，请尽快完成后续操作。";
+		String regex1 = "^您的验证码为[\\s\\S]*，请尽快完成后续操作。$";
 //		String str1 = "我们】你好";
 //		String regex1 = "(【)(.*?)(】)";
-//		Pattern pattern = Pattern.compile(regex1);
-//		Matcher matcher = pattern.matcher(str1);
-//		
-//		
-//		
+		Pattern pattern = Pattern.compile(regex1);
+		Matcher matcher = pattern.matcher(str1);
+		
+		
+		
 //		System.out.println(matcher.groupCount());
+		System.out.println(matcher.matches());
 //		
 //		while (matcher.find()) {
 //			System.out.println("手机号：" + matcher.group(2));
 //			System.out.println("---------------------");
 //		}
-		System.out.println(isUrl("http://s"));
+//		System.out.println(isUrl("http://s"));
 	}
 	
 }

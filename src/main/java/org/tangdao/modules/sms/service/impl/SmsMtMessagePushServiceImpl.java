@@ -64,9 +64,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 @Service
 public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePushMapper, SmsMtMessagePush> implements ISmsMtPushService{
 	
-	@Autowired
-    private ISmsMtPushService             	   smsMtPushService;
-	
     @Autowired
     private ISmsMtDeliverService               smsMtDeliverService;
     
@@ -123,7 +120,7 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
 
     @Override
     public void savePushMessage(List<SmsMtMessagePush> pushes) {
-        smsMtPushService.saveBatch(pushes);
+    	super.saveBatch(pushes);
     }
 
     @Override

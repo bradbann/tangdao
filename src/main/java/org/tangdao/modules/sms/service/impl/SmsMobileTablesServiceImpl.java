@@ -49,7 +49,7 @@ public class SmsMobileTablesServiceImpl implements ISmsMobileTablesService {
 	   * @return
 	 */
 	private String getAssistKey(String keyname, String userCode, String templateId, String mobile) {
-		return String.format("%s:%d:%d:%s", keyname, userCode, templateId, mobile);
+		return String.format("%s:%s:%s:%s", keyname, userCode, templateId, mobile);
 	}
 
 	/**

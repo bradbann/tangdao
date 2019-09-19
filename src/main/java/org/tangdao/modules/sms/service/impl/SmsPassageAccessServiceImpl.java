@@ -138,7 +138,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
      */
     @Override
     public String getAssistKey(Integer routeType, Integer cmcp, String areaCode) {
-        return String.format("%d:%d:%d", routeType, cmcp, areaCode);
+        return String.format("%d:%d:%s", routeType, cmcp, areaCode);
     }
 
     /**
@@ -159,7 +159,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
      * @return KEY
      */
     private static String getMainKey(String userCode, Integer callType) {
-        return String.format("%s:%d:%d", SmsRedisConstant.RED_USER_PASSAGE_ACCESS, userCode, callType);
+        return String.format("%s:%s:%d", SmsRedisConstant.RED_USER_PASSAGE_ACCESS, userCode, callType);
     }
 
     /**
@@ -169,7 +169,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
      * @return 模糊匹配KEY
      */
     private static String getMainLikeKey(String userCode) {
-        return String.format("%s:%d*", SmsRedisConstant.RED_USER_PASSAGE_ACCESS, userCode);
+        return String.format("%s:%s*", SmsRedisConstant.RED_USER_PASSAGE_ACCESS, userCode);
     }
 
     @Override

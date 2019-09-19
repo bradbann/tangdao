@@ -13,8 +13,8 @@ public class SmsTest {
 		String url = "http://127.0.0.1:8000/sms/send";
 		String appkey="abcd";
 		String appsecret="1234";
-		String mobile="1582155455,13262669725";
-		String content="test";
+		String mobile="15821554550,13262669725";
+		String content="【天机科技】您的短信验证码为8428。";
 		String extNumber=null;
 		String attach="";
 		Map<String, Object> params = new HashMap<>();
