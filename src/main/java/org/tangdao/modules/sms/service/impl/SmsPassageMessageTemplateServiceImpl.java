@@ -44,7 +44,7 @@ public class SmsPassageMessageTemplateServiceImpl extends CrudServiceImpl<SmsPas
 	@Override
 	public boolean save(SmsPassageMessageTemplate passageMessageTemplate) {
 		try {
-			passageMessageTemplate.setStatus(PassageMessageTemplateStatus.AVAIABLE.getValue());
+			passageMessageTemplate.setStatus(PassageMessageTemplateStatus.AVAIABLE.getValue()+"");
 			passageMessageTemplate.setRegexValue(parseContent2Regex(passageMessageTemplate.getTemplateContent()));
 			passageMessageTemplate.setParamNames(parseVariableName(passageMessageTemplate.getTemplateContent()));
 			
@@ -69,7 +69,7 @@ public class SmsPassageMessageTemplateServiceImpl extends CrudServiceImpl<SmsPas
 		try {
 			passageMessageTemplate.setRegexValue(parseContent2Regex(passageMessageTemplate.getTemplateContent()));
 			passageMessageTemplate.setParamNames(parseVariableName(passageMessageTemplate.getTemplateContent()));
-			passageMessageTemplate.setStatus(PassageMessageTemplateStatus.AVAIABLE.getValue());
+			passageMessageTemplate.setStatus(PassageMessageTemplateStatus.AVAIABLE.getValue()+"");
 			boolean result = this.updateById(passageMessageTemplate);
 			if(!result) {
                 return false;

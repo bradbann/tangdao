@@ -40,13 +40,13 @@ public class SmsPassage extends DataEntity<SmsPassage> {
 	private String account;		// 接入账号(上家提供的用户账号)
 	private int    payType;		// 付费方式(1预付2后付)
 	private String balance;		// 剩余条数
-	private String mobileSize;		// 手机号码分包数
+	private int    mobileSize;		// 手机号码分包数
 	private int    packetsSize;		// 1秒钟允许提交的网络包数量
-	private String connectionSize;		// 最大连接数
-	private String readTimeout;		// 超时时间（毫秒）
-	private String extNumber;		// 拓展号长度,0表示不允许拓展
+	private int    connectionSize;		// 最大连接数
+	private int    readTimeout;		// 超时时间（毫秒）
+	private int    extNumber;		// 拓展号长度,0表示不允许拓展
 	private String bornTerm;		// 统计落地时限（小时）
-	private String smsTemplateParam;		// 是否需要短信模板参数信息
+	private int    smsTemplateParam;		// 是否需要短信模板参数信息
 	
 	/**
      * 参数集合信息

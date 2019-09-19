@@ -171,17 +171,17 @@ public class PassageContext {
      * @date 2017年6月10日 下午6:49:03
      */
     public enum PassageSignMode {
-        IGNORED("0", "不处理"), SIGNATURE_AUTO_PREPOSITION("1", "签名自动前置"), SIGNATURE_AUTO_POSTPOSITION("2", "签名自动后置"), REMOVE_SIGNATURE("3", "自动去掉签名");
+        IGNORED(0, "不处理"), SIGNATURE_AUTO_PREPOSITION(1, "签名自动前置"), SIGNATURE_AUTO_POSTPOSITION(2, "签名自动后置"), REMOVE_SIGNATURE(3, "自动去掉签名");
 
-        private String value;
+        private int    value;
         private String title;
 
-        PassageSignMode(String value, String title) {
+        PassageSignMode(int value, String title) {
             this.title = title;
             this.value = value;
         }
 
-        public String getValue() {
+        public int getValue() {
             return value;
         }
 
@@ -197,17 +197,17 @@ public class PassageContext {
      * @date 2017年8月30日 下午1:51:37
      */
     public enum PassageMessageTemplateStatus {
-        AVAIABLE("0", "使用中"), DISABLED("1", "停用");
+        AVAIABLE(0, "使用中"), DISABLED(1, "停用");
 
-        private String value;
+        private int    value;
         private String title;
 
-        PassageMessageTemplateStatus(String value, String title) {
+        PassageMessageTemplateStatus(int value, String title) {
             this.title = title;
             this.value = value;
         }
 
-        public String getValue() {
+        public int getValue() {
             return value;
         }
 
@@ -224,17 +224,17 @@ public class PassageContext {
      * @date 2017年9月19日 上午9:57:08
      */
     public enum PassageSmsTemplateParam {
-        NO("0", "不需要"), YES("1", "需要");
+        NO(0, "不需要"), YES(1, "需要");
 
-        private String value;
+        private int    value;
         private String title;
 
-        PassageSmsTemplateParam(String value, String title) {
+        PassageSmsTemplateParam(int value, String title) {
             this.title = title;
             this.value = value;
         }
 
-        public String getValue() {
+        public int getValue() {
             return value;
         }
 

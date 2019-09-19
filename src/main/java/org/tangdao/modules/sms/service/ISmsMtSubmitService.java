@@ -1,13 +1,10 @@
 package org.tangdao.modules.sms.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.tangdao.common.service.ICrudService;
-import org.tangdao.modules.paas.model.vo.ConsumptionReport;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageSubmit;
 import org.tangdao.modules.sms.model.domain.SmsMtTaskPackets;
-import org.tangdao.modules.sms.model.vo.SmsLastestRecordVo;
 
 /**
  * 下行短信提交Service
@@ -57,14 +54,14 @@ public interface ISmsMtSubmitService extends ICrudService<SmsMtMessageSubmit> {
 //     * @return 最后数据
 //     */
 //    SmsLastestRecordVo findLastestRecord(String userCode, String mobile);
-//
-//    /**
-//     * 批量插入提交信息
-//     * 
-//     * @param list 发送数据集合
-//     */
-//    void batchInsertSubmit(List<SmsMtMessageSubmit> list);
-//
+
+    /**
+     * 批量插入提交信息
+     * 
+     * @param list 发送数据集合
+     */
+    void batchInsertSubmit(List<SmsMtMessageSubmit> list);
+
 //    /**
 //     * 根据消息ID或手机号码获取待回执信息（已提交）
 //     * 
@@ -185,10 +182,10 @@ public interface ISmsMtSubmitService extends ICrudService<SmsMtMessageSubmit> {
 //     */
 //    List<Map<String, Object>> getSubmitCmcpReport(Long startTime, Long endTime);
 //
-//    /**
-//     * 判断短信是否需要推送，需要则设置推送信息
-//     * 
-//     * @param submits 提交记录集合
-//     */
-//    void setPushConfigurationIfNecessary(List<SmsMtMessageSubmit> submits);
+    /**
+     * 判断短信是否需要推送，需要则设置推送信息
+     * 
+     * @param submits 提交记录集合
+     */
+    void setPushConfigurationIfNecessary(List<SmsMtMessageSubmit> submits);
 }

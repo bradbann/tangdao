@@ -23,6 +23,7 @@ import org.tangdao.modules.sms.mapper.SmsMtMessageSubmitMapper;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageSubmit;
 import org.tangdao.modules.sms.model.domain.SmsMtTaskPackets;
 import org.tangdao.modules.sms.model.domain.SmsPassage;
+import org.tangdao.modules.sms.service.ISmsMtPushService;
 import org.tangdao.modules.sms.service.ISmsMtSubmitService;
 import org.tangdao.modules.sms.service.ISmsPassageService;
 
@@ -43,8 +44,8 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 //    private SmsMtMessageSubmitMapper  smsMtMessageSubmitMapper;
 //    @Autowired
 //    private SmsMtMessagePushMapper    pushMapper;
-//	@Autowired
-//    private ISmsMtPushService         smsMtPushService;
+	@Autowired
+    private ISmsMtPushService         smsMtPushService;
 //    @Autowired
 //    private ISmsMtDeliverService      smsMtDeliverService;
     @Autowired
@@ -251,33 +252,32 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 //        vo.setDescrption("发送成功");
 //        return vo;
 //    }
-//
-//    @Override
-//    public void batchInsertSubmit(List<SmsMtMessageSubmit> list) {
-//        if (ListUtils.isEmpty(list)) {
-//            return;
-//        }
-//
-//        smsMtMessageSubmitMapper.batchInsert(list);
-//
-//        // SqlSession session = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH, false);
-//        // SmsMtMessagesmsMtMessageSubmitMapper smsMtMessageSubmitMapper =
-//        // session.getMapper(SmsMtMessagesmsMtMessageSubmitMapper.class);
-//        // int size = 0;
-//        // try {
-//        // size = smsMtMessageSubmitMapper.batchInsert(list);
-//        // session.commit();
-//        // // 清理缓存，防止溢出
-//        // session.clearCache();
-//        // } catch (Exception e) {
-//        // // 没有提交的数据可以回滚
-//        // // session.rollback();
-//        // logger.error("短信提交数据入库失败", e);
-//        // } finally {
-//        // session.close();
-//        // }
-//        // return size;
-//    }
+
+    @Override
+    public void batchInsertSubmit(List<SmsMtMessageSubmit> list) {
+        if (ListUtils.isEmpty(list)) {
+            return;
+        }
+        super.saveBatch(list);
+
+        // SqlSession session = sqlSessionTemplate.getSqlSessionFactory().openSession(ExecutorType.BATCH, false);
+        // SmsMtMessagesmsMtMessageSubmitMapper smsMtMessageSubmitMapper =
+        // session.getMapper(SmsMtMessagesmsMtMessageSubmitMapper.class);
+        // int size = 0;
+        // try {
+        // size = smsMtMessageSubmitMapper.batchInsert(list);
+        // session.commit();
+        // // 清理缓存，防止溢出
+        // session.clearCache();
+        // } catch (Exception e) {
+        // // 没有提交的数据可以回滚
+        // // session.rollback();
+        // logger.error("短信提交数据入库失败", e);
+        // } finally {
+        // session.close();
+        // }
+        // return size;
+    }
 //
 //    @Override
 //    public SmsMtMessageSubmit getSubmitWaitReceipt(String msgId, String mobile) {
@@ -340,20 +340,20 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 //            return false;
 //        }
 //    }
-//
-//    @Override
-//    public void setPushConfigurationIfNecessary(List<SmsMtMessageSubmit> submits) {
-//        // add by 2018-03-24 取出第一个值的信息（推送设置一批任务为一致信息）
-//        SmsMtMessageSubmit submit = submits.iterator().next();
-//        if (submit.getNeedPush() == null || !submit.getNeedPush() || StringUtils.isEmpty(submit.getPushUrl())) {
-//            return;
-//        }
-//
-//        // 异步设置需要推送的信息
-//        // threadPoolTaskExecutor.execute(new SetPushConfigThread(smsMtPushService, submits));
-//
-//        smsMtPushService.setMessageReadyPushConfigurations(submits);
-//    }
+
+    @Override
+    public void setPushConfigurationIfNecessary(List<SmsMtMessageSubmit> submits) {
+        // add by 2018-03-24 取出第一个值的信息（推送设置一批任务为一致信息）
+        SmsMtMessageSubmit submit = submits.iterator().next();
+        if (submit.getNeedPush() == null || !submit.getNeedPush() || StringUtils.isEmpty(submit.getPushUrl())) {
+            return;
+        }
+
+        // 异步设置需要推送的信息
+        // threadPoolTaskExecutor.execute(new SetPushConfigThread(smsMtPushService, submits));
+
+        smsMtPushService.setMessageReadyPushConfigurations(submits);
+    }
 
     @Override
     public boolean declareWaitSubmitMessageQueues() {

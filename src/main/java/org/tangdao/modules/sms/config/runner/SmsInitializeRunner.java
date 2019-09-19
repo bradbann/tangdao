@@ -144,7 +144,7 @@ public class SmsInitializeRunner implements CommandLineRunner {
     }
 
     private void initDeliverFailoverPushThreads() {
-//        smsMtPushService.startFailoverListener();
+        smsMtPushService.startFailoverListener();
     }
 
     /**

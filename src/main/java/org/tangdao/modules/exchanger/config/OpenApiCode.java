@@ -136,7 +136,7 @@ public class OpenApiCode {
     /**
      * TODO 融合平台-流量平台状态码
      *
-     * @author zhengying
+     * @author ruyang
      * @version V1.0.0
      * @date 2016年9月21日 上午12:01:46
      */
@@ -183,7 +183,7 @@ public class OpenApiCode {
     /**
      * TODO 融合平台-语音平台状态码
      *
-     * @author zhengying
+     * @author ruyang
      * @version V1.0.0
      * @date 2016年9月21日 上午12:07:24
      */
@@ -246,7 +246,7 @@ public class OpenApiCode {
     /**
      * TODO 短信推送状态码
      *
-     * @author zhengying
+     * @author ruyang
      * @version V1.0.0
      * @date 2016年12月25日 下午2:44:28
      */

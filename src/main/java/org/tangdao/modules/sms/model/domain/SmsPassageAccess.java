@@ -39,14 +39,14 @@ public class SmsPassageAccess extends DataEntity<SmsPassageAccess> {
 	private String resultFormat;		// result_format
 	private String successCode;		// 成功码
 	private String position;		// 返回值的具体位置，json存储
-	private String mobileSize;		// 手机号码分包数
-	private Integer packetsSize;		// 1秒钟允许提交的网络包数量
-	private String connectionSize;		// 最大连接数
-	private String readTimeout;		// 超时时间（毫秒）
+	private int    mobileSize;		// 手机号码分包数
+	private int    packetsSize;		// 1秒钟允许提交的网络包数量
+	private int    connectionSize;		// 最大连接数
+	private int    readTimeout;		// 超时时间（毫秒）
 	private String accessCode;		// 接入号码（10690...）
-	private String extNumber;		// 拓展号长度,0表示不允许拓展
-	private Integer signMode;		// 签名模式 0:不处理，1：自动前置，2：自动后置，3：自动去除签名
-	private String smsTemplateParam;		// 是否需要短信模板参数信息
+	private int    extNumber;		// 拓展号长度,0表示不允许拓展
+	private int    signMode;		// 签名模式 0:不处理，1：自动前置，2：自动后置，3：自动去除签名
+	private int    smsTemplateParam;		// 是否需要短信模板参数信息
 	
 	@TableField(exist = false)
 	private String userIdText;
