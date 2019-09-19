@@ -22,7 +22,7 @@ public interface ISmsMtSubmitService extends ICrudService<SmsMtMessageSubmit> {
 ////     * @return 列表
 ////     */
 ////    List<SmsMtMessageSubmit> findList(Map<String, Object> queryParams);
-//
+
 //    /**
 //     * 根据SID查询提交列表信息
 //     * 
@@ -70,34 +70,34 @@ public interface ISmsMtSubmitService extends ICrudService<SmsMtMessageSubmit> {
 //     * @return 发送记录
 //     */
 //    SmsMtMessageSubmit getSubmitWaitReceipt(String msgId, String mobile);
-//
-//    /**
-//     * 根据MO参数分析具体的userId和SID
-//     * 
-//     * @param passageId 通道ID
-//     * @param msgId 回执消息ID
-//     * @param mobile 手机号码
-//     * @param spcode 码号
-//     * @return 发送记录
-//     */
-//    SmsMtMessageSubmit getByMoMapping(String passageId, String msgId, String mobile, String spcode);
-//
-//    /**
-//     * 根据消息ID和手机号码获取提交信息
-//     * 
-//     * @param msgId 消息ID
-//     * @param mobile 手机号码
-//     * @return 发送记录
-//     */
-//    SmsMtMessageSubmit getByMsgidAndMobile(String msgId, String mobile);
-//
-//    /**
-//     * 根据消息ID获取提交信息
-//     * 
-//     * @param msgId 消息ID
-//     * @return 发送记录
-//     */
-//    SmsMtMessageSubmit getByMsgid(String msgId);
+
+    /**
+     * 根据MO参数分析具体的userId和SID
+     * 
+     * @param passageId 通道ID
+     * @param msgId 回执消息ID
+     * @param mobile 手机号码
+     * @param spcode 码号
+     * @return 发送记录
+     */
+    SmsMtMessageSubmit getByMoMapping(String passageId, String msgId, String mobile, String spcode);
+
+    /**
+     * 根据消息ID和手机号码获取提交信息
+     * 
+     * @param msgId 消息ID
+     * @param mobile 手机号码
+     * @return 发送记录
+     */
+    SmsMtMessageSubmit getByMsgidAndMobile(String msgId, String mobile);
+
+    /**
+     * 根据消息ID获取提交信息
+     * 
+     * @param msgId 消息ID
+     * @return 发送记录
+     */
+    SmsMtMessageSubmit getByMsgid(String msgId);
 
     /**
      * 异常短信处理，如黑名单/驳回/超时，超速

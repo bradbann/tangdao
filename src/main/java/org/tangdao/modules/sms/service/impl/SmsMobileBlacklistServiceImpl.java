@@ -1,6 +1,7 @@
 package org.tangdao.modules.sms.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sms.config.MobileBlacklistType;
 import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
+import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant.MessageAction;
 import org.tangdao.modules.sms.mapper.SmsMobileBlacklistMapper;
 import org.tangdao.modules.sms.model.domain.SmsMobileBlacklist;
 import org.tangdao.modules.sms.service.ISmsMobileBlackListService;
@@ -39,6 +42,20 @@ public class SmsMobileBlacklistServiceImpl extends CrudServiceImpl<SmsMobileBlac
      * 全局手机号码（与REDIS 同步采用广播模式）
      */
     public static volatile Map<String, Integer> GLOBAL_MOBILE_BLACKLIST = new ConcurrentHashMap<>();
+    
+   /**
+    * TODO 消息拼接返回
+    * 
+    * @param code
+    * @param msg
+    * @return
+    */
+   private Map<String, Object> response(String code, String msg) {
+       Map<String, Object> resultMap = new HashMap<String, Object>();
+       resultMap.put("result_code", code);
+       resultMap.put("result_msg", msg);
+       return resultMap;
+   }
 
 	@Override
 	public boolean isMobileBelongtoBlacklist(String mobile) {
@@ -95,80 +112,80 @@ public class SmsMobileBlacklistServiceImpl extends CrudServiceImpl<SmsMobileBlac
         }
 	}
 	
-//	@Override
-//    @Transactional
-//    public Map<String, Object> batchInsert(SmsMobileBlackList black) {
-//        if (StringUtils.isEmpty(black.getMobile())) {
-//            return response("-2", "参数不能为空！");
-//        }
-//
-//        List<SmsMobileBlackList> list = new ArrayList<>();
-//        try {
-//            // 前台默认是多个手机号码换行添加
-//            String[] mobiles = black.getMobile().split("\n");
-//            SmsMobileBlackList mbl;
-//            for (String mobile : mobiles) {
-//                if (StringUtils.isBlank(mobile)) {
-//                    continue;
-//                }
-//
-//                // 判断是否重复 重复则不保存
-//                if (isMobileBelongtoBlacklist(mobile.trim())) {
-//                    continue;
-//                }
-//
-//                mbl = new SmsMobileBlackList();
-//                mbl.setMobile(mobile.trim());
-//                mbl.setType(black.getType());
-//                mbl.setRemark(black.getRemark());
-//                list.add(mbl);
-//            }
-//
-//            // 批量添加黑名单
-//            if (CollectionUtils.isNotEmpty(list)) {
-//                smsMobileBlackListMapper.batchInsert(list);
-//                // 批量操作无误后添加至缓存REDIS
-//                for (SmsMobileBlackList ml : list) {
-//                    publishToRedis(MessageAction.ADD, ml.getMobile(), ml.getType());
-//                }
-//            }
-//
-//            return response("success", "成功！");
-//        } catch (Exception e) {
-//            logger.info("添加手机号码黑名单失败", e);
-//            return response("exption", "操作失败");
-//        }
-//    }
-	
-//	@Override
-//    public int deleteByPrimaryKey(int id) {
-//        try {
-//            SmsMobileBlackList smsMobileBlackList = smsMobileBlackListMapper.selectByPrimaryKey(id);
-//            publishToRedis(MessageAction.REMOVE, smsMobileBlackList.getMobile(), smsMobileBlackList.getType());
-//
-//        } catch (Exception e) {
-//            logger.warn("Redis 删除黑名单数据信息失败, id : {}", id, e);
-//        }
-//
-//        return smsMobileBlackListMapper.deleteByPrimaryKey(id);
-//    }
+	@Override
+    @Transactional
+    public Map<String, Object> batchInsert(SmsMobileBlacklist black) {
+        if (StringUtils.isEmpty(black.getMobile())) {
+            return response("-2", "参数不能为空！");
+        }
 
-//	/**
-//     * TODO REDIS队列数据操作(订阅发布模式)
-//     *
-//     * @param mobile
-//     * @param action
-//     * @return
-//     */
-//    private void publishToRedis(MessageAction action, String mobile, Integer type) {
-//        try {
-//
-//            stringRedisTemplate.convertAndSend(SmsRedisConstant.BROADCAST_MOBILE_BLACKLIST_TOPIC,
-//                                               String.format("%d:%s:%d", action.getCode(), mobile, type));
-//        } catch (Exception e) {
-//            logger.error("加入黑名单数据错误", e);
-//        }
-//    }
+        List<SmsMobileBlacklist> list = new ArrayList<>();
+        try {
+            // 前台默认是多个手机号码换行添加
+            String[] mobiles = black.getMobile().split("\n");
+            SmsMobileBlacklist mbl;
+            for (String mobile : mobiles) {
+                if (StringUtils.isBlank(mobile)) {
+                    continue;
+                }
+
+                // 判断是否重复 重复则不保存
+                if (isMobileBelongtoBlacklist(mobile.trim())) {
+                    continue;
+                }
+
+                mbl = new SmsMobileBlacklist();
+                mbl.setMobile(mobile.trim());
+                mbl.setType(black.getType());
+                mbl.setRemarks(black.getRemarks());
+                list.add(mbl);
+            }
+
+            // 批量添加黑名单
+            if (ListUtils.isNotEmpty(list)) {
+            	super.saveBatch(list);
+                // 批量操作无误后添加至缓存REDIS
+                for (SmsMobileBlacklist ml : list) {
+                    publishToRedis(MessageAction.ADD, ml.getMobile(), ml.getType());
+                }
+            }
+
+            return response("success", "成功！");
+        } catch (Exception e) {
+            logger.info("添加手机号码黑名单失败", e);
+            return response("exption", "操作失败");
+        }
+    }
+	
+	@Override
+    public boolean deleteByPrimaryKey(String id) {
+        try {
+        	SmsMobileBlacklist smsMobileBlackList = super.get(id);
+            publishToRedis(MessageAction.REMOVE, smsMobileBlackList.getMobile(), smsMobileBlackList.getType());
+
+        } catch (Exception e) {
+            logger.warn("Redis 删除黑名单数据信息失败, id : {}", id, e);
+        }
+
+        return super.deleteById(id);
+    }
+
+	/**
+     * TODO REDIS队列数据操作(订阅发布模式)
+     *
+     * @param mobile
+     * @param action
+     * @return
+     */
+    private void publishToRedis(MessageAction action, String mobile, Integer type) {
+        try {
+
+            stringRedisTemplate.convertAndSend(SmsRedisConstant.BROADCAST_MOBILE_BLACKLIST_TOPIC,
+                                               String.format("%d:%s:%d", action.getCode(), mobile, type));
+        } catch (Exception e) {
+            logger.error("加入黑名单数据错误", e);
+        }
+    }
 
     private boolean pushToRedis(final List<SmsMobileBlacklist> list) {
         try {
@@ -221,4 +238,5 @@ public class SmsMobileBlacklistServiceImpl extends CrudServiceImpl<SmsMobileBlac
 
         return pushToRedis(list);
     }
+    
 }

@@ -79,7 +79,11 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 
 //    @Override
 //    public List<SmsMtMessageSubmit> findBySid(long sid) {
-//    	return this.select(Wrappers.<SmsMtMessageSubmit>lambdaQuery().eq(SmsMtMessageSubmit::getSid, sid));
+//    	QueryWrapper<SmsMtMessageSubmit> queryWrapper = new QueryWrapper<SmsMtMessageSubmit>();
+//    	queryWrapper.eq("msg_id", sid);
+//    	queryWrapper.eq("mobile", mobile);
+//    	queryWrapper.orderByDesc("id").last(" limit 1");
+//    	return super.select(queryWrapper);
 //    }
 //
 ////    @Override
@@ -289,32 +293,48 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 //    public SmsMtMessageSubmit getSubmitWaitReceipt(String msgId, String mobile) {
 //        return smsMtMessageSubmitMapper.selectByMsgIdAndMobile(msgId, mobile);
 //    }
-//
-//    @Override
-//    public SmsMtMessageSubmit getByMoMapping(Integer passageId, String msgId, String mobile, String spcode) {
-//
-//        SmsMtMessageSubmit smsMtMessageSubmit = null;
-//        if (passageId != null && StringUtils.isNotEmpty(msgId)) {
-//            smsMtMessageSubmit = smsMtMessageSubmitMapper.selectByPsm(passageId, msgId, mobile);
-//        }
-//        if (smsMtMessageSubmit == null && StringUtils.isNotEmpty(msgId)) {
-//            smsMtMessageSubmit = smsMtMessageSubmitMapper.selectByMsgIdAndMobile(msgId, mobile);
-//        }
-//        if (smsMtMessageSubmit == null) {
-//            return smsMtMessageSubmitMapper.selectByMobile(mobile);
-//        }
-//        return smsMtMessageSubmit;
-//    }
-//
-//    @Override
-//    public SmsMtMessageSubmit getByMsgidAndMobile(String msgId, String mobile) {
-//        return smsMtMessageSubmitMapper.selectByMsgIdAndMobile(msgId, mobile);
-//    }
-//
-//    @Override
-//    public SmsMtMessageSubmit getByMsgid(String msgId) {
-//        return smsMtMessageSubmitMapper.selectByMsgId(msgId);
-//    }
+
+    @Override
+    public SmsMtMessageSubmit getByMoMapping(String passageId, String msgId, String mobile, String spcode) {
+    	QueryWrapper<SmsMtMessageSubmit> queryWrapper = null;
+    	
+        SmsMtMessageSubmit smsMtMessageSubmit = null;
+        if (passageId != null && StringUtils.isNotEmpty(msgId)) {
+        	queryWrapper = new QueryWrapper<SmsMtMessageSubmit>();
+        	queryWrapper.eq("passage_id", passageId);
+        	queryWrapper.eq("msg_id", msgId);
+        	queryWrapper.eq("mobile", mobile);
+        	queryWrapper.orderByDesc("id").last(" limit 1");
+        	return super.getOne(queryWrapper);
+        }
+        if (smsMtMessageSubmit == null && StringUtils.isNotEmpty(msgId)) {
+            smsMtMessageSubmit = getByMsgidAndMobile(msgId, mobile);
+        }
+        if (smsMtMessageSubmit == null) {
+        	queryWrapper = new QueryWrapper<SmsMtMessageSubmit>();
+        	queryWrapper.eq("mobile", mobile);
+        	queryWrapper.orderByDesc("id").last(" limit 1");
+            return super.getOne(queryWrapper);
+        }
+        return smsMtMessageSubmit;
+    }
+
+    @Override
+    public SmsMtMessageSubmit getByMsgidAndMobile(String msgId, String mobile) {
+    	QueryWrapper<SmsMtMessageSubmit> queryWrapper = new QueryWrapper<SmsMtMessageSubmit>();
+    	queryWrapper.eq("msg_id", msgId);
+    	queryWrapper.eq("mobile", mobile);
+    	queryWrapper.orderByDesc("id").last(" limit 1");
+    	return super.getOne(queryWrapper);
+    }
+
+    @Override
+    public SmsMtMessageSubmit getByMsgid(String msgId) {
+    	QueryWrapper<SmsMtMessageSubmit> queryWrapper = new QueryWrapper<SmsMtMessageSubmit>();
+    	queryWrapper.eq("msg_id", msgId);
+    	queryWrapper.orderByDesc("id").last(" limit 1");
+    	return super.getOne(queryWrapper);
+    }
 
     @Override
     public boolean doSmsException(List<SmsMtMessageSubmit> submits) {

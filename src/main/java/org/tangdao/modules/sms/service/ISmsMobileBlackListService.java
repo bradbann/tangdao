@@ -1,6 +1,7 @@
 package org.tangdao.modules.sms.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.tangdao.common.service.ICrudService;
 import org.tangdao.modules.sms.model.domain.SmsMobileBlacklist;
@@ -11,6 +12,15 @@ import org.tangdao.modules.sms.model.domain.SmsMobileBlacklist;
  * @version 2019-09-06
  */
 public interface ISmsMobileBlackListService extends ICrudService<SmsMobileBlacklist> {
+	
+	/**
+	 * 
+	 * TODO 批量设置黑名单 分隔符以换行符 分割
+	 * 
+	 * @param black
+	 * @return
+	 */
+	Map<String, Object> batchInsert(SmsMobileBlacklist black);
 		
 	/**
 	 * 
@@ -38,4 +48,7 @@ public interface ISmsMobileBlackListService extends ICrudService<SmsMobileBlackl
 	   * @return
 	 */
 	boolean reloadToRedis();
+	
+	public boolean deleteByPrimaryKey(String id);
+	
 }
