@@ -1,19 +1,10 @@
 package org.tangdao.modules.sys.utils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.springframework.data.redis.core.RedisTemplate;
-import org.tangdao.common.config.Contents;
 import org.tangdao.common.config.Global;
-import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.SpringUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.model.domain.Config;
 import org.tangdao.modules.sys.service.IConfigService;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 /**
  * @ClassName: ConfigUtils.java
@@ -26,32 +17,10 @@ public class ConfigUtils {
 	
 	private static final class Static {
 		private static IConfigService configService = SpringUtils.getBean(IConfigService.class);
-		private static RedisTemplate<String, Object> redis = SpringUtils.getBean("redisTemplate");
 	}
 
-	public static void clearCache() {
-		Static.redis.expire(Contents.CACHE_CONFIG_MAP, 0L, TimeUnit.SECONDS);
-	}
-
-	@SuppressWarnings("unchecked")
 	public static synchronized Config getConfig(String key) {
-		Map<String, Config> cacheMap = (Map<String, Config>) Static.redis.opsForValue().get(Contents.CACHE_CONFIG_MAP);
-		
-		if (cacheMap == null) {
-			cacheMap = MapUtils.newHashMap();
-			QueryWrapper<Config> queryWrapper = new QueryWrapper<Config>();
-//			queryWrapper.eq("status", Config.STATUS_NORMAL);
-			List<Config> list = Static.configService.select(queryWrapper);
-			for (Config item : list) {
-				cacheMap.put(item.getConfigKey(), item);
-			}
-			Static.redis.opsForValue().set(Contents.CACHE_CONFIG_MAP, cacheMap);
-		}
-		Config config;
-		if ((config = (Config) cacheMap.get(key)) == null) {
-			config = new Config();
-		}
-		return config;
+		return Static.configService.getConfigByKey(key);
 	}
 	
 	public static synchronized String getConfig2(String key, String defValue) {
@@ -65,5 +34,9 @@ public class ConfigUtils {
 			}
 		}
 		return value;
+	}
+	
+	public static void clearCache() {
+		Static.configService.clearCache();
 	}
 }

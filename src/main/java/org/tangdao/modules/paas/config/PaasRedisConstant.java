@@ -65,7 +65,7 @@ public class PaasRedisConstant {
     /**
      * 手机归属地
      */
-    public static final String               RED_AREA_MOBILES_LOCAL = "red_area_mobiles_local";
+    public static final String               RED_AREA_MOBILES_LOCAL     = "red_area_mobiles_local";
 
     /**
      * 全局手机归属号码

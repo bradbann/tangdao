@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -64,7 +65,7 @@ public class WebSecurityConfig {
     	private String authorizeUrl;
     	
     	@Autowired
-    	private RedisOperations<String, Serializable> sessionRedisOperations;
+    	private StringRedisTemplate stringRedisTemplate;
 		
 		@Bean
 	    public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -73,7 +74,7 @@ public class WebSecurityConfig {
 		
 		@Bean
 	    public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-	        return new AuthenticationTokenFilter(sessionRedisOperations, antMatchers.split(","));
+	        return new AuthenticationTokenFilter(stringRedisTemplate, antMatchers.split(","));
 	    }
 		
 		protected void configure(HttpSecurity http) throws Exception {

@@ -2,7 +2,6 @@ package org.tangdao.modules.paas.service.impl;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +24,7 @@ import org.tangdao.modules.paas.service.IUserPassageService;
 import org.tangdao.modules.sys.utils.DictUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
@@ -127,13 +127,13 @@ public class UserPassageServiceImpl extends CrudServiceImpl<UserPassageMapper, U
             if (ListUtils.isEmpty(passageList)) {
                 // 如果传递的用户通道集合为空，则根据系统参数配置查询平台所有业务的默认可用通道信息，插入值用户通道关系表中
 //                List<SystemConfig> systemConfigs = systemConfigService.findByType(SystemConfigType.USER_DEFAULT_PASSAGE_GROUP.name());
-            	List<Map<String, Object>> dictTypes = DictUtils.getDictList(SysDictType.USER_DEFAULT_PASSAGE_GROUP.name());
+            	List<JSONObject> dictTypes = DictUtils.getDictList(SysDictType.USER_DEFAULT_PASSAGE_GROUP.name());
                 if (ListUtils.isEmpty(dictTypes)) {
                     throw new RuntimeException("没有可用默认通道组，请配置");
                 }
 
                 Integer type = null;
-                for (Map<String, Object> map : dictTypes) {
+                for (JSONObject map : dictTypes) {
                     if (UserDefaultPassageGroupKey.SMS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(ObjectUtils.toString(map.get("dictLabel")))) {
                         type = PlatformType.SEND_MESSAGE_SERVICE.getCode();
                     } else if (UserDefaultPassageGroupKey.FS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(ObjectUtils.toString(map.get("dictLabel")))) {

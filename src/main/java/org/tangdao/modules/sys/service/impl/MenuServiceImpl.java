@@ -5,13 +5,16 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.springframework.data.redis.core.RedisTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
-import org.tangdao.common.config.Contents;
 import org.tangdao.common.service.impl.TreeServiceImpl;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
+import org.tangdao.modules.sys.config.SysRedisConstant;
 import org.tangdao.modules.sys.mapper.MenuMapper;
 import org.tangdao.modules.sys.model.domain.Menu;
 import org.tangdao.modules.sys.service.IMenuService;
@@ -28,6 +31,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  */
 @Service
 public class MenuServiceImpl extends TreeServiceImpl<MenuMapper, Menu> implements IMenuService {
+	
+	@Resource
+    private StringRedisTemplate                  stringRedisTemplate;
+	
+	private final Logger                         logger                          = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * 根据角色获取菜单
@@ -93,33 +101,65 @@ public class MenuServiceImpl extends TreeServiceImpl<MenuMapper, Menu> implement
 		return sourcelist;
 	}
 	
-	@Resource
-	RedisTemplate<String, Object> redisTemplate;
+//	@Resource
+//	RedisTemplate<String, Object> redisTemplate;
+	//根据地址，或者权限获取菜单名称
 	
-	@SuppressWarnings("unchecked")
-	public String getMenuNamePath(String href, String permission) {	
-		Map<String, String> menuNamePathMap = (Map<String, String>) this.redisTemplate.opsForValue().get(Contents.CACHE_MENU_NAME_PATH_MAP);
-		if(menuNamePathMap==null) {
-			menuNamePathMap = MapUtils.newLinkedHashMap();
-			List<Menu> menuList = this.findByStatusNormal(new Menu());
-			for (Menu menu : menuList) {
-				 String menuHref = StringUtils.substringBefore(menu.getMenuHref(), "?");
-				 if (StringUtils.isNotBlank(menuHref)) {
-					 if (StringUtils.endsWith(menuHref, "/")) {	
-						 menuHref = StringUtils.substring(menuHref, menuHref.length() - 1);
-                     }	
-					 menuNamePathMap.put(menuHref, menu.getTreeNames());	
-					 menuNamePathMap.put(StringUtils.substringBeforeLast(menuHref, "/"), menu.getTreeNames());	
-				 }
-				 if (!StringUtils.isNotBlank(menu.getPermission())) continue;
-				 String[] pers = StringUtils.split(menu.getPermission(), ",");
-				 for (String p : pers) {
-					 menuNamePathMap.put(p, menu.getTreeNames());	
-					 menuNamePathMap.put(StringUtils.substringBeforeLast(p, ":"), StringUtils.substringBeforeLast(menu.getTreeNames(), "/"));	
-				 }
-			}
-			this.redisTemplate.opsForValue().set(Contents.CACHE_MENU_NAME_PATH_MAP, menuNamePathMap);
+	public boolean reloadMenuTreeNameToRedis() {
+		List<Menu> menuList = this.findByStatusNormal(new Menu());
+		if(ListUtils.isEmpty(menuList)) {
+			logger.warn("缓冲权限名称失败，数据为空，请排查");
+			return false;
 		}
+	    try {
+//            stringRedisTemplate.delete(stringRedisTemplate.keys(SysRedisConstant.RED_MENU_NAME_PATH + "*"));
+
+            List<Object> con = stringRedisTemplate.execute((connection) -> {
+
+                RedisSerializer<String> serializer = stringRedisTemplate.getStringSerializer();
+                connection.openPipeline();
+                byte[] mainKey = serializer.serialize(SysRedisConstant.RED_MENU_NAME_PATH);
+                for (Menu menu : menuList) {
+   				 String menuHref = StringUtils.substringBefore(menu.getMenuHref(), "?");
+   				 if (StringUtils.isNotBlank(menuHref)) {
+   					 if (StringUtils.endsWith(menuHref, "/")) {	
+   						 menuHref = StringUtils.substring(menuHref, menuHref.length() - 1);
+                     }
+                     connection.hSet(mainKey, serializer.serialize(menuHref), serializer.serialize(menu.getTreeNames()));
+                     connection.hSet(mainKey, serializer.serialize(StringUtils.substringBeforeLast(menuHref, "/")), serializer.serialize(menu.getTreeNames()));
+   				 }
+   				 if (!StringUtils.isNotBlank(menu.getPermission())) continue;
+	   				 String[] pers = StringUtils.split(menu.getPermission(), ",");
+	   				 for (String p : pers) {
+	   					 connection.hSet(mainKey, serializer.serialize(p), serializer.serialize(menu.getTreeNames()));
+	   					 connection.hSet(mainKey, serializer.serialize(StringUtils.substringBeforeLast(p, ":")), serializer.serialize(StringUtils.substringBeforeLast(menu.getTreeNames(), "/")));
+	   				 }
+	   			}
+
+                return connection.closePipeline();
+
+            }, false, true);
+            return ListUtils.isNotEmpty(con);
+        } catch (Exception e) {
+            logger.warn("REDIS 存储数据失败", e);
+            return false;
+        }
+	}
+	
+	public String getMenuNamePath(String href, String permission) {	
+		
+		Map<String, String> menuNamePathMap = MapUtils.newHashMap();
+    	try {
+    		Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(SysRedisConstant.RED_MENU_NAME_PATH);
+    		if (MapUtils.isNotEmpty(entries)) {
+                for (Object key : entries.keySet()) {
+                    menuNamePathMap.put(key.toString(),  entries.get(key).toString());
+                }
+            }
+		} catch (Exception e) {
+			 logger.warn("REDIS 加载失败，将于DB加载", e);
+		}
+		
 		if (StringUtils.endsWith(href, "/")) {	
             String string = href;	
             href = StringUtils.substring(string, string.length() - 1);	

@@ -1,7 +1,6 @@
 package org.tangdao.common.security;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.servlet.FilterChain;
@@ -9,17 +8,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.tangdao.common.config.Contents;
 import org.tangdao.common.config.Global;
+import org.tangdao.common.security.SecurityContent.AuthResponseStatus;
 import org.tangdao.common.utils.ServletUtils;
 import org.tangdao.common.utils.StringUtils;
+
+import com.alibaba.fastjson.JSON;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -28,12 +29,12 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 	
 	private String[] antPatterns;
 	
-	private RedisOperations<String, Serializable> sessionRedisOperations;
+	private StringRedisTemplate stringRedisTemplate;
 	
 	private AntPathMatcher pathMatcher = new AntPathMatcher();
 	
-	public AuthenticationTokenFilter(RedisOperations<String, Serializable> sessionRedisOperations, String ...antPatterns) {
-		this.sessionRedisOperations = sessionRedisOperations;
+	public AuthenticationTokenFilter(StringRedisTemplate stringRedisTemplate, String ...antPatterns) {
+		this.stringRedisTemplate = stringRedisTemplate;
 		this.antPatterns = antPatterns;
 	}
 	
@@ -82,17 +83,21 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 		if(claims!=null && claims.getExpiration().before(new Date())) {
 			response.setStatus(401);
 			org.slf4j.LoggerFactory.getLogger("Status code [401]").error("认证信息已经过期，请重新登录！");
-			ServletUtils.renderResult(response, Contents.EC_TOKEN_EXPIRATION, "认证信息已经过期，请重新登录！");
+			ServletUtils.renderResult(response, AuthResponseStatus.EC_TOKEN_EXPIRATION.getCode(), "认证信息已经过期，请重新登录！");
 			return;
 		}
 		//获取用户上下文信息
-		UserDetails userDetails = (UserDetails)sessionRedisOperations.boundHashOps(Contents.TANGDAO_SECURITY_TOKENS + tokenValue).get("tokenAttr:SPRING_SECURITY_CONTEXT");
-		if(userDetails==null) {
+		
+		Object obj = stringRedisTemplate.opsForHash().get(SecurityContent.RED_SECURITY_TOKEN_LIST, tokenValue);
+		
+//		UserDetails userDetails = (UserDetails)sessionRedisOperations.boundHashOps(SecurityContent.RED_SECURITY_TOKEN_LIST + tokenValue).get("tokenAttr:SPRING_SECURITY_CONTEXT");
+		if(obj==null) {
 			response.setStatus(401);
 			org.slf4j.LoggerFactory.getLogger("Status code [401]").error("用户信息获取失败，请重新登录！");
-			ServletUtils.renderResult(response, Contents.EC_TOKENATTR_NOTFOND, "用户信息获取失败，请重新登录！");
+			ServletUtils.renderResult(response, AuthResponseStatus.EC_TOKENATTR_NOTFOND.getCode(), "用户信息获取失败，请重新登录！");
 			return;
 		}
+		UserDetails userDetails = JSON.parseObject(obj.toString(), UserDetails.class);
 		//用户信息认证
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

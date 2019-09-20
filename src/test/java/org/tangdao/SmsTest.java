@@ -14,7 +14,7 @@ public class SmsTest {
 		String appkey="abcd";
 		String appsecret="1234";
 		String mobile="15821554550,13262669725";
-		String content="【天机科技】您的短信验证码为8428。";
+		String content="【天机科技】您的验证码为8428。";
 		String extNumber=null;
 		String attach="";
 		Map<String, Object> params = new HashMap<>();

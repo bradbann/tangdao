@@ -19,6 +19,18 @@ public interface IMenuService extends ITreeService<Menu> {
 	
 	public List<Menu> findByUserMenu(Menu menu, boolean isFindParentAndChild);
 	
+	/**
+	 * 地址或者权限，获取对应的权限名称
+	 * @param href
+	 * @param permission
+	 * @return
+	 */
 	public String getMenuNamePath(String href, String permission);
+	
+	/**
+	 * 初始化
+	 * @return
+	 */
+	public boolean reloadMenuTreeNameToRedis();
 	
 }

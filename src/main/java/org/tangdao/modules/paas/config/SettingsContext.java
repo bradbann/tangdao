@@ -104,7 +104,7 @@ public class SettingsContext {
      */
     public enum NotificationMessageTemplateType {
 
-        REGISTER_SUCCESS(1, "欢迎您加入华时融合平台！", "您于%s开户成功，欢迎您加入华时融合平台！"), USER_BALACE_CHANGE(
+        REGISTER_SUCCESS(1, "欢迎您加入！", "您于%s开户成功，欢迎您加入！"), USER_BALACE_CHANGE(
                 2, "余额变更通知", "您的%s余额变更%s"), USER_ACCOUNT_CHANGE(3, "站内金额变更通知",
                 "您的站内金额增加%s元"), USER_MOBILE_CHANGE(4, "手机号码变更",
                 "您的手机号码由[%s]变更为[%s]");

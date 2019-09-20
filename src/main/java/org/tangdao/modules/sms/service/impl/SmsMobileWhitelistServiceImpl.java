@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.StringUtils;
-import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
+import org.tangdao.config.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.mapper.SmsMobileWhitelistMapper;
 import org.tangdao.modules.sms.model.domain.SmsMobileWhitelist;
 import org.tangdao.modules.sms.service.ISmsMobileWhiteListService;

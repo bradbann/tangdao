@@ -16,11 +16,14 @@ import org.tangdao.modules.paas.config.PayContext.PayType;
 import org.tangdao.modules.paas.exception.ExchangeException;
 import org.tangdao.modules.paas.mapper.UserBalanceMapper;
 import org.tangdao.modules.paas.model.domain.UserBalance;
+import org.tangdao.modules.paas.model.domain.UserBalanceLog;
 import org.tangdao.modules.paas.model.vo.P2pBalanceResponse;
+import org.tangdao.modules.paas.service.IUserBalanceLogService;
 import org.tangdao.modules.paas.service.IUserBalanceService;
 import org.tangdao.modules.paas.service.IUserSmsConfigService;
 import org.tangdao.modules.sms.config.UserBalanceConstant;
 import org.tangdao.modules.sms.config.UserContext.BalancePayType;
+import org.tangdao.modules.sms.config.UserContext.BalanceStatus;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -39,6 +42,9 @@ public class UserBalanceServiceImpl extends CrudServiceImpl<UserBalanceMapper, U
     
     @Autowired
     private IUserSmsConfigService       userSmsConfigService;
+    
+    @Autowired
+    private IUserBalanceLogService      userBalanceLogService;
 
 	@Override
 	public List<UserBalance> findByUserCode(String userCode) {
@@ -70,15 +76,14 @@ public class UserBalanceServiceImpl extends CrudServiceImpl<UserBalanceMapper, U
 		try {
             balance.setPayType(balance.getPayType() == null ? BalancePayType.PREPAY.getValue() : balance.getPayType());
             if (this.save(balance)) {
-//                UserBalanceLog log = new UserBalanceLog();
-//                log.setBalance(balance.getBalance());
-//                log.setPayType(balance.getPayType());
-//                log.setUserId(balance.getUserId());
-//                log.setCreateTime(new Date());
-//                log.setPlatformType(balance.getType());
-//                log.setPaySource(balance.getPaySource().getValue());
-//
-//                return userBalanceLogMapper.insert(log) > 0;
+                UserBalanceLog log = new UserBalanceLog();
+                log.setBalance(balance.getBalance());
+                log.setPayType(balance.getPayType());
+                log.setUserCode(balance.getUserCode());
+                log.setPlatformType(balance.getType());
+                log.setPaySource(balance.getPaySource().getValue());
+
+                return userBalanceLogService.save(log);
             }
 
             return false;
@@ -91,9 +96,44 @@ public class UserBalanceServiceImpl extends CrudServiceImpl<UserBalanceMapper, U
 	@Override
 	@Transactional(readOnly = false, rollbackFor = Exception.class)
 	public boolean updateBalance(String userCode, int amount, int platformType, PaySource paySource, PayType payType,
-			Double price, Double totalPrice, String remark, boolean isNotice) {
-		// TODO Auto-generated method stub
-		return false;
+			Double price, Double totalPrice, String remarks, boolean isNotice) {
+		try {
+            UserBalance userBalance = getByUserCode(userCode, platformType);
+            userBalance.setBalance(userBalance.getBalance() + amount);
+            userBalance.setUserCode(userCode);
+            userBalance.setRemarks(remarks);
+
+            // 冲扣值后统一将告警状态设置为 “正常” add by 20170827
+            userBalance.setStatus(BalanceStatus.AVAIABLE.getValue());
+            boolean result = super.updateById(userBalance);
+            if (result) {
+                UserBalanceLog log = new UserBalanceLog();
+                log.setBalance(Double.valueOf(amount));
+                log.setPaySource(paySource.getValue());
+                log.setPayType(payType == null ? null : payType.getValue());
+                log.setUserCode(userBalance.getUserCode());
+                log.setPlatformType(userBalance.getType());
+                log.setPrice(price);
+                log.setTotalPrice(totalPrice);
+                log.setRemarks(remarks);
+
+                if (isNotice) {
+                	//LS
+//                    notificationMessageService.save(userCode,
+//                                                    NotificationMessageTemplateType.USER_BALACE_CHANGE,
+//                                                    String.format(NotificationMessageTemplateType.USER_BALACE_CHANGE.getContent(),
+//                                                                  PlatformType.parse(platformType).getName(),
+//                                                                  amount));
+                }
+
+                return userBalanceLogService.save(log);
+            }
+
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
 	}
 
 	@Override

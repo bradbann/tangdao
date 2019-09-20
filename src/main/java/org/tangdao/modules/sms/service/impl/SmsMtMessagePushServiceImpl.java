@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -31,15 +32,15 @@ import org.springframework.util.CollectionUtils;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.HttpClientUtils;
 import org.tangdao.common.utils.HttpClientUtils.RetryResponse;
+import org.tangdao.config.redis.constant.SmsRedisConstant;
+import org.tangdao.config.worker.fork.MtReportFailoverPushWorker;
+import org.tangdao.config.worker.fork.MtReportPushToDeveloperWorker;
 import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sms.config.PassageContext.DeliverStatus;
 import org.tangdao.modules.sms.config.PassageContext.PushStatus;
-import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
-import org.tangdao.modules.sms.config.worker.fork.MtReportFailoverPushWorker;
-import org.tangdao.modules.sms.config.worker.fork.MtReportPushToDeveloperWorker;
 import org.tangdao.modules.sms.mapper.SmsMtMessageDeliverMapper;
 import org.tangdao.modules.sms.mapper.SmsMtMessagePushMapper;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
@@ -81,6 +82,9 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
 
     @Resource
     private ThreadPoolTaskExecutor             threadPoolTaskExecutor;
+    
+    @Autowired
+    private ApplicationContext                 applicationContext;
 
     /**
      * 重推回执ID集合间
@@ -326,7 +330,7 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
                                                                          new SimplePropertyPreFilter("msgId", "mobile",
                                                                                                      "statusCode",
                                                                                                      "deliverTime",
-                                                                                                     "remark", "status",
+                                                                                                     "remarks", "status",
                                                                                                      "createTime")));
             // stringRedisTemplate.expire(SmsRedisConstant.RED_MESSAGE_DELIVED_WAIT_PUSH_LIST, 5, TimeUnit.MINUTES);
         } catch (Exception e) {
@@ -457,7 +461,7 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
         lock.lock();
         try {
             for (int i = 0; i < pushThreadPoolSize; i++) {
-                Thread thread = new Thread(new MtReportPushToDeveloperWorker(getUserPushQueueName(userCode)),
+                Thread thread = new Thread(new MtReportPushToDeveloperWorker(applicationContext, getUserPushQueueName(userCode)),
                                            pushThreadName(userCode, i));
                 thread.start();
             }
@@ -594,7 +598,7 @@ public class SmsMtMessagePushServiceImpl extends CrudServiceImpl<SmsMtMessagePus
         for (int i = 0; i < failoverThreadPoolSize; i++) {
 
             // 用户下行状态延迟推送（针对上家下行状态报告回复过快而短信提交记录未入库情况，后续延迟推送）
-            threadPoolTaskExecutor.execute(new MtReportFailoverPushWorker());
+            threadPoolTaskExecutor.execute(new MtReportFailoverPushWorker(applicationContext));
         }
 
         logger.info("Deliver failover threads[" + failoverThreadPoolSize + "] has joined");

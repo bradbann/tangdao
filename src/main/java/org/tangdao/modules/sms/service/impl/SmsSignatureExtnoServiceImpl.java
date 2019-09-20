@@ -14,7 +14,7 @@ import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.PatternUtils;
 import org.tangdao.common.utils.StringUtils;
-import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
+import org.tangdao.config.redis.constant.SmsRedisConstant;
 import org.tangdao.modules.sms.mapper.SmsSignatureExtnoMapper;
 import org.tangdao.modules.sms.model.domain.SmsSignatureExtno;
 import org.tangdao.modules.sms.service.ISmsSignatureExtnoService;

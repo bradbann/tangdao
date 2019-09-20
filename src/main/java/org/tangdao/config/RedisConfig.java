@@ -16,18 +16,19 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
-import org.tangdao.modules.sms.config.redis.constant.SmsRedisConstant;
-import org.tangdao.modules.sms.config.redis.pubsub.SmsMessageTemplateListener;
-import org.tangdao.modules.sms.config.redis.pubsub.SmsMobileBlacklistListener;
-import org.tangdao.modules.sms.config.redis.pubsub.SmsPassageAccessListener;
-import org.tangdao.modules.sms.config.redis.serializer.RedisObjectSerializer;
+import org.tangdao.config.redis.constant.SmsRedisConstant;
+import org.tangdao.config.redis.pubsub.SmsMessageTemplateListener;
+import org.tangdao.config.redis.pubsub.SmsMobileBlacklistListener;
+import org.tangdao.config.redis.pubsub.SmsPassageAccessListener;
+import org.tangdao.config.redis.serializer.RedisObjectSerializer;
+
 
 @Configuration
 @EnableCaching
 //maxInactiveIntervalInSeconds 默认是1800秒过期，这里测试修改为60秒
 @EnableRedisHttpSession
 public class RedisConfig {
-
+	
 	@Primary
 	@Bean("redisTemplate")
 	public RedisTemplate<String, Serializable> redisTemplate(
@@ -111,4 +112,5 @@ public class RedisConfig {
     Topic passageAccessTopic() {
         return new PatternTopic(SmsRedisConstant.BROADCAST_PASSAGE_ACCESS_TOPIC);
     }
+    
 }

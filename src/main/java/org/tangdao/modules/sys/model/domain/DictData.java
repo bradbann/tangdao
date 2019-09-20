@@ -43,10 +43,6 @@ public class DictData extends DataEntity<DictData> {
      * 字典类型
      */
     private String dictType;
-    /**
-     * 字典自定义编码
-     */
-    private String dictKey;
 
     /**
      * 本级排序号（升序）
