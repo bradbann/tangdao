@@ -1,16 +1,16 @@
 package org.tangdao.modules.exchanger.resolver.sms;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.tangdao.modules.exchanger.service.ISmsProxyManager;
 import org.tangdao.modules.exchanger.service.template.SmsProxyManagerTemplate;
-import org.tangdao.modules.sms.model.domain.SmsMoMessageReceive;
-import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
 import org.tangdao.modules.sms.model.domain.SmsPassageParameter;
 
 /**
@@ -22,11 +22,11 @@ import org.tangdao.modules.sms.model.domain.SmsPassageParameter;
  */
 public abstract class AbstractSmsProxySender {
 	
-    @Autowired
+	@Autowired
     protected ISmsProxyManager         smsProxyManageService;
 
-//    @Resource
-//    protected RabbitTemplate           rabbitTemplate;
+    @Resource
+    protected RabbitTemplate           rabbitTemplate;
 
     protected final Logger             logger             = LoggerFactory.getLogger(getClass());
 
@@ -72,23 +72,5 @@ public abstract class AbstractSmsProxySender {
      */
     public void onTerminate(String passageId) {
         smsProxyManageService.stopProxy(passageId);
-    }
-    
-    /**
-	 * 短信上行状态报告
-     */
-    public static final String MQ_SMS_MT_WAIT_RECEIPT = "mq_sms_mt_wait_receipt";
-    
-    protected void sendMtMessageDeliver(final List<SmsMtMessageDeliver> list) {
-    	
-    }
-    
-    /**
-     * 短信上行回执数据
-     */
-    public static final String MQ_SMS_MO_RECEIVE      = "mq_sms_mo_receive";
-    
-    protected void sendMoMessageReceive(final List<SmsMoMessageReceive> list) {
-    	
     }
 }

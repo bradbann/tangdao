@@ -13,13 +13,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.utils.DateUtils;
 import org.tangdao.common.utils.MobileGroupUtils;
+import org.tangdao.config.rabbit.constant.RabbitConstant;
 import org.tangdao.modules.exchanger.config.CommonContext.CMCP;
 import org.tangdao.modules.exchanger.model.response.ProviderSendResponse;
-import org.tangdao.modules.exchanger.model.vo.TParameter;
-import org.tangdao.modules.exchanger.resolver.handler.RequestHandler;
 import org.tangdao.modules.exchanger.resolver.sms.AbstractSmsProxySender;
 import org.tangdao.modules.exchanger.resolver.sms.cmpp.constant.CmppConstant;
 import org.tangdao.modules.exchanger.resolver.sms.sgip.constant.SgipConstant;
+import org.tangdao.modules.exchanger.template.handler.RequestTemplateHandler;
+import org.tangdao.modules.exchanger.template.vo.TParameter;
 import org.tangdao.modules.sms.config.PassageContext.DeliverStatus;
 import org.tangdao.modules.sms.config.TaskContext.MessageSubmitStatus;
 import org.tangdao.modules.sms.model.domain.SmsMoMessageReceive;
@@ -35,7 +36,7 @@ import com.huawei.insa2.comm.sgip.message.SGIPSubmitRepMessage;
 @Service
 public class SgipProxySender extends AbstractSmsProxySender {
 
-    private final AtomicInteger LONG_MESSGE_CONTENT_COUNTER = new AtomicInteger(1);
+	private final AtomicInteger LONG_MESSGE_CONTENT_COUNTER = new AtomicInteger(1);
 
     /**
      * 短信内容转换为 字节数。普通短信 GBK编码。长短信 UCS2编码
@@ -119,7 +120,7 @@ public class SgipProxySender extends AbstractSmsProxySender {
     public List<ProviderSendResponse> send(SmsPassageParameter parameter, String extNumber, String mobile,
                                            String content) {
         try {
-            TParameter tparameter = RequestHandler.parse(parameter.getParams());
+            TParameter tparameter = RequestTemplateHandler.parse(parameter.getParams());
             if (MapUtils.isEmpty(tparameter)) {
                 throw new RuntimeException("SGIP 参数信息为空");
             }
@@ -334,7 +335,7 @@ public class SgipProxySender extends AbstractSmsProxySender {
             response.setCmcp(CMCP.local(response.getMobile()).getCode());
             response.setStatusCode(state == 0 ? SgipConstant.COMMON_MT_STATUS_SUCCESS_CODE : report.getErrorCode() + "");
             response.setStatus(state == 0 ? DeliverStatus.SUCCESS.getValue() : DeliverStatus.FAILED.getValue());
-            response.setDeliverTime(DateUtils.getDateTime());
+            response.setDeliverTime(DateUtils.getDate());
             response.setCreateTime(new Date());
             response.setRemarks(String.format("msg_id:%s,code:%d", report.getSubmitSequenceNumber() + "",
                                              report.getErrorCode()));
@@ -343,7 +344,7 @@ public class SgipProxySender extends AbstractSmsProxySender {
 
             if (CollectionUtils.isNotEmpty(list)) {
                 // 发送异步消息
-               super.sendMtMessageDeliver(list);
+                rabbitTemplate.convertAndSend(RabbitConstant.MQ_SMS_MT_WAIT_RECEIPT, list);
             }
 
             // 解析返回结果并返回
@@ -381,7 +382,7 @@ public class SgipProxySender extends AbstractSmsProxySender {
             response.setMsgId(deliverMsg.getSPNumber());
             response.setMobile(mobile);
             response.setDestnationNo(deliverMsg.getSPNumber());
-            response.setReceiveTime(DateUtils.getDateTime());
+            response.setReceiveTime(DateUtils.getDate());
             response.setCreateTime(new Date());
             // 编号方式
             if (SgipConstant.MSG_FMT_UCS2 == report.getMsgFmt()) {
@@ -393,7 +394,7 @@ public class SgipProxySender extends AbstractSmsProxySender {
             list.add(response);
 
             if (CollectionUtils.isNotEmpty(list)) {
-                super.sendMoMessageReceive(list);
+                rabbitTemplate.convertAndSend(RabbitConstant.MQ_SMS_MO_RECEIVE, list);
             }
 
         } catch (Exception e) {

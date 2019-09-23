@@ -13,14 +13,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.utils.DateUtils;
 import org.tangdao.common.utils.MobileGroupUtils;
+import org.tangdao.config.rabbit.constant.RabbitConstant;
 import org.tangdao.modules.exchanger.config.CommonContext.CMCP;
 import org.tangdao.modules.exchanger.model.response.ProviderSendResponse;
-import org.tangdao.modules.exchanger.model.vo.TParameter;
-import org.tangdao.modules.exchanger.resolver.handler.RequestHandler;
 import org.tangdao.modules.exchanger.resolver.sms.AbstractSmsProxySender;
 import org.tangdao.modules.exchanger.resolver.sms.cmpp.constant.CmppConstant;
 import org.tangdao.modules.exchanger.resolver.sms.sgip.constant.SgipConstant;
 import org.tangdao.modules.exchanger.resolver.sms.smgp.constant.SmgpConstant;
+import org.tangdao.modules.exchanger.template.handler.RequestTemplateHandler;
+import org.tangdao.modules.exchanger.template.vo.TParameter;
 import org.tangdao.modules.sms.config.PassageContext.DeliverStatus;
 import org.tangdao.modules.sms.config.TaskContext.MessageSubmitStatus;
 import org.tangdao.modules.sms.model.domain.SmsMoMessageReceive;
@@ -35,7 +36,7 @@ import com.huawei.insa2.comm.smgp.message.SMGPSubmitRespMessage;
 @Service
 public class SmgpProxySender extends AbstractSmsProxySender {
 
-    /**
+	/**
      * 对于Proxy分发短信的接收
      * 
      * @param msg
@@ -138,7 +139,7 @@ public class SmgpProxySender extends AbstractSmsProxySender {
     public List<ProviderSendResponse> send(SmsPassageParameter parameter, String extNumber, String mobile,
                                            String content) {
         try {
-            TParameter tparameter = RequestHandler.parse(parameter.getParams());
+            TParameter tparameter = RequestTemplateHandler.parse(parameter.getParams());
             if (MapUtils.isEmpty(tparameter)) {
                 throw new RuntimeException("SMGP 参数信息为空");
             }
@@ -322,7 +323,7 @@ public class SmgpProxySender extends AbstractSmsProxySender {
                                                                                                                                                          report.getStat(),
                                                                                                                                                          report.getErrorCode()));
 
-            response.setDeliverTime(DateUtils.getDateTime());
+            response.setDeliverTime(DateUtils.getDate());
             response.setCreateTime(new Date());
             response.setRemarks(String.format("DestnationId:%s,RecvTime:%s", report.getDestTermID(),
                                              report.getRecvTime()));
@@ -331,7 +332,7 @@ public class SmgpProxySender extends AbstractSmsProxySender {
 
             if (CollectionUtils.isNotEmpty(list)) {
                 // 发送异步消息
-            	super.sendMtMessageDeliver(list);
+                rabbitTemplate.convertAndSend(RabbitConstant.MQ_SMS_MT_WAIT_RECEIPT, list);
             }
 
             // 解析返回结果并返回
@@ -368,7 +369,7 @@ public class SmgpProxySender extends AbstractSmsProxySender {
             response.setMsgId(report.bytesToHexString(report.getMsgId()));
             response.setMobile(mobile);
             response.setDestnationNo(report.getDestTermID());
-            response.setReceiveTime(DateUtils.getDateTime());
+            response.setReceiveTime(DateUtils.getDate());
             response.setCreateTime(new Date());
             // 编号方式
             if (SgipConstant.MSG_FMT_UCS2 == report.getMsgFormat()) {
@@ -380,7 +381,7 @@ public class SmgpProxySender extends AbstractSmsProxySender {
             list.add(response);
 
             if (CollectionUtils.isNotEmpty(list)) {
-                super.sendMoMessageReceive(list);
+                rabbitTemplate.convertAndSend(RabbitConstant.MQ_SMS_MO_RECEIVE, list);
             }
 
         } catch (Exception e) {

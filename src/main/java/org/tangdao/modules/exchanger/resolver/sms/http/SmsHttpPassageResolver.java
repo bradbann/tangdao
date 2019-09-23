@@ -3,7 +3,7 @@ package org.tangdao.modules.exchanger.resolver.sms.http;
 import java.util.List;
 
 import org.tangdao.modules.exchanger.model.response.ProviderSendResponse;
-import org.tangdao.modules.exchanger.model.vo.TParameter;
+import org.tangdao.modules.exchanger.template.vo.TParameter;
 import org.tangdao.modules.sms.model.domain.SmsMoMessageReceive;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
 import org.tangdao.modules.sms.model.domain.SmsPassageParameter;

@@ -1,4 +1,4 @@
-package org.tangdao.modules.exchanger.resolver.handler;
+package org.tangdao.modules.exchanger.template.handler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,21 +9,24 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.modules.exchanger.config.ExchangerConstant;
 import org.tangdao.modules.exchanger.exception.DataEmptyException;
 import org.tangdao.modules.exchanger.exception.DataParseException;
 import org.tangdao.modules.exchanger.model.response.ProviderSendResponse;
 import org.tangdao.modules.exchanger.template.vo.TPosition;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+
 /**
  * 
   * TODO 调用接口响应解析器
   * 
+  * @author ruyang
   * @version V1.0   
   * @date 2016年9月28日 下午5:06:53
  */
-public class ResponseHandler {
+public class ResponseTemplateHandler {
 
 	/**
 	 * 
@@ -42,7 +45,7 @@ public class ResponseHandler {
 		// 暂定写死
 		List<ProviderSendResponse> list = new ArrayList<>();
 		ProviderSendResponse response = null;
-		List<Map<String, Object>> array = JsonMapper.fromJson(result, List.class);
+		List<Map<String, Object>> array = JSON.parseObject(result, new TypeReference<List<Map<String, Object>>>(){});
 		if(array == null || array.size() == 0) {
             return null;
         }
@@ -53,7 +56,7 @@ public class ResponseHandler {
 			response.setStatusCode(ojb.get("Rspcode") == null ? null :
 				ojb.get("Rspcode").toString());
 			response.setSid(ojb.get("Msg_Id").toString());
-			response.setSuccess(ResponseHandler.isSuccess(response.getStatusCode(), successCode));
+			response.setSuccess(ResponseTemplateHandler.isSuccess(response.getStatusCode(), successCode));
 			
 			list.add(response);
 		}
@@ -123,7 +126,7 @@ public class ResponseHandler {
 
 	private static TPosition getPosition(String position) {
 		try {
-			TPosition tposition = JsonMapper.fromJson(position, TPosition.class);
+			TPosition tposition = JSON.parseObject(position, TPosition.class);
 			if (MapUtils.isEmpty(tposition)) {
                 throw new DataEmptyException(position);
             }

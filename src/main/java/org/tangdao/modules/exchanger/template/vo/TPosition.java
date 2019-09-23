@@ -1,4 +1,4 @@
-package org.tangdao.modules.exchanger.model.vo;
+package org.tangdao.modules.exchanger.template.vo;
 
 import java.util.HashMap;
 import java.util.Map;

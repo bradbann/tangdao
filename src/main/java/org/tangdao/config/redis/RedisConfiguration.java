@@ -25,8 +25,8 @@ import org.tangdao.config.redis.serializer.RedisObjectSerializer;
 
 @Configuration
 @EnableCaching
-//maxInactiveIntervalInSeconds 默认是1800秒过期，这里测试修改为60秒
-@EnableRedisHttpSession
+//maxInactiveIntervalInSeconds 默认是30分钟过期，这里测试修改为60分钟
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 3600)
 public class RedisConfiguration {
 	
 	@Primary

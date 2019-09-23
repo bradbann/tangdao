@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tangdao.modules.exchanger.config.CommonContext.ProtocolType;
 import org.tangdao.modules.exchanger.exception.DataEmptyException;
-import org.tangdao.modules.exchanger.model.vo.TParameter;
 import org.tangdao.modules.exchanger.resolver.handler.RequestHandler;
 import org.tangdao.modules.exchanger.resolver.sms.cmpp.v2.CmppManageProxy;
 import org.tangdao.modules.exchanger.resolver.sms.cmpp.v2.CmppProxySender;
@@ -25,6 +24,7 @@ import org.tangdao.modules.exchanger.resolver.sms.sgip.constant.SgipConstant;
 import org.tangdao.modules.exchanger.resolver.sms.smgp.SmgpManageProxy;
 import org.tangdao.modules.exchanger.resolver.sms.smgp.SmgpProxySender;
 import org.tangdao.modules.exchanger.service.ISmsProxyManager;
+import org.tangdao.modules.exchanger.template.vo.TParameter;
 import org.tangdao.modules.sms.model.domain.SmsPassageParameter;
 
 import com.alibaba.fastjson.JSON;

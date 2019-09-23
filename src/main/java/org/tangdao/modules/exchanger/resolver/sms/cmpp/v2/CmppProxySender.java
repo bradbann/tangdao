@@ -13,18 +13,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.tangdao.common.utils.DateUtils;
 import org.tangdao.common.utils.MobileGroupUtils;
+import org.tangdao.config.rabbit.constant.RabbitConstant;
 import org.tangdao.modules.exchanger.config.CommonContext.CMCP;
 import org.tangdao.modules.exchanger.model.response.ProviderSendResponse;
-import org.tangdao.modules.exchanger.model.vo.TParameter;
-import org.tangdao.modules.exchanger.resolver.handler.RequestHandler;
 import org.tangdao.modules.exchanger.resolver.sms.AbstractSmsProxySender;
 import org.tangdao.modules.exchanger.resolver.sms.cmpp.constant.CmppConstant;
+import org.tangdao.modules.exchanger.template.handler.RequestTemplateHandler;
+import org.tangdao.modules.exchanger.template.vo.TParameter;
 import org.tangdao.modules.sms.config.PassageContext.DeliverStatus;
 import org.tangdao.modules.sms.config.TaskContext.MessageSubmitStatus;
+import org.tangdao.modules.sms.config.UserBalanceConstant;
 import org.tangdao.modules.sms.model.domain.SmsMoMessageReceive;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
 import org.tangdao.modules.sms.model.domain.SmsPassageParameter;
-import org.tangdao.modules.sms.config.UserBalanceConstant;
 
 import com.alibaba.fastjson.JSON;
 import com.huawei.insa2.comm.cmpp.message.CMPPDeliverMessage;
@@ -35,7 +36,7 @@ import com.huawei.insa2.comm.cmpp.message.CMPPSubmitRepMessage;
 @Component
 public class CmppProxySender extends AbstractSmsProxySender {
 
-    /**
+	/**
      * 长短信消息ID映射（因为长短信会有多次消息报告回执，但实际只需要解析任何一条有意义的即可） KEY: 因为长短信需要多次代理发送交互，所以产生多次MSG_ID，顾KEY存每一次的消息ID
      * VALUE：存储的是发送给HSSMS应用的msgId,即只存长短信中的第一次索引对应的msgId
      */
@@ -212,7 +213,7 @@ public class CmppProxySender extends AbstractSmsProxySender {
                                            String content) {
         try {
 
-            TParameter tparameter = RequestHandler.parse(parameter.getParams());
+            TParameter tparameter = RequestTemplateHandler.parse(parameter.getParams());
             if (MapUtils.isEmpty(tparameter)) {
                 throw new RuntimeException("CMPP 参数信息为空");
             }
@@ -410,7 +411,7 @@ public class CmppProxySender extends AbstractSmsProxySender {
             response.setStatusCode(report.getStat());
             response.setStatus((StringUtils.isNotEmpty(report.getStat())
                                 && CmppConstant.COMMON_MT_STATUS_SUCCESS_CODE.equalsIgnoreCase(report.getStat()) ? DeliverStatus.SUCCESS.getValue() : DeliverStatus.FAILED.getValue()));
-            response.setDeliverTime(DateUtils.getDateTime());
+            response.setDeliverTime(DateUtils.getDate());
             response.setCreateTime(new Date());
             response.setRemarks(String.format("DestnationId:%s,ServiceId:%s", report.getDestnationId(),
                                              report.getServiceId()));
@@ -419,7 +420,7 @@ public class CmppProxySender extends AbstractSmsProxySender {
 
             if (CollectionUtils.isNotEmpty(list)) {
                 // 发送异步消息
-                super.sendMtMessageDeliver(list);
+                rabbitTemplate.convertAndSend(RabbitConstant.MQ_SMS_MT_WAIT_RECEIPT, list);
             }
 
             // 解析返回结果并返回
@@ -476,7 +477,7 @@ public class CmppProxySender extends AbstractSmsProxySender {
             response.setMsgId(getMsgId(report.getMsgId()));
             response.setMobile(mobile);
             response.setDestnationNo(report.getDestnationId());
-            response.setReceiveTime(DateUtils.getDateTime());
+            response.setReceiveTime(DateUtils.getDate());
             response.setCreateTime(new Date());
             // 编号方式
             if (CmppConstant.MSG_FMT_UCS2 == report.getMsgFmt()) {
@@ -488,7 +489,7 @@ public class CmppProxySender extends AbstractSmsProxySender {
             list.add(response);
 
             if (CollectionUtils.isNotEmpty(list)) {
-                super.sendMoMessageReceive(list);
+                rabbitTemplate.convertAndSend(RabbitConstant.MQ_SMS_MO_RECEIVE, list);
             }
 
         } catch (Exception e) {

@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.tangdao.common.utils.DateUtils;
-import org.tangdao.modules.exchanger.model.vo.TParameter;
+import org.tangdao.modules.exchanger.template.vo.TParameter;
 import org.tangdao.modules.sms.model.domain.SmsMoMessageReceive;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
 
