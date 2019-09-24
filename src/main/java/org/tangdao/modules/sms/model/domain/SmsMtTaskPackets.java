@@ -52,7 +52,7 @@ public class SmsMtTaskPackets extends DataEntity<SmsMtTaskPackets> {
 	private String userCode;
 	// 省份名称
 	@TableField(exist = false)
-	private String provinceName;
+	private String areaName;
 	
 	@TableField(exist = false)
 	private String callback;

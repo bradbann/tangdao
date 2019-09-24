@@ -26,7 +26,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * @version 2019-09-06
  */
 @Controller
-@RequestMapping(value = "${adminPath}/sms/MtTask")
+@RequestMapping(value = "${adminPath}/sms/mtTask")
 public class SmsMtTaskController extends BaseController {
 
 	@Autowired
@@ -43,11 +43,11 @@ public class SmsMtTaskController extends BaseController {
 	/**
 	 * 查询列表
 	 */
-	@PreAuthorize("hasAuthority('sms:smsMtTask:view')")
+//	@PreAuthorize("hasAuthority('sms:mtTask:view')")
 	@RequestMapping(value = {"list", ""})
 	public String list(SmsMtTask smsMtTask, Model model) {
 		model.addAttribute("smsMtTask", smsMtTask);
-		return "modules/sms/MtTaskList";
+		return "modules/sms/mtTaskList";
 	}
 	
 	/**

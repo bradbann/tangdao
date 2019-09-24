@@ -10,4 +10,6 @@ import org.tangdao.modules.sms.model.domain.SmsMtTask;
  */
 public interface ISmsMtTaskService extends ICrudService<SmsMtTask> {
 		
+	public boolean save(SmsMtTask task);
+	
 }

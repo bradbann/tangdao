@@ -398,7 +398,6 @@ public class SmsWaitSubmitListener extends AbstartRabbitListener {
                                               submit);
                 continue;
             }
-
             submits.add(submit);
         }
 
@@ -430,7 +429,9 @@ public class SmsWaitSubmitListener extends AbstartRabbitListener {
 
         submitTemplate.setCreateTime(new Date());
         submitTemplate.setDestnationNo(extNumber);
-
+        //设置提交消息的id为null ruyang
+//        submitTemplate.setId(null);
+        submitTemplate.setKey(null);
         return submitTemplate;
     }
 
