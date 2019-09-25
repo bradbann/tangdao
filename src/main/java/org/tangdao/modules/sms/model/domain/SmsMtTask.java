@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -52,6 +53,8 @@ public class SmsMtTask extends DataEntity<SmsMtTask> {
 	private String repeatMobiles;		// 重复手机号码
 	private String blackMobiles;		// 黑名单手机号码
 	private String finalContent;		// final_content
+	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date processTime;		// 分包完成时间
 	private String forceActions;		// 异常分包情况下允许的操作，如000,010，第一位:未报备模板，第二位：敏感词，第三位：通道不可用
 	private String messageTemplateId;		// 短信模板ID
