@@ -73,8 +73,8 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
 	 * @param obj
 	 * @return
 	 */
-	public static String toString(final Object obj) {
-		return toString(obj, StringUtils.EMPTY);
+	public static String toString2(final Object obj) {
+		return toString2(obj, StringUtils.EMPTY);
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
 	 * @param defaultVal
 	 * @return
 	 */
-	public static String toString(final Object obj, final String defaultVal) {
+	public static String toString2(final Object obj, final String defaultVal) {
 		return obj == null ? defaultVal : obj.toString();
 	}
 
@@ -103,7 +103,7 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
 	 * @return 返回转换后的值
 	 */
 	public static String toStringIgnoreNull(final Object val, String defaultVal) {
-		String str = ObjectUtils.toString(val);
+		String str = ObjectUtils.toString2(val);
 		return !"".equals(str) && !"null".equals(str.trim().toLowerCase()) ? str : defaultVal;
 	}
 	

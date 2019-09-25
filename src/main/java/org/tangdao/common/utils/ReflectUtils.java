@@ -170,7 +170,7 @@ public class ReflectUtils {
 			for (int i=0; i<cs.length; i++){
 				if (args[i] != null && !args[i].getClass().equals(cs[i])){
 					if (cs[i] == String.class){
-						args[i] = ObjectUtils.toString(args[i]);
+						args[i] = ObjectUtils.toString2(args[i]);
 						if(StringUtils.endsWith((String)args[i], ".0")){
 							args[i] = StringUtils.substringBefore((String)args[i], ".0");
 						}

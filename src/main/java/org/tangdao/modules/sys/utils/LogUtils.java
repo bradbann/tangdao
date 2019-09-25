@@ -83,7 +83,7 @@ public class LogUtils {
 		log.setLogTitle(logTitle);
 		log.setLogType(logType);
 		if (StringUtils.isBlank(log.getLogType())){
-			String sqlCommandTypes = ObjectUtils.toString(request.getAttribute(SqlCommandType.class.getName()));
+			String sqlCommandTypes = ObjectUtils.toString2(request.getAttribute(SqlCommandType.class.getName()));
 			if (StringUtils.containsAny(","+sqlCommandTypes+",", ",INSERT,", ",UPDATE,", ",DELETE,")){
 				log.setLogType(Log.TYPE_UPDATE);
 			}else if (StringUtils.contains(","+sqlCommandTypes+",", ",SELECT,")){

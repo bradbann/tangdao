@@ -134,15 +134,15 @@ public class UserPassageServiceImpl extends CrudServiceImpl<UserPassageMapper, U
 
                 Integer type = null;
                 for (JSONObject map : dictTypes) {
-                    if (UserDefaultPassageGroupKey.SMS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(ObjectUtils.toString(map.get("dictLabel")))) {
+                    if (UserDefaultPassageGroupKey.SMS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(ObjectUtils.toString2(map.get("dictLabel")))) {
                         type = PlatformType.SEND_MESSAGE_SERVICE.getCode();
-                    } else if (UserDefaultPassageGroupKey.FS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(ObjectUtils.toString(map.get("dictLabel")))) {
+                    } else if (UserDefaultPassageGroupKey.FS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(ObjectUtils.toString2(map.get("dictLabel")))) {
                         type = PlatformType.FLUX_SERVICE.getCode();
-                    } else if (UserDefaultPassageGroupKey.VS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(ObjectUtils.toString(map.get("dictLabel")))) {
+                    } else if (UserDefaultPassageGroupKey.VS_DEFAULT_PASSAGE_GROUP.name().equalsIgnoreCase(ObjectUtils.toString2(map.get("dictLabel")))) {
                         type = PlatformType.VOICE_SERVICE.getCode();
                     }
 
-                    save(ObjectUtils.toString(map.get("dictValue")), userCode, type);
+                    save(ObjectUtils.toString2(map.get("dictValue")), userCode, type);
                 }
                 return true;
             }

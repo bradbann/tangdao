@@ -116,8 +116,8 @@ public class PropertiesUtils {
         				YamlPropertiesFactoryBean bean = new YamlPropertiesFactoryBean();
         				bean.setResources(resource);
         				for (Map.Entry<Object,Object> entry : bean.getObject().entrySet()){
-        					properties.put(ObjectUtils.toString(entry.getKey()),
-        							ObjectUtils.toString(entry.getValue()));
+        					properties.put(ObjectUtils.toString2(entry.getKey()),
+        							ObjectUtils.toString2(entry.getValue()));
         				}
     					configSet.add(location);
         			}

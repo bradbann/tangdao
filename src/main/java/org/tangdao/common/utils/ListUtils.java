@@ -385,11 +385,11 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
 					public int compare(T o1, T o2) {
 						String s1 = StringUtils.EMPTY, s2 = StringUtils.EMPTY;
 						if (o1 instanceof Map){
-							s1 = ObjectUtils.toString(((Map)o1).get(ss[0]));
-							s2 = ObjectUtils.toString(((Map)o2).get(ss[0]));
+							s1 = ObjectUtils.toString2(((Map)o1).get(ss[0]));
+							s2 = ObjectUtils.toString2(((Map)o2).get(ss[0]));
 						}else{
-							s1 = ObjectUtils.toString(ReflectUtils.invokeGetter(o1, ss[0]));
-							s2 = ObjectUtils.toString(ReflectUtils.invokeGetter(o2, ss[0]));
+							s1 = ObjectUtils.toString2(ReflectUtils.invokeGetter(o1, ss[0]));
+							s2 = ObjectUtils.toString2(ReflectUtils.invokeGetter(o2, ss[0]));
 						}
 						if ("asc".equalsIgnoreCase(t)){
 							return s1.compareTo(s2);
