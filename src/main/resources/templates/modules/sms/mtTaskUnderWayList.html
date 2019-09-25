@@ -159,8 +159,6 @@ $('#dataGrid').dataGrid({
 				return '未知';
 			}
 		}},
-		{header:'内容', name:'content', index:'content', width:150, align:"left"}, 
-		
 		{header:'提交时间', name:'createTime', index:'create_time', width:150, align:"center"},
 		{header:'分包时间', name:'processTime', index:'process_time', width:150, align:"center"},
 		{header:'操作', name:'actions', width:360, sortable:false, title:false, formatter: function(val, obj, row, act){
@@ -169,6 +167,13 @@ $('#dataGrid').dataGrid({
 			actions.push('<a href="${ctx}/sms/smsMtTask/delete?id='+row.id+'" class="badge badge-light btnList" title="模板报备")}">模板报备</a>&nbsp;');
 			actions.push('<a href="${ctx}/sms/smsMtTask/delete?id='+row.id+'" class="badge badge-light btnList" title="敏感词导白")}">敏感词导白</a>&nbsp;');
 			return actions.join('');
+		}},
+		{header:'内容', hidden: true, name:'content', index:'content', formatter: function(val, obj, row, act){
+			return "</tr><tr><td colspan=2 style='border-bottom: 1px solid #e1e1e1;'></td>\
+			<td colspan=6 class='pd-t-10 pd-b-10' style='border-bottom: 1px solid #e1e1e1;'>"+val+"</td>\
+			<td colspan=2 class='pd-t-10 pd-b-10' style='border-bottom: 1px solid #e1e1e1;'> 字数：23</td>\
+			<td colspan=2 class='pd-5' style='border-bottom: 1px solid #e1e1e1;'> 敏感度：一般</td>\
+			<td colspan=4 class='pd-5' style='border-bottom: 1px solid #e1e1e1;'> 敏感词：会员，理财</td>";
 		}}
 	],
 	multiboxonly: true,	// 单击复选框时再多选
