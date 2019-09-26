@@ -6,10 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
+import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sms.mapper.SmsMtTaskMapper;
 import org.tangdao.modules.sms.model.domain.SmsMtTask;
+import org.tangdao.modules.sms.service.ISmsForbiddenWordsService;
 import org.tangdao.modules.sms.service.ISmsMtTaskPacketsService;
 import org.tangdao.modules.sms.service.ISmsMtTaskService;
+
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * 下行短信任务ServiceImpl
@@ -21,6 +26,11 @@ public class SmsMtTaskServiceImpl extends CrudServiceImpl<SmsMtTaskMapper, SmsMt
 	
 	@Autowired
 	private ISmsMtTaskPacketsService smsMtTaskPacketsService;
+	@Autowired
+	private ISmsForbiddenWordsService smsForbiddenWordsService;
+//	@Autowired
+//	private IUserService userService;
+	
 
 	private final Logger               logger = LoggerFactory.getLogger(getClass());
 	
@@ -39,4 +49,17 @@ public class SmsMtTaskServiceImpl extends CrudServiceImpl<SmsMtTaskMapper, SmsMt
         }
         return effect;
     }
+	
+	@Override
+	public IPage<SmsMtTask> page(IPage<SmsMtTask> page, Wrapper<SmsMtTask> queryWrapper) {
+		IPage<SmsMtTask> pageData = baseMapper.selectPage(page, queryWrapper);
+		pageData.getRecords().stream().forEach(r->{
+			//设置当前用户信息
+//			r.setUser(userService.get(r.getUserCode()));
+			if (StringUtils.isNotBlank(r.getForbiddenWords())) {
+				r.setForbiddenWordLabels(smsForbiddenWordsService.getLabelByWords(r.getForbiddenWords()));
+            }
+		});
+		return pageData;
+	}
 }

@@ -87,6 +87,10 @@ public class SmsMtTask extends DataEntity<SmsMtTask> {
 	
 	@TableField(exist = false)
 	private List<SmsMtTaskPackets> packets;
+	
+	//用户信息、对应userCode
+//	@TableField(exist = false)
+//	private User user;
 
 	// 汇总错误信息
 	private transient StringBuilder errorMessageReport = new StringBuilder();
@@ -110,8 +114,7 @@ public class SmsMtTask extends DataEntity<SmsMtTask> {
 	public boolean isTemplateError() {
 		char[] actions = getActions();
 		if (actions != null && actions.length > 2) {
-			return actions[PacketsActionPosition.SMS_TEMPLATE_MISSED.getPosition()] == PacketsActionActor.BROKEN
-					.getActor();
+			return actions[PacketsActionPosition.SMS_TEMPLATE_MISSED.getPosition()] == PacketsActionActor.BROKEN.getActor();
 		}
 		return false;
 	}
