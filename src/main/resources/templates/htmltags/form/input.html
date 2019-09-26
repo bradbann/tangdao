@@ -34,7 +34,7 @@ if(isNotEmpty(p.dataFormat)&&isNotEmpty(value)){
 	if("number"==p.dataFormat){
 		value = parseDouble(value);
 	}else{
-		value = date(value, p.dataFormat);
+		value = strutil.formatDate(value, p.dataFormat);
 	}
 }
 %>

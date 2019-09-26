@@ -4,20 +4,19 @@
       <div class="pt-1">待处理短信任务</div>
       <div class="d-flex">
           <button type="button" id="btnSearch" title="查询" class="btn btn-xs btn-default"><i class="fa fa-filter"></i>查询</button>
-          <a href="${ctx}/sms/smsMtTask/form" class="btn btn-xs btn-success mg-l-10 btnTool" title="审核通过">审核通过</a>
-          <a href="${ctx}/sms/smsMtTask/form" class="btn btn-xs btn-primary mg-l-10 btnTool" title="同内容批次释放">同内容批次释放</a>
-          <a href="${ctx}/sms/smsMtTask/form" class="btn btn-xs btn-danger mg-l-10 btnTool" title="驳回">驳回</a>
-          <a href="${ctx}/sms/smsMtTask/form" class="btn btn-xs btn-danger mg-l-10 btnTool" title="通内容驳回">同内容驳回</a>
-          <a href="${ctx}/sms/smsMtTask/form" class="btn btn-xs btn-dark  mg-l-10 btnTool" title="通道切换">通道切换</a>
-          <a href="${ctx}/sms/smsMtTask/form" class="btn btn-xs btn-dark  mg-l-10 btnTool" title="重新分包">重新分包</a>
-          <a href="${ctx}/sms/smsMtTask/form" class="btn btn-xs btn-default mg-l-10 btnTool" title="修改内容">修改内容</a>
-          <% if(expIf("hasAuthority('sms:smsMtTask:edit')")){ %>
-          <% } %>
       </div>
     </div>
     <div class="card-body pd-10">
-       <#form:form id="searchForm" model="${smsMtTask}" action="${ctx}/sms/mtTask/underWayListData" method="post" class="form-horizontal"
+       <#form:form id="searchForm" model="${smsMtTask}" action="${ctx}/sms/mtTask/completedListData" method="post" class="form-horizontal"
 					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+		<div class="form-group">
+          <div class="input-group wd-250">
+            <div class="input-group-prepend">
+              <span class="input-group-text">模板 TID</span>
+            </div>
+            <#form:input path="sid" class="form-control"  placeholder="请输入模板编码"/>
+          </div>
+        </div>
 		<div class="form-group">
           <div class="input-group wd-250">
             <div class="input-group-prepend">
@@ -50,31 +49,13 @@
             <#form:input path="content" class="form-control" placeholder="请输入内容"/>
           </div>
         </div>
-		<div class="form-group">
-          <div class="input-group wd-250">
-            <div class="input-group-prepend">
-              <span class="input-group-text">分包状态</span>
-            </div>
-             <% var processStatusItems = [{"dictLabel":"正在分包","dictValue":"0"},{"dictLabel":"分包完成，待发送","dictValue":"1"},{"dictLabel":"分包异常，待处理","dictValue":"2"},{"dictLabel":"分包失败，终止","dictValue":"3"}]; %>
-            <#form:select path="processStatus" items="${processStatusItems}" class="form-control select2" blankOption="true" blankOptionLabel="选择分包状态"/>
-          </div>
-        </div>
-		<div class="form-group">
-          <div class="input-group wd-250">
-            <div class="input-group-prepend">
-              <span class="input-group-text">审核状态</span>
-            </div>
-            <% var approveStatusItems = [{"dictLabel":"待审核","dictValue":"0"},{"dictLabel":"自动通过","dictValue":"1"},{"dictLabel":"手动通过","dictValue":"2"}]; %>
-            <#form:select path="approveStatus" items="${approveStatusItems}" class="form-control select2"  blankOption="true" blankOptionLabel="选择审核状态"/>
-          </div>
-        </div>
         <div class="form-group">
           <div class="input-group wd-250">
             <div class="input-group-prepend">
               <span class="input-group-text">开始时间</span>
             </div>
             <#form:input name="d1"  readonly="true" maxlength="20" class="form-control Wdate-date"
-					dataFormat="date" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:true});"/>
+					dataFormat="yyyy-MM-dd 00:00:00" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:true});" defaultValue="${date()}"/>
           </div>
         </div>
         <div class="form-group">
@@ -83,7 +64,7 @@
               <span class="input-group-text">结束时间</span>
             </div>
             <#form:input name="d2"  readonly="true" maxlength="20" class="form-control Wdate-date"
-					dataFormat="date" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:true});"/>
+					dataFormat="date" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:true});"/>
           </div>
         </div>
         <div class="form-group">
@@ -139,19 +120,6 @@ $('#dataGrid').dataGrid({
 				return val;
 			}
 		}},
-		{header:'分包状态', name:'processStatus', index:'process_status', width:200, align:"center", formatter: function(val, obj, row, act){
-			var mt = '未知';
-			if(0==val){
-				mt = '正在分包';
-			}else if(1==val){
-				mt = '分包完成，待发送';
-			}else if(2==val){
-				mt = '分包异常，待处理';
-			}else if(3==val){
-				mt = '分包失败，终止';
-			}
-			return '<a href="javascript:void(0);" class="badge badge-light" data-trigger="focus" data-placement="top" data-toggle="popover" data-content="'+row.remarks+'">'+ mt +'</a>';
-		}},
 		{header:'来源', name:'appType', index:'app_type', width:80, align:"center", formatter: function(val, obj, row, act){
 			if(1==val){
 				return 'W';
@@ -168,8 +136,8 @@ $('#dataGrid').dataGrid({
 		{header:'操作', name:'actions', width:360, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			actions.push('<a href="${ctx}/sms/smsMtTask/form?id='+row.id+'" class="badge badge-light btnList" title="子任务">子任务</a>&nbsp;');
-			actions.push('<a href="${ctx}/sms/smsMtTask/delete?id='+row.id+'" class="badge badge-light btnList" title="模板报备"">模板报备</a>&nbsp;');
-			actions.push('<a href="${ctx}/sms/smsMtTask/delete?id='+row.id+'" class="badge badge-light btnList" title="敏感词导白"">敏感词导白</a>&nbsp;');
+			actions.push('<a href="${ctx}/sms/smsMtTask/delete?id='+row.id+'" class="badge badge-light btnList" title="模板"">模板</a>&nbsp;');
+			actions.push('<a href="${ctx}/sms/smsMtTask/delete?id='+row.id+'" class="badge badge-light btnList" title="敏感词"">敏感词</a>&nbsp;');
 			return actions.join('');
 		}},
 		{header:'内容', hidden: true, name:'content', index:'content', formatter: function(val, obj, row, act){
@@ -207,17 +175,10 @@ $('#dataGrid').dataGrid({
 			
 		}}
 	],
-	multiboxonly: true,	// 单击复选框时再多选
-	showCheckbox: true,	// 是否显示复选框
 	// 加载成功后执行事件
 	ajaxSuccess: function(data){
 		$('[data-toggle="popover"]').popover();
 	},
-	// 子表格支持演示
-	//subGrid: true,
-	//subGridRowExpanded: function (subgridId, rowId) {
-	//	$('#'+subgridId).html('aslfjlaskdfjskldfjl');
-	//}
 });
 </script>
 </body></html>

@@ -1,8 +1,5 @@
 package org.tangdao.modules.sms.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.suports.BaseController;
+import org.tangdao.common.utils.DateUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sms.model.domain.SmsMtTask;
 import org.tangdao.modules.sms.service.ISmsMtTaskService;
@@ -67,8 +65,12 @@ public class SmsMtTaskController extends BaseController {
 			queryWrapper.eq("sid", smsMtTask.getSid());
 		}
 		if(StringUtils.isNotBlank(smsMtTask.getMessageTemplateId())) {
-			queryWrapper.eq("message_template_id", smsMtTask.getMessageTemplateId());
+			queryWrapper.eq("messageTemplateId", smsMtTask.getMessageTemplateId());
 		}
+		 // 已完成需要设置当前时间值 待处理不需要
+        if (COMPLETED == searchType && StringUtils.isEmpty(d1)) {
+        	d1 = DateUtils.getDate() + " 00:00:00";
+        }
 		if(StringUtils.isNotBlank(d1)) {
 			queryWrapper.ge("create_time", d1);
 		}
@@ -114,10 +116,8 @@ public class SmsMtTaskController extends BaseController {
 	 * 查询列表数据
 	 */
 	@RequestMapping(value = "completedListData")
-	public @ResponseBody IPage<SmsMtTask> completedListData(SmsMtTask smsMtTask, HttpServletRequest request, HttpServletResponse response) {
-		QueryWrapper<SmsMtTask> queryWrapper = new QueryWrapper<SmsMtTask>();
-		queryWrapper.eq("approve_status", "1");
-		return smsMtTaskService.page(smsMtTask.getPage(), queryWrapper);
+	public @ResponseBody IPage<SmsMtTask> completedListData(SmsMtTask smsMtTask,String d1,String d2) {
+		return smsMtTaskService.page(smsMtTask.getPage(), appendTaskQueryParams(smsMtTask, COMPLETED, d1, d2));
 	}
 	
 //	/**
