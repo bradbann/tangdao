@@ -23,7 +23,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">任务 SID</span>
             </div>
-            <#form:input path="sid" class="form-control" />
+            <#form:input path="sid" class="form-control"  placeholder="请输入消息编码"/>
           </div>
         </div>
 		<div class="form-group">
@@ -31,7 +31,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">客户编码</span>
             </div>
-            <#form:input path="userCode" class="form-control" />
+            <#form:input path="userCode" class="form-control" placeholder="请输入客户编码" />
           </div>
         </div>
 		<div class="form-group">
@@ -39,7 +39,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">手机号码</span>
             </div>
-            <#form:input path="mobile" class="form-control" />
+            <#form:input path="mobile" class="form-control" placeholder="请输入手机号"/>
           </div>
         </div>
 		<div class="form-group">
@@ -47,7 +47,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">短信内容</span>
             </div>
-            <#form:input path="content" class="form-control" />
+            <#form:input path="content" class="form-control" placeholder="请输入内容"/>
           </div>
         </div>
 		<div class="form-group">
@@ -55,7 +55,8 @@
             <div class="input-group-prepend">
               <span class="input-group-text">分包状态</span>
             </div>
-            <#form:input path="content" class="form-control" />
+             <% var processStatusItems = [{"dictLabel":"正在分包","dictValue":"0"},{"dictLabel":"分包完成，待发送","dictValue":"1"},{"dictLabel":"分包异常，待处理","dictValue":"2"},{"dictLabel":"分包失败，终止","dictValue":"3"}]; %>
+            <#form:select path="processStatus" items="${processStatusItems}" class="form-control select2" blankOption="true" blankOptionLabel="选择分包状态"/>
           </div>
         </div>
 		<div class="form-group">
@@ -63,7 +64,8 @@
             <div class="input-group-prepend">
               <span class="input-group-text">审核状态</span>
             </div>
-            <#form:input path="content" class="form-control" />
+            <% var approveStatusItems = [{"dictLabel":"待审核","dictValue":"0"},{"dictLabel":"自动通过","dictValue":"1"},{"dictLabel":"手动通过","dictValue":"2"}]; %>
+            <#form:select path="approveStatus" items="${approveStatusItems}" class="form-control select2"  blankOption="true" blankOptionLabel="选择审核状态"/>
           </div>
         </div>
         <div class="form-group">
@@ -71,7 +73,8 @@
             <div class="input-group-prepend">
               <span class="input-group-text">开始时间</span>
             </div>
-            <#form:input name="d1" class="form-control" />
+            <#form:input name="d1"  readonly="true" maxlength="20" class="form-control Wdate-date"
+					dataFormat="date" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:true});"/>
           </div>
         </div>
         <div class="form-group">
@@ -79,7 +82,8 @@
             <div class="input-group-prepend">
               <span class="input-group-text">结束时间</span>
             </div>
-            <#form:input name="d1" class="form-control" />
+            <#form:input name="d2"  readonly="true" maxlength="20" class="form-control Wdate-date"
+					dataFormat="date" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:true});"/>
           </div>
         </div>
         <div class="form-group">

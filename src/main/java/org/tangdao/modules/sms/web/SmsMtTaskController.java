@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.suports.BaseController;
+import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sms.model.domain.SmsMtTask;
 import org.tangdao.modules.sms.service.ISmsMtTaskService;
 
@@ -28,12 +29,59 @@ public class SmsMtTaskController extends BaseController {
 	@Autowired
 	private ISmsMtTaskService smsMtTaskService;
 	
+	private static final Integer       UNWDER_WAY = 0;
+    private static final Integer       COMPLETED  = 1;
+	
 	/**
 	 * 获取数据
 	 */
 	@ModelAttribute
 	public SmsMtTask get(String id, boolean isNewRecord) {
 		return smsMtTaskService.get(id, isNewRecord);
+	}
+	
+	private QueryWrapper<SmsMtTask> appendTaskQueryParams(SmsMtTask smsMtTask, Integer searchType, String d1, String d2){
+		QueryWrapper<SmsMtTask> queryWrapper = new QueryWrapper<SmsMtTask>();
+		if(UNWDER_WAY == searchType) {
+			queryWrapper.eq("approve_status", UNWDER_WAY);
+		}
+		if(COMPLETED == searchType) {
+			queryWrapper.ne("approve_status", UNWDER_WAY);
+		}
+		if(StringUtils.isNotBlank(smsMtTask.getUserCode())) {
+			queryWrapper.eq("user_code", smsMtTask.getUserCode());
+		}
+		if(StringUtils.isNotBlank(smsMtTask.getMobile())) {
+			queryWrapper.like("mobile", smsMtTask.getMobile());
+		}
+		if(StringUtils.isNotBlank(smsMtTask.getContent())) {
+			queryWrapper.like("content", smsMtTask.getContent());
+		}
+		if(smsMtTask.getApproveStatus()!=null) {
+			queryWrapper.eq("approve_status", smsMtTask.getApproveStatus());
+		}
+		if(smsMtTask.getProcessStatus()!=null) {
+			queryWrapper.eq("process_status", smsMtTask.getProcessStatus());
+		}
+		if(smsMtTask.getSid()!=null) {
+			queryWrapper.eq("sid", smsMtTask.getSid());
+		}
+		if(StringUtils.isNotBlank(smsMtTask.getMessageTemplateId())) {
+			queryWrapper.eq("message_template_id", smsMtTask.getMessageTemplateId());
+		}
+		if(StringUtils.isNotBlank(d1)) {
+			queryWrapper.ge("create_time", d1);
+		}
+		if(StringUtils.isNotBlank(d2)) {
+			queryWrapper.le("create_time", d2);
+		}
+		if(UNWDER_WAY == searchType) {
+			queryWrapper.orderByAsc("create_time");
+		}
+		if(COMPLETED == searchType) {
+			queryWrapper.orderByDesc("create_time");
+		}
+		return queryWrapper;
 	}
 	
 	/**
@@ -49,10 +97,8 @@ public class SmsMtTaskController extends BaseController {
 	 * 查询列表数据
 	 */
 	@RequestMapping(value = "underWayListData")
-	public @ResponseBody IPage<SmsMtTask> underWayListData(SmsMtTask smsMtTask, HttpServletRequest request, HttpServletResponse response) {
-		QueryWrapper<SmsMtTask> queryWrapper = new QueryWrapper<SmsMtTask>();
-		queryWrapper.eq("approve_status", "0");
-		return smsMtTaskService.page(smsMtTask.getPage(), queryWrapper);
+	public @ResponseBody IPage<SmsMtTask> underWayListData(SmsMtTask smsMtTask,String d1,String d2) {
+		return smsMtTaskService.page(smsMtTask.getPage(), appendTaskQueryParams(smsMtTask, UNWDER_WAY, d1, d2));
 	}
 	
 	/**
