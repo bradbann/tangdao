@@ -95,6 +95,14 @@
 		<div id="dataGridPage"></div>
     </div>
   </div>
+  <#form:offcanvas id="test">
+  <div class="mg-b-25">
+  	<textarea row="5" class="form-control">{{d.content}}</textarea>
+  </div>
+  <div class="mg-b-25">
+  	<textarea row="12" class="form-control">{{d.mobile}}</textarea>
+  </div>
+  </#form:offcanvas>
 <% } %>
 <script>
 // 初始化DataGrid对象
@@ -167,6 +175,7 @@ $('#dataGrid').dataGrid({
 		{header:'分包时间', name:'processTime', index:'process_time', width:150, align:"center"},
 		{header:'操作', name:'actions', width:360, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
+			//actions.push('<a href="javascript:;" onclick=openOffCanvas_test("${ctx}/sms/mtTask/getDataById?id='+row.id+'"); class="badge badge-light" title="查看" >查看</a>&nbsp;');
 			actions.push('<a href="${ctx}/sms/mtTaskPackets/list?sid='+row.sid+'" class="badge badge-light btnList" title="子任务">子任务</a>&nbsp;');
 			actions.push('<a href="${ctx}/sms/smsMtTask/delete?id='+row.id+'" class="badge badge-light btnList" title="模板报备"">模板报备</a>&nbsp;');
 			actions.push('<a href="${ctx}/sms/smsMtTask/delete?id='+row.id+'" class="badge badge-light btnList" title="敏感词导白"">敏感词导白</a>&nbsp;');

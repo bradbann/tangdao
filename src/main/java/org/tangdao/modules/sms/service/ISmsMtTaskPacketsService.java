@@ -12,6 +12,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * @version 2019-09-06
  */
 public interface ISmsMtTaskPacketsService extends ICrudService<SmsMtTaskPackets> {
+	
+	public SmsMtTaskPackets getSmsMtTaskPackets(SmsMtTaskPackets smsMtTaskPackets);
 		
 	public IPage<SmsMtTaskPackets> page(IPage<SmsMtTaskPackets> page, Wrapper<SmsMtTaskPackets> queryWrapper);
 }

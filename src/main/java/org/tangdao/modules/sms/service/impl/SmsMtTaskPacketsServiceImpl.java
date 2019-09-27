@@ -32,6 +32,27 @@ public class SmsMtTaskPacketsServiceImpl extends CrudServiceImpl<SmsMtTaskPacket
 	@Autowired
 	private ISmsPassageService smsPassageService;
 	
+	public SmsMtTaskPackets getSmsMtTaskPackets(SmsMtTaskPackets smsMtTaskPackets) {
+		if(smsMtTaskPackets==null||StringUtils.isEmpty(smsMtTaskPackets.getId())) {
+			smsMtTaskPackets = super.get(smsMtTaskPackets);
+		}
+		if(smsMtTaskPackets!=null) {
+			// 组装省份信息
+            if (StringUtils.isNotBlank(smsMtTaskPackets.getAreaCode())) {
+            	// 根据省份代码查询省份名称
+            	Area area = areaService.get(smsMtTaskPackets.getAreaCode());
+            	smsMtTaskPackets.setAreaName(area == null ? "未知" : area.getAreaName());
+            }
+
+            // 组装通道信息
+            if (StringUtils.isNotBlank(smsMtTaskPackets.getFinalPassageId())) {
+            	 SmsPassage passage = smsPassageService.findById(smsMtTaskPackets.getFinalPassageId());
+            	 smsMtTaskPackets.setPassageName(passage == null ? "未知" : passage.getName());
+            }
+		}
+		return smsMtTaskPackets;
+	}
+	
 	@Override
 	public IPage<SmsMtTaskPackets> page(IPage<SmsMtTaskPackets> page, Wrapper<SmsMtTaskPackets> queryWrapper){
 		IPage<SmsMtTaskPackets> pageData = baseMapper.selectPage(page, queryWrapper);

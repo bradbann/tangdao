@@ -1,7 +1,5 @@
 package org.tangdao.modules.sms.model.domain;
 
-import java.beans.Transient;
-
 import org.tangdao.common.suports.DataEntity;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sms.config.TaskContext.PacketsActionActor;
@@ -144,7 +142,7 @@ public class SmsMtTaskPackets extends DataEntity<SmsMtTaskPackets> {
 		super(id);
 	}
 	
-	@Transient
+//	@Transient
 	public String[] getMobiles() {
 		if (StringUtils.isNotBlank(mobile)) {
 			return mobile.split(",");
@@ -152,7 +150,7 @@ public class SmsMtTaskPackets extends DataEntity<SmsMtTaskPackets> {
 		return null;
 	}
 
-	@Transient
+//	@Transient
 	public String getFirstMobile() {
 		String[] mobiles = getMobiles();
 		if (mobiles != null && mobiles.length > 0) {

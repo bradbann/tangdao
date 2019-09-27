@@ -54,6 +54,16 @@ public class SmsMtTaskPacketsController extends BaseController {
 		queryWrapper.eq("sid", smsMtTaskPackets.getSid());
 		return smsMtTaskPacketsService.page(smsMtTaskPackets.getPage(), queryWrapper);
 	}
+	
+	/**
+	 * 获取分包详情信息
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "getDataById")
+	public @ResponseBody SmsMtTaskPackets getSmsMtTaskPackets(SmsMtTaskPackets smsMtTaskPackets) {
+		return smsMtTaskPacketsService.getSmsMtTaskPackets(smsMtTaskPackets);
+	}
 
 //	/**
 //	 * 查看编辑表单
