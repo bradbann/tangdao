@@ -50,6 +50,9 @@ public class SmsMtTaskPackets extends DataEntity<SmsMtTaskPackets> {
 	
 	@TableField(exist = false)
 	private String userCode;
+	
+	@TableField(exist = false)
+	private String passageName;
 	// 省份名称
 	@TableField(exist = false)
 	private String areaName;

@@ -23,6 +23,8 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
 /**
@@ -66,6 +68,16 @@ public class JsonMapper extends ObjectMapper {
 				jgen.writeString(StringUtils.EMPTY);
 			}
         });
+		
+		 /**
+         * 序列换成json时,将所有的long变成string
+         * 因为js中得数字类型不能包含所有的java long值
+         */
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+        this.registerModule(simpleModule);
+		
 //		// 统一默认Date类型转换格式。如果设置，Bean中的@JsonFormat将失效
 //		final String dataFormat = Global.getProperty("json.mapper.dataFormat");
 //		if (StringUtils.isNotBlank(dataFormat)){

@@ -135,7 +135,7 @@ $('#dataGrid').dataGrid({
 		{header:'分包时间', name:'processTime', index:'process_time', width:150, align:"center"},
 		{header:'操作', name:'actions', width:360, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
-			actions.push('<a href="${ctx}/sms/smsMtTask/form?id='+row.id+'" class="badge badge-light btnList" title="子任务">子任务</a>&nbsp;');
+			actions.push('<a href="${ctx}/sms/mtTaskPackets/list?sid='+row.sid+'" class="badge badge-light btnList" title="子任务">子任务</a>&nbsp;');
 			actions.push('<a href="${ctx}/sms/smsMtTask/delete?id='+row.id+'" class="badge badge-light btnList" title="模板"">模板</a>&nbsp;');
 			actions.push('<a href="${ctx}/sms/smsMtTask/delete?id='+row.id+'" class="badge badge-light btnList" title="敏感词"">敏感词</a>&nbsp;');
 			return actions.join('');
