@@ -1,6 +1,7 @@
 package org.tangdao.modules.sms.model.domain;
 
 import org.tangdao.common.suports.DataEntity;
+import org.tangdao.modules.sys.model.domain.User;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -60,6 +61,10 @@ public class SmsMtMessageSubmit extends DataEntity<SmsMtMessageSubmit> {
     // 针对提交失败补状态码
 	@TableField(exist = false)
     private String              pushErrorCode;
+	
+	//用户信息
+	@TableField(exist = false)
+	private User              user;
 	
 	public SmsMtMessageSubmit() {
 		super();

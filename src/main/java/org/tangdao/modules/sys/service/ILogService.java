@@ -14,6 +14,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * @since 2019-07-02
  */
 public interface ILogService{
+	
+	public void clearAll();
 
 	public void insertLog(Log entity);
 	

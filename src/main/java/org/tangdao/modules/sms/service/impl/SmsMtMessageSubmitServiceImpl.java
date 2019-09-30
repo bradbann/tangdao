@@ -22,9 +22,11 @@ import org.tangdao.config.rabbit.RabbitMessageQueueManager;
 import org.tangdao.config.rabbit.constant.RabbitConstant;
 import org.tangdao.config.rabbit.constant.RabbitConstant.WordsPriority;
 import org.tangdao.config.rabbit.listener.SmsWaitSubmitListener;
+import org.tangdao.modules.sms.config.PassageContext;
 import org.tangdao.modules.sms.config.PassageContext.DeliverStatus;
 import org.tangdao.modules.sms.mapper.SmsMtMessageSubmitMapper;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageDeliver;
+import org.tangdao.modules.sms.model.domain.SmsMtMessagePush;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageSubmit;
 import org.tangdao.modules.sms.model.domain.SmsMtTaskPackets;
 import org.tangdao.modules.sms.model.domain.SmsPassage;
@@ -32,9 +34,13 @@ import org.tangdao.modules.sms.service.ISmsMtDeliverService;
 import org.tangdao.modules.sms.service.ISmsMtPushService;
 import org.tangdao.modules.sms.service.ISmsMtSubmitService;
 import org.tangdao.modules.sms.service.ISmsPassageService;
+import org.tangdao.modules.sys.model.domain.User;
+import org.tangdao.modules.sys.service.IUserService;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
  * 下行短信提交ServiceImpl
@@ -44,12 +50,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 @Service
 public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageSubmitMapper, SmsMtMessageSubmit> implements ISmsMtSubmitService{
 	
-//	@Autowired
-//    private IUserService              userService;
-//    @Autowired
-//    private SmsMtMessageSubmitMapper  smsMtMessageSubmitMapper;
-//    @Autowired
-//    private SmsMtMessagePushMapper    pushMapper;
+	@Autowired
+    private IUserService              userService;
+	
 	@Autowired
     private ISmsMtPushService         smsMtPushService;
     @Autowired
@@ -66,6 +69,66 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
     @Autowired
     private RabbitMessageQueueManager rabbitMessageQueueManager;
     private final Logger              logger = LoggerFactory.getLogger(getClass());
+    
+    
+    @Override
+	public IPage<SmsMtMessageSubmit> page(IPage<SmsMtMessageSubmit> page, Wrapper<SmsMtMessageSubmit> queryWrapper) {
+    	IPage<SmsMtMessageSubmit> pageData = baseMapper.selectPage(page, queryWrapper);
+    	
+    	 Map<String, SmsMtMessagePush> pushMap = new HashMap<>();
+
+         // 加入内存对象，减少DB的查询次数
+         Map<String, User> userMap = new HashMap<>();
+         Map<String, String> passageMap = new HashMap<>();
+    	
+    	String key;
+    	for (SmsMtMessageSubmit record : pageData.getRecords()) {
+    		record.setMessageDeliver(smsMtDeliverService.findByMobileAndMsgid(record.getMobile(), record.getMsgId()));
+    		
+    		key = String.format("%s_%s", record.getMsgId(), record.getMobile());
+    		if (record.getUserCode() != null) {
+                if (userMap.containsKey(record.getUserCode())) {
+                    record.setUser(userMap.get(record.getUserCode()));
+                } else {
+                    record.setUser(userService.getByUsercode(record.getUserCode()));
+                    userMap.put(record.getUserCode(), record.getUser());
+                }
+            }
+
+            if (record.getNeedPush()) {
+                if (pushMap.containsKey(key)) {
+                    record.setMessagePush(pushMap.get(key));
+                } else {
+                    record.setMessagePush(smsMtPushService.findByMobileAndMsgid(record.getMobile(), record.getMsgId()));
+                    pushMap.put(key, record.getMessagePush());
+                }
+            }
+            // if(record.getStatus() == 0){
+            // if(deliverMap.containsKey(key)) {
+            // record.setMessageDeliver(deliverMap.get(key));
+            // } else {
+            // record.setMessageDeliver(smsMtDeliverService.findByMobileAndMsgid(record.getMobile(),record.getMsgId()));
+            // deliverMap.put(key, record.getMessageDeliver());
+            // }
+            // }
+            if (record.getPassageId() != null) {
+                if (record.getPassageId() == PassageContext.EXCEPTION_PASSAGE_ID) {
+                    record.setPassageName(PassageContext.EXCEPTION_PASSAGE_NAME);
+                } else {
+                    if (passageMap.containsKey(record.getUserCode())) {
+                        record.setPassageName(passageMap.get(record.getPassageId()));
+                    } else {
+                        SmsPassage passage = smsPassageService.findById(record.getPassageId());
+                        if (passage != null) {
+                            record.setPassageName(passage.getName());
+                            passageMap.put(record.getPassageId(), passage.getName());
+                        }
+                    }
+                }
+            }
+    	}
+		return pageData;
+	}
 
 	
 	@Override
@@ -138,8 +201,8 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 ////                if (userModelMap.containsKey(record.getUserCode())) {
 ////                    record.setUserModel(userModelMap.get(record.getUserCode()));
 ////                } else {
-////                    record.setUserModel(userService.getByUserId(record.getUserId()));
-////                    userModelMap.put(record.getUserId(), record.getUserModel());
+////                    record.setUserModel(userService.getByUserId(record.getUserCode()));
+////                    userModelMap.put(record.getUserCode(), record.getUserModel());
 ////                }
 ////            }
 //
@@ -199,9 +262,9 @@ public class SmsMtMessageSubmitServiceImpl extends CrudServiceImpl<SmsMtMessageS
 //            report.setAmount(submit.getFee());
 //            report.setType(PlatformType.SEND_MESSAGE_SERVICE.getCode());
 //            report.setRecordDate(DateUtil.getDayDate(yestday));
-//            report.setUserId(submit.getUserId());
+//            report.setUserId(submit.getUserCode());
 //
-//            existsUsers.add(submit.getUserId());
+//            existsUsers.add(submit.getUserCode());
 //            list.add(report);
 //        }
 //

@@ -6,6 +6,9 @@ import org.tangdao.common.service.ICrudService;
 import org.tangdao.modules.sms.model.domain.SmsMtMessageSubmit;
 import org.tangdao.modules.sms.model.domain.SmsMtTaskPackets;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 /**
  * 下行短信提交Service
  * @author ruyang
@@ -14,6 +17,11 @@ import org.tangdao.modules.sms.model.domain.SmsMtTaskPackets;
 public interface ISmsMtSubmitService extends ICrudService<SmsMtMessageSubmit> {
 	
 	public SmsMtMessageSubmit findByMobileAndMsgid(String mobile, String msgId);
+	
+	/**
+	 * 分页数据
+	 */
+	public IPage<SmsMtMessageSubmit> page(IPage<SmsMtMessageSubmit> page, Wrapper<SmsMtMessageSubmit> queryWrapper);
 	
 ////    /**
 ////     * 根据条件查询发送列表集合（含回执信息）

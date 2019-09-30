@@ -50,7 +50,7 @@ public class PaasRedisConstant {
     /**
      * 省份配置
      */
-    public static final String               RED_PROVINCE               = "red_province";
+    public static final String               RED_AREA               = "red_area";
 
     /**
      * 三大运营商正则表达式

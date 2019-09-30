@@ -24,6 +24,10 @@ public class LogServiceImpl  implements ILogService {
 	@Autowired
 	private LogMapper logMapper;
 	
+	public void clearAll() {
+		this.logMapper.delete(null);
+	}
+	
 	/**
 	 * 不使用数据库事务，执行插入日志
 	 */

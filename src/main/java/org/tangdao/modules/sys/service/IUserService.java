@@ -25,4 +25,6 @@ public interface IUserService extends ICrudService<User> {
 	
 	public void updatePassword(String userCode, String password);
 	
+	public User getByUsercode(String userCode);
+	
 }

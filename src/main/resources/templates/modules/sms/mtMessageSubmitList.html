@@ -1,0 +1,172 @@
+<% layout('/layouts/default.html', {title: '短信记录查询', libs: ['dataGrid']}){ %>
+ <div class="card bd-0">
+    <div class="card-header d-flex align-items-start justify-content-between pd-10-f">
+      <div class="pt-1">短信记录查询</div>
+      <div class="d-flex">
+          <button type="button" id="btnSearch" title="查询" class="btn btn-xs btn-default"><i class="fa fa-filter"></i>查询</button>
+          <a href="${ctx}/sms/smsMtTask/form" class="btn btn-xs btn-default mg-l-10 btnTool" title="按条件推送">按条件推送</a>
+          <% if(expIf("hasAuthority('sms:smsMtTask:edit')")){ %>
+          <% } %>
+      </div>
+    </div>
+    <div class="card-body pd-10">
+       <#form:form id="searchForm" model="${smsMtMessageSubmit}" action="${ctx}/sms/mtMessageSubmit/listData" method="post" class="form-horizontal"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+		<div class="form-group">
+          <div class="input-group wd-250">
+            <div class="input-group-prepend">
+              <span class="input-group-text">任务 SID</span>
+            </div>
+            <#form:input path="sid" class="form-control"  placeholder="请输入消息编码"/>
+          </div>
+        </div>
+		<div class="form-group">
+          <div class="input-group wd-250">
+            <div class="input-group-prepend">
+              <span class="input-group-text">客户编码</span>
+            </div>
+            <#form:input path="userCode" class="form-control" placeholder="请输入客户编码" />
+          </div>
+        </div>
+		<div class="form-group">
+          <div class="input-group wd-250">
+            <div class="input-group-prepend">
+              <span class="input-group-text">手机号码</span>
+            </div>
+            <#form:input path="mobile" class="form-control" placeholder="请输入手机号"/>
+          </div>
+        </div>
+		<div class="form-group">
+          <div class="input-group wd-250">
+            <div class="input-group-prepend">
+              <span class="input-group-text">短信内容</span>
+            </div>
+            <#form:input path="content" class="form-control" placeholder="请输入内容"/>
+          </div>
+        </div>
+		<div class="form-group">
+          <div class="input-group wd-250">
+            <div class="input-group-prepend">
+              <span class="input-group-text">发送状态</span>
+            </div>
+             <% var sendStatusItems = [{"dictLabel":"成功","dictValue":"0"},{"dictLabel":"失败","dictValue":"1"}]; %>
+            <#form:select id="sendStatus" items="${sendStatusItems}" class="form-control select2" blankOption="true" blankOptionLabel="选择发送状态"/>
+          </div>
+        </div>
+		<div class="form-group">
+          <div class="input-group wd-250">
+            <div class="input-group-prepend">
+              <span class="input-group-text">回执状态</span>
+            </div>
+            <% var deliverStatusItems = [{"dictLabel":"成功","dictValue":"0"},{"dictLabel":"失败","dictValue":"1"},{"dictLabel":"待回执","dictValue":"2"}]; %>
+            <#form:select id="deliverStatus" items="${deliverStatusItems}" class="form-control select2"  blankOption="true" blankOptionLabel="选择回执状态"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-group wd-250">
+            <div class="input-group-prepend">
+              <span class="input-group-text">开始时间</span>
+            </div>
+            <#form:input name="d1"  readonly="true" maxlength="20" class="form-control Wdate-date"
+					dataFormat="date" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:true});"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-group wd-250">
+            <div class="input-group-prepend">
+              <span class="input-group-text">结束时间</span>
+            </div>
+            <#form:input name="d2"  readonly="true" maxlength="20" class="form-control Wdate-date"
+					dataFormat="date" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:true});"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-sm">查询</button>
+          <button type="reset" class="btn btn-default btn-sm">重置</button>
+        </div>
+		</#form:form>
+		<table id="dataGrid"></table>
+		<div id="dataGridPage"></div>
+    </div>
+  </div>
+  <#form:offcanvas id="test">
+  <div class="mg-b-25">
+  	<textarea row="5" class="form-control">{{d.content}}</textarea>
+  </div>
+  <div class="mg-b-25">
+  	<textarea row="12" class="form-control">{{d.mobile}}</textarea>
+  </div>
+  </#form:offcanvas>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'SID', name:'sid', index:'sid', width:260, align:"center" },
+		{header:'客户编码', name:'user.username', sortable:false, width:150, align:"center"},
+		{header:'发送通道', name:'passageName', sortable:false, width:150, align:"center"},
+		{header:'计', name:'fee', index:'fee', width:80, align:"center", formatter: function(val, obj, row, act){
+			return '<span class="badge badge-primary">'+val+'</span>';
+		}},
+		{header:'手机号', name:'mobile', index:'mobile',sortable:false, width:230, align:"center" , formatter: function(val, obj, row, act){
+			var hview = '';
+			if(row.cmcp==1){
+				hview = '移动';
+			}else if(row.cmcp==2){
+				hview = '电信';
+			}else if(row.cmcp==3){
+				hview = '联通';
+			}else{
+				hview = '未知';
+			}
+			return val + ' ['+hview+']';
+		}},
+		{header:'扩展号', name:'destnationNo', index:'destnation_no', align:"center"},
+		{header:'发送状态', name:'processStatus', index:'process_status', width:200, align:"center", formatter: function(val, obj, row, act){
+			var mt = '未知';
+			if(0==val){
+				mt = '成功';
+			}else{
+				mt = '失败';
+			}
+			return '<a href="javascript:void(0);" class="badge badge-light" data-trigger="focus" data-placement="top" data-toggle="popover" data-content="'+row.remarks+'">'+ mt +'</a>';
+		}},
+		{header:'发送时间', name:'createTime', index:'create_time', width:230, align:"center"},
+		{header:'回执状态', name:'deliverStatus',  align:"center", formatter: function(val, obj, row, act){
+			if(row.messageDeliver){
+				if(row.messageDeliver.status=="0"){
+					return '回执成功';
+				}else{
+					return row.messageDeliver.statusCode +', 回执失败';
+				}
+			}else{
+				return '待回执';
+			}
+		}},
+		{header:'回执时间', name:'messageDeliver.deliverTime', sortable:false, width:230, align:"center"},
+		{header:'推送', name:'actions', width:160, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			//actions.push('<a href="javascript:;" onclick=openOffCanvas_test("${ctx}/sms/mtTask/getDataById?id='+row.id+'"); class="badge badge-light" title="查看" >查看</a>&nbsp;');
+			return actions.join('');
+		}},
+		{header:'内容', hidden: true, name:'content', index:'content', formatter: function(val, obj, row, act){
+			var hview = "</tr><tr style='line-height:30px;'><td colspan=20 style='border-bottom: 1px solid #e1e1e1; text-align:right;' class='pd-r-5'>";
+			return hview+=val+"</td>";
+			
+		}}
+	],
+	multiboxonly: true,	// 单击复选框时再多选
+	showCheckbox: true,	// 是否显示复选框
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		$('[data-toggle="popover"]').popover();
+	},
+	// 子表格支持演示
+	//subGrid: true,
+	//subGridRowExpanded: function (subgridId, rowId) {
+	//	$('#'+subgridId).html('aslfjlaskdfjskldfjl');
+	//}
+});
+</script>
+</body></html>
