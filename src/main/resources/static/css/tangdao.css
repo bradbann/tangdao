@@ -9573,7 +9573,8 @@ textarea.form-control {
     align-items: center;
     justify-content: center;
     color: #7987a1;
-    transition: all 0.2s ease-in-out; }
+    transition: all 0.2s ease-in-out; 
+    z-index: 1;}
     @media (prefers-reduced-motion: reduce) {
       .off-canvas > .close {
         transition: none; } }
@@ -12748,92 +12749,14 @@ textarea.parsley-success:focus {
 .df-roboto {
   font-family: 'Roboto', sans-serif; }
 
-.df-settings {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1200;
-  transition: all 0.2s; }
-  @media (prefers-reduced-motion: reduce) {
-    .df-settings {
-      transition: none; } }
-  .df-settings.show {
-    right: 200px; }
-    .df-settings.show .df-settings-link {
-      position: relative; }
-      .df-settings.show .df-settings-link, .df-settings.show .df-settings-link:hover, .df-settings.show .df-settings-link:focus {
-        background-color: #fff;
-        border-color: #c0ccda;
-        color: #1c273c;
-        box-shadow: -5px 0 10px rgba(28, 39, 60, 0.1); }
-
-.df-settings-link {
-  position: absolute;
-  top: 98px;
-  left: -44px;
-  width: 45px;
-  height: 45px;
-  background-color: #1c273c;
-  border: 1px solid transparent;
-  border-right-width: 0;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top-left-radius: 0.25rem;
-  border-bottom-left-radius: 0.25rem;
-  transition: all 0.2s ease-in-out;
-  z-index: 1; }
-  @media (prefers-reduced-motion: reduce) {
-    .df-settings-link {
-      transition: none; } }
-  .df-settings-link:hover, .df-settings-link:focus {
-    color: #fff;
-    background-color: #3b4863;
-    box-shadow: 0 0 10px 2px rgba(28, 39, 60, 0.1); }
-
-@-webkit-keyframes rotating {
-  from {
-    -webkit-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg); }
-  to {
-    -webkit-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg); } }
-
-@keyframes rotating {
-  from {
-    -ms-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg); }
-  to {
-    -ms-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -webkit-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg); } }
-  .df-settings-link svg {
-    width: 20px;
-    height: 20px;
-    -webkit-animation: rotating 3s linear infinite;
-    -moz-animation: rotating 3s linear infinite;
-    -ms-animation: rotating 3s linear infinite;
-    -o-animation: rotating 3s linear infinite;
-    animation: rotating 3s linear infinite; }
-
 .df-settings-body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 250px;
+  right: 0;
   height: 100%;
   background-color: #fff;
   border-left: 1px solid #c0ccda;
-  box-shadow: 0 0 15px rgba(28, 39, 60, 0.1);
   padding: 0 20px;
   overflow-y: auto; }
   .df-settings-body label {
@@ -12859,9 +12782,8 @@ textarea.parsley-success:focus {
     position: relative; }
     .df-skin.active::before,
     .df-mode.active::before {
-      content: '\f3ff';
-      font-family: 'Ionicons';
-      font-size: 26px;
+      content: '\f17b';
+      font: normal normal normal 16px/1 "LineAwesome";
       position: absolute;
       top: 50%;
       left: 50%;

@@ -1,0 +1,64 @@
+<% layout('/layouts/default.html', {title: '用户信息', bodyClass: 'page-profile'}){ %>
+<link rel="stylesheet" href="${ctxStatic}/css/tangdao.profile.css">
+<div class="content-body">
+  <div class="container pd-x-0 tx-13">
+    <div class="media d-block d-lg-flex">
+      <div class="profile-sidebar profile-sidebar-two pd-lg-r-25">
+          <div class="col-sm-3 col-md-2 col-lg">
+            <div class="avatar avatar-xxl avatar-online"><img src="${ctxStatic+user.avatar!'/images/user1.jpg'}" class="rounded-circle" alt=""></div>
+          </div><!-- col -->
+          <div class="col-sm-8 col-md-7 col-lg mg-t-20 mg-sm-t-0 mg-lg-t-25">
+            <h5 class="mg-b-2 tx-spacing--1">${user.nickname!user.username}</h5>
+            <p class="tx-color-03 mg-b-25">${user.email!user.mobile}</p>
+            <div class="d-flex mg-b-25">
+              <button class="btn btn-xs btn-white flex-fill">Message</button>
+              <button class="btn btn-xs btn-primary flex-fill mg-l-10">Follow</button>
+            </div>
+          </div><!-- col -->
+          
+          <div class="col-lg mg-t-40">
+            <label class="tx-sans tx-10 tx-semibold tx-uppercase tx-color-01 tx-spacing-1 mg-b-15">消息中心</label>
+            <ul class="list-unstyled profile-info-list">
+              <li><i data-feather="globe"></i> <a href="#notifications/infos">我的消息</a></li>
+              <li><i data-feather="github"></i> <a href="">通知设置</a></li>
+            </ul>
+          </div><!-- col -->
+          <div class="col-lg mg-t-40"						>
+            <label class="tx-sans tx-10 tx-semibold tx-uppercase tx-color-01 tx-spacing-1 mg-b-15">基本设置</label>
+            <ul class="list-unstyled profile-info-list">
+              <li><i data-feather="briefcase"></i> <span class="tx-color-03">个人资料</span></li>
+              <li><i data-feather="home"></i> <span class="tx-color-03">修改密码</span></li>
+              <li><i data-feather="user"></i> <a href="">第三方账号绑定</a></li>
+              <li><i data-feather="phone"></i> <a href="">邮箱管理</a></li>
+              <li><i data-feather="mail"></i> <a href="">升级账户</a></li>
+            </ul>
+          </div><!-- col -->
+          <div class="col-lg mg-t-40">
+            <label class="tx-sans tx-10 tx-semibold tx-uppercase tx-color-01 tx-spacing-1 mg-b-15">安全设置</label>
+            <nav class="nav nav-classic tx-13">
+              <a href="" class="nav-link"><i data-feather="users"></i> <span>SSH公钥</span></a>
+              <a href="" class="nav-link"><i data-feather="calendar"></i> <span>第三方应用</span></a>
+              <a href="" class="nav-link"><i data-feather="briefcase"></i> <span>我的令牌</span></a>
+              <a href="" class="nav-link"><i data-feather="globe"></i> <span>登录历史</span></a>
+            </nav>
+          </div><!-- col -->
+
+      </div><!-- profile-sidebar -->
+      <div class="media-body mg-lg-t-0 pd-lg-x-10">
+		<ul class="nav nav-line nav-line-profile mg-b-30">
+		  <li class="nav-item">
+		    <a href="" class="nav-link d-flex align-items-center active">个人资料</a>
+		  </li>
+		  <li class="nav-item">
+		    <a href="" class="nav-link ">Following <span class="badge">1,563</span></a>
+		  </li>
+		  <li class="nav-item d-none d-sm-block">
+		    <a href="" class="nav-link">Request  <span class="badge">19</span></a>
+		  </li>
+		</ul>
+      </div><!-- media-body -->
+    </div><!-- media -->
+  </div><!-- container -->
+</div><!-- content -->
+<% } %>
+</body></html>
