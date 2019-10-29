@@ -14,4 +14,10 @@ public class UserinfoController {
 		model.addAttribute("user", UserUtils.getUser());
 		return "modules/sysUserinfo";
 	}
+	
+	@RequestMapping("userinfo/profile")
+	public String profile(Model model) {
+		model.addAttribute("user", UserUtils.getUser());
+		return "modules/sysUserinfo";
+	}
 }

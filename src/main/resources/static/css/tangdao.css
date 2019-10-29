@@ -9551,7 +9551,7 @@ textarea.form-control {
   left: 0;
   z-index: 1050;
   height: 100%;
-  width: 240px;
+  width: 200px;
   background-color: #fff;
   transform: translate(-100%, 0);
   transition: all 0.4s; }
@@ -11503,7 +11503,7 @@ textarea.parsley-success:focus {
     order: 1; }
     @media (min-width: 992px) {
       .navbar-header .navbar-brand {
-        width: 240px;
+        width: 200px;
         padding: 0 0 0 20px;
         margin-top: -3px; } }
   .navbar-header .burger-menu {
@@ -11597,7 +11597,7 @@ textarea.parsley-success:focus {
         padding: 0 20px 0 0; } }
     @media (min-width: 1200px) {
       .navbar-header .navbar-right {
-        width: 240px; } }
+        width: 200px; } }
     .navbar-header .navbar-right .search-link {
       color: #001737; }
       .navbar-header .navbar-right .search-link:hover, .navbar-header .navbar-right .search-link:focus {
@@ -12081,7 +12081,7 @@ textarea.parsley-success:focus {
       transition: none; } }
   @media (min-width: 992px) {
     .sidebar {
-      width: 240px;
+      width: 200px;
       position: relative;
       top: auto;
       bottom: auto;
@@ -12093,7 +12093,7 @@ textarea.parsley-success:focus {
     .sidebar-fixed {
       background-color: transparent;
       border-right: 1px solid rgba(72, 94, 144, 0.16);
-      width: 240px;
+      width: 200px;
       position: fixed;
       top: 60px;
       bottom: 0;
@@ -12259,7 +12259,7 @@ textarea.parsley-success:focus {
     visibility: visible; }
 
 .aside {
-  width: 240px;
+  width: 200px;
   height: 100%;
   transform: translateX(-100%); }
   @media (min-width: 992px) {
@@ -12319,7 +12319,7 @@ textarea.parsley-success:focus {
     .aside.minimize + .content {
       margin-left: 60px; }
   .aside.maximize .aside-body {
-    width: 240px;
+    width: 200px;
     padding: 20px;
     display: block; }
   .aside.maximize .aside-alert-link {
@@ -12352,7 +12352,7 @@ textarea.parsley-success:focus {
       margin-left: 60px; } }
   @media (min-width: 1200px) {
     .aside-fixed + .content {
-      margin-left: 240px; } }
+      margin-left: 200px; } }
 
 .aside-header {
   display: flex;
@@ -22996,7 +22996,7 @@ a.bg-twitter:hover, a.bg-twitter:focus, button.bg-twitter:hover, button.bg-twitt
     margin-left: auto;
     margin-right: auto; }
   .mg-lg-l-240 {
-    margin-left: 240px; } }
+    margin-left: 200px; } }
 
 @media (min-width: 1200px) {
   .mg-xl-0 {
