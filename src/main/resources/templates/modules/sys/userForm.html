@@ -1,6 +1,6 @@
 <% layout('/layouts/default.html', {title: '用户管理', libs: ['validate','dataGrid']}){ %>
 <div class="card bd-0">
-    <div class="card-header d-flex align-items-start justify-content-between pd-10-f">
+    <div class="card-header d-flex align-items-start justify-content-between box-header">
         <div class="pt-1">${user.isNewRecord ? '新增用户' : op == 'auth' ? '设置权限' : '编辑用户'}</div>
         <div class="d-flex">
 

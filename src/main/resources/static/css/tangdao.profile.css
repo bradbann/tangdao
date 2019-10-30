@@ -18,9 +18,10 @@
 .profile-sidebar .media-list .media + .media {
   margin-top: 15px; }
 
-@media (min-width: 992px) {
   .profile-sidebar-two {
-    width: 230px; } }
+    width: 230px; 
+    background:#eee;
+	padding: 10px;}
 
 .profile-skillset h4 {
   font-size: 20px;

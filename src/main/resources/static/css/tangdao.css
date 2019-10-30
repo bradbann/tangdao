@@ -11297,7 +11297,7 @@ textarea.parsley-success:focus {
   padding-bottom: 0; }
 
 .select2-results__option {
-  padding: 6px 10px;
+  padding: 3px 5px;
   font-size: inherit; }
 
 .has-success .select2-container--default .select2-selection--single {
@@ -40168,4 +40168,27 @@ a.bg-twitter:hover, a.bg-twitter:focus, button.bg-twitter:hover, button.bg-twitt
 }
 .jqgrow .custom-checkbox .custom-control-label::before, .custom-checkbox .custom-control-label::after, .custom-radio .custom-control-label::before, .custom-radio .custom-control-label::after, .custom-switch .custom-control-label::before, .custom-switch .custom-control-label::after{
 	top: 10px;
+}
+.box-header{
+	height: 40px;
+	padding: 5px 10px 5px 10px;
+}
+.box-header.form{
+	padding-left: 30px;
+}
+#searchForm .form-control,
+#searchForm .select2-container--default,
+#searchForm .select2-container--default .select2-selection--single,
+#searchForm .select2-container--default .select2-selection--multiple{
+	height: 32px;
+	font-size: 14px;
+}
+#searchForm .input-group-text, 
+#searchForm .btn, 
+#searchForm .ui-datepicker-buttonpane button, 
+#searchForm .sp-container button{
+	padding: 4px 11px;
+}
+#searchForm .select2-container--default .select2-selection--single .select2-selection__arrow b{
+	margin-top: -6px;
 }

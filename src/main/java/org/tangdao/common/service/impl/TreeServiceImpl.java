@@ -113,7 +113,7 @@ public class TreeServiceImpl<M extends BaseMapper<T>, T extends TreeEntity<T>> e
 				entity.setTreeNames(parentEntity.getTreeNames() + "/" + treeName);
 			}
 
-			if (StringUtils.isBlank(treeId)) {
+			if (StringUtils.isBlank(treeId)||entity.getIsNewRecord()) {
 				// 排序处理
 				if (entity.getTreeSort() == null) {
 					entity.setTreeSort(T.DEFAULT_TREE_SORT);
