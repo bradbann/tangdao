@@ -40173,8 +40173,15 @@ a.bg-twitter:hover, a.bg-twitter:focus, button.bg-twitter:hover, button.bg-twitt
 	height: 40px;
 	padding: 5px 10px 5px 10px;
 }
-.box-header.form{
-	padding-left: 30px;
+.box-header.fixed{
+	position: fixed;
+	z-index: 10;
+	left: 0;
+	right: 0;
+	background: #fff; 
+}
+.box-header.fixed+form{
+	margin-top: 45px;
 }
 #searchForm .form-control,
 #searchForm .select2-container--default,
