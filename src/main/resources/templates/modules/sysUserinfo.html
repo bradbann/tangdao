@@ -1,6 +1,5 @@
 <% layout('/layouts/default.html', {title: '用户信息', bodyClass: 'app-contact'}){ %>
-<link rel="stylesheet" href="${ctxStatic}/css/tangdao.profile.css">
-<link rel="stylesheet" href="${ctxStatic}/css/tangdao.contacts.css">
+<link rel="stylesheet" href="${ctxStatic}/css/tangdao.userinfo.css">
     <div class="contact-wrapper">
       <div class="contact-sidebar mg-l-25">
        <div class="contact-content-sidebar">
@@ -19,7 +18,7 @@
           </nav><!-- contact-call-nav -->
 
         </div><!-- contact-content-sidebar -->
-        <div class="contact-sidebar-body">
+        <div class="contact-sidebar-body tx-13">
         	<div class="col-lg">
 	          <label class="tx-sans tx-10 tx-semibold tx-uppercase tx-color-01 tx-spacing-1 mg-b-15">消息中心</label>
 	          <nav class="nav flex-column contact-content-nav mg-b-25">
@@ -155,26 +154,10 @@
 <% } %>
 <script type="text/javascript">
 //set active contact from list to show in desktop view by default
-if(window.matchMedia('(min-width: 992px)').matches) {
-  $('.contact-list .media:first-of-type').addClass('active');
-}
 
-
-const contactSidebar = new PerfectScrollbar('.contact-sidebar-body', {
+new PerfectScrollbar('.contact-sidebar-body', {
   suppressScrollX: true
 });
-
-new PerfectScrollbar('.contact-content-body', {
-  suppressScrollX: true
-});
-
-new PerfectScrollbar('.contact-content-sidebar', {
-  suppressScrollX: true
-});
-
-$('.contact-navleft .nav-link').on('shown.bs.tab', function(e) {
-  contactSidebar.update()
-})
 
 </script>
 </body></html>
