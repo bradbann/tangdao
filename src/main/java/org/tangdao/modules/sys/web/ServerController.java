@@ -28,6 +28,6 @@ public class ServerController extends BaseController {
 ////            }
 ////        }
 		model.addAttribute("serverInfo", OSUtil.oshi());
-		return "modules/state/serverIndex";
+		return "modules/sys/serverIndex";
 	}
 }
