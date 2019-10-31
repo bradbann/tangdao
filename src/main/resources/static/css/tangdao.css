@@ -12551,7 +12551,7 @@ textarea.parsley-success:focus {
     display: flex;
     align-items: center;
     padding: 0;
-    height: 35px;
+    height: 38px;
     color: rgba(27, 46, 75, 0.9);
     transition: all 0.25s; }
     @media (prefers-reduced-motion: reduce) {
