@@ -1,8 +1,5 @@
 package org.tangdao.config;
 
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.ext.spring.AccessExpressionIfFunction;
 import org.hibernate.validator.HibernateValidator;
@@ -23,9 +20,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -38,14 +32,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.tangdao.common.beetl.BeetlConfiguration;
 import org.tangdao.common.beetl.BeetlViewResolver;
 import org.tangdao.common.config.Global;
-import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.PropertiesUtils;
 import org.tangdao.common.utils.SpringUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.interceptor.LogInterceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Configuration
@@ -113,23 +105,23 @@ public class WebConfig implements WebMvcConfigurer {
 		return this.beanValidator();
 	}
 	
-	@Bean("objectMapper")
-	public ObjectMapper objectMapper() {
-		return new JsonMapper();
-	}
-	
-	@Bean
-	@ConditionalOnMissingBean
-	public HttpMessageConverter<Object> httpMessageConverter() {
-		return new MappingJackson2HttpMessageConverter(this.objectMapper());
-	}
-	
-	@Override
-	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
-		converters.add(stringConverter);
-		converters.add(httpMessageConverter());
-	}
+//	@Bean("objectMapper")
+//	public ObjectMapper objectMapper() {
+//		return new JsonMapper();
+//	}
+//	
+//	@Bean
+//	@ConditionalOnMissingBean
+//	public HttpMessageConverter<Object> httpMessageConverter() {
+//		return new MappingJackson2HttpMessageConverter(this.objectMapper());
+//	}
+//	
+//	@Override
+//	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//		StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
+//		converters.add(stringConverter);
+//		converters.add(httpMessageConverter());
+//	}
 	
 	@Bean
 	public ErrorPageRegistrar errorPageRegistrar() {
