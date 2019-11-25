@@ -1,7 +1,6 @@
 package org.tangdao.config;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.security.Principal;
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.RedisOperations;
+//import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -121,8 +120,11 @@ public class WebSecurityConfig {
     	
     	private final PasswordEncoderService passwordEncoderService;
     	
+//    	@Autowired
+//    	private RedisOperations<String, Serializable> sessionRedisOperations;
+    	
     	@Autowired
-    	private RedisOperations<String, Serializable> sessionRedisOperations;
+    	private StringRedisTemplate stringRedisTemplate;
     	
         @Autowired
         public FormLoginWebSecurityConfigurerAdapter(@Qualifier("userServiceImpl") UserDetailsService userDetailsService, PasswordEncoderService passwordEncoderService) {
@@ -234,11 +236,11 @@ public class WebSecurityConfig {
 		private void cleanRedisSession(HttpServletRequest request, Authentication authentication) {
 			//清楚全部当前用户session信息
 			String sessionId = request.getSession().getId();
-			sessionRedisOperations.boundValueOps("spring:session:sessions:"+sessionId).expire(0, TimeUnit.SECONDS);
-			sessionRedisOperations.boundValueOps("spring:session:sessions:expires:"+sessionId).expire(0, TimeUnit.SECONDS);
+			stringRedisTemplate.boundValueOps("spring:session:sessions:"+sessionId).expire(0, TimeUnit.SECONDS);
+			stringRedisTemplate.boundValueOps("spring:session:sessions:expires:"+sessionId).expire(0, TimeUnit.SECONDS);
 			if(authentication!=null) {
 				String key = RedisOperationsSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisOperationsSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
-				sessionRedisOperations.boundValueOps(key+":" + name(authentication.getPrincipal())).expire(0, TimeUnit.SECONDS);
+				stringRedisTemplate.boundValueOps(key+":" + name(authentication.getPrincipal())).expire(0, TimeUnit.SECONDS);
 			}
 		}
 		

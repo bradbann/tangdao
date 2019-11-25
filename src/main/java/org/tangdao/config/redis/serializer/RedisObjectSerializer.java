@@ -1,45 +1,48 @@
 package org.tangdao.config.redis.serializer;
 
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.core.serializer.support.DeserializingConverter;
-import org.springframework.core.serializer.support.SerializingConverter;
+import java.io.IOException;
+
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
+import org.tangdao.common.cache.serializer.SerializationUtils;
 
 public class RedisObjectSerializer implements RedisSerializer<Object> {
 
-	private Converter<Object, byte[]> serializer = new SerializingConverter();
-	private Converter<byte[], Object> deserializer = new DeserializingConverter();
+	/**
+	 * 
+	 */
+	public RedisObjectSerializer() {
+		// TODO Auto-generated constructor stub
+		SerializationUtils.init("fst", null);
+	}
 
-	static final byte[] EMPTY_ARRAY = new byte[0];
+	// 为了方便进行对象与字节数组的转换，所以应该首先准备出两个转换器
+	private static final byte[] EMPTY_BYTE_ARRAY = new byte[0]; // 做一个空数组，不是null
 
 	@Override
-    public Object deserialize(byte[] bytes) {
-		if (isEmpty(bytes)) {
+	public byte[] serialize(Object obj) throws SerializationException {
+		if (obj == null) { // 这个时候没有要序列化的对象出现，所以返回的字节数组应该就是一个空数组
+			return EMPTY_BYTE_ARRAY;
+		}
+//		return this.serializingConverter.convert(obj); // 将对象变为字节数组
+		try {
+			return SerializationUtils.serialize(obj);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new SerializationException(e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public Object deserialize(byte[] data) throws SerializationException {
+		if (data == null || data.length == 0) { // 此时没有对象的内容信息
 			return null;
 		}
-
 		try {
-			return deserializer.convert(bytes);
-		} catch (Exception ex) {
-			throw new SerializationException("Cannot deserialize", ex);
+			return SerializationUtils.deserialize(data);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new SerializationException(e.getMessage(), e);
 		}
-	}
-
-	@Override
-    public byte[] serialize(Object object) {
-		if (object == null) {
-			return EMPTY_ARRAY;
-		}
-
-		try {
-			return serializer.convert(object);
-		} catch (Exception ex) {
-			return EMPTY_ARRAY;
-		}
-	}
-
-	private boolean isEmpty(byte[] data) {
-		return (data == null || data.length == 0);
 	}
 }

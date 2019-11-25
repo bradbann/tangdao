@@ -1,5 +1,6 @@
 package org.tangdao.config.redis;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +15,12 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
-import org.tangdao.common.cache.CacheSerializer;
+import org.tangdao.common.cache.JedisUtils;
 import org.tangdao.config.redis.constant.SmsRedisConstant;
 import org.tangdao.config.redis.pubsub.SmsMessageTemplateListener;
 import org.tangdao.config.redis.pubsub.SmsMobileBlacklistListener;
 import org.tangdao.config.redis.pubsub.SmsPassageAccessListener;
+import org.tangdao.config.redis.serializer.RedisObjectSerializer;
 
 
 @Configuration
@@ -27,28 +29,6 @@ import org.tangdao.config.redis.pubsub.SmsPassageAccessListener;
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds = 3600)
 public class RedisConfiguration {
 	
-//	@Primary
-//	@Bean("redisTemplate")
-//	public RedisTemplate<String, Serializable> redisTemplate(
-//			RedisConnectionFactory redisConnectionFactory) {
-//		RedisTemplate<String, Serializable> redisTemplate = new RedisTemplate<>();
-//		redisTemplate.setKeySerializer(new StringRedisSerializer());
-//		redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-//		redisTemplate.setDefaultSerializer(new RedisObjectSerializer());
-//		redisTemplate.setConnectionFactory(redisConnectionFactory);
-//		return redisTemplate;
-//	}
-//	
-//	@Primary
-//	@Bean(name = "stringRedisTemplate")
-//    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
-//        StringRedisTemplate redisTemplate = new StringRedisTemplate();
-//        redisTemplate.setKeySerializer(new StringRedisSerializer());
-//		redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-//		redisTemplate.setDefaultSerializer(new RedisObjectSerializer());
-//		redisTemplate.setConnectionFactory(connectionFactory);
-//        return redisTemplate;
-//    }
 	@Primary
 	@Bean("redisTemplate")
 	public RedisTemplate<String, Object> redisTemplate(
@@ -56,7 +36,7 @@ public class RedisConfiguration {
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(redisConnectionFactory);
 		
-		CacheSerializer cacheSerializer = new CacheSerializer();
+		RedisObjectSerializer redisObjectSerializer = new RedisObjectSerializer();
 		
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         // key采用String的序列化方式
@@ -64,19 +44,20 @@ public class RedisConfiguration {
         // hash的key也采用String的序列化方式
         redisTemplate.setHashKeySerializer(stringRedisSerializer);
         // value序列化方式采用jackson
-        redisTemplate.setValueSerializer(cacheSerializer);
+        redisTemplate.setValueSerializer(redisObjectSerializer);
         // hash的value序列化方式采用jackson
-        redisTemplate.setHashValueSerializer(cacheSerializer);
+        redisTemplate.setHashValueSerializer(redisObjectSerializer);
         redisTemplate.afterPropertiesSet();
 		return redisTemplate;
 	}
 	
+	@Primary
 	@Bean(name = "stringRedisTemplate")
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
         StringRedisTemplate redisTemplate = new StringRedisTemplate();
         redisTemplate.setConnectionFactory(connectionFactory);
         
-        CacheSerializer cacheSerializer = new CacheSerializer();
+        RedisObjectSerializer redisObjectSerializer = new RedisObjectSerializer();
        
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         // key采用String的序列化方式
@@ -84,9 +65,9 @@ public class RedisConfiguration {
         // hash的key也采用String的序列化方式
         redisTemplate.setHashKeySerializer(stringRedisSerializer);
         // value序列化方式采用jackson
-        redisTemplate.setValueSerializer(cacheSerializer);
+        redisTemplate.setValueSerializer(redisObjectSerializer);
         // hash的value序列化方式采用jackson
-        redisTemplate.setHashValueSerializer(cacheSerializer);
+        redisTemplate.setHashValueSerializer(redisObjectSerializer);
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
@@ -95,6 +76,12 @@ public class RedisConfiguration {
 	public static ConfigureRedisAction configureRedisAction() {
 		return ConfigureRedisAction.NO_OP;
 	}
+	
+	@Bean
+    @ConditionalOnMissingBean
+    public JedisUtils redisRepository(RedisTemplate<String, Object> redisTemplate) {
+        return new JedisUtils(redisTemplate);
+    }
 	
 	/**
      * 黑名单数据变更广播通知监听配置

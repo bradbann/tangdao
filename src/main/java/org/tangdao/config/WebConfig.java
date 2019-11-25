@@ -105,24 +105,6 @@ public class WebConfig implements WebMvcConfigurer {
 		return this.beanValidator();
 	}
 	
-//	@Bean("objectMapper")
-//	public ObjectMapper objectMapper() {
-//		return new JsonMapper();
-//	}
-//	
-//	@Bean
-//	@ConditionalOnMissingBean
-//	public HttpMessageConverter<Object> httpMessageConverter() {
-//		return new MappingJackson2HttpMessageConverter(this.objectMapper());
-//	}
-//	
-//	@Override
-//	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//		StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
-//		converters.add(stringConverter);
-//		converters.add(httpMessageConverter());
-//	}
-	
 	@Bean
 	public ErrorPageRegistrar errorPageRegistrar() {
 		return new ErrorPageRegistrar() {

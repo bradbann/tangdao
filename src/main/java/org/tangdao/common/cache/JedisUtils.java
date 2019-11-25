@@ -12,7 +12,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.util.CollectionUtils;
-import org.tangdao.common.utils.SpringUtils;
 
 /** 
  * @ClassName: JedisUtils.java 
@@ -26,8 +25,13 @@ public class JedisUtils{
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-    @SuppressWarnings("unchecked")
-	RedisTemplate<String, Object> redisTemplate = SpringUtils.getBean(RedisTemplate.class);
+	RedisTemplate<String, Object> redisTemplate;
+	
+	public JedisUtils() {}
+	
+	public JedisUtils(RedisTemplate<String, Object> redisTemplate) {
+		this.redisTemplate = redisTemplate;
+	}
 
     static final Long SUCCESS = 1L;
 

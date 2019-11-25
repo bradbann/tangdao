@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
-import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
+//import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.session.SessionInformation;
@@ -42,7 +43,7 @@ public class OnlineController extends BaseController{
 	public RedisOperationsSessionRepository sessionRepository;
 	
 	@Autowired
-	private RedisOperations<String, Serializable> sessionRedisOperations;
+	private StringRedisTemplate stringRedisTemplate;
 	
 	/**
 	 * 在线用户数
@@ -79,7 +80,7 @@ public class OnlineController extends BaseController{
 		List<Object> list = ListUtils.newArrayList();
 		for (Serializable sid : sessionIds) {
 			Map<String, Object> map = MapUtils.newLinkedHashMap();
-			BoundHashOperations<String, String, Object> hashOperations = this.sessionRedisOperations.boundHashOps(RedisOperationsSessionRepository.DEFAULT_NAMESPACE + ":sessions:" + sid);
+			BoundHashOperations<String, String, Object> hashOperations = this.stringRedisTemplate.boundHashOps(RedisOperationsSessionRepository.DEFAULT_NAMESPACE + ":sessions:" + sid);
 			Map<String, Object> entries = hashOperations.entries();
 			SessionInformation sessionInformation = this.sessionRegistry.getSessionInformation((String)sid);
 			SecurityContext securityContext = (SecurityContext) entries.get("sessionAttr:SPRING_SECURITY_CONTEXT");
@@ -130,12 +131,12 @@ public class OnlineController extends BaseController{
 	private List<String> sessionIds(){
 		String key = RedisOperationsSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisOperationsSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
 		List<String> kt = ListUtils.newArrayList();
-		this.sessionRedisOperations.keys(key+":*").forEach((t)->{
+		this.stringRedisTemplate.keys(key+":*").forEach((t)->{
 			kt.add(t);
 		});
 		List<String> sessionIds = ListUtils.newArrayList();
 		for (String principalKey : kt) {
-			this.sessionRedisOperations.boundSetOps(principalKey).members().forEach((t)->{
+			this.stringRedisTemplate.boundSetOps(principalKey).members().forEach((t)->{
 				sessionIds.add((String)t);
 			});
 		}
@@ -143,8 +144,8 @@ public class OnlineController extends BaseController{
 	}
 	
 	private void clearSession(String sessionId) {
-		this.sessionRedisOperations.boundValueOps("spring:session:sessions:"+sessionId).expire(0, TimeUnit.SECONDS);
-		this.sessionRedisOperations.boundValueOps("spring:session:sessions:expires:"+sessionId).expire(0, TimeUnit.SECONDS);
+		this.stringRedisTemplate.boundValueOps("spring:session:sessions:"+sessionId).expire(0, TimeUnit.SECONDS);
+		this.stringRedisTemplate.boundValueOps("spring:session:sessions:expires:"+sessionId).expire(0, TimeUnit.SECONDS);
 	}
 	
 }

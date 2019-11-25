@@ -26,7 +26,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
-import org.tangdao.common.converter.FastJsonMessageConverter;
 import org.tangdao.config.rabbit.constant.RabbitConstant;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -102,10 +101,10 @@ public class RabbitMqConfiguration {
        * TODO 消息序列化，fastjson(暂未使用)
        * @return
      */
-    @Bean
-    public FastJsonMessageConverter fastjsonMessageConverter() {
-        return new FastJsonMessageConverter();
-    }
+//    @Bean
+//    public FastJsonMessageConverter fastjsonMessageConverter() {
+//        return new FastJsonMessageConverter();
+//    }
 
     /**
      * 
