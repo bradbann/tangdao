@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
+import org.tangdao.common.serializer.SerializationUtils;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
@@ -18,8 +19,6 @@ import org.tangdao.modules.sys.mapper.DictDataMapper;
 import org.tangdao.modules.sys.model.domain.DictData;
 import org.tangdao.modules.sys.service.IDictDataService;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -38,14 +37,16 @@ public class DictDataServiceImpl extends CrudServiceImpl<DictDataMapper, DictDat
 	
 	private final Logger                         logger                          = LoggerFactory.getLogger(getClass());
 	
-	public Map<String, List<JSONObject>> getDictDataList() {
+	@SuppressWarnings("unchecked")
+	public Map<String, List<DictData>> getDictDataList() {
 		
-		Map<String, List<JSONObject>> dictDataMap = MapUtils.newHashMap();
+		Map<String, List<DictData>> dictDataMap = MapUtils.newHashMap();
     	try {
     		Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(SysRedisConstant.RED_SYS_DICT_DATA_LIST);
     		if (MapUtils.isNotEmpty(entries)) {
                 for (Object key : entries.keySet()) {
-                	dictDataMap.put(key.toString(),  JSON.parseArray(entries.get(key).toString(), JSONObject.class));
+                	List<DictData> list = (List<DictData>) key;
+                	dictDataMap.put(key.toString(),  list);
                 }
             }else {
             	logger.warn("REDIS DB重新加载...");
@@ -77,32 +78,32 @@ public class DictDataServiceImpl extends CrudServiceImpl<DictDataMapper, DictDat
                 connection.openPipeline();
                 byte[] mainKey = serializer.serialize(SysRedisConstant.RED_SYS_DICT_DATA_LIST);
                 
-                Map<String, List<JSONObject>> dictDataMap = MapUtils.newLinkedHashMap();
-                List<JSONObject> targetList = null;
-                JSONObject e = null;
+                Map<String, List<DictData>> dictDataMap = MapUtils.newLinkedHashMap();
+                List<DictData> targetList = null;
+//                Map<String, Object> e = null;
                 for (DictData dd : list) {
     				String dictType = dd.getDictType();
     				if (dictDataMap.get(dictType) == null) {
     					targetList = ListUtils.newLinkedList();
-    					e = new JSONObject();
-    					e.put("dictLabel", dd.getDictLabel());
-    					e.put("dictValue", dd.getDictValue());
-    					e.put("cssClass", dd.getCssClass());
-    					e.put("cssStyle", dd.getCssStyle());
-    					targetList.add(e);
+//    					e = MapUtils.newHashMap();
+//    					e.put("dictLabel", dd.getDictLabel());
+//    					e.put("dictValue", dd.getDictValue());
+//    					e.put("cssClass", dd.getCssClass());
+//    					e.put("cssStyle", dd.getCssStyle());
+//    					targetList.add(dd);
     				} else {
     					targetList = dictDataMap.get(dictType);
-    					e = new JSONObject();
-    					e.put("dictLabel", dd.getDictLabel());
-    					e.put("dictValue", dd.getDictValue());
-    					e.put("cssClass", dd.getCssClass());
-    					e.put("cssStyle", dd.getCssStyle());
-    					targetList.add(e);
+//    					e = MapUtils.newHashMap();
+//    					e.put("dictLabel", dd.getDictLabel());
+//    					e.put("dictValue", dd.getDictValue());
+//    					e.put("cssClass", dd.getCssClass());
+//    					e.put("cssStyle", dd.getCssStyle());
     				}
+    				targetList.add(dd);
     				dictDataMap.put(dictType, targetList);
     			}
                 dictDataMap.keySet().stream().forEach(key->{
-                	connection.hSet(mainKey, serializer.serialize(key), serializer.serialize(JSON.toJSONString(dictDataMap.get(key))));
+                	connection.hSet(mainKey, serializer.serialize(key), SerializationUtils.serializeWithoutException(dictDataMap.get(key)));
                 });
                 return connection.closePipeline();
 

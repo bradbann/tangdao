@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.tangdao.common.cache.serializer;
+package org.tangdao.common.serializer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;

@@ -1,4 +1,4 @@
-package org.tangdao.common.cache.serializer;
+package org.tangdao.common.serializer;
 
 import java.io.IOException;
 

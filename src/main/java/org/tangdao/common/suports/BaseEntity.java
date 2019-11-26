@@ -29,27 +29,27 @@ public abstract class BaseEntity<T> implements Serializable {
 
 	@JsonIgnore
 	@TableField(exist = false)
-	protected String keyAttrName;
+	protected transient String keyAttrName;
 
 	@JsonIgnore
 	@TableField(exist = false)
-	protected String keyColumnName;
+	protected transient String keyColumnName;
 
 	@TableField(exist = false)
-	protected boolean isNewRecord;
+	protected transient boolean isNewRecord;
 
 	/**
 	 * 当前用户
 	 */
 	@JsonIgnore
 	@TableField(exist = false)
-	protected User currentUser;
+	protected transient User currentUser;
 
 	/**
 	 * 分页对象
 	 */
 	@TableField(exist = false)
-	protected Page<T> page;
+	protected transient Page<T> page;
 
 	public void setPageSize(Integer pageSize) {
 		if (this.page == null) {

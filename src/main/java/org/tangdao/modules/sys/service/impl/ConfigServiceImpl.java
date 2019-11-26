@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
+import org.tangdao.common.serializer.SerializationUtils;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.modules.sys.config.SysRedisConstant;
@@ -17,7 +18,6 @@ import org.tangdao.modules.sys.model.domain.Config;
 import org.tangdao.modules.sys.model.domain.DictData;
 import org.tangdao.modules.sys.service.IConfigService;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -41,7 +41,7 @@ public class ConfigServiceImpl extends CrudServiceImpl<ConfigMapper, Config> imp
     	try {
     		Object obj = stringRedisTemplate.opsForHash().get(SysRedisConstant.RED_SYS_CONFIG_LIST, configKey);
     		if(obj!=null) {
-    			config = JSON.parseObject(obj.toString(), Config.class);
+    			config = (Config) obj;
     		}
 		} catch (Exception e) {
 			 logger.warn("REDIS 加载失败，将于DB加载", e);
@@ -68,13 +68,16 @@ public class ConfigServiceImpl extends CrudServiceImpl<ConfigMapper, Config> imp
             List<Object> con = stringRedisTemplate.execute((connection) -> {
 
                 RedisSerializer<String> serializer = stringRedisTemplate.getStringSerializer();
+                
+//                RedisSerializer value = stringRedisTemplate.getValueSerializer();
                 connection.openPipeline();
                 for (Config mwl : list) {
-                    
                     byte[] mainKey = serializer.serialize(SysRedisConstant.RED_SYS_CONFIG_LIST);
                     byte[] assistKey = serializer.serialize(mwl.getConfigKey());
 
-                    connection.hSet(mainKey, assistKey, serializer.serialize(JSON.toJSONString(mwl)));
+//                    connection.hSet(mainKey, assistKey, serializer.serialize(JSON.toJSONString(mwl)));
+                   
+                    connection.hSet(mainKey, assistKey, SerializationUtils.serializeWithoutException(mwl));
                 }
 
                 return connection.closePipeline();
@@ -102,8 +105,8 @@ public class ConfigServiceImpl extends CrudServiceImpl<ConfigMapper, Config> imp
                 byte[] assistKey = serializer.serialize(config.getConfigKey());
 
                 connection.openPipeline();
-
-                connection.hSet(mainKey, assistKey, serializer.serialize(JSON.toJSONString(config)));
+               
+				connection.hSet(mainKey, assistKey, SerializationUtils.serializeWithoutException(config));
 
                 return connection.closePipeline();
             }, false, true);

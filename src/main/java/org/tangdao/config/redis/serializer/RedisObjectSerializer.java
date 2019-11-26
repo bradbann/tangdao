@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
-import org.tangdao.common.cache.serializer.SerializationUtils;
+import org.tangdao.common.serializer.SerializationUtils;
 
 public class RedisObjectSerializer implements RedisSerializer<Object> {
 
@@ -13,7 +13,7 @@ public class RedisObjectSerializer implements RedisSerializer<Object> {
 	 */
 	public RedisObjectSerializer() {
 		// TODO Auto-generated constructor stub
-		SerializationUtils.init("fst", null);
+		SerializationUtils.init("json", null);
 	}
 
 	// 为了方便进行对象与字节数组的转换，所以应该首先准备出两个转换器

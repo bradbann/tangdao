@@ -10,7 +10,6 @@ import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.model.domain.DictData;
 import org.tangdao.modules.sys.service.IDictDataService;
 
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class DictUtils {
@@ -49,11 +48,11 @@ public class DictUtils {
 
 	public static String getDictLabel(String dictType, String dictValue, String defaultValue) {
 		if (StringUtils.isNotBlank(dictType) && StringUtils.isNotBlank(dictValue)) {
-			List<JSONObject> list = getDictList(dictType);
+			List<DictData> list = getDictList(dictType);
 			if (list != null) {
-				for (JSONObject map : list) {
-					if (map.containsValue(dictValue)) {
-						return String.valueOf(map.get("dictLabel"));
+				for (DictData map : list) {
+					if(dictValue.equals(map.getDictValue())) {
+						return map.getDictLabel();
 					}
 				}
 			}
@@ -63,11 +62,11 @@ public class DictUtils {
 
 	public static String getDictValue(String dictType, String dictLabel, String defaultValue) {
 		if (StringUtils.isNotBlank(dictType) && StringUtils.isNotBlank(dictLabel)) {
-			List<JSONObject> list = getDictList(dictType);
+			List<DictData> list = getDictList(dictType);
 			if (list != null) {
-				for (JSONObject map : list) {
-					if (map.containsKey(dictLabel)) {
-						return String.valueOf(map.get("dictValue"));
+				for (DictData map : list) {
+					if(dictLabel.equals(map.getDictLabel())) {
+						return map.getDictValue();
 					}
 				}
 			}
@@ -75,10 +74,10 @@ public class DictUtils {
 		return defaultValue;
 	}
 
-	public static List<JSONObject> getDictList(String dictType) {
-		Map<String, List<JSONObject>> dictDataMap = Static.dictDataService.getDictDataList();
+	public static List<DictData> getDictList(String dictType) {
+		Map<String, List<DictData>> dictDataMap = Static.dictDataService.getDictDataList();
 		if (dictDataMap != null && dictDataMap.size() != 0) {
-			List<JSONObject> list = dictDataMap.get(dictType);
+			List<DictData> list = dictDataMap.get(dictType);
 			if (list != null) {
 				return list;
 			}

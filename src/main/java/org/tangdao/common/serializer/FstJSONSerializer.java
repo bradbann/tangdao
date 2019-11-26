@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.tangdao.common.cache.serializer;
+package org.tangdao.common.serializer;
 
 import org.nustaq.serialization.FSTConfiguration;
 import org.nustaq.serialization.serializers.FSTDateSerializer;
