@@ -11,6 +11,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory.ConfirmType;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -124,7 +125,8 @@ public class RabbitMqConfiguration {
         // 显性设置后才能进行回调函数设置 enable confirm mode
         // confirm 是为了保障数据发送到队列的必答性（对于发送者）
         connectionFactory.setPublisherReturns(true);
-        connectionFactory.setPublisherConfirms(true);
+//        connectionFactory.setPublisherConfirms(true);
+        connectionFactory.setPublisherConfirmType(ConfirmType.CORRELATED);
 
         // 默认 connectionFactory.setCacheMode(CacheMode.CHANNEL), ConnectionCacheSize无法设置
         connectionFactory.setChannelCacheSize(100);

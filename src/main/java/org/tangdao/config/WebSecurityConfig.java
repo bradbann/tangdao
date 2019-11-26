@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
-//import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,7 +35,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.session.Session;
-import org.springframework.session.data.redis.RedisOperationsSessionRepository;
+import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 import org.tangdao.common.security.AuthenticationTokenFilter;
 import org.tangdao.common.utils.IpUtils;
@@ -220,7 +219,7 @@ public class WebSecurityConfig {
         
         @Lazy
         @Autowired
-        public RedisOperationsSessionRepository sessionRepository;
+        public RedisIndexedSessionRepository sessionRepository;
         
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Bean
@@ -239,7 +238,7 @@ public class WebSecurityConfig {
 			stringRedisTemplate.boundValueOps("spring:session:sessions:"+sessionId).expire(0, TimeUnit.SECONDS);
 			stringRedisTemplate.boundValueOps("spring:session:sessions:expires:"+sessionId).expire(0, TimeUnit.SECONDS);
 			if(authentication!=null) {
-				String key = RedisOperationsSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisOperationsSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
+				String key = RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisIndexedSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
 				stringRedisTemplate.boundValueOps(key+":" + name(authentication.getPrincipal())).expire(0, TimeUnit.SECONDS);
 			}
 		}

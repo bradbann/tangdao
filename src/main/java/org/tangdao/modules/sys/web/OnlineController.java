@@ -17,7 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.session.Session;
-import org.springframework.session.data.redis.RedisOperationsSessionRepository;
+import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,7 +40,7 @@ public class OnlineController extends BaseController{
     public SpringSessionBackedSessionRegistry<Session> sessionRegistry;
 
 	@Autowired
-	public RedisOperationsSessionRepository sessionRepository;
+	public RedisIndexedSessionRepository sessionRepository;
 	
 	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
@@ -80,7 +80,7 @@ public class OnlineController extends BaseController{
 		List<Object> list = ListUtils.newArrayList();
 		for (Serializable sid : sessionIds) {
 			Map<String, Object> map = MapUtils.newLinkedHashMap();
-			BoundHashOperations<String, String, Object> hashOperations = this.stringRedisTemplate.boundHashOps(RedisOperationsSessionRepository.DEFAULT_NAMESPACE + ":sessions:" + sid);
+			BoundHashOperations<String, String, Object> hashOperations = this.stringRedisTemplate.boundHashOps(RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":sessions:" + sid);
 			Map<String, Object> entries = hashOperations.entries();
 			SessionInformation sessionInformation = this.sessionRegistry.getSessionInformation((String)sid);
 			SecurityContext securityContext = (SecurityContext) entries.get("sessionAttr:SPRING_SECURITY_CONTEXT");
@@ -129,7 +129,7 @@ public class OnlineController extends BaseController{
 	}
 	
 	private List<String> sessionIds(){
-		String key = RedisOperationsSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisOperationsSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
+		String key = RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisIndexedSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
 		List<String> kt = ListUtils.newArrayList();
 		this.stringRedisTemplate.keys(key+":*").forEach((t)->{
 			kt.add(t);

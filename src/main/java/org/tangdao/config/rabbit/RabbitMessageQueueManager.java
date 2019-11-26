@@ -15,9 +15,9 @@ import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.tangdao.common.utils.StringUtils;
@@ -170,7 +170,7 @@ public class RabbitMessageQueueManager {
         container.setMaxConcurrentConsumers(maxConsumers);
         container.setPrefetchCount(rabbitPrefetchCount);
 //        container.setMessageConverter(messageConverter);
-        container.setRabbitAdmin(rabbitAdmin);
+        container.setAmqpAdmin(rabbitAdmin);
 
         container.addQueueNames(queueName);
 
