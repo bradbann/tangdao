@@ -1,8 +1,6 @@
 package org.tangdao.config;
 
 import java.io.IOException;
-import java.security.Principal;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +13,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -27,10 +24,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.session.Session;
@@ -99,8 +96,8 @@ public class WebSecurityConfig {
     	
     	private PasswordEncoderService passwordEncoderService;
     	
-    	@Autowired
-    	private StringRedisTemplate stringRedisTemplate;
+//    	@Autowired
+//    	private StringRedisTemplate stringRedisTemplate;
     	
         @Autowired
         public FormLoginWebSecurityConfigurerAdapter(@Qualifier("userServiceImpl") UserDetailsService userDetailsService, PasswordEncoderService passwordEncoderService) {
@@ -140,8 +137,7 @@ public class WebSecurityConfig {
 							//权限和菜单信息
 							user.setMenus(UserUtils.getMenuByParentCode(null));
 							
-						    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(  
-						    		user, authentication.getCredentials(), user.getAuthorities());  
+						    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken( user, authentication.getCredentials(), user.getAuthorities());  
 						    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));  					    
 							SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 							
@@ -160,15 +156,21 @@ public class WebSecurityConfig {
                     .failureUrl(loginUrl+"?error=true")
             .and().logout()
             		.logoutUrl(logoutUrl).permitAll()
+            		.addLogoutHandler(new LogoutHandler() {
+						
+						@Override
+						public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+							// TODO Auto-generated method stub
+							if (authentication != null && authentication.getPrincipal() != null) {
+         						LogUtils.saveLog((User)authentication.getPrincipal(), request, "系统退出", Log.TYPE_LOGIN_LOGOUT);
+         					}
+							// 在这里可以手动清理redis
+							sessionRepository.deleteById(request.getSession().getId());
+						}
+					})
              		.logoutSuccessHandler(new SimpleUrlLogoutSuccessHandler() {
              			public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
              					Authentication authentication) throws IOException, ServletException {
-         					if (authentication != null && authentication.getPrincipal() != null) {
-         						LogUtils.saveLog((User)authentication.getPrincipal(), request, "系统退出", Log.TYPE_LOGIN_LOGOUT);
-         					}
-         					//清楚用户相关所有session信息
-         					cleanRedisSession(request, authentication);
-         					
          					super.setAlwaysUseDefaultTargetUrl(true);
              				super.setDefaultTargetUrl(loginUrl+"?logout");
 //             				super.setUseReferer(true);
@@ -204,31 +206,34 @@ public class WebSecurityConfig {
         	return new SpringSessionBackedSessionRegistry(sessionRepository);
         }
 		
-		/**
-		 * 
-		 * @param request
-		 * @param authentication
-		 */
-		private void cleanRedisSession(HttpServletRequest request, Authentication authentication) {
-			//清楚全部当前用户session信息
-			String sessionId = request.getSession().getId();
-			stringRedisTemplate.boundValueOps("spring:session:sessions:"+sessionId).expire(0, TimeUnit.SECONDS);
-			stringRedisTemplate.boundValueOps("spring:session:sessions:expires:"+sessionId).expire(0, TimeUnit.SECONDS);
-			if(authentication!=null) {
-				String key = RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisIndexedSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
-				stringRedisTemplate.boundValueOps(key+":" + name(authentication.getPrincipal())).expire(0, TimeUnit.SECONDS);
-			}
-		}
+//		/**
+//		 * 
+//		 * @param request
+//		 * @param authentication
+//		 */
+//		private void cleanRedisSession(HttpServletRequest request, Authentication authentication) {
+//			//清楚全部当前用户session信息
+//			String sessionId = request.getSession().getId();
+//			this.stringRedisTemplate.delete(RedisIndexedSessionRepository.DEFAULT_NAMESPACE+":sessions:"+sessionId);
+//			this.stringRedisTemplate.delete(RedisIndexedSessionRepository.DEFAULT_NAMESPACE+":sessions:expires:"+sessionId);
+////			stringRedisTemplate.boundValueOps("spring:session:sessions:"+sessionId).expire(0, TimeUnit.SECONDS);
+////			stringRedisTemplate.boundValueOps("spring:session:sessions:expires:"+sessionId).expire(0, TimeUnit.SECONDS);
+//			if(authentication!=null) {
+//				String key = RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisIndexedSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
+////				stringRedisTemplate.boundValueOps(key+":" + name(authentication.getPrincipal())).expire(0, TimeUnit.SECONDS);
+//				stringRedisTemplate.delete(key+":" + name(authentication.getPrincipal()));
+//			}
+//		}
 		
-		private String name(Object principal) {
-			if (principal instanceof UserDetails) {
-				return ((UserDetails) principal).getUsername();
-			}
-			if (principal instanceof Principal) {
-				return ((Principal) principal).getName();
-			}
-			return principal.toString();
-		}
+//		private String name(Object principal) {
+//			if (principal instanceof UserDetails) {
+//				return ((UserDetails) principal).getUsername();
+//			}
+//			if (principal instanceof Principal) {
+//				return ((Principal) principal).getName();
+//			}
+//			return principal.toString();
+//		}
 		
 	}
 

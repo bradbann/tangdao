@@ -4,8 +4,10 @@ import java.io.IOException;
 
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
+import org.springframework.stereotype.Component;
 import org.tangdao.common.serializer.SerializationUtils;
 
+@Component("springSessionDefaultRedisSerializer")
 public class RedisObjectSerializer implements RedisSerializer<Object> {
 
 	/**

@@ -63,7 +63,7 @@ public class RedisConfiguration {
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
-
+	
 	@Bean
 	public static ConfigureRedisAction configureRedisAction() {
 		return ConfigureRedisAction.NO_OP;

@@ -4,14 +4,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 //import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -37,13 +36,13 @@ import org.tangdao.modules.sys.model.domain.User;
 public class OnlineController extends BaseController{
 	
 	@Autowired
-    public SpringSessionBackedSessionRegistry<Session> sessionRegistry;
+    public SpringSessionBackedSessionRegistry<Session>		sessionRegistry;
 
 	@Autowired
-	public RedisIndexedSessionRepository sessionRepository;
+	public RedisIndexedSessionRepository					sessionRepository;
 	
 	@Autowired
-	private StringRedisTemplate stringRedisTemplate;
+	private RedisTemplate<String, Object>					redisTemplate;
 	
 	/**
 	 * 在线用户数
@@ -80,7 +79,7 @@ public class OnlineController extends BaseController{
 		List<Object> list = ListUtils.newArrayList();
 		for (Serializable sid : sessionIds) {
 			Map<String, Object> map = MapUtils.newLinkedHashMap();
-			BoundHashOperations<String, String, Object> hashOperations = this.stringRedisTemplate.boundHashOps(RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":sessions:" + sid);
+			BoundHashOperations<String, String, Object> hashOperations = this.redisTemplate.boundHashOps(RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":sessions:" + sid);
 			Map<String, Object> entries = hashOperations.entries();
 			SessionInformation sessionInformation = this.sessionRegistry.getSessionInformation((String)sid);
 			SecurityContext securityContext = (SecurityContext) entries.get("sessionAttr:SPRING_SECURITY_CONTEXT");
@@ -113,17 +112,11 @@ public class OnlineController extends BaseController{
 	 */
 	@RequestMapping(value = "tickOut")
 	public @ResponseBody String tickOut(String sessionId) {
-		
 		Session session = sessionRepository.findById(sessionId);
 		if (session != null){
 			sessionRepository.deleteById(sessionId);
-			clearSession(sessionId);
 			sessionRepository.cleanupExpiredSessions();
 			return renderResult(Global.TRUE, "踢出已成功！");
-		}
-		
-		if(sessionId!=null) {
-			clearSession(sessionId);
 		}
 		return renderResult(Global.FALSE, "踢出失败，没有找到该在线用户！");
 	}
@@ -131,21 +124,17 @@ public class OnlineController extends BaseController{
 	private List<String> sessionIds(){
 		String key = RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisIndexedSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
 		List<String> kt = ListUtils.newArrayList();
-		this.stringRedisTemplate.keys(key+":*").forEach((t)->{
+		this.redisTemplate.keys(key+":*").forEach((t)->{
 			kt.add(t);
 		});
 		List<String> sessionIds = ListUtils.newArrayList();
 		for (String principalKey : kt) {
-			this.stringRedisTemplate.boundSetOps(principalKey).members().forEach((t)->{
-				sessionIds.add((String)t);
+			System.out.println(principalKey);
+			this.redisTemplate.opsForSet().members(principalKey).forEach(r->{
+				sessionIds.add((String)r);
 			});
 		}
 		return sessionIds;
-	}
-	
-	private void clearSession(String sessionId) {
-		this.stringRedisTemplate.boundValueOps("spring:session:sessions:"+sessionId).expire(0, TimeUnit.SECONDS);
-		this.stringRedisTemplate.boundValueOps("spring:session:sessions:expires:"+sessionId).expire(0, TimeUnit.SECONDS);
 	}
 	
 }
