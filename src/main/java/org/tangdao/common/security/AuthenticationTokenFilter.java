@@ -17,10 +17,9 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.security.SecurityContent.AuthResponseStatus;
+import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.ServletUtils;
 import org.tangdao.common.utils.StringUtils;
-
-import com.alibaba.fastjson.JSON;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -97,7 +96,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 			ServletUtils.renderResult(response, AuthResponseStatus.EC_TOKENATTR_NOTFOND.getCode(), "用户信息获取失败，请重新登录！");
 			return;
 		}
-		UserDetails userDetails = JSON.parseObject(obj.toString(), UserDetails.class);
+		UserDetails userDetails =JsonMapper.fromJson(obj.toString(), UserDetails.class);
 		//用户信息认证
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

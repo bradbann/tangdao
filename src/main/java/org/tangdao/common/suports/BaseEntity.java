@@ -35,6 +35,7 @@ public abstract class BaseEntity<T> implements Serializable {
 	@TableField(exist = false)
 	protected transient String keyColumnName;
 
+	@JsonIgnore
 	@TableField(exist = false)
 	protected transient boolean isNewRecord;
 
@@ -133,6 +134,7 @@ public abstract class BaseEntity<T> implements Serializable {
 		this.isNewRecord = isNewRecord;
 	}
 
+	@JsonIgnore
 	public Object clone() {
 		return ObjectUtils.cloneBean(this);
 	}

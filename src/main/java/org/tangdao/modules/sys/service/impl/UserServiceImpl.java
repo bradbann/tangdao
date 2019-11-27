@@ -10,13 +10,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
+import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.modules.paas.config.PaasRedisConstant;
 import org.tangdao.modules.sys.mapper.UserMapper;
 import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.IUserService;
 import org.tangdao.modules.sys.utils.UserUtils;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -95,7 +95,8 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 		 try {
             Object obj = stringRedisTemplate.opsForValue().get(getKey(userCode));
             if (obj != null) {
-                return JSON.parseObject(obj.toString(), User.class);
+            	return JsonMapper.fromJson(obj.toString(), User.class);
+//                return JSON.parseObject(obj.toString(), User.class);
             }
         } catch (Exception e) {
             logger.warn("REDIS 加载失败，将于DB加载", e);

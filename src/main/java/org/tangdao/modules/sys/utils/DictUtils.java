@@ -10,8 +10,6 @@ import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.model.domain.DictData;
 import org.tangdao.modules.sys.service.IDictDataService;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 public class DictUtils {
 
 	private static final class Static {
@@ -86,12 +84,15 @@ public class DictUtils {
 	}
 
 	public static String getDictListJson(String dictType) {
-		
+//		System.out.println(getDictList(dictType));
 		try {
-			return JsonMapper.getInstance().writerWithView(DictData.SimpleView.class)
-					.writeValueAsString(getDictList(dictType));
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+//			return JSON.toJSONString(getDictList(dictType));
+//			System.out.println(JSON.toJSONString(getDictList(dictType)));
+			return JsonMapper.toJson(getDictList(dictType));
+//			System.out.println(JsonMapper.getInstance().writerWithView(DictData.SimpleView.class).writeValueAsString(getDictList(dictType)));
+//			return JsonMapper.getInstance().writerWithView(DictData.SimpleView.class)
+//					.writeValueAsString(getDictList(dictType));
+		} catch (Exception e) {
 			return "[]";
 		}
 	}
