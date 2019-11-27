@@ -75,7 +75,7 @@ public class DictTypeController extends BaseController {
 	
 	@PostMapping(value = "delete")
 	public @ResponseBody String delete(DictType dictType){
-		dictTypeService.deleteById(dictType);
+		dictTypeService.delete(dictType);
 		return this.renderResult(Global.TRUE, "删除成功");
 	}
 	

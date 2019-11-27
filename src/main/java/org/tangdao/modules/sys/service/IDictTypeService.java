@@ -13,4 +13,10 @@ import org.tangdao.modules.sys.model.domain.DictType;
  */
 public interface IDictTypeService extends ICrudService<DictType> {
 
+	/**
+	 *  删除字典类型（包括自定值）
+	 * @param dictType
+	 * @return
+	 */
+	public boolean delete(DictType dictType);
 }

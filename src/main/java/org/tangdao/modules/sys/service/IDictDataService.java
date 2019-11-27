@@ -24,4 +24,6 @@ public interface IDictDataService extends ICrudService<DictData> {
 
     public boolean reloadToRedis();
     
+    public boolean deleteByType(String dictType);
+    
 }

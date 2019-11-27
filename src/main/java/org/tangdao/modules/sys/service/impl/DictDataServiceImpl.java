@@ -101,4 +101,10 @@ public class DictDataServiceImpl extends CrudServiceImpl<DictDataMapper, DictDat
             return false;
         }
 	}
+
+	
+	@Override
+	public boolean deleteByType(String dictType) {
+		return super.delete(Wrappers.<DictData>lambdaQuery().eq(DictData::getDictType, dictType));
+	}
 }
