@@ -32,12 +32,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.tangdao.common.beetl.BeetlConfiguration;
 import org.tangdao.common.beetl.BeetlViewResolver;
 import org.tangdao.common.config.Global;
+import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.PropertiesUtils;
 import org.tangdao.common.utils.SpringUtils;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.interceptor.LogInterceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Configuration
@@ -161,6 +163,11 @@ public class WebConfig implements WebMvcConfigurer {
 				}
 			}
 		}
+	}
+	
+	@Bean("objectMapper")
+	public ObjectMapper objectMapper() {
+		return new JsonMapper();
 	}
 	
 }
