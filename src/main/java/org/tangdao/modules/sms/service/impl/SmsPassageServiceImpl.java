@@ -16,6 +16,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.tangdao.common.serializer.SerializationUtils;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
@@ -42,7 +43,7 @@ import org.tangdao.modules.sms.service.ISmsPassageParameterService;
 import org.tangdao.modules.sms.service.ISmsPassageService;
 import org.tangdao.modules.sys.utils.DictUtils;
 
-import com.alibaba.fastjson.JSON;
+//import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -231,7 +232,7 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
 
             release(passage, isQueueCreateFinished, isRedisPushFinished);
 
-            logger.error("添加短信通道[{}], provinceCodes[{}] 失败", JSON.toJSONString(passage), provinceCodes, e);
+            logger.error("添加短信通道[{}], provinceCodes[{}] 失败", SerializationUtils.serializeWithoutException(passage), provinceCodes, e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return response(false, "添加失败");
         }
@@ -316,7 +317,7 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
                 return response(false, e.getMessage());
             }
 
-            logger.error("修改短信通道[{}], provinceCodes[{}] 失败", JSON.toJSONString(passage), provinceCodes, e);
+            logger.error("修改短信通道[{}], provinceCodes[{}] 失败", SerializationUtils.serializeWithoutException(passage), provinceCodes, e);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return response(false, "修改失败");
         }
@@ -417,7 +418,8 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
 
                 map.forEach((k, v) -> {
 
-                    SmsPassage smsPassage = JSON.parseObject(v.toString(), SmsPassage.class);
+//                    SmsPassage smsPassage = JSON.parseObject(v.toString(), SmsPassage.class);
+                    SmsPassage smsPassage = (SmsPassage) v;
                     if (passages.contains(smsPassage)) {
                         return;
                     }
@@ -439,7 +441,8 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
         try {
             Object obj = stringRedisTemplate.opsForHash().get(SmsRedisConstant.RED_SMS_PASSAGE, id + "");
             if (obj != null) {
-                smsPassage = JSON.parseObject(obj.toString(), SmsPassage.class);
+//                smsPassage = JSON.parseObject(obj.toString(), SmsPassage.class);
+                smsPassage = (SmsPassage) obj;
             }
         } catch (Exception e) {
             logger.warn("REDIS 加载失败，将于DB加载", e);
@@ -517,7 +520,7 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
                 byte[] mainKey = serializer.serialize(SmsRedisConstant.RED_SMS_PASSAGE);
                 byte[] assistKey = serializer.serialize(smsPassage.getId().toString());
 
-                connection.hSet(mainKey, assistKey, serializer.serialize(JSON.toJSONString(smsPassage)));
+                connection.hSet(mainKey, assistKey, SerializationUtils.serializeWithoutException(smsPassage));
             }
 
             return connection.closePipeline();
@@ -533,11 +536,11 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
 
     private boolean pushToRedis(SmsPassage smsPassage) {
         try {
-            stringRedisTemplate.opsForHash().put(SmsRedisConstant.RED_SMS_PASSAGE, smsPassage.getId() + "",
-                                                 JSON.toJSONString(smsPassage));
+            stringRedisTemplate.opsForHash().put(SmsRedisConstant.RED_SMS_PASSAGE, smsPassage.getId(),
+                                                 SerializationUtils.serializeWithoutException(smsPassage));
             return true;
         } catch (Exception e) {
-            logger.warn("REDIS 加载短信通道[" + JSON.toJSONString(smsPassage) + "]数据失败", e);
+            logger.warn("REDIS 加载短信通道[" + SerializationUtils.serializeWithoutException(smsPassage) + "]数据失败", e);
             return false;
         }
     }
@@ -561,8 +564,7 @@ public class SmsPassageServiceImpl extends CrudServiceImpl<SmsPassageMapper, Sms
             SmsPassage smsPassage = findById(passageId);
             if (smsPassage != null) {
                 smsPassage.setStatus(status);
-                stringRedisTemplate.opsForHash().put(SmsRedisConstant.RED_SMS_PASSAGE, passageId + "",
-                                                     JSON.toJSONString(smsPassage));
+                stringRedisTemplate.opsForHash().put(SmsRedisConstant.RED_SMS_PASSAGE, passageId, SerializationUtils.serializeWithoutException(smsPassage));
             }
 
         } catch (Exception e) {

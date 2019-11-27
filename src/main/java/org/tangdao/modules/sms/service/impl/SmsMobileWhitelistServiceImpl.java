@@ -23,7 +23,6 @@ import org.tangdao.modules.sms.mapper.SmsMobileWhitelistMapper;
 import org.tangdao.modules.sms.model.domain.SmsMobileWhitelist;
 import org.tangdao.modules.sms.service.ISmsMobileWhiteListService;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
@@ -126,7 +125,8 @@ public class SmsMobileWhitelistServiceImpl extends CrudServiceImpl<SmsMobileWhit
                 connection.openPipeline();
                 for (SmsMobileWhitelist mwl : list) {
                     byte[] key = serializer.serialize(getKey(mwl.getUserCode()));
-                    connection.sAdd(key, serializer.serialize(JSON.toJSONString(mwl)));
+                    
+                    connection.sAdd(key, serializer.serialize(mwl.getMobile()));
                 }
 
                 return connection.closePipeline();

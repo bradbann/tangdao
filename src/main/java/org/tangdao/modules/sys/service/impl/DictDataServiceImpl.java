@@ -45,7 +45,7 @@ public class DictDataServiceImpl extends CrudServiceImpl<DictDataMapper, DictDat
     		Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(SysRedisConstant.RED_SYS_DICT_DATA_LIST);
     		if (MapUtils.isNotEmpty(entries)) {
                 for (Object key : entries.keySet()) {
-                	List<DictData> list = (List<DictData>) key;
+                	List<DictData> list = (List<DictData>) entries.get(key);
                 	dictDataMap.put(key.toString(),  list);
                 }
             }else {

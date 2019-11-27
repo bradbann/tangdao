@@ -113,12 +113,12 @@ public class MenuServiceImpl extends TreeServiceImpl<MenuMapper, Menu> implement
 		}
 	    try {
 //            stringRedisTemplate.delete(stringRedisTemplate.keys(SysRedisConstant.RED_MENU_NAME_PATH + "*"));
-
             List<Object> con = stringRedisTemplate.execute((connection) -> {
 
                 RedisSerializer<String> serializer = stringRedisTemplate.getStringSerializer();
                 connection.openPipeline();
                 byte[] mainKey = serializer.serialize(SysRedisConstant.RED_MENU_NAME_PATH);
+                
                 for (Menu menu : menuList) {
    				 String menuHref = StringUtils.substringBefore(menu.getMenuHref(), "?");
    				 if (StringUtils.isNotBlank(menuHref)) {

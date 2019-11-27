@@ -2,9 +2,7 @@
  *
  */
 package org.tangdao.common.serializer;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Properties;
 
 import org.apache.ibatis.cache.CacheException;
@@ -62,6 +60,11 @@ public class SerializationUtils {
         return g_serializer.serialize(obj);
     }
 
+    /**
+     * 针对不同类型做单独处理
+     * @param obj 待序列化的对象
+     * @return 返回序列化后的字节数组
+     */
     public static byte[] serializeWithoutException(Object obj) {
         try {
             return serialize(obj);
@@ -80,27 +83,5 @@ public class SerializationUtils {
         if (bytes == null || bytes.length == 0)
             return null;
         return g_serializer.deserialize(bytes);
-    }
-    
-    /**
-     * 反序列化
-     * @param obj 待反序列化的字节数组
-     * @return 序列化后的对象
-     * @throws IOException io exception
-     */
-    public static Object deserialize(Object obj) throws IOException {
-    	byte[] bytes = null;     
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();     
-        try {       
-            ObjectOutputStream oos = new ObjectOutputStream(bos);        
-            oos.writeObject(obj);       
-            oos.flush();        
-            bytes = bos.toByteArray();     
-            oos.close();        
-            bos.close();       
-        } catch (IOException ex) {       
-            ex.printStackTrace();  
-        }     
-        return deserialize(bytes);   
     }
 }

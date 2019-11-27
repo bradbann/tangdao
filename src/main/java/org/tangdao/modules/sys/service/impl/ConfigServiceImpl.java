@@ -64,20 +64,15 @@ public class ConfigServiceImpl extends CrudServiceImpl<ConfigMapper, Config> imp
 	
 	    try {
 	    	clearCache();
-
+	    	
             List<Object> con = stringRedisTemplate.execute((connection) -> {
 
                 RedisSerializer<String> serializer = stringRedisTemplate.getStringSerializer();
-                
-//                RedisSerializer value = stringRedisTemplate.getValueSerializer();
                 connection.openPipeline();
-                for (Config mwl : list) {
+                for (Config config : list) {
                     byte[] mainKey = serializer.serialize(SysRedisConstant.RED_SYS_CONFIG_LIST);
-                    byte[] assistKey = serializer.serialize(mwl.getConfigKey());
-
-//                    connection.hSet(mainKey, assistKey, serializer.serialize(JSON.toJSONString(mwl)));
-                   
-                    connection.hSet(mainKey, assistKey, SerializationUtils.serializeWithoutException(mwl));
+                    byte[] assistKey = serializer.serialize(config.getConfigKey());
+                    connection.hSet(mainKey, assistKey, SerializationUtils.serializeWithoutException(config));
                 }
 
                 return connection.closePipeline();
@@ -105,7 +100,6 @@ public class ConfigServiceImpl extends CrudServiceImpl<ConfigMapper, Config> imp
                 byte[] assistKey = serializer.serialize(config.getConfigKey());
 
                 connection.openPipeline();
-               
 				connection.hSet(mainKey, assistKey, SerializationUtils.serializeWithoutException(config));
 
                 return connection.closePipeline();

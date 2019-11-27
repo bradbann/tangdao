@@ -212,8 +212,7 @@ public class SmsMobileBlacklistServiceImpl extends CrudServiceImpl<SmsMobileBlac
                 for (SmsMobileBlacklist mbl : list) {
                     // map.put(serializer.serialize(mbl.getMobile()), serializer.serialize(mbl.getType()+ ""));
                     GLOBAL_MOBILE_BLACKLIST.put(mbl.getMobile(), mbl.getType());
-                    connection.hSet(key, serializer.serialize(mbl.getMobile()),
-                                    serializer.serialize(mbl.getType() + ""));
+                    connection.hSet(key, serializer.serialize(mbl.getMobile()), serializer.serialize(mbl.getType() + ""));
                 }
                 // connection.hMSet(key, map);
                 return connection.closePipeline();

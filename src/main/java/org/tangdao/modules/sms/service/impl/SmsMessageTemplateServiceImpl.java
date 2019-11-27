@@ -11,11 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.tangdao.common.serializer.SerializationUtils;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.ObjectUtils;
@@ -30,6 +32,7 @@ import org.tangdao.modules.sms.service.ISmsForbiddenWordsService;
 import org.tangdao.modules.sms.service.ISmsTemplateService;
 
 import com.alibaba.fastjson.JSON;
+//import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -42,6 +45,8 @@ public class SmsMessageTemplateServiceImpl extends CrudServiceImpl<SmsMessageTem
 	
     @Autowired
     private ISmsForbiddenWordsService                          forbiddenWordsService;
+    @Autowired
+    private RedisTemplate<String, Object>                      redisTemplate;
     @Autowired
     private StringRedisTemplate                                stringRedisTemplate;
 
@@ -76,10 +81,10 @@ public class SmsMessageTemplateServiceImpl extends CrudServiceImpl<SmsMessageTem
                 byte[] key = serializer.serialize(getKey(userCode));
 
                 for (SmsMessageTemplate template : templates) {
-                    connection.zAdd(key, template.getPriority().doubleValue(), JSON.toJSONBytes(template));
+                    connection.zAdd(key, template.getPriority().doubleValue(), SerializationUtils.serializeWithoutException(template));
 
                     // publish message for flush jvm map data
-                    connection.publish(serializer.serialize(SmsRedisConstant.BROADCAST_MESSAGE_TEMPLATE_TOPIC), JSON.toJSONBytes(template));
+                    connection.publish(serializer.serialize(SmsRedisConstant.BROADCAST_MESSAGE_TEMPLATE_TOPIC), SerializationUtils.serializeWithoutException(template));
                 }
 
                 return connection.closePipeline();
@@ -98,18 +103,18 @@ public class SmsMessageTemplateServiceImpl extends CrudServiceImpl<SmsMessageTem
      */
     private List<SmsMessageTemplate> getFromRedis(String userCode) {
         try {
-            Set<String> set = stringRedisTemplate.opsForZSet().reverseRangeByScore(getKey(userCode), 0, 1000);
+            Set<Object> set = redisTemplate.opsForZSet().reverseRangeByScore(getKey(userCode), 0, 1000);
             if (ListUtils.isEmpty(set)) {
                 return null;
             }
 
             List<SmsMessageTemplate> list = new ArrayList<>(set.size());
-            for (String s : set) {
-                if (StringUtils.isEmpty(s)) {
+            for (Object s : set) {
+                if (s==null) {
                     continue;
                 }
 
-                list.add(JSON.parseObject(s, SmsMessageTemplate.class));
+                list.add((SmsMessageTemplate)s);
             }
 
             return list;
@@ -127,14 +132,14 @@ public class SmsMessageTemplateServiceImpl extends CrudServiceImpl<SmsMessageTem
     private void removeRedis(SmsMessageTemplate template) {
         try {
 
-            Set<String> set = stringRedisTemplate.opsForZSet().reverseRangeByScore(getKey(template.getUserCode()), 0, 1000);
+            Set<Object> set = redisTemplate.opsForZSet().reverseRangeByScore(getKey(template.getUserCode()), 0, 1000);
             if (ListUtils.isEmpty(set)) {
                 logger.warn("redis中未找到短信模板 userId[" + template.getUserCode() + "]信息");
                 return;
             }
 
-            for (String templateJson : set) {
-            	SmsMessageTemplate messageTemplate = JSON.parseObject(templateJson, SmsMessageTemplate.class);
+            for (Object templateJson : set) {
+            	SmsMessageTemplate messageTemplate = (SmsMessageTemplate) templateJson;
                 if (messageTemplate == null) {
                     continue;
                 }
@@ -436,14 +441,13 @@ public class SmsMessageTemplateServiceImpl extends CrudServiceImpl<SmsMessageTem
 
                 if (originTemplate != null) {
                     // 删除原有的模板数据
-                    connection.zRem(key, JSON.toJSONBytes(originTemplate));
+                    connection.zRem(key, SerializationUtils.serializeWithoutException(originTemplate));
                 }
 
-                connection.zAdd(key, template.getPriority().doubleValue(), JSON.toJSONBytes(template));
+                connection.zAdd(key, template.getPriority().doubleValue(), SerializationUtils.serializeWithoutException(template));
 
                 // publish message for flush jvm map data
-                connection.publish(serializer.serialize(SmsRedisConstant.BROADCAST_MESSAGE_TEMPLATE_TOPIC),
-                                   JSON.toJSONBytes(template));
+                connection.publish(serializer.serialize(SmsRedisConstant.BROADCAST_MESSAGE_TEMPLATE_TOPIC), SerializationUtils.serializeWithoutException(template));
 
                 return connection.closePipeline();
             }, false, true);
@@ -476,7 +480,7 @@ public class SmsMessageTemplateServiceImpl extends CrudServiceImpl<SmsMessageTem
             for (SmsMessageTemplate template : list) {
                 byte[] key = serializer.serialize(getKey(template.getUserCode()));
 
-                connection.zAdd(key, template.getPriority().doubleValue(), JSON.toJSONBytes(template));
+                connection.zAdd(key, template.getPriority().doubleValue(), SerializationUtils.serializeWithoutException(template));
             }
 
             return connection.closePipeline();

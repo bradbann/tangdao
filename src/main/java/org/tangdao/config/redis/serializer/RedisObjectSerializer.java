@@ -13,7 +13,7 @@ public class RedisObjectSerializer implements RedisSerializer<Object> {
 	 */
 	public RedisObjectSerializer() {
 		// TODO Auto-generated constructor stub
-		SerializationUtils.init("json", null);
+		SerializationUtils.init("fst", null);
 	}
 
 	// 为了方便进行对象与字节数组的转换，所以应该首先准备出两个转换器

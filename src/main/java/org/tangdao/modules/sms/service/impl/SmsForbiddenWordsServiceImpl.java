@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
@@ -111,7 +112,6 @@ public class SmsForbiddenWordsServiceImpl extends CrudServiceImpl<SmsForbiddenWo
 	public List<String> findForbiddenWordsLibrary() {
 		try {
             Set<String> set = stringRedisTemplate.opsForSet().members(SmsRedisConstant.RED_FORBIDDEN_WORDS);
-
             if (ListUtils.isNotEmpty(set)) {
                 return new ArrayList<>(set);
             }
@@ -122,7 +122,17 @@ public class SmsForbiddenWordsServiceImpl extends CrudServiceImpl<SmsForbiddenWo
 
         List<String> list = this.getBaseMapper().selectAllWords();
         try {
-            stringRedisTemplate.opsForSet().add(SmsRedisConstant.RED_FORBIDDEN_WORDS, list.toArray(new String[] {}));
+        	stringRedisTemplate.execute((connection) -> {
+        		RedisSerializer<String> serializer = stringRedisTemplate.getStringSerializer();
+        		byte[] key = serializer.serialize(SmsRedisConstant.RED_FORBIDDEN_WORDS);
+        		connection.openPipeline();
+        		for (String mbl : list) {
+                    connection.sAdd(key, serializer.serialize(mbl));
+        		}
+        		return connection.closePipeline();
+        	}, false, true);
+        	
+//            stringRedisTemplate.opsForSet().add(SmsRedisConstant.RED_FORBIDDEN_WORDS, list.toArray(new String[] {}));
         } catch (Exception e) {
             logger.warn("Redis敏感词同步失败.", e);
         }
@@ -185,7 +195,17 @@ public class SmsForbiddenWordsServiceImpl extends CrudServiceImpl<SmsForbiddenWo
             SensitiveWordFilter.loadWildcarsWords(words);
 
             stringRedisTemplate.delete(SmsRedisConstant.RED_FORBIDDEN_WORDS);
-            stringRedisTemplate.opsForSet().add(SmsRedisConstant.RED_FORBIDDEN_WORDS, words.toArray(new String[] {}));
+//            stringRedisTemplate.opsForSet().add(SmsRedisConstant.RED_FORBIDDEN_WORDS, words.toArray(new String[] {}));
+            
+            stringRedisTemplate.execute((connection) -> {
+        		RedisSerializer<String> serializer = stringRedisTemplate.getStringSerializer();
+        		byte[] key = serializer.serialize(SmsRedisConstant.RED_FORBIDDEN_WORDS);
+        		connection.openPipeline();
+        		for (String mbl : words) {
+                    connection.sAdd(key, serializer.serialize(mbl));
+        		}
+        		return connection.closePipeline();
+        	}, false, true);
             return true;
         } catch (Exception e) {
             logger.warn("REDIS重载敏感词数据失败", e);

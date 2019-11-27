@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.tangdao.common.serializer.SerializationUtils;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.PatternUtils;
@@ -23,7 +24,7 @@ import org.tangdao.modules.sms.mapper.SmsPassageMessageTemplateMapper;
 import org.tangdao.modules.sms.model.domain.SmsPassageMessageTemplate;
 import org.tangdao.modules.sms.service.ISmsPassageMessageTemplateService;
 
-import com.alibaba.fastjson.JSON;
+//import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 /**
@@ -203,8 +204,7 @@ public class SmsPassageMessageTemplateServiceImpl extends CrudServiceImpl<SmsPas
 	
 	private void pushToRedis(SmsPassageMessageTemplate template) {
 		try {
-			stringRedisTemplate.opsForHash().put(getRedisKey(template.getPassageId()), 
-					template.getTemplateId(), JSON.toJSONString(template));
+			stringRedisTemplate.opsForHash().put(getRedisKey(template.getPassageId()), template.getTemplateId(), SerializationUtils.serializeWithoutException(template));
 		} catch (Exception e) {
 			logger.error("用户通道模板信息加载REDIS失败", e);
 		}

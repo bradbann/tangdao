@@ -4,6 +4,7 @@
 package org.tangdao.common.serializer;
 
 import org.nustaq.serialization.FSTConfiguration;
+import org.nustaq.serialization.coders.FSTJsonFieldNames;
 import org.nustaq.serialization.serializers.FSTDateSerializer;
 
 import java.sql.Date;
@@ -21,7 +22,7 @@ public class FstJSONSerializer implements Serializer {
     private static final String PREFIX = "map.";
 
     public FstJSONSerializer(Properties props) {
-//        conf.setJsonFieldNames(new FSTJsonFieldNames("@type", "@object", "@stype", "@seq", "@enum", "@value", "@ref"));
+        conf.setJsonFieldNames(new FSTJsonFieldNames("@type", "@object", "@stype", "@seq", "@enum", "@value", "@ref"));
         conf.registerCrossPlatformClassMapping("list", "java.util.Arrays$ArrayList");
         conf.registerSerializer(Timestamp.class, new FSTDateSerializer(), true);
         conf.registerSerializer(Date.class, new FSTDateSerializer(), true);

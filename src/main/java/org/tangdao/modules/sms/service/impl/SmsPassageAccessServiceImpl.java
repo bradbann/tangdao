@@ -19,6 +19,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.tangdao.common.serializer.SerializationUtils;
 import org.tangdao.common.service.impl.CrudServiceImpl;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
@@ -41,6 +42,7 @@ import org.tangdao.modules.sms.service.ISmsPassageGroupDetailService;
 import org.tangdao.modules.sms.service.ISmsPassageParameterService;
 
 import com.alibaba.fastjson.JSON;
+//import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
@@ -588,13 +590,11 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
     public Map<String, SmsPassageAccess> getByUserCode(String userCode) {
         Map<String, SmsPassageAccess> passages = new HashMap<>();
         try {
-            Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(getMainKey(userCode,
-                                                                                              PassageCallType.DATA_SEND.getCode()));
+            Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(getMainKey(userCode, PassageCallType.DATA_SEND.getCode()));
             if (MapUtils.isNotEmpty(entries)) {
                 for (Object key : entries.keySet()) {
-                    SmsPassageAccess passage = JSON.parseObject(entries.get(key).toString(), SmsPassageAccess.class);
-                    passages.put(getAssistKey(passage.getRouteType(), passage.getCmcp(), passage.getAreaCode()),
-                                 passage);
+                    SmsPassageAccess passage = (SmsPassageAccess) entries.get(key);
+                    passages.put(getAssistKey(passage.getRouteType(), passage.getCmcp(), passage.getAreaCode()), passage);
                 }
 
                 return passages;
@@ -610,15 +610,14 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
             }
 
             // edity by 20180418 修改之前的redis中值设置
-            Map<String, String> redisPassageValues = new HashMap<>(list.size());
+            Map<String, Object> redisPassageValues = new HashMap<>(list.size());
             for (SmsPassageAccess passage : list) {
                 String assistKey = getAssistKey(passage.getRouteType(), passage.getCmcp(), passage.getAreaCode());
                 passages.put(assistKey, passage);
-                redisPassageValues.put(assistKey, JSON.toJSONString(passage));
+                redisPassageValues.put(assistKey, SerializationUtils.serializeWithoutException(passage));
             }
 
-            stringRedisTemplate.opsForHash().putAll(getMainKey(userCode, PassageCallType.DATA_SEND.getCode()),
-                                                    redisPassageValues);
+            stringRedisTemplate.opsForHash().putAll(getMainKey(userCode, PassageCallType.DATA_SEND.getCode()), redisPassageValues);
 
             return passages;
         }
@@ -672,7 +671,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
             // 加载到REDIS中
             stringRedisTemplate.opsForHash().put(getMainKey(userCode, passageAccess.getCallType()),
                                                  getAssistKey(routeType, cmcp, areaCode),
-                                                 JSON.toJSONString(passageAccess));
+                                                 SerializationUtils.serializeWithoutException(passageAccess));
 
         } catch (Exception e) {
             logger.warn("Redis 用户可用通道信息添加失败, userCode : {}, cmcp : {}", userCode, cmcp, e);
@@ -695,7 +694,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
         try {
             Object object = stringRedisTemplate.opsForHash().get(mainKey, assistKey);
             if (object != null) {
-                return JSON.parseObject(object.toString(), SmsPassageAccess.class);
+                return (SmsPassageAccess) object;
             }
         } catch (Exception e) {
             logger.warn("Redis 用户可用通道信息查询失败, userCode : {}, cmcp : {}", userCode, cmcp, e);
@@ -719,11 +718,10 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
 
                 connection.openPipeline();
 
-                connection.hSet(mainKey, assistKey, serializer.serialize(JSON.toJSONString(access)));
+                connection.hSet(mainKey, assistKey, SerializationUtils.serializeWithoutException(access));
 
                 // 采用订阅发布来通知 分布式节点清理各自的JVM 内存数据
-                connection.publish(serializer.serialize(SmsRedisConstant.BROADCAST_PASSAGE_ACCESS_TOPIC),
-                                   JSON.toJSONBytes(access));
+                connection.publish(serializer.serialize(SmsRedisConstant.BROADCAST_PASSAGE_ACCESS_TOPIC), SerializationUtils.serializeWithoutException(access));
 
                 return connection.closePipeline();
             }, false, true);
@@ -744,14 +742,12 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
                 RedisSerializer<String> serializer = stringRedisTemplate.getStringSerializer();
                 connection.openPipeline();
                 byte[] mainKey = serializer.serialize(getMainKey(access.getUserCode(), access.getCallType()));
-                byte[] assistKey = serializer.serialize(getAssistKey(access.getRouteType(), access.getCmcp(),
-                                                                     access.getAreaCode()));
+                byte[] assistKey = serializer.serialize(getAssistKey(access.getRouteType(), access.getCmcp(), access.getAreaCode()));
 
                 connection.hDel(mainKey, assistKey);
 
                 // 采用订阅发布来通知 分布式节点清理各自的JVM 内存数据
-                connection.publish(serializer.serialize(SmsRedisConstant.BROADCAST_PASSAGE_ACCESS_TOPIC),
-                                   JSON.toJSONBytes(access));
+                connection.publish(serializer.serialize(SmsRedisConstant.BROADCAST_PASSAGE_ACCESS_TOPIC), SerializationUtils.serializeWithoutException(access));
 
                 return connection.closePipeline();
             }, false, true);
@@ -776,7 +772,7 @@ public class SmsPassageAccessServiceImpl extends CrudServiceImpl<SmsPassageAcces
                     byte[] assistKey = serializer.serialize(getAssistKey(access.getRouteType(), access.getCmcp(),
                                                                          access.getAreaCode()));
 
-                    connection.hSet(mainKey, assistKey, serializer.serialize(JSON.toJSONString(access)));
+                    connection.hSet(mainKey, assistKey, SerializationUtils.serializeWithoutException(access));
                 }
 
                 return connection.closePipeline();
