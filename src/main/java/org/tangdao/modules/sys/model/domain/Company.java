@@ -6,11 +6,18 @@ import org.tangdao.common.suports.TreeName;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
 /**
  * 公司Entity
  * @author ruyang
  * @version 2019-08-28
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 @TableName("sys_company")
 public class Company extends TreeEntity<Company> {
 	
@@ -36,46 +43,4 @@ public class Company extends TreeEntity<Company> {
 	public Company getParent() {
 		return parent;
 	}
-
-	
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-	
-	public String getCompanyCode() {
-		return companyCode;
-	}
-
-	public void setCompanyCode(String companyCode) {
-		this.companyCode = companyCode;
-	}
-	
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-	
-	public String getViewCode() {
-		return viewCode;
-	}
-
-	public void setViewCode(String viewCode) {
-		this.viewCode = viewCode;
-	}
-	
-	public String getAreaCode() {
-		return areaCode;
-	}
-
-	public void setAreaCode(String areaCode) {
-		this.areaCode = areaCode;
-	}
-	
 }

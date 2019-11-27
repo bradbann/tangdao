@@ -27,7 +27,7 @@ public abstract class TreeEntity<T> extends DataEntity<T> {
 	private static final long serialVersionUID = 1L;
 
 	@TableField(exist = false)
-	protected T parent;
+	protected transient T parent;
 
 	protected String parentCode;
 
@@ -37,11 +37,12 @@ public abstract class TreeEntity<T> extends DataEntity<T> {
 
 	protected Integer treeSort;
 
+	@JsonIgnore
 	@TableField(exist = false)
-	protected String treeName_;
+	protected transient String treeName_;
 
 	@TableField(exist = false)
-	protected List<T> children;
+	protected transient List<T> children;
 
 	protected String treeLeaf;
 

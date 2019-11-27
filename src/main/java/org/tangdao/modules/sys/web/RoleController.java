@@ -97,11 +97,11 @@ public class RoleController extends BaseController {
 		if(Role.DEFAULT_ADMIN_ROLE_CODE.equals(role.getRoleCode())) {
 			return this.renderResult(Global.FALSE, "非法操作，此角色为内置角色，不允许删除！");
 		}else {
-//			roleService.deleteByPrimaryKey(role);
+			roleService.deleteById(role);
 			return renderResult(Global.TRUE, "角色删除成功");
 		}
 	}
-//	
+	
 //	@ResponseBody
 //	@PostMapping(value = "disable")
 //	public String disable(Role role){

@@ -6,11 +6,18 @@ import org.tangdao.common.suports.TreeName;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
 /**
  * 机构Entity
  * @author ruyang
  * @version 2019-08-24
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 @TableName("sys_office")
 public class Office extends TreeEntity<Office> {
 	
@@ -41,85 +48,4 @@ public class Office extends TreeEntity<Office> {
 	public Office getParent() {
 		return parent;
 	}
-	
-	public String getOfficeCode() {
-		return officeCode;
-	}
-
-	public void setOfficeCode(String officeCode) {
-		this.officeCode = officeCode;
-	}
-	
-	public String getViewCode() {
-		return viewCode;
-	}
-
-	public void setViewCode(String viewCode) {
-		this.viewCode = viewCode;
-	}
-	
-	public String getOfficeName() {
-		return officeName;
-	}
-
-	public void setOfficeName(String officeName) {
-		this.officeName = officeName;
-	}
-	
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-	
-	public String getOfficeType() {
-		return officeType;
-	}
-
-	public void setOfficeType(String officeType) {
-		this.officeType = officeType;
-	}
-	
-	public String getLeader() {
-		return leader;
-	}
-
-	public void setLeader(String leader) {
-		this.leader = leader;
-	}
-	
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-	
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	
-	public String getZipCode() {
-		return zipCode;
-	}
-
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
-	}
-	
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
 }
