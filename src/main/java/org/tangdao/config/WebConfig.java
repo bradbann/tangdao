@@ -6,10 +6,12 @@ import java.util.List;
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.ext.spring.AccessExpressionIfFunction;
 import org.hibernate.validator.HibernateValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartProperties;
@@ -25,6 +27,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -37,6 +40,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.tangdao.common.beetl.BeetlConfiguration;
 import org.tangdao.common.beetl.BeetlViewResolver;
 import org.tangdao.common.config.Global;
+import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.PropertiesUtils;
 import org.tangdao.common.utils.SpringUtils;
 import org.tangdao.common.utils.StringUtils;
@@ -50,6 +54,9 @@ import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 @EnableWebMvc
 @EnableConfigurationProperties({MultipartProperties.class})
 public class WebConfig implements WebMvcConfigurer {
+	
+	@Autowired
+	private HttpMessageConverters httpMessageConverters;
 	
 	@Bean
 	public AccessExpressionIfFunction accessExpressionIfFunction() {
@@ -183,7 +190,10 @@ public class WebConfig implements WebMvcConfigurer {
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
 		converters.add(stringConverter);
-//		converters.add(httpMessageConverter());
+		httpMessageConverters.getConverters().forEach(converter->{
+			converters.add(converter);
+		});
+		converters.add(new MappingJackson2HttpMessageConverter(JsonMapper.getInstance()));
 	}
 	
 }
