@@ -16,6 +16,4 @@ public interface IConfigService extends ICrudService<Config> {
 	public Config getConfigByKey(String configKey);
 
 	public boolean reloadToRedis();
-	
-	public void clearCache();
 }

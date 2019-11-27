@@ -35,8 +35,4 @@ public class ConfigUtils {
 		}
 		return value;
 	}
-	
-	public static void clearCache() {
-		Static.configService.clearCache();
-	}
 }

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.tangdao.modules.paas.mapper.UserBalanceMapper">
-	<update id="updateWarning" parameterType="UserBalance">
-		update paas_user_balance set mobile = #{mobile,jdbcType=VARCHAR}, threshold = #{threshold,jdbcType=INTEGER},
-			remarks = #{remarks,jdbcType=VARCHAR}, update_time = now() where id = #{id,jdbcType=INTEGER} 
-	</update>
-</mapper>

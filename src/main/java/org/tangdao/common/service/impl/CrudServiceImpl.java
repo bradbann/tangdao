@@ -138,8 +138,6 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 			Object idVal = ReflectionKit.getMethodValue(cls, entity, tableInfo.getKeyProperty());
 			return StringUtils.checkValNull(idVal) || entity.getIsNewRecord() ? save(entity)
 					: updateById(entity);
-//			return StringUtils.checkValNull(idVal) || Objects.isNull(getById((Serializable) idVal)) ? save(entity)
-//					: updateById(entity);
 		}
 		return false;
 	}

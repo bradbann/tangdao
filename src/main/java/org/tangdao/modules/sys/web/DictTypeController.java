@@ -16,7 +16,6 @@ import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.model.domain.DictType;
 import org.tangdao.modules.sys.service.IDictTypeService;
-import org.tangdao.modules.sys.utils.DictUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -71,14 +70,12 @@ public class DictTypeController extends BaseController {
 	@PostMapping(value = "save")
 	public @ResponseBody String save(@Validated DictType dictType, HttpServletRequest request){
 		dictTypeService.saveOrUpdate(dictType);
-		DictUtils.clearCache();
 		return this.renderResult(Global.TRUE, "保存成功");
 	}
 	
 	@PostMapping(value = "delete")
 	public @ResponseBody String delete(DictType dictType){
 		dictTypeService.deleteById(dictType);
-		DictUtils.clearCache();
 		return this.renderResult(Global.TRUE, "删除成功");
 	}
 	
@@ -86,7 +83,6 @@ public class DictTypeController extends BaseController {
 	public @ResponseBody String disable(DictType dictType){
 		dictType.setStatus(DictType.STATUS_DISABLE);
 		dictTypeService.updateById(dictType);
-		DictUtils.clearCache();
 		return this.renderResult(Global.TRUE, "停用成功");
 	}
 	
@@ -94,7 +90,6 @@ public class DictTypeController extends BaseController {
 	public @ResponseBody String enable(DictType dictType){
 		dictType.setStatus(DictType.STATUS_NORMAL);
 		dictTypeService.updateById(dictType);
-		DictUtils.clearCache();
 		return this.renderResult(Global.TRUE, "启用成功");
 	}
 }

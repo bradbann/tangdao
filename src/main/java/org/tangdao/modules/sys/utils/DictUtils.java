@@ -84,20 +84,10 @@ public class DictUtils {
 	}
 
 	public static String getDictListJson(String dictType) {
-//		System.out.println(getDictList(dictType));
 		try {
-//			return JSON.toJSONString(getDictList(dictType));
-//			System.out.println(JSON.toJSONString(getDictList(dictType)));
 			return JsonMapper.toJson(getDictList(dictType));
-//			System.out.println(JsonMapper.getInstance().writerWithView(DictData.SimpleView.class).writeValueAsString(getDictList(dictType)));
-//			return JsonMapper.getInstance().writerWithView(DictData.SimpleView.class)
-//					.writeValueAsString(getDictList(dictType));
 		} catch (Exception e) {
 			return "[]";
 		}
-	}
-	
-	public static void clearCache() {
-		Static.dictDataService.clearCache();
 	}
 }

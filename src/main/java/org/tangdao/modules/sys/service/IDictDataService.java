@@ -24,5 +24,4 @@ public interface IDictDataService extends ICrudService<DictData> {
 
     public boolean reloadToRedis();
     
-    public void clearCache();
 }

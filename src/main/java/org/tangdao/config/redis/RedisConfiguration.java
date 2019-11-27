@@ -8,24 +8,16 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.Topic;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.tangdao.common.cache.JedisUtils;
-import org.tangdao.config.redis.constant.SmsRedisConstant;
-import org.tangdao.config.redis.pubsub.SmsMessageTemplateListener;
-import org.tangdao.config.redis.pubsub.SmsMobileBlacklistListener;
-import org.tangdao.config.redis.pubsub.SmsPassageAccessListener;
 import org.tangdao.config.redis.serializer.RedisObjectSerializer;
 
 
 @Configuration
 @EnableCaching
-//maxInactiveIntervalInSeconds 默认是30分钟过期，这里测试修改为60分钟
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds = 3600)
 public class RedisConfiguration {
 	
@@ -83,60 +75,11 @@ public class RedisConfiguration {
         return new JedisUtils(redisTemplate);
     }
 	
-	/**
-     * 黑名单数据变更广播通知监听配置
-     * 
-     * @return 消息监听适配器
-     */
-    @Bean
-    MessageListenerAdapter smsMobileBlacklistMessageListener(StringRedisTemplate stringRedisTemplate) {
-        return new SmsMobileBlacklistListener(stringRedisTemplate);
-    }
-
-    /**
-     * 短信模板变更广播通知监听配置
-     * 
-     * @return 短信模板监听器
-     */
-    @Bean
-    MessageListenerAdapter smsMessageTemplateMessageListener() {
-        return new SmsMessageTemplateListener();
-    }
-
-    /**
-     * 可用通道变更广播通知监听配置
-     * 
-     * @return 可用通道监听器
-     */
-    @Bean
-    MessageListenerAdapter smsPassageAccessMessageListener() {
-        return new SmsPassageAccessListener();
-    }
-
     @Bean
     RedisMessageListenerContainer redisContainer(StringRedisTemplate stringRedisTemplate,
     			RedisConnectionFactory connectionFactory) {
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(smsMobileBlacklistMessageListener(stringRedisTemplate), mobileBlacklistTopic());
-        container.addMessageListener(smsMessageTemplateMessageListener(), messageTemplateTopic());
-        container.addMessageListener(smsPassageAccessMessageListener(), passageAccessTopic());
         return container;
     }
-
-    @Bean
-    Topic mobileBlacklistTopic() {
-        return new PatternTopic(SmsRedisConstant.BROADCAST_MOBILE_BLACKLIST_TOPIC);
-    }
-
-    @Bean
-    Topic messageTemplateTopic() {
-        return new PatternTopic(SmsRedisConstant.BROADCAST_MESSAGE_TEMPLATE_TOPIC);
-    }
-
-    @Bean
-    Topic passageAccessTopic() {
-        return new PatternTopic(SmsRedisConstant.BROADCAST_PASSAGE_ACCESS_TOPIC);
-    }
-    
 }

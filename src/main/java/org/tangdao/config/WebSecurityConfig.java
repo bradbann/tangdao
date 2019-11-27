@@ -29,7 +29,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
@@ -37,7 +36,6 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.session.Session;
 import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
-import org.tangdao.common.security.AuthenticationTokenFilter;
 import org.tangdao.common.utils.IpUtils;
 import org.tangdao.common.utils.UserAgentUtils;
 import org.tangdao.modules.sys.model.domain.Log;
@@ -56,32 +54,17 @@ public class WebSecurityConfig {
 	@Order(1)
 	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 		
-		@Value("${security.api.antMatchers}")
-    	private String antMatchers;
-    	
-    	@Value("${security.api.authorizeUrl}")
-    	private String authorizeUrl;
-    	
-    	@Autowired
-    	private StringRedisTemplate stringRedisTemplate;
-		
 		@Bean
 	    public AuthenticationManager authenticationManagerBean() throws Exception {
 	        return super.authenticationManagerBean();
-	    }
-		
-		@Bean
-	    public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-	        return new AuthenticationTokenFilter(stringRedisTemplate, antMatchers.split(","));
 	    }
 		
 		protected void configure(HttpSecurity http) throws Exception {
 			http
 	            .csrf()
 	            .disable()
-				.antMatcher(authorizeUrl)
+				.antMatcher("/api")
 	            .authorizeRequests()
-	            .antMatchers(antMatchers.split(",")).permitAll()
 	            .anyRequest().hasRole("APP");
 			http
 				// session失效跳转的链接
@@ -92,9 +75,6 @@ public class WebSecurityConfig {
   				// 解决不允许显示在iFrame的问题
 				.headers().frameOptions().disable()
 				.cacheControl().disable();
-			// Custom JWT based security filter
-	        http
-	        	.addFilterBefore(authenticationTokenFilterBean(), FilterSecurityInterceptor.class);
 		}
 		
 	}
@@ -115,12 +95,9 @@ public class WebSecurityConfig {
     	@Value("${security.authorizeUrl}")
     	private String authorizeUrl;
     	
-    	private final UserDetailsService userDetailsService;
+    	private UserDetailsService userDetailsService;
     	
-    	private final PasswordEncoderService passwordEncoderService;
-    	
-//    	@Autowired
-//    	private RedisOperations<String, Serializable> sessionRedisOperations;
+    	private PasswordEncoderService passwordEncoderService;
     	
     	@Autowired
     	private StringRedisTemplate stringRedisTemplate;

@@ -15,7 +15,6 @@ import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.model.domain.DictData;
 import org.tangdao.modules.sys.service.IDictDataService;
-import org.tangdao.modules.sys.utils.DictUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
@@ -63,14 +62,12 @@ public class DictDataController extends BaseController {
 	@PostMapping(value = "save")
 	public @ResponseBody String save(@Validated DictData dictData){
 		dictDataService.saveOrUpdate(dictData);
-		DictUtils.clearCache();
 		return this.renderResult(Global.TRUE, "保存成功");
 	}
 	
 	@PostMapping(value = "delete")
 	public @ResponseBody Object delete(DictData dictData){
 		dictDataService.deleteById(dictData);
-		DictUtils.clearCache();
 		return this.renderResult(Global.TRUE, "删除成功");
 	}
 	
@@ -78,7 +75,6 @@ public class DictDataController extends BaseController {
 	public @ResponseBody Object disable(DictData dictData){
 		dictData.setStatus(DictData.STATUS_DISABLE);
 		dictDataService.updateById(dictData);
-		DictUtils.clearCache();
 		return this.renderResult(Global.TRUE, "停用成功");
 	}
 	
@@ -86,7 +82,6 @@ public class DictDataController extends BaseController {
 	public @ResponseBody Object enable(DictData dictData){
 		dictData.setStatus(DictData.STATUS_NORMAL);
 		dictDataService.updateById(dictData);
-		DictUtils.clearCache();
 		return this.renderResult(Global.TRUE, "启用成功");
 	}
 	

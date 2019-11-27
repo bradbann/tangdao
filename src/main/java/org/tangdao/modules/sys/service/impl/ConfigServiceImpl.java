@@ -35,20 +35,18 @@ public class ConfigServiceImpl extends CrudServiceImpl<ConfigMapper, Config> imp
     private StringRedisTemplate                  stringRedisTemplate;
 	
 	private final Logger                         logger                          = LoggerFactory.getLogger(getClass());
-    
+	
     public Config getConfigByKey(String configKey) {
-    	Config config = null;
     	try {
     		Object obj = stringRedisTemplate.opsForHash().get(SysRedisConstant.RED_SYS_CONFIG_LIST, configKey);
-    		if(obj!=null) {
-    			config = (Config) obj;
+    		if(obj != null) {
+    			return (Config) obj;
     		}
 		} catch (Exception e) {
 			 logger.warn("REDIS 加载失败，将于DB加载", e);
 		}
-    	
-    	if(config == null) {
-    		config = super.getOne(Wrappers.<Config>lambdaQuery().eq(Config::getConfigKey, configKey));
+    	Config config = super.getOne(Wrappers.<Config>lambdaQuery().eq(Config::getConfigKey, configKey));
+    	if(config != null) {
     		loadToRedis(config);
     	}
     	return config;
@@ -63,10 +61,8 @@ public class ConfigServiceImpl extends CrudServiceImpl<ConfigMapper, Config> imp
 	    }
 	
 	    try {
-	    	clearCache();
-	    	
+	    	stringRedisTemplate.delete(SysRedisConstant.RED_SYS_CONFIG_LIST + "*");
             List<Object> con = stringRedisTemplate.execute((connection) -> {
-
                 RedisSerializer<String> serializer = stringRedisTemplate.getStringSerializer();
                 connection.openPipeline();
                 for (Config config : list) {
@@ -93,7 +89,6 @@ public class ConfigServiceImpl extends CrudServiceImpl<ConfigMapper, Config> imp
      */
     private void loadToRedis(Config config) {
         try {
-
             stringRedisTemplate.execute((connection) -> {
                 RedisSerializer<String> serializer = stringRedisTemplate.getStringSerializer();
                 byte[] mainKey = serializer.serialize(SysRedisConstant.RED_SYS_CONFIG_LIST);
@@ -110,7 +105,4 @@ public class ConfigServiceImpl extends CrudServiceImpl<ConfigMapper, Config> imp
         }
     }
 	
-	public void clearCache() {
-		stringRedisTemplate.delete(stringRedisTemplate.keys(SysRedisConstant.RED_SYS_CONFIG_LIST + "*"));
-	}
 }

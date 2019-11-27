@@ -70,34 +70,20 @@ public class DictDataServiceImpl extends CrudServiceImpl<DictDataMapper, DictDat
 	    }
 	
 	    try {
-	    	clearCache();
-
+	    	stringRedisTemplate.delete(SysRedisConstant.RED_SYS_DICT_DATA_LIST + "*");
             List<Object> con = stringRedisTemplate.execute((connection) -> {
-
                 RedisSerializer<String> serializer = stringRedisTemplate.getStringSerializer();
                 connection.openPipeline();
                 byte[] mainKey = serializer.serialize(SysRedisConstant.RED_SYS_DICT_DATA_LIST);
                 
                 Map<String, List<DictData>> dictDataMap = MapUtils.newLinkedHashMap();
                 List<DictData> targetList = null;
-//                Map<String, Object> e = null;
                 for (DictData dd : list) {
     				String dictType = dd.getDictType();
     				if (dictDataMap.get(dictType) == null) {
     					targetList = ListUtils.newLinkedList();
-//    					e = MapUtils.newHashMap();
-//    					e.put("dictLabel", dd.getDictLabel());
-//    					e.put("dictValue", dd.getDictValue());
-//    					e.put("cssClass", dd.getCssClass());
-//    					e.put("cssStyle", dd.getCssStyle());
-//    					targetList.add(dd);
     				} else {
     					targetList = dictDataMap.get(dictType);
-//    					e = MapUtils.newHashMap();
-//    					e.put("dictLabel", dd.getDictLabel());
-//    					e.put("dictValue", dd.getDictValue());
-//    					e.put("cssClass", dd.getCssClass());
-//    					e.put("cssStyle", dd.getCssStyle());
     				}
     				targetList.add(dd);
     				dictDataMap.put(dictType, targetList);
@@ -114,9 +100,5 @@ public class DictDataServiceImpl extends CrudServiceImpl<DictDataMapper, DictDat
             logger.warn("REDIS 重载数据失败", e);
             return false;
         }
-	}
-	
-	public void clearCache() {
-		stringRedisTemplate.delete(stringRedisTemplate.keys(SysRedisConstant.RED_SYS_DICT_DATA_LIST + "*"));
 	}
 }
