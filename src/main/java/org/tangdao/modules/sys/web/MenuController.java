@@ -61,7 +61,7 @@ public class MenuController extends BaseController {
 			queryWrapper.likeRight("menu_name", menu.getMenuName());
 		}
 
-		queryWrapper.orderByAsc("tree_sort","menu_code");
+		queryWrapper.orderByAsc("tree_sort", "menu_code");
 		return this.menuService.select(queryWrapper);
 	}
 

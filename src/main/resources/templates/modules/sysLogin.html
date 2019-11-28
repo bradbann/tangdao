@@ -18,7 +18,7 @@
 							错误的用户名或密码，请确认后重新提交。
 						</div>
 						<% } %>
-						<#form:form id="inputForm" model="${user!}" action="${ctx}/login" method="POST" >
+						<#form:form id="inputForm1" model="${user!}" action="${ctx}/login" method="POST" >
 	                        <div class="form-group has-feedback">
 	                            <label>账号信息 <span class="tx-danger">*</span></label>
 	                            <#form:input name="username" class="form-control required" placeholder="会员名称、邮箱、手机号" />
@@ -53,7 +53,7 @@
     <% include('/include/footer.html'){} %>
 <% } %>
 <script>
-$("#inputForm").validate({
+$("#inputForm1").validate({
     submitHandler: function (form) {
         form.submit();
     }

@@ -100,7 +100,7 @@ public class UserController extends BaseController {
 //			user.setUserType(User.USER_TYPE_NONE); // 仅登录用户
 //		}
 //		user.setMgrType(User.MGR_TYPE_DEFAULT_ADMIN); // 租户管理员
-		userService.save(user);
+		userService.saveOrUpdate(user);
 //		userService.saveAuth(user);
 		// 如果修改的是当前用户，则清除当前用户缓存
 		if (user.getUserCode().equals(UserUtils.getUser().getUserCode())) {

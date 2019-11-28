@@ -13,14 +13,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
-
 import org.tangdao.modules.sys.model.domain.Company;
+import org.tangdao.modules.sys.model.domain.Menu;
 import org.tangdao.modules.sys.service.ICompanyService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -62,6 +61,17 @@ public class CompanyController extends BaseController {
 	@RequestMapping(value = "listData")
 	public @ResponseBody List<Company> listData(Company company) {
 		QueryWrapper<Company> queryWrapper = new QueryWrapper<Company>();
+		if (StringUtils.isBlank(company.getParentCode())) {
+			company.setParentCode(Menu.ROOT_CODE);
+		}
+		if (StringUtils.isNotBlank(company.getCompanyName())) {
+			company.setParentCode(null);
+			queryWrapper.likeRight("company_name", company.getCompanyName());
+		}
+		if (StringUtils.isNotBlank(company.getParentCode())) {
+			queryWrapper.eq("parent_code", company.getParentCode());
+		}
+		queryWrapper.orderByAsc("tree_sort", "company_code");
 		return companyService.select(queryWrapper);
 	}
 

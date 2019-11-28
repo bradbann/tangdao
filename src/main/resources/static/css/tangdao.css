@@ -40183,6 +40183,7 @@ a.bg-twitter:hover, a.bg-twitter:focus, button.bg-twitter:hover, button.bg-twitt
 .box-header.fixed+form{
 	margin-top: 45px;
 }
+/**
 #searchForm input.form-control,
 #searchForm .select2-container--default,
 #searchForm .select2-container--default .select2-selection--single,
@@ -40227,3 +40228,4 @@ a.bg-twitter:hover, a.bg-twitter:focus, button.bg-twitter:hover, button.bg-twitt
 	padding: 2px 5px;
 	font-size: 13px;
 }
+**/

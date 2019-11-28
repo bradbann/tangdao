@@ -19,7 +19,7 @@ import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
-
+import org.tangdao.modules.sys.model.domain.Menu;
 import org.tangdao.modules.sys.model.domain.Office;
 import org.tangdao.modules.sys.service.IOfficeService;
 
@@ -71,6 +71,17 @@ public class OfficeController extends BaseController {
 	@RequestMapping(value = "listData")
 	public @ResponseBody List<Office> listData(Office office) {
 		QueryWrapper<Office> queryWrapper = new QueryWrapper<Office>();
+		if (StringUtils.isBlank(office.getParentCode())) {
+			office.setParentCode(Menu.ROOT_CODE);
+		}
+		if (StringUtils.isNotBlank(office.getOfficeName())) {
+			office.setParentCode(null);
+			queryWrapper.like("office_name", office.getOfficeName());
+		}
+		if(StringUtils.isNotBlank(office.getParentCode())){
+			queryWrapper.eq("parent_code", office.getParentCode());
+		}
+		queryWrapper.orderByAsc("tree_sort", "office_code");
 		return officeService.select(queryWrapper);
 	}
 
