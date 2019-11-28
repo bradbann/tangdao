@@ -55,7 +55,7 @@ if(isEmpty(value!)){
 <input id="${id}Name" type="text" <%if(isNotEmpty(p.labelName!)){%> name="${p.labelName!}"<%}%><%if(isNotEmpty(p.labelValue!)){%> value="${p.labelValue!}"<%}%> <%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly="readonly"<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled="disabled"<%}%><%if(isNotEmpty(p.placeholder!)){%> placeholder="${p.placeholder!}"<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%><%if(isNotEmpty(style!)){%> style="${style!}"<%}%>/>
 <input id="${id}Code" type="hidden" name="${name}" <%if(isNotEmpty(value)){%> value="${value}"<%}%>/>
 <div class="input-group-append">
-   <button type="button" id="${id}Button" class="btn btn-outline-light"><i class="fa fa-search"></i></button>
+   <button type="button" id="${id}Button" class="btn btn-outline-light"><i class="la la-search"></i></button>
 </div>
 </div>
 <script>

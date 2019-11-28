@@ -1,18 +1,20 @@
 <% layout("/layouts/default.html",{libs: ['zTree']}){ %>
 <div style="height: 100%;position: relative;overflow-x: hidden;overflow-y: auto;">
-	<div class="treeShowHideButton" onclick="search();">
-		<label id="btnShow" title="显示搜索" style="display:none;">︾</label>
-		<label id="btnHide" title="隐藏搜索">︽</label>
-	</div>
-	<div class="treeSearchInput" id="search">
-		<label for="keyword">关键字：</label><input type="text" class="empty" id="keyword" maxlength="50"/>
-		<button class="btn btn-default" id="btn" onclick="searchNode()"> 搜索 </button>
+	<div id="inputForm" class="pd-10">
+		<div class="form-group mg-b-0-f">
+			<div class="input-group">
+				<input type="text" class="form-control empty" id="keyword" maxlength="50"/>
+				<div class="input-group-append">
+					<button class="btn btn-default" id="btn" onclick="searchNode()"> 搜索 </button>
+         		</div>
+			</div>
+		</div>
 	</div>
 	<div class="treeExpandCollapse" style="display:none;">
 		<a href="javascript:" onclick="tree.expandAll(true);">展开</a> /
 		<a href="javascript:" onclick="tree.expandAll(false);">折叠</a>
 	</div>
-	<div id="tree" class="ztree treeselect"></div>
+	<div id="tree" class="ztree treeselect pd-l-10-f"></div>
 </div>
 <script>
 var setting = {
@@ -133,12 +135,6 @@ function showParent(treeNode){
 		tree.expandNode(parentNode, true, false, false);
 		treeNode = parentNode;
 	}
-}
-function search($this) {
-	$('#search').slideToggle(200);
-	$('#btnShow').toggle();
-	$('#btnHide').toggle();
-	$('#keyword').focus();
 }
 </script>
 <% } %>

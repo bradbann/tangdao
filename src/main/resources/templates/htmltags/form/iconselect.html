@@ -24,11 +24,11 @@ if(isEmpty(value!)){
 %>
 <div class="input-group" id="${id}Div">
 <div class="input-group-prepend"> 
-  <span class="input-group-text"><i id="${id}Icon" class="${value!'la la-file-o'}"></i></span>
+  <span class="input-group-text wd-35"><i id="${id}Icon" class="${value!'la la-file-o'}"></i></span>
 </div>
 <input id="${id!}" name="${name!}" type="text" value="${value!}" <%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly="readonly"<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled="disabled"<%}%><%if(isNotEmpty(p.placeholder!)){%> placeholder="${p.placeholder!}"<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%><%if(isNotEmpty(style!)){%> style="${style!}"<%}%>/>
 <div class="input-group-append">
-   <button type="button" id="${id}Button" class="btn btn-outline-light"><i class="fa fa-search"></i></button>
+   <button type="button" id="${id}Button" class="btn btn-outline-light"><i class="la la-search"></i></button>
 </div>
 </div>
 <script>
@@ -38,15 +38,18 @@ $("#${id}Button").click(function(){
 		maxmin: true,
 		shadeClose: true,
 		title: '图标选择',
-		area: [(js.layer.$(js.layer.window).width() - 100) + 'px',
+		area: [(js.layer.$(js.layer.window).width() - 300) + 'px',
 		       (js.layer.$(js.layer.window).height() - 100) + 'px'],
 		content: '${ctxPath}/tags/iconselect?value='+$("#${id}").val(),
 		success: function(layero, index){
 			var info = '<font color="red" class="pull-left mg-t-10">提示：双击选择图标。</font>';
 			layero.find('.layui-layer-btn').append(info);
 		},
-		btn: ['<i class="fa fa-window-close"></i> 关闭',
-			'<i class="fa fa-eraser"></i> 清除'],
+		contentFormData: {
+            __layer: true
+        },
+		btn: ['<i class="la la-close"></i> 关闭',
+			'<i class="la la-eraser"></i> 清除'],
 		btn1: function(index, layero){
 			var win = null;
 			var b = $(layero).find("iframe");

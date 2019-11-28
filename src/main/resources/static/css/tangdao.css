@@ -40183,19 +40183,47 @@ a.bg-twitter:hover, a.bg-twitter:focus, button.bg-twitter:hover, button.bg-twitt
 .box-header.fixed+form{
 	margin-top: 45px;
 }
-#searchForm .form-control,
+#searchForm input.form-control,
 #searchForm .select2-container--default,
 #searchForm .select2-container--default .select2-selection--single,
-#searchForm .select2-container--default .select2-selection--multiple{
+#searchForm .select2-container--default .select2-selection--multiple,
+#inputForm input.form-control,
+#inputForm .select2-container--default,
+#inputForm .select2-container--default .select2-selection--single,
+#inputForm .select2-container--default .select2-selection--multiple{
 	height: 32px;
+	min-height: 32px;
 	font-size: 14px;
 }
 #searchForm .input-group-text, 
 #searchForm .btn, 
 #searchForm .ui-datepicker-buttonpane button, 
-#searchForm .sp-container button{
+#searchForm .sp-container button,
+#inputForm .input-group-text, 
+#inputForm .btn, 
+#inputForm .ui-datepicker-buttonpane button, 
+#inputForm .sp-container button{
 	padding: 4px 11px;
 }
-#searchForm .select2-container--default .select2-selection--single .select2-selection__arrow b{
+#searchForm .select2-container--default .select2-selection--single .select2-selection__arrow b,
+#inputForm .select2-container--default .select2-selection--single .select2-selection__arrow b{
 	margin-top: -6px;
+}
+
+#inputForm .select2-container--default .select2-search--inline .select2-search__field{
+	margin-top: 7px;
+	line-height: normal;
+	padding-left: 5px;
+	opacity: 1;
+}
+#inputForm .select2-container--default .select2-selection--multiple .select2-selection__choice{
+	padding: 3px 10px 2px 20px;
+	font-size: 10px;
+}
+#inputForm .select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
+	top: 1px;
+}
+#inputForm .select2-results__option{
+	padding: 2px 5px;
+	font-size: 13px;
 }
