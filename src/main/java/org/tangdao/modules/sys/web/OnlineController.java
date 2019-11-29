@@ -1,6 +1,5 @@
 package org.tangdao.modules.sys.web;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,7 @@ import org.tangdao.common.utils.DateUtils;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.ObjectUtils;
+import org.tangdao.common.utils.StringUtils;
 import org.tangdao.common.utils.TimeUtils;
 import org.tangdao.modules.sys.model.domain.User;
 
@@ -52,7 +52,7 @@ public class OnlineController extends BaseController{
 	 */
 	@RequestMapping(value = "count")
 	public @ResponseBody Integer count(HttpServletRequest request, HttpServletResponse response) {
-		return sessionIds().size();
+		return hashSessions().size();
 	}
 
 	/**
@@ -74,35 +74,41 @@ public class OnlineController extends BaseController{
 	 */
 	@RequestMapping(value = "listData")
 	public @ResponseBody List<Object> listData(String sessionId,  String username) {
-		List<String> sessionIds = sessionIds();
+		Map<String, String> sessionIds = hashSessions();
 		long currentTime = System.currentTimeMillis();
 		List<Object> list = ListUtils.newArrayList();
-		for (Serializable sid : sessionIds) {
+		
+		sessionIds.entrySet().forEach(entry->{
 			Map<String, Object> map = MapUtils.newLinkedHashMap();
-			BoundHashOperations<String, String, Object> hashOperations = this.redisTemplate.boundHashOps(RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":sessions:" + sid);
+			BoundHashOperations<String, String, Object> hashOperations = this.redisTemplate.boundHashOps(RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":sessions:" + entry.getKey());
 			Map<String, Object> entries = hashOperations.entries();
-			SessionInformation sessionInformation = this.sessionRegistry.getSessionInformation((String)sid);
-			SecurityContext securityContext = (SecurityContext) entries.get("sessionAttr:SPRING_SECURITY_CONTEXT");
-			if(securityContext!=null) {
-				Authentication authentication = securityContext.getAuthentication();
-				if(authentication!=null && authentication.getPrincipal() instanceof User) {
-					User user = (User)authentication.getPrincipal();
-					map.put("userCode", user.getUserCode());
-					map.put("username", user.getUsername());
-					map.put("nickname", user.getNickname());
-					map.put("userType", user.getUserType());
+			if(entries!=null&&entries.size()>0) {
+				SessionInformation sessionInformation = this.sessionRegistry.getSessionInformation(entry.getKey());
+				SecurityContext securityContext = (SecurityContext) entries.get("sessionAttr:SPRING_SECURITY_CONTEXT");
+				if(securityContext!=null) {
+					Authentication authentication = securityContext.getAuthentication();
+					if(authentication!=null && authentication.getPrincipal() instanceof User) {
+						User user = (User)authentication.getPrincipal();
+						map.put("userCode", user.getUserCode());
+						map.put("username", user.getUsername());
+						map.put("nickname", user.getNickname());
+						map.put("userType", user.getUserType());
+					}
 				}
+				if(sessionInformation!=null) {
+					map.put("id", sessionInformation.getSessionId());
+					map.put("lastAccessTime", DateUtils.formatDateTime(sessionInformation.getLastRequest()));
+					map.put("timeout", TimeUtils.formatDateAgo(ObjectUtils.toLong(entries.get("maxInactiveInterval"))*1000-(currentTime-sessionInformation.getLastRequest().getTime())));
+				}
+				map.put("startTimestamp", DateUtils.formatDateTime(new Date(ObjectUtils.toLong(entries.get("creationTime")))));
+				map.put("host", entries.get("sessionAttr:host"));
+				map.put("deviceName", entries.get("sessionAttr:deviceName"));
+				list.add(map);
+			}else {
+				String key = RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":index:" + RedisIndexedSessionRepository.PRINCIPAL_NAME_INDEX_NAME + ":"+ entry.getValue();
+				this.redisTemplate.opsForSet().remove(key, entry.getKey());
 			}
-			if(sessionInformation!=null) {
-				map.put("id", sessionInformation.getSessionId());
-				map.put("lastAccessTime", DateUtils.formatDateTime(sessionInformation.getLastRequest()));
-				map.put("timeout", TimeUtils.formatDateAgo(ObjectUtils.toLong(entries.get("maxInactiveInterval"))*1000-(currentTime-sessionInformation.getLastRequest().getTime())));
-			}
-			map.put("startTimestamp", DateUtils.formatDateTime(new Date(ObjectUtils.toLong(entries.get("creationTime")))));
-			map.put("host", entries.get("sessionAttr:host"));
-			map.put("deviceName", entries.get("sessionAttr:deviceName"));
-			list.add(map);
-		}
+		});
 		return list;
 	}
 	
@@ -121,20 +127,20 @@ public class OnlineController extends BaseController{
 		return renderResult(Global.FALSE, "踢出失败，没有找到该在线用户！");
 	}
 	
-	private List<String> sessionIds(){
+	private Map<String, String> hashSessions(){
+		Map<String, String> hashSessions = MapUtils.newHashMap();
 		String key = RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisIndexedSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
-		List<String> kt = ListUtils.newArrayList();
+		List<String> temps = ListUtils.newArrayList();
 		this.redisTemplate.keys(key+":*").forEach((t)->{
-			kt.add(t);
+			temps.add(t);
 		});
-		List<String> sessionIds = ListUtils.newArrayList();
-		for (String principalKey : kt) {
-			System.out.println(principalKey);
+		for (String principalKey : temps) {
+			String sps[] = StringUtils.split(principalKey, ":");
 			this.redisTemplate.opsForSet().members(principalKey).forEach(r->{
-				sessionIds.add((String)r);
+				hashSessions.put((String)r, sps[sps.length-1]);
 			});
 		}
-		return sessionIds;
+		return hashSessions;
 	}
 	
 }

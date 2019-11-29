@@ -49,16 +49,13 @@ public class BootInitializeRunner implements CommandLineRunner {
 
     @Override
     public void run(String... arg0) throws Exception {
-        logger.info("=======================数据初始化REDIS=======================");
         try {
         	initConfig();
         	initDictData();
         	initMenuTreeName();
             registShutdownHook();
-            logger.info("=======================初始化REDIS完成=======================");
         } catch (Exception e) {
-            logger.info("=======================初始化REDIS失败=======================", e);
-            throw e;
+            logger.error(e.getMessage(), e);
         }
         initSignal();
 
