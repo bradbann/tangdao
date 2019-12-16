@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.tangdao.modules.sys.mapper.EmployeeMapper">
+	<sql id="selectColumns">
+		t.emp_code AS "empCode",
+		t.emp_name AS "empName",
+		t.emp_name_en AS "empNameEn",
+		t.office_code AS "officeCode",
+		t.office_name AS "officeName",
+		t.company_code AS "companyCode",
+		t.company_name AS "companyName",
+		t.status AS "status",
+		t.create_by AS "createBy",
+		t.create_time AS "createTime",
+		t.update_by AS "updateBy",
+		t.update_time AS "updateTime",
+		t.remarks AS "remarks",
+	</sql>
+	
+	<sql id="selectColumnsEmpUser">
+	
+	</sql>
+	
+	<select id="findEmpUserPage" resultType="EmpUser">
+		select 		
+			u.user_code AS "userCode",
+			u.username AS "username",
+			u.nickname AS "nickname",
+			u.email AS "email",
+			u.mobile AS "mobile",
+			u.phone AS "phone",
+			u.update_time AS "updateTime",
+			u.status AS "status",
+			t.emp_code AS "employee.empCode",
+			t.emp_name AS "employee.empName",
+			t.emp_name_en AS "employee.empNameEn",
+			t.office_code AS "employee.officeCode",
+			t.office_name AS "employee.officeName",
+			t.company_code AS "employee.companyCode",
+			t.company_name AS "employee.companyName",
+			o.office_code AS "office.officeCode",
+			o.office_name AS "office.officeName",
+			o.parent_codes as "office.parentCodes",
+			o.view_code as "office.viewCode",
+			o.full_name as "office.fullName",
+			o.office_type as "office.officeType",
+			o.email as "office.email",
+			c.company_code AS "company.companyCode",
+			c.company_name AS "company.companyName",
+			c.parent_codes as "company.parentCodes",
+			c.view_code as "company.viewCode",
+			c.full_name as "company.fullName",
+			c.area_code as "company.areaCode"
+		from sys_user u join sys_employee t on u.user_code = t.emp_code and u.user_type=#{empUser.USER_TYPE_EMPLOYEE} 
+		left join sys_office o on t.office_code = o.office_code
+		left join sys_company c on t.company_code = c.company_code
+		<where>
+			<if test="empUser.username != null and empUser.username != ''">
+				AND u.username = #{empUser.username}
+			</if>
+			<if test="empUser.employee != null and empUser.employee.officeCode != null and empUser.employee.officeCode != ''">
+				AND t.office_code = #{empUser.employee.officeCode}
+			</if>
+		</where>
+		order by u.user_weight desc, u.update_time desc
+	</select>
+</mapper>

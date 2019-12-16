@@ -50,7 +50,7 @@ public class UserController extends BaseController {
 	public User get(String userCode, boolean isNewRecord) {
 		return userService.get(userCode, isNewRecord);
 	}
-
+	
 	@GetMapping("/list")
 	public String list(User user, Model model) {
 		return "modules/sys/userList";
@@ -66,6 +66,7 @@ public class UserController extends BaseController {
 		if(StringUtils.isNotBlank(user.getUsername())) {
 			queryWrapper.likeRight("username", user.getUsername());
 		}
+		
 		return this.userService.page(user.getPage(), queryWrapper);
 	}
 
