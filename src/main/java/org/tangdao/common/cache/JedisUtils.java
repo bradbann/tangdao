@@ -22,7 +22,6 @@ import org.springframework.util.CollectionUtils;
  */
 public class JedisUtils{
 	
-	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	RedisTemplate<String, Object> redisTemplate;

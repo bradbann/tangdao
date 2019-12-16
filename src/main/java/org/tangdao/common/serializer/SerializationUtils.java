@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.ibatis.cache.CacheException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.tangdao.common.exception.ServiceException;
 
 /**
@@ -17,7 +15,6 @@ import org.tangdao.common.exception.ServiceException;
  */
 public class SerializationUtils {
 
-    private final static Logger log = LoggerFactory.getLogger(SerializationUtils.class);
     private static Serializer g_serializer;
 
     /**
@@ -45,7 +42,6 @@ public class SerializationUtils {
                 }
             }
         }
-        log.info("Using Serializer -> [" + g_serializer.name() + ":" + g_serializer.getClass().getName() + ']');
     }
 
     /**
