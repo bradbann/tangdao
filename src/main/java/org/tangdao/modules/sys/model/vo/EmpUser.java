@@ -3,9 +3,7 @@
  */
 package org.tangdao.modules.sys.model.vo;
 
-import org.tangdao.modules.sys.model.domain.Company;
 import org.tangdao.modules.sys.model.domain.Employee;
-import org.tangdao.modules.sys.model.domain.Office;
 import org.tangdao.modules.sys.model.domain.User;
 
 import lombok.Getter;
@@ -26,7 +24,4 @@ public class EmpUser extends User{
 
 	private Employee employee;
 	
-	private Company company;
-	
-	private Office office;
 }

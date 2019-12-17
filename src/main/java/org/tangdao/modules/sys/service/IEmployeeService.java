@@ -19,5 +19,18 @@ public interface IEmployeeService extends ICrudService<Employee> {
 	 * @return
 	 */
 	public Page<EmpUser> findEmpUserPage(Page<Employee> page, EmpUser empUser);
+	
+	/**
+	 *  员工信息
+	 * @param userCode
+	 * @return
+	 */
+	public EmpUser getEmpUserByUserCode(String userCode, boolean isNewRecord);
+	
+	/**
+	 * 保存员工
+	 * @param empUser
+	 */
+	public void saveEmpUser(EmpUser empUser);
 
 }

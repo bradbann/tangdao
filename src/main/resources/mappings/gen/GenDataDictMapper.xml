@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.tangdao.modules.gen.mapper.GenDataDictMapper">
     
-	<select id="findTableList" resultType="GenTable">
+	<select id="findTableList" resultType="org.tangdao.modules.gen.model.domain.GenTable">
 		<if test="global.jdbcType == 'mysql' or global.jdbcType == 'mariadb'">
 			SELECT 
 				t.table_name AS "tableName", 
@@ -83,7 +83,7 @@
 		</if>
 	</select>
 	
-	<select id="findTableColumnList" resultType="GenTableColumn">
+	<select id="findTableColumnList" resultType="org.tangdao.modules.gen.model.domain.GenTableColumn">
 		<if test="global.jdbcType == 'mysql' or global.jdbcType == 'mariadb'">
 			SELECT 
 				t.COLUMN_NAME AS "columnName",
@@ -182,7 +182,7 @@
 		</if>
 	</select>
 	
-	<select id="findTablePK" resultType="GenTableColumn">
+	<select id="findTablePK" resultType="org.tangdao.modules.gen.model.domain.GenTableColumn">
 		<if test="global.jdbcType == 'mysql' or global.jdbcType == 'mariadb'">
 			SELECT 
 				au.COLUMN_NAME AS "columnName"

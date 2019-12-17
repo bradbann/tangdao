@@ -1,10 +1,9 @@
 package org.tangdao.modules.sys.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.tangdao.common.suports.Page;
+import org.apache.ibatis.annotations.Param;
 import org.tangdao.modules.sys.model.domain.User;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -18,5 +17,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
-	public Page<User> findPage(Page<User> page, Wrapper<User> queryWrapper);
+	public void deleteUserRole(String userCode);
+	
+	public int insertUserRole(@Param("userCode") String userCode, @Param("roleCodes") String[] roleCodes);
 }

@@ -127,7 +127,7 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 	/**
 	 * 用户权重（降序）
 	 */
-	private String userWeight;
+	private Integer userWeight;
 
 	/**
 	 * 角色列表
@@ -157,7 +157,7 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 	@TableField(exist = false)
 	private List<Menu> menus = ListUtils.newArrayList();
 
-	public static final String SUPER_ADMIN_CODE = Global.getConfig("user.superAdminCode", "system");
+	public static final String SUPER_ADMIN_CODE = Global.getProperty("user.superAdminCode", "system");
 	
 	public static final String USER_TYPE_NONE = "none";
 	public static final String USER_TYPE_MEMBER = "member";

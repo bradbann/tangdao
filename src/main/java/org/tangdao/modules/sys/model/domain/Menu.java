@@ -77,7 +77,7 @@ public class Menu extends TreeEntity<Menu> {
     private String isShow;
     
     //超级管理员访问的最低权重
-    public static Integer SUPER_ADMIN_GET_MENU_MIN_WEIGHT = Integer.valueOf(Global.getConfig("user.superAdminGetMenuMinWeight", "40"));
+    public static Integer SUPER_ADMIN_GET_MENU_MIN_WEIGHT = Global.getgetPropertyToInteger("user.superAdminGetMenuMinWeight", "40");
     
 	public static Integer WEIGHT_DEFAULT = Integer.valueOf(20);
 	public static Integer WEIGHT_DEFAULT_ADMIN = Integer.valueOf(60);

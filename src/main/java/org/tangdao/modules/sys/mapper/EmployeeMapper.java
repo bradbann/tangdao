@@ -18,4 +18,6 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
 
 	public Page<EmpUser> findEmpUserPage(Page<Employee> page, EmpUser empUser);
 	
+	public EmpUser getEmpUserByUserCode(String userCode);
+	
 }

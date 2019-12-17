@@ -15,7 +15,7 @@
 		JOIN gen_table b ON b.table_name = a.table_name
     </sql>
     
-	<select id="findList" resultType="GenTableColumn">
+	<select id="findList" resultType="org.tangdao.modules.gen.model.domain.GenTableColumn">
 		SELECT 
 			<include refid="genTableColumnColumns"/>
 		FROM gen_table_column a

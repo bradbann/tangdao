@@ -27,4 +27,10 @@ public interface IUserService extends ICrudService<User> {
 	
 	public User getByUsercode(String userCode);
 	
+	/**
+	 *  用户授权
+	 * @param user
+	 */
+	public void saveAuth(User user);
+	
 }

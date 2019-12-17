@@ -19,6 +19,8 @@ import org.tangdao.common.utils.ObjectUtils;
 import org.tangdao.common.utils.PropertiesUtils;
 import org.tangdao.common.utils.ServletUtils;
 import org.tangdao.common.utils.StringUtils;
+import org.tangdao.modules.sys.model.domain.Config;
+import org.tangdao.modules.sys.utils.ConfigUtils;
 
 public class Global implements PropertySourceLoader {
 
@@ -64,35 +66,100 @@ public class Global implements PropertySourceLoader {
 	public static final String OP_AUTH = "auth";
 
 	public static final String USERFILES_BASE_URL = "/userfiles/";
-
+	
 	/**
-	 * 获取配置
+	 *  获取系统配置
+	 * @param key
+	 * @return
 	 */
-	public static String getConfig(String key) {
+	public static String getProperty(String key) {
 		String value = props.get(key);
 		if (value == null) {
 			value = PropertiesUtils.getInstance().getProperty(key);
-			props.put(key, value != null ? value : StringUtils.EMPTY);
+			if(value != null) {
+				props.put(key, value);
+				return value;
+			}
+			value = StringUtils.EMPTY;
+			props.put(key, value);
+		}
+		return value;
+	}
+	
+	/**
+	 *  获取系统配置
+	 * @param key
+	 * @param defValue
+	 * @return
+	 */
+	public static String getProperty(String key, String defValue) {
+		String value = Global.getProperty(key);
+		if (StringUtils.isEmpty(value)) {
+			return defValue;
 		}
 		return value;
 	}
 
 	/**
-	 * 获取配置
+	 *  获取系统配置
+	 * @param key
+	 * @return
 	 */
-	public static String getConfig(String key, String defValue) {
+	public static String getConfig(String key) {
 		String value = props.get(key);
 		if (value == null) {
 			value = PropertiesUtils.getInstance().getProperty(key);
-			props.put(key, value != null ? value : defValue);
+			if(value != null) {
+				props.put(key, value);
+			}else {
+				Config config = ConfigUtils.getConfig(key);
+				if(config!=null) {
+					props.put(key, "read_sys_config_table");
+					return config.getConfigValue();
+				}
+				props.put(key, StringUtils.EMPTY);
+				return value;
+			}
 		}
-		return props.get(key);
+		if("read_sys_config_table".equals(value)) {
+			Config config = ConfigUtils.getConfig(key);
+			if(config!=null) {
+				value = config.getConfigValue();
+			}
+		}
+		return value;
+	}
+
+	/**
+	 *  获取系统配置
+	 * @param key
+	 * @param defValue
+	 * @return
+	 */
+	public static String getConfig(String key, String defValue) {
+		String value = Global.getConfig(key);
+		if (StringUtils.isEmpty(value)) {
+			return defValue;
+		}
+		return value;
+	}
+
+	public static Boolean getgetPropertyToBoolean(String key, String defValue) {
+		return ObjectUtils.toBoolean(getProperty(key, defValue));
+	}
+
+	public static Integer getgetPropertyToInteger(String key, String defValue) {
+		return ObjectUtils.toInteger(getProperty(key, defValue));
+	}
+	
+	public static Long getgetPropertyToLong(String key, String defValue) {
+		return ObjectUtils.toLong(getProperty(key, defValue));
 	}
 
 	public static Boolean getConfigToBoolean(String key, String defValue) {
 		return ObjectUtils.toBoolean(getConfig(key, defValue));
 	}
-
+	
 	public static Integer getConfigToInteger(String key, String defValue) {
 		return ObjectUtils.toInteger(getConfig(key, defValue));
 	}
@@ -134,7 +201,7 @@ public class Global implements PropertySourceLoader {
 	}
 	
 	public static String getUserfilesBaseDir(String path) {
-		String baseDir = getConfig("file.baseDir");
+		String baseDir = getProperty("file.baseDir");
 		if (StringUtils.isBlank(baseDir)) {
 			baseDir = ServletUtils.getRequest().getSession().getServletContext().getRealPath("/");
 		}

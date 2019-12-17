@@ -160,8 +160,8 @@ public class WebConfig implements WebMvcConfigurer {
 		@Override
 		public void addInterceptors(InterceptorRegistry registry) {
 			InterceptorRegistration registration = registry.addInterceptor(new LogInterceptor());
-			String apps = Global.getConfig("web.interceptor.log.addPathPatterns");
-			String epps = Global.getConfig("web.interceptor.log.excludePathPatterns");
+			String apps = Global.getProperty("web.interceptor.log.addPathPatterns");
+			String epps = Global.getProperty("web.interceptor.log.excludePathPatterns");
 			for (String uri : StringUtils.split(apps, ",")){
 				if (StringUtils.isNotBlank(uri)){
 					registration.addPathPatterns(StringUtils.trim(uri));

@@ -18,39 +18,39 @@
 	</sql>
 	
 	<sql id="selectColumnsEmpUser">
-	
+		u.user_code AS "userCode",
+		u.username AS "username",
+		u.nickname AS "nickname",
+		u.email AS "email",
+		u.mobile AS "mobile",
+		u.phone AS "phone",
+		u.update_time AS "updateTime",
+		u.status AS "status",
+		t.emp_code AS "employee.empCode",
+		t.emp_name AS "employee.empName",
+		t.emp_name_en AS "employee.empNameEn",
+		t.office_code AS "employee.officeCode",
+		t.office_name AS "employee.officeName",
+		t.company_code AS "employee.companyCode",
+		t.company_name AS "employee.companyName",
+		o.office_code AS "employee.office.officeCode",
+		o.office_name AS "employee.office.officeName",
+		o.parent_codes as "employee.office.parentCodes",
+		o.view_code as "employee.office.viewCode",
+		o.full_name as "employee.office.fullName",
+		o.office_type as "employee.office.officeType",
+		o.email as "employee.office.email",
+		c.company_code AS "employee.company.companyCode",
+		c.company_name AS "employee.company.companyName",
+		c.parent_codes as "employee.company.parentCodes",
+		c.view_code as "employee.company.viewCode",
+		c.full_name as "employee.company.fullName",
+		c.area_code as "employee.company.areaCode"
 	</sql>
 	
-	<select id="findEmpUserPage" resultType="EmpUser">
+	<select id="findEmpUserPage" resultType="org.tangdao.modules.sys.model.vo.EmpUser">
 		select 		
-			u.user_code AS "userCode",
-			u.username AS "username",
-			u.nickname AS "nickname",
-			u.email AS "email",
-			u.mobile AS "mobile",
-			u.phone AS "phone",
-			u.update_time AS "updateTime",
-			u.status AS "status",
-			t.emp_code AS "employee.empCode",
-			t.emp_name AS "employee.empName",
-			t.emp_name_en AS "employee.empNameEn",
-			t.office_code AS "employee.officeCode",
-			t.office_name AS "employee.officeName",
-			t.company_code AS "employee.companyCode",
-			t.company_name AS "employee.companyName",
-			o.office_code AS "office.officeCode",
-			o.office_name AS "office.officeName",
-			o.parent_codes as "office.parentCodes",
-			o.view_code as "office.viewCode",
-			o.full_name as "office.fullName",
-			o.office_type as "office.officeType",
-			o.email as "office.email",
-			c.company_code AS "company.companyCode",
-			c.company_name AS "company.companyName",
-			c.parent_codes as "company.parentCodes",
-			c.view_code as "company.viewCode",
-			c.full_name as "company.fullName",
-			c.area_code as "company.areaCode"
+			<include refid="selectColumnsEmpUser" />
 		from sys_user u join sys_employee t on u.user_code = t.emp_code and u.user_type=#{empUser.USER_TYPE_EMPLOYEE} 
 		left join sys_office o on t.office_code = o.office_code
 		left join sys_company c on t.company_code = c.company_code
@@ -58,10 +58,22 @@
 			<if test="empUser.username != null and empUser.username != ''">
 				AND u.username = #{empUser.username}
 			</if>
+			<if test="empUser.status != null and empUser.status != ''">
+				AND u.status = #{empUser.status}
+			</if>
 			<if test="empUser.employee != null and empUser.employee.officeCode != null and empUser.employee.officeCode != ''">
 				AND t.office_code = #{empUser.employee.officeCode}
 			</if>
 		</where>
 		order by u.user_weight desc, u.update_time desc
+	</select>
+	
+	<select id="getEmpUserByUserCode" resultType="org.tangdao.modules.sys.model.vo.EmpUser">
+		select 		
+			<include refid="selectColumnsEmpUser" />
+		from sys_user u join sys_employee t on u.user_code = t.emp_code and u.user_type=#{empUser.USER_TYPE_EMPLOYEE} 
+		left join sys_office o on t.office_code = o.office_code
+		left join sys_company c on t.company_code = c.company_code
+		where u.user_code = #{userCode}
 	</select>
 </mapper>

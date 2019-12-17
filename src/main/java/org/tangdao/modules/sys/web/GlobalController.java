@@ -36,7 +36,7 @@ public class GlobalController extends BaseController {
 
 	@RequestMapping({ "" })
 	public String defaultPath() {
-		return REDIRECT + Global.getConfig("web.defaultPath", "/");
+		return REDIRECT + Global.getProperty("web.defaultPath", "/");
 	}
 
 	@RequestMapping({ "error/{status}" })

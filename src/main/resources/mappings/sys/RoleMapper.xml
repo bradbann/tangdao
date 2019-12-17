@@ -15,7 +15,7 @@
 		t.remarks AS "remarks"
 	</sql>
 
-	<select id="findByUserCode" resultType="Role">
+	<select id="findByUserCode" resultType="org.tangdao.modules.sys.model.domain.Role">
 		SELECT 
 		<include refid="selectColumns"/>
 		FROM sys_role t

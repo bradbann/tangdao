@@ -18,7 +18,7 @@
 <% } %>
 <link rel="stylesheet" href="${ctxStatic}/css/tangdao.css">
 <% 
-var themeName = @ConfigUtils.getConfig2('sys.index.skinName', 'default');
+var themeName = @Global.getConfig('sys.index.skinName', 'default');
 if(isNotEmpty(themeName)){
  %>
 <link rel="stylesheet" href="${ctxStatic}/css/skin.${themeName}.css">

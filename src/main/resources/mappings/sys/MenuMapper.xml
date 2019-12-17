@@ -24,7 +24,7 @@
 		t.remarks AS "remarks"
 	</sql>
 	
-	<select id="findByRoleMenu" resultType="Menu">
+	<select id="findByRoleMenu" resultType="org.tangdao.modules.sys.model.domain.Menu">
 		SELECT DISTINCT 
 		<include refid="selectColumns"/>
 		FROM sys_menu t
@@ -44,7 +44,7 @@
 		ORDER BY t.tree_sort
 	</select>
 	
-	<select id="findByUserMenu" resultType="Menu">
+	<select id="findByUserMenu" resultType="org.tangdao.modules.sys.model.domain.Menu">
 		SELECT DISTINCT 
 		<include refid="selectColumns"/>
 		FROM sys_menu t

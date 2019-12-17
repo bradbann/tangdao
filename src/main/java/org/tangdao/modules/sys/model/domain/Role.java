@@ -59,7 +59,7 @@ public class Role extends DataEntity<Role> {
 	private String userType;
     
     // 默认管理员角色
- 	public static final String DEFAULT_ADMIN_ROLE_CODE = Global.getConfig("user.defaultAdminRoleCode", "corpAdmin");
+ 	public static final String DEFAULT_ADMIN_ROLE_CODE = Global.getProperty("user.defaultAdminRoleCode", "corpAdmin");
 
  	public static final String DATA_SCOPE_NONE = "0";
  	public static final String DATA_SCOPE_ALL = "1";

@@ -15,7 +15,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	
-	<name>springcareful</name>
+	<name>Springcareful</name>
 	<description>Springcareful project for Spring Boot</description>
 
 	<properties>
