@@ -9,15 +9,9 @@ import org.tangdao.modules.sys.utils.UserUtils;
 @RequestMapping("${adminPath}")
 public class UserinfoController {
 
-	@RequestMapping("userinfo")
-	public String userinfo(Model model) {
-		model.addAttribute("user", UserUtils.getUser());
-		return "modules/sysUserinfo";
-	}
-	
-	@RequestMapping("userinfo/profile")
+	@RequestMapping(value = {"userinfo", "userinfo/profile"})
 	public String profile(Model model) {
 		model.addAttribute("user", UserUtils.getUser());
-		return "modules/sysUserinfo";
+		return "modules/user/profile";
 	}
 }

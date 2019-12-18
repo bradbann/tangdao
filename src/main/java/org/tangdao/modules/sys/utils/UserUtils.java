@@ -190,20 +190,12 @@ public class UserUtils {
 //		}
 	}
 	
-//	public void rc(HttpSession session) {
-//		User user = getPrincipal();
-//		if (user != null) { 
-////			user.setMenus(menus);
-//			SecurityContext securityContext = (SecurityContext) session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);  
-//		    Authentication authentication = securityContext.getAuthentication(); 
-//		    // 重新new一个token，因为Authentication中的权限是不可变的.  
-//		    UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(  
-//		            user, authentication.getCredentials(),  
-//		            authorityList);  
-//		    result.setDetails(authentication.getDetails());  
-//		    securityContext.setAuthentication(result); 
-//	    }
-//	}
-	
+	/**
+	 * 更新登录信息
+	 * @param user
+	 */
+	public static void updateUserLogininfo(User user) {
+		Static.userService.updateLoginUserinfo(user);
+	}
 	
 }

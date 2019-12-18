@@ -138,6 +138,10 @@ public class WebSecurityConfig {
 						    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));  					    
 							SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 							
+							//更新登录信息
+							user.setLastLoginIp(IpUtils.getRemoteAddr(request));
+							UserUtils.updateUserLogininfo(user);
+							
 							// 记录用户登录日志
 							LogUtils.saveLog(user, request, "系统登录", Log.TYPE_LOGIN_LOGOUT);
 							
