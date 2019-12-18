@@ -32,11 +32,11 @@
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label>上级${functionNameSimple} <span class="tx-danger d-none">*</span></label>
-					<${'#'}form:treeselect id="parent" title="上级${functionNameSimple}"
-						path="parentCode" 
-						value="\${${className}.parentCode}"
-						labelPath="parentName"
-						labelValue="\${${className}.parent.${table.treeViewNameJavaField}}"
+					<${'#'}form:treeselect 
+						id="parent" 
+						title="上级${functionNameSimple}"
+						path="parent.${className}Code" 
+						labelPath="parent.${className}Name"
 						url="\${ctx}/${urlPrefix}/treeData?excludeCode=\${${className}.${table.treeViewCodeJavaField}}"
 						class="form-control" allowClear="true" canSelectRoot="true" canSelectParent="true"/>
 				</div>
