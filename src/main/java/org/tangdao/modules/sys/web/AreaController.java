@@ -163,7 +163,7 @@
 //			tempMap = MapUtils.newHashMap();
 //			tempMap.put("id", area.getAreaCode());
 //			tempMap.put("pId", area.getParentCode());
-//			tempMap.put("name", area.getAreaName());
+//			tempMap.put("name", StringUtils.getTreeNodeName(isShowCode, company.getCompanyCode(), company.getCompanyName()));
 //			targetList.add(tempMap);
 //		}
 //		return targetList;

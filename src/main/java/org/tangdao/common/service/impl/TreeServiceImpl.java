@@ -1,5 +1,6 @@
 package org.tangdao.common.service.impl;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -63,96 +64,106 @@ public class TreeServiceImpl<M extends BaseMapper<T>, T extends TreeEntity<T>> e
 		}
 
 	}
+	
+	@Override
+	public T get(Serializable id, boolean isNewRecord) {
+		T t = super.get(id, isNewRecord);
+		if(StringUtils.isNotBlank(t.getParentCode())&&!TreeEntity.ROOT_CODE.equals(t.getParentCode())) {
+			t.setParent(super.get(t.getParentCode()));
+		}
+		return t;
+	}
 
 	@Override
 	public boolean saveOrUpdate(T entity) {
-
-		if (null != entity) {
-			//旧的对象
-			T oldEntity = this.get(entity.getKey());
-			//新的父对象
-			T parentEntity = null;
-			if (StringUtils.isNotBlank(entity.getParentCode())
-					&& !TreeEntity.ROOT_CODE.equals(entity.getParentCode())) {
-				parentEntity = this.get(entity.getParentCode());
-			}
-			@SuppressWarnings("unchecked")
-			Class<T> entityClass = ReflectUtils.getClassGenricType(getClass(), 1);
-			if (parentEntity == null || StringUtils.isBlank(entity.getParentCode())
-					|| TreeEntity.ROOT_CODE.equals(entity.getParentCode())) {
-				try {
-					// 构造一个父节点
-					parentEntity = entityClass.getConstructor(String.class).newInstance(TreeEntity.ROOT_CODE);
-				} catch (Exception e) {
-					throw new ServiceException("初始化父类对象", e);
-				}
-				parentEntity.setParentCodes(StringUtils.EMPTY);
-				parentEntity.setTreeNames(StringUtils.EMPTY);
-
-				// 设置保存对象的父节点
-				entity.setParentCode(parentEntity.getKey());
-			}
-			entity.setParent(parentEntity);
-
-			String oldParentCodes = entity.getParentCodes();
-			String oldTreeNames = entity.getTreeNames();
-
-			entity.setParentCodes(parentEntity.getParentCodes() + parentEntity.getKey() + ",");
-			entity.setTreeLevel(entity.getParentCodes().replaceAll("[^,]", "").length() - 1);
-
-			String treeId = entity.getKey();
-			String treeName = entity.getTreeName_();
-
-			if (treeName == null) {
-				treeName = StringUtils.EMPTY;
-			}
-
-			if (entity.isRoot()) {
-				entity.setTreeNames(treeName);
-			} else {
-				entity.setTreeNames(parentEntity.getTreeNames() + "/" + treeName);
-			}
-
-			if (StringUtils.isBlank(treeId)||entity.getIsNewRecord()) {
-				// 排序处理
-				if (entity.getTreeSort() == null) {
-					entity.setTreeSort(T.DEFAULT_TREE_SORT);
-				}
-				entity.setTreeLeaf(Global.YES);
-				this.save(entity);
-			} else {
-				this.updateById(entity);
-			}
-			QueryWrapper<T> queryWrapper = new QueryWrapper<T>();
-			queryWrapper.like("parent_codes", entity.getKey());
-			List<T> list = this.select(queryWrapper);
-			for (T e : list) {
-				if (e.getParentCodes() != null && oldParentCodes != null) {
-					e.setParentCodes(e.getParentCodes().replace(oldParentCodes, entity.getParentCodes()));
-					e.setTreeNames(e.getTreeNames().replace(oldTreeNames, entity.getTreeNames()));
-					e.setTreeLevel(e.getParentCodes().replaceAll("[^,]", "").length() - 1);
-					preUpdateChild(entity, e);
-					this.updateById(e);
-				}
-			}
-			// 更新原始父节点的对象
-			if (oldEntity != null && oldEntity.getParentCode()!=null&&!TreeEntity.ROOT_CODE.equals(oldEntity.getParentCode())) {
-				try {
-					// 构造一个父节点
-					parentEntity = entityClass.getConstructor(String.class).newInstance(TreeEntity.ROOT_CODE);
-				} catch (Exception e) {
-					throw new ServiceException("初始化父类对象", e);
-				}
-				parentEntity.setKey(oldEntity.getParentCode());
-				this.updateTreeLeaf(parentEntity);
-			}
-			if (entity != null && entity.getParent() != null && !StringUtils.equals(entity.getParentCode(),  oldEntity.getParentCode())) {
-				this.updateTreeLeaf(entity.getParent());
-			}
-
-			return true;
+		if (null == entity) {
+			return false;
 		}
-		return false;
+		//旧的对象
+		T oldEntity = this.get(entity.getKey());
+		T parentEntity = null;
+		if(entity.getParent()!=null) {
+			entity.setParentCode(entity.getParent().getKey());
+		}
+		if (StringUtils.isNotBlank(entity.getParentCode()) && !TreeEntity.ROOT_CODE.equals(entity.getParentCode())) {
+			parentEntity = this.get(entity.getParentCode());
+		}
+		//实例一个新的
+		@SuppressWarnings("unchecked")
+		Class<T> entityClass = ReflectUtils.getClassGenricType(getClass(), 1);
+		if (parentEntity == null || StringUtils.isBlank(entity.getParentCode()) || TreeEntity.ROOT_CODE.equals(entity.getParentCode())) {
+			try {
+				// 构造一个父节点
+				parentEntity = entityClass.getConstructor(String.class).newInstance(TreeEntity.ROOT_CODE);
+			} catch (Exception e) {
+				throw new ServiceException("初始化父类对象", e);
+			}
+			parentEntity.setParentCodes(StringUtils.EMPTY);
+			parentEntity.setTreeNames(StringUtils.EMPTY);
+
+			// 设置保存对象的父节点
+			entity.setParentCode(parentEntity.getKey());
+		}
+		//设置父类对象
+		entity.setParent(parentEntity);
+
+		String oldParentCodes = entity.getParentCodes();
+		String oldTreeNames = entity.getTreeNames();
+
+		entity.setParentCodes(parentEntity.getParentCodes() + parentEntity.getKey() + ",");
+		entity.setTreeLevel(entity.getParentCodes().replaceAll("[^,]", "").length() - 1);
+
+		String treeId = entity.getKey();
+		String treeName = entity.getTreeName_();
+
+		if (treeName == null) {
+			treeName = StringUtils.EMPTY;
+		}
+
+		if (entity.isRoot()) {
+			entity.setTreeNames(treeName);
+		} else {
+			entity.setTreeNames(parentEntity.getTreeNames() + "/" + treeName);
+		}
+
+		if (StringUtils.isBlank(treeId)||entity.getIsNewRecord()) {
+			// 排序处理
+			if (entity.getTreeSort() == null) {
+				entity.setTreeSort(T.DEFAULT_TREE_SORT);
+			}
+			entity.setTreeLeaf(Global.YES);
+			this.save(entity);
+		} else {
+			this.updateById(entity);
+		}
+		QueryWrapper<T> queryWrapper = new QueryWrapper<T>();
+		queryWrapper.like("parent_codes", entity.getKey());
+		List<T> list = this.select(queryWrapper);
+		for (T e : list) {
+			if (e.getParentCodes() != null && oldParentCodes != null) {
+				e.setParentCodes(e.getParentCodes().replace(oldParentCodes, entity.getParentCodes()));
+				e.setTreeNames(e.getTreeNames().replace(oldTreeNames, entity.getTreeNames()));
+				e.setTreeLevel(e.getParentCodes().replaceAll("[^,]", "").length() - 1);
+				preUpdateChild(entity, e);
+				this.updateById(e);
+			}
+		}
+		// 更新原始父节点的对象
+		if (oldEntity != null && oldEntity.getParentCode()!=null&&!TreeEntity.ROOT_CODE.equals(oldEntity.getParentCode())) {
+			try {
+				// 构造一个父节点
+				parentEntity = entityClass.getConstructor(String.class).newInstance(TreeEntity.ROOT_CODE);
+			} catch (Exception e) {
+				throw new ServiceException("初始化父类对象", e);
+			}
+			parentEntity.setKey(oldEntity.getParentCode());
+			this.updateTreeLeaf(parentEntity);
+		}
+		if (entity != null && entity.getParent() != null && !StringUtils.equals(entity.getParentCode(),  oldEntity.getParentCode())) {
+			this.updateTreeLeaf(entity.getParent());
+		}
+
+		return true;
 
 	}
 

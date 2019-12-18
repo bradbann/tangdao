@@ -1,8 +1,11 @@
 package org.tangdao.modules.sys.service;
 
+import java.util.List;
+
 import org.tangdao.common.service.ICrudService;
 import org.tangdao.common.suports.Page;
 import org.tangdao.modules.sys.model.domain.Employee;
+import org.tangdao.modules.sys.model.vo.EmpPost;
 import org.tangdao.modules.sys.model.vo.EmpUser;
 
 /**
@@ -28,9 +31,28 @@ public interface IEmployeeService extends ICrudService<Employee> {
 	public EmpUser getEmpUserByUserCode(String userCode, boolean isNewRecord);
 	
 	/**
+	 *  获取员工所有岗位
+	 * @param empCode
+	 * @return
+	 */
+	public List<EmpPost> findEmpPost(String empCode);
+	
+	/**
 	 * 保存员工
 	 * @param empUser
 	 */
 	public void saveEmpUser(EmpUser empUser);
+	
+	/**
+	 *  更新用户状态
+	 * @param user
+	 */
+	public void updateStatus(EmpUser user);
+	
+	/**
+	 *  删除用户
+	 * @param user
+	 */
+	public void delete(EmpUser user);
 
 }

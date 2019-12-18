@@ -26,6 +26,8 @@
 		u.phone AS "phone",
 		u.update_time AS "updateTime",
 		u.status AS "status",
+		u.user_type as "userType",
+		u.mgr_type as "mgrType",
 		t.emp_code AS "employee.empCode",
 		t.emp_name AS "employee.empName",
 		t.emp_name_en AS "employee.empNameEn",
@@ -71,9 +73,27 @@
 	<select id="getEmpUserByUserCode" resultType="org.tangdao.modules.sys.model.vo.EmpUser">
 		select 		
 			<include refid="selectColumnsEmpUser" />
-		from sys_user u join sys_employee t on u.user_code = t.emp_code and u.user_type=#{empUser.USER_TYPE_EMPLOYEE} 
+		from sys_user u join sys_employee t on u.user_code = t.emp_code
 		left join sys_office o on t.office_code = o.office_code
 		left join sys_company c on t.company_code = c.company_code
 		where u.user_code = #{userCode}
 	</select>
+	
+	<select id="findEmpPost" resultType="org.tangdao.modules.sys.model.vo.EmpPost">
+		select 
+			t.emp_code as "empCode",
+			t.post_code as "postCode"
+		from sys_employee_post t where t.emp_code = #{empCode}
+	</select>
+	
+	<delete id="deleteEmpPost">
+		delete from sys_employee_post where emp_code = #{empCode}
+	</delete>
+	
+	<insert id="insertEmpPost">
+        INSERT INTO sys_employee_post(emp_code, post_code)
+        <foreach collection="postCodes" item="postCode" separator=" union all ">
+            SELECT #{empCode}, #{postCode} FROM dual
+        </foreach>
+	</insert>
 </mapper>

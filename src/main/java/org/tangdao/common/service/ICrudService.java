@@ -371,9 +371,5 @@ public interface ICrudService<T> {
     	return get(id, false);
     }
     
-//    public Page<T> findPage(T entity, Wrapper<T> queryWrapper);
-//    
-//    default public Page<T> findPage(T entity) {
-//    	return findPage(entity, Wrappers.emptyWrapper());
-//    }
+    public boolean updateStatusById(T entity);
 }

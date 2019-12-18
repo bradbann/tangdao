@@ -30,8 +30,8 @@
                     <label>归属机构 <span class="tx-danger ">*</span></label>
                     <#form:treeselect title="归属机构"
 						id="office"
-						name="employee.officeCode" 
-						labelName="employee.officeName"
+						path="employee.officeCode"
+						labelPath="employee.officeName"
 						url="${ctx}/sys/office/treeData?excludeCode="
 						class="form-control" allowClear="true" canSelectRoot="true" canSelectParent="true"/>
                 </div>
@@ -39,8 +39,8 @@
                     <label>归属公司</label>
                     <#form:treeselect title="归属公司"
 						id="company" 
-						name="employee.companyCode" 
-						labelName="employee.companyName"
+						path="employee.companyCode" 
+						labelPath="employee.companyName"
 						url="${ctx}/sys/company/treeData?excludeCode="
 						class="form-control" allowClear="true" canSelectRoot="true" canSelectParent="true"/>
                 </div>
@@ -68,7 +68,7 @@
             <div class="form-row">
 	            <div class="form-group  col-md-6">
 	                <label>用户岗位</label>
-	               	<#form:select multiple="true" name="posts" items="${postList}"
+	               	<#form:select multiple="true" path="employee.postCodes" items="${postList}"
 									itemLabel="postName" itemValue="postCode" class="form-control select2"/>
 	            </div>
 	            <div class="form-group  col-md-6">
@@ -83,7 +83,7 @@
             <div class="form-group">
             	<label>角色选择</label>
             	<table id="roleGrid"></table>
-				<#form:hidden name="userRoleString"/>
+				<#form:hidden name="roleCodeString"/>
 			</div>
 			<% } %>
         </div>
@@ -104,20 +104,20 @@
 <% if(op == 'add' || op == 'auth') {%>
 //加载角色列表
 var roleGrid = $("#roleGrid").dataGrid({
-	url: '${ctx}/sys/role/listDataNp',
+	url: '${ctx}/sys/role/treeData',
 	postData: [
 		{name:'userType',value: $("#userType").val()}
 	],
 	columnModel: [
-		{header:'角色名称', name:'roleName', sortable:false, width:100, align:"center"},
-		{header:'角色编码', name:'roleCode', sortable:false, width:100, align:"center"}  
+		{header:'角色名称', name:'name', sortable:false, width:100, align:"center"},
+		{header:'角色编码', name:'id', sortable:false, width:100, align:"center"}  
 	],
 	showCheckbox: true,
 	autoGridHeight: function(){
 		return 'auto';
 	},
 	ajaxSuccess: function(){
-		<% for (role in user.roles!){ %>
+		<% for (role in empUser.roles!){ %>
 		roleGrid.dataGrid('setSelectRow', '${role.roleCode}');
 		<% } %>
 	}
@@ -133,13 +133,13 @@ $("#userType").on('change',function(e){
 $("#inputForm").validate({
 	submitHandler: function(form){
 		<% if(op == 'add' || op == 'auth') {%>
-		$("#userRoleString").val(roleGrid.dataGrid('getSelectRows').join(','));
+		$("#roleCodeString").val(roleGrid.dataGrid('getSelectRows').join(','));
 		<% } %>
 		js.ajaxSubmitForm($(form), function(data){
 			js.showMessage(data.message);
 			if(data.result == Global.TRUE){
 				js.closeCurrentTabPage(function(contentWindow){
-					contentWindow.page();
+					contentWindow.win.page();
 				});
 			}
 		}, "json");

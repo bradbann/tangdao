@@ -11,11 +11,11 @@
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label>上级机构 <span class="tx-danger d-none">*</span></label>
-					<#form:treeselect id="parent" title="上级机构"
-						path="parentCode" 
-						value="${office.parentCode}"
-						labelPath="parentName"
-						labelValue="${office.parent.officeName}"
+					<#form:treeselect 
+						id="parent" 
+						title="上级机构"
+						path="parent.officeCode" 
+						labelPath="parent.officeName"
 						url="${ctx}/sys/office/treeData?excludeCode=${office.officeCode}"
 						class="form-control" allowClear="true" canSelectRoot="true" canSelectParent="true"/>
 				</div>

@@ -17,6 +17,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.tangdao.common.exception.ServiceException;
 import org.tangdao.common.service.ICrudService;
 import org.tangdao.common.suports.DataEntity;
 
@@ -272,10 +273,6 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 
 	@Override
 	public IPage<T> page(IPage<T> page, Wrapper<T> queryWrapper) {
-//		if(page==null) {
-//			page = new Page<T>();
-//			page.setSize(20);
-//		}
 		return baseMapper.selectPage(page, queryWrapper);
 	}
 
@@ -292,10 +289,6 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 
 	@Override
 	public IPage<Map<String, Object>> pageMaps(IPage<T> page, Wrapper<T> queryWrapper) {
-//		if(page==null) {
-//			page = new Page<T>();
-//			page.setSize(20);
-//		}
 		return baseMapper.selectMapsPage(page, queryWrapper);
 	}
 
@@ -304,25 +297,6 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 		return SqlHelper.getObject(log, selectObjs(queryWrapper, mapper));
 	}
 	
-//	protected Page<T> getPage(T entity) {
-//		Meta meta = entity.getPage().getMeta();
-//		if(meta!=null&&StringUtils.isNotEmpty(meta.getField())) {
-//			// 需要转换一下驼峰字段
-//			String column = StringUtils.camelToUnderline(meta.getField());
-//			if ("asc".equalsIgnoreCase(meta.getSort()))
-//				entity.getPage().addOrder(OrderItem.asc(column));
-//			else
-//				entity.getPage().addOrder(OrderItem.desc(column));
-//		}
-//		return entity.getPage();
-//	}
-//
-//	@Override
-//	public Page<T> findPage(T entity, Wrapper<T> queryWrapper) {
-//		// TODO Auto-generated method stub
-//		return new Page<T>(baseMapper.selectPage(getPage(entity), queryWrapper));
-//	}
-
 	@Override
 	public T get(Serializable id, boolean isNewRecord) {
 		T e = null;
@@ -334,17 +308,39 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 			if (isNewRecord && e != null) {
 				throw newValidationException(null);
 			}
-			if (e == null) {
-				return this.currentModelClass().newInstance();
-			}
 		} catch (Exception e1) {
 			throw newValidationException(e1.getMessage());
+		}
+		if (e == null) {
+			try {
+				e = this.currentModelClass().newInstance();
+			} catch (Exception e1) {
+				throw new ServiceException(e1);
+			} 
 		}
 		return e;
 	}
 
 	public static ValidationException newValidationException(String message) {
 		return new ValidationException(org.tangdao.common.utils.StringUtils.defaultString(message, "校验失败"));
+	}
+
+	@Override
+	public boolean updateStatusById(T entity) {
+		if(StringUtils.isEmpty(entity.getKey())) {
+			return false;
+		}
+		T update = null;
+		try {
+			update = this.currentModelClass().newInstance();
+			update.setStatus(entity.getStatus());
+			update.setKey(entity.getKey());
+			update.preUpdate();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			throw newValidationException(e1.getMessage());
+		}
+		return retBool(baseMapper.updateById(update));
 	}
 
 }

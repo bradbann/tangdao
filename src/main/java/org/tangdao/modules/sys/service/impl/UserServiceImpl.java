@@ -1,5 +1,8 @@
 package org.tangdao.modules.sys.service.impl;
 
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,6 +28,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 @Service
 public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implements IUserService, UserDetailsService {
 	
+	@Autowired
+	private PasswordEncoderService passwordEncoderService;
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
@@ -45,27 +51,49 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 	}
 
 	@Override
-	public void registerUser(User user) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void updateUserinfo(User user) {
-		// TODO Auto-generated method stub
-
+		if(user == null) {
+			return;
+		}
+		User update = new User();
+		update.setUserCode(user.getUserCode());
+		update.setUsername(user.getUsername());
+		update.setEmail(user.getEmail());
+		update.setMobile(user.getMobile());
+		update.setPhone(user.getPhone());
+		update.setSex(user.getSex());
+		update.setAvatar(user.getAvatar());
+		update.setSign(user.getSign());
+		update.preUpdate();
+		this.baseMapper.updateById(update);
 	}
 
 	@Override
 	public void updateLoginUserinfo(User user) {
-		// TODO Auto-generated method stub
-
+		if(user == null) {
+			return;
+		}
+		User update = new User();
+		update.setUserCode(user.getUserCode());
+		update.setLastLoginDate(new Date());
+		update.setLastLoginIp(user.getLastLoginIp());
+		update.preUpdate();
+		this.baseMapper.updateById(update);
 	}
 
 	@Override
 	public void updatePassword(String userCode, String password) {
-		// TODO Auto-generated method stub
-
+		if(StringUtils.isEmpty(userCode)) {
+			return;
+		}
+		User user = new User();
+		user.setUserCode(userCode);
+		if(StringUtils.isEmpty(password)) {
+			password = passwordEncoderService.encryptPassword(Global.getConfig("sys.user.initPassword"));
+		}
+		user.setPassword(password);
+		user.preUpdate();
+		this.baseMapper.updateById(user);
 	}
 
 	@Override
@@ -83,7 +111,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 		if(user.getIsNewRecord()) {
 			String password = user.getPassword();
 			if(StringUtils.isEmpty(password)) {
-				password = Global.getConfig("sys.user.initPassword");
+				password = passwordEncoderService.encryptPassword(Global.getConfig("sys.user.initPassword"));
 			}
 			user.setPassword(password);
 			if(StringUtils.isEmpty(user.getUserType())) {

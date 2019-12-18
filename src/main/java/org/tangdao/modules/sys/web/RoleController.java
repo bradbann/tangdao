@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
+import org.tangdao.common.suports.TreeEntity;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
@@ -22,6 +23,7 @@ import org.tangdao.modules.sys.model.domain.Role;
 import org.tangdao.modules.sys.service.IMenuService;
 import org.tangdao.modules.sys.service.IRoleService;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -126,13 +128,26 @@ public class RoleController extends BaseController {
 //		}
 //	}
 	
-	@RequestMapping(value = "listDataNp")
-	public @ResponseBody List<Role> listDataNormal(Role role){
-		return roleService.select(Wrappers.<Role>lambdaQuery().eq(Role::getStatus, Role.STATUS_NORMAL).eq(Role::getUserType, role.getUserType()));
+	@RequestMapping(value = "treeData")
+	public @ResponseBody List<Map<String, Object>> listDataNormal(Role role, Boolean isAll, String isShowCode){
+		List<Map<String, Object>> list = ListUtils.newLinkedList();
+		LambdaQueryWrapper<Role> queryWrapper = Wrappers.<Role>lambdaQuery();
+		queryWrapper.eq(Role::getStatus, Role.STATUS_NORMAL);
+		if(isAll==null || !isAll.booleanValue()) {
+			queryWrapper.eq(Role::getUserType, role.getUserType());
+		}
+		roleService.select(queryWrapper).forEach(item->{
+			Map<String, Object> e = MapUtils.newHashMap();
+			e.put("id", item.getKey());
+			e.put("pId", TreeEntity.ROOT_CODE);
+			e.put("name", StringUtils.getTreeNodeName(isShowCode, item.getRoleCode(), item.getRoleName()));
+			list.add(e);
+		});
+		return list;
 	}
 	
 	@RequestMapping(value = "menuTreeData")
-	public @ResponseBody Map<String, Object> treeMenu(Role role){
+	public @ResponseBody Map<String, Object> treeMenu(Role role, String isShowCode){
 		Map<String, Object> resultMap = MapUtils.newHashMap();
 		QueryWrapper<Menu> queryWrapper = new QueryWrapper<Menu>();
 		queryWrapper.eq("status", Menu.STATUS_NORMAL);
@@ -152,8 +167,7 @@ public class RoleController extends BaseController {
 			tempMap = MapUtils.newHashMap();
 			tempMap.put("id", menu.getMenuCode());
 			tempMap.put("pId", menu.getParentCode());
-			tempMap.put("name", menu.getMenuName());
-			tempMap.put("title", menu.getMenuName());
+			tempMap.put("name", StringUtils.getTreeNodeName(isShowCode, menu.getMenuCode(), menu.getMenuName()));
 			
 			menus.add(tempMap);
 		}

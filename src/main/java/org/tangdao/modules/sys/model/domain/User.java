@@ -239,5 +239,19 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 		// TODO Auto-generated method stub
 		return this.username;
 	}
+	
+	public void setRoleCodeString(String roleCodeString) {
+		if(StringUtils.isNotBlank(roleCodeString)) {
+			String[] roleCodes = roleCodeString.split(",");
+			for (String roleCode : roleCodes) {
+				if(StringUtils.isNotEmpty(roleCode)) {
+					Role role = new Role();
+					role.setRoleCode(roleCode);
+					role.setUserCode(this.userCode);
+					roles.add(role);
+				}
+			}
+		}
+	}
 
 }

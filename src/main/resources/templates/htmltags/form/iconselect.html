@@ -1,5 +1,4 @@
 <%
-var modelAttr = pageCtx("modelAttr");
 var p = {
 
 	// 标签参数
@@ -16,7 +15,7 @@ var id = id!name!p.path;
 var name = name!p.path;
 var value = p.value!;
 if(isEmpty(value!)&&isNotEmpty(p.path!)){
-	value = modelAttr[p.path];
+	value = form.path(p.path);
 }
 if(isEmpty(value!)){
 	value = p.defaultValue;

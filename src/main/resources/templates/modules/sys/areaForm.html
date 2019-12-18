@@ -10,11 +10,11 @@
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label>上级行政区划 <span class="tx-danger d-none">*</span></label>
-					<#form:treeselect id="parent" title="上级行政区划"
-						path="parentCode" 
-						value="${area.parentCode}"
-						labelPath="parentName"
-						labelValue="${area.parent.areaName}"
+					<#form:treeselect 
+						id="parent" 
+						title="上级行政区划"
+						path="parent.areaCode" 
+						labelPath="parent.areaName"
 						url="${ctx}/sys/area/treeData?excludeCode=${area.areaCode}"
 						class="form-control" allowClear="true" canSelectRoot="true" canSelectParent="true"/>
 				</div>

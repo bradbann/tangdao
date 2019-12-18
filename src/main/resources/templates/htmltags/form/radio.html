@@ -1,5 +1,4 @@
 <%
-var modelAttr = pageCtx("modelAttr");
 var p = {
 
 	// 标签参数
@@ -21,7 +20,7 @@ var name = p.name!p.path;
 var value = p.value!;
 var optClass = optClass!'custom-control custom-radio';
 if(isEmpty(value!)&&isNotEmpty(p.path!)){
-	value = modelAttr[p.path];
+	value = form.path(p.path);
 }
 if(isEmpty(value!)){
 	value = p.defaultValue;

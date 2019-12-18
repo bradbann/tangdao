@@ -134,7 +134,7 @@ public class MenuController extends BaseController {
 //	}
 
 	@RequestMapping(value = "treeData")
-	public @ResponseBody List<Map<String, Object>> treeData(Menu menu, String excludeCode) {
+	public @ResponseBody List<Map<String, Object>> treeData(Menu menu, String excludeCode, String isShowCode) {
 		QueryWrapper<Menu> queryWrapper = new QueryWrapper<Menu>();
 		if (StringUtils.isNotBlank(excludeCode)) {
 			queryWrapper.ne("menu_code", excludeCode);
@@ -155,8 +155,7 @@ public class MenuController extends BaseController {
 			tempMap = MapUtils.newHashMap();
 			tempMap.put("id", sMenu.getMenuCode());
 			tempMap.put("pId", sMenu.getParentCode());
-			tempMap.put("name", sMenu.getMenuName());
-			tempMap.put("title", sMenu.getMenuName());
+			tempMap.put("name", StringUtils.getTreeNodeName(isShowCode, sMenu.getMenuCode(), sMenu.getMenuName()));
 			targetList.add(tempMap);
 		}
 		return targetList;

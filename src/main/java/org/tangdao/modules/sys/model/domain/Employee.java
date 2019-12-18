@@ -1,6 +1,11 @@
 package org.tangdao.modules.sys.model.domain;
 
+import java.util.List;
+
 import org.tangdao.common.suports.DataEntity;
+import org.tangdao.common.utils.ListUtils;
+import org.tangdao.common.utils.StringUtils;
+import org.tangdao.modules.sys.model.vo.EmpPost;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -36,11 +41,34 @@ public class Employee extends DataEntity<Employee> {
 	@TableField(exist = false)
 	private Office office;
 	
+	@TableField(exist = false)
+	private List<EmpPost> empPostList = ListUtils.newLinkedList();
+	
 	public Employee() {
 		super();
 	}
 
 	public Employee(String empCode){
 		super(empCode);
+	}
+	
+	public String getPostCodes() {
+//		List<String> list = ListUtils.extractToList(empPostList, "postCode");
+//		return list.toArray(new String[list.size()]);
+		if (ListUtils.isNotEmpty(empPostList)) {
+			return ListUtils.extractToString(empPostList, "postCode", ",");
+		}
+		return null;
+	}
+	
+	public void setPostCodes(String postCodes[]) {
+		for (String var : postCodes) {
+			if(StringUtils.isNotBlank(var)) {
+				EmpPost e = new EmpPost();
+				e.setEmpCode(empCode);
+				e.setPostCode(var);
+				empPostList.add(e);
+			}
+		}
 	}
 }

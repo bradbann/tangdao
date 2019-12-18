@@ -173,7 +173,8 @@ public class CompanyController extends BaseController {
 			tempMap = MapUtils.newHashMap();
 			tempMap.put("id", company.getCompanyCode());
 			tempMap.put("pId", company.getParentCode());
-			tempMap.put("name", company.getCompanyName());
+			tempMap.put("name", StringUtils.getTreeNodeName(isShowCode, company.getCompanyCode(), company.getCompanyName()));
+			tempMap.put("title", company.getFullName());
 			targetList.add(tempMap);
 		}
 		return targetList;

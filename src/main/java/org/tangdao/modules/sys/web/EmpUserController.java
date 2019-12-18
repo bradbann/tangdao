@@ -85,7 +85,13 @@ public class EmpUserController extends BaseController {
 	 */
 	@RequestMapping(value = "form")
 	public String form(EmpUser empUser, String op, Model model) {
+		Employee employee = empUser.getEmployee();
+		
 		model.addAttribute("postList", postService.select(Wrappers.<Post>lambdaQuery().eq(Post::getStatus, Post.STATUS_NORMAL)));
+		
+		if(StringUtils.isNotBlank(employee.getEmpCode())) {
+			employee.setEmpPostList(employeeService.findEmpPost(employee.getEmpCode()));
+		}
 		
 		if (StringUtils.inString(op, Global.OP_AUTH)) {
 			empUser.setRoles(roleService.findByUserCode(empUser.getUserCode()));
@@ -122,36 +128,76 @@ public class EmpUserController extends BaseController {
 		return renderResult(Global.TRUE, "操作成功");
 	}
 	
-//	/**
-//	 * 停用员工
-//	 */
-//	@PreAuthorize("hasAuthority('sys:employee:edit')")
-//	@RequestMapping(value = "disable")
-//	public @ResponseBody String disable(Employee employee) {
-//		employee.setStatus(Employee.STATUS_DISABLE);
-//		employeeService.updateById(employee);
-//		return renderResult(Global.TRUE, "停用成功");
-//	}
-//	
-//	/**
-//	 * 启用员工
-//	 */
-//	@PreAuthorize("hasAuthority('sys:employee:edit')")
-//	@RequestMapping(value = "enable")
-//	public @ResponseBody String enable(Employee employee) {
-//		employee.setStatus(Employee.STATUS_NORMAL);
-//		employeeService.updateById(employee);
-//		return renderResult(Global.TRUE, "启用成功");
-//	}
-//	
-//	/**
-//	 * 删除员工
-//	 */
-//	@PreAuthorize("hasAuthority('sys:employee:edit')")
-//	@RequestMapping(value = "delete")
-//	public @ResponseBody String delete(Employee employee) {
-//		employeeService.deleteById(employee);
-//		return renderResult(Global.TRUE, "删除成功！");
-//	}
+	/**
+	 * 停用员工
+	 */
+	@RequestMapping(value = "disable")
+	public @ResponseBody String disable(EmpUser user) {
+		if (User.isSuperAdmin(user.getUserCode())) {
+			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+		}
+		if (!EmpUser.USER_TYPE_EMPLOYEE.equals(user.getUserType())) {
+			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+		}
+		if(user.getCurrentUser().getUserCode().equals(user.getUserCode())) {
+			return renderResult(Global.FALSE, "停用失败，不允许停用当前用户！");
+		}
+		user.setStatus(Employee.STATUS_DISABLE);
+		employeeService.updateStatus(user);
+		return renderResult(Global.TRUE, "停用成功");
+	}
+	
+	/**
+	 * 启用员工
+	 */
+	@RequestMapping(value = "enable")
+	public @ResponseBody String enable(EmpUser user) {
+		if (User.isSuperAdmin(user.getUserCode())) {
+			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+		}
+		if (!EmpUser.USER_TYPE_EMPLOYEE.equals(user.getUserType())) {
+			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+		}
+		user.setStatus(Employee.STATUS_NORMAL);
+		employeeService.updateStatus(user);
+		return renderResult(Global.TRUE, "启用成功");
+	}
+	
+	/**
+	 * 删除员工
+	 */
+	@RequestMapping(value = "delete")
+	public @ResponseBody String delete(EmpUser user) {
+		if (User.isSuperAdmin(user.getUserCode())) {
+			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+		}
+		if (!EmpUser.USER_TYPE_EMPLOYEE.equals(user.getUserType())) {
+			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+		}
+		if(user.getCurrentUser().getUserCode().equals(user.getUserCode())) {
+			return renderResult(Global.FALSE, "停用失败，不允许停用当前用户！");
+		}
+		employeeService.delete(user);
+		return renderResult(Global.TRUE, "删除成功！");
+	}
+	
+	
+	/**
+	 * 密码重置
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = "resetpwd")
+	@ResponseBody
+	public String resetpwd(EmpUser user) {
+		if (User.isSuperAdmin(user.getUserCode())) {
+			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+		}
+		if (!EmpUser.USER_TYPE_EMPLOYEE.equals(user.getUserType())) {
+			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
+		}
+		userService.updatePassword(user.getUserCode(), null);
+		return renderResult(Global.TRUE, "重置用户密码成功");
+	}
 	
 }

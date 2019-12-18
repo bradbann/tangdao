@@ -15,10 +15,8 @@
                     <#form:treeselect 
                         id="parent" 
                         title="上级菜单"
-						path="parentCode"
-						value="${menu.parentCode}"
-						labelPath="parentName"
-						labelValue="${menu.parent.menuName}"
+						path="parent.menuCode"
+						labelPath="parent.menuName"
 						url="${ctx}/sys/menu/treeData?excludeCode="
 						class="form-control"
 						allowClear="true" 

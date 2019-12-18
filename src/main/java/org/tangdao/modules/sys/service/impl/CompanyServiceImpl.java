@@ -14,5 +14,5 @@ import org.tangdao.modules.sys.mapper.CompanyMapper;
  */
 @Service
 public class CompanyServiceImpl extends TreeServiceImpl<CompanyMapper, Company> implements ICompanyService{
-		
+	
 }

@@ -1,5 +1,4 @@
 <%
-var modelAttr = pageCtx("modelAttr");
 var p = {
 
 	// 标签参数
@@ -41,18 +40,23 @@ var p = {
 	
 };
 
-var id = id!name!p.path;
-var name = name!p.path;
+var id = p.id!p.name!p.path;
+var name = p.name!p.path;
 var value = p.value!;
+var labelName = p.labelName!p.labelPath;
+var labelValue = p.labelValue!;
 if(isEmpty(value!)&&isNotEmpty(p.path!)){
-	value = modelAttr[p.path];
+	value = form.path(p.path);
+}
+if(isEmpty(labelValue!)&&isNotEmpty(p.labelPath!)){
+	labelValue = form.path(p.labelPath);
 }
 if(isEmpty(value!)){
 	value = p.defaultValue;
 }
 %>
 <div class="input-group" id="${id}Div" data-url="${url}" >
-<input id="${id}Name" type="text" <%if(isNotEmpty(p.labelName!)){%> name="${p.labelName!}"<%}%><%if(isNotEmpty(p.labelValue!)){%> value="${p.labelValue!}"<%}%> <%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly="readonly"<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled="disabled"<%}%><%if(isNotEmpty(p.placeholder!)){%> placeholder="${p.placeholder!}"<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%><%if(isNotEmpty(style!)){%> style="${style!}"<%}%>/>
+<input id="${id}Name" type="text" <%if(isNotEmpty(labelName!)){%> name="${labelName!}"<%}%><%if(isNotEmpty(labelValue!)){%> value="${labelValue!}"<%}%> <%if(isNotEmpty(readonly!)&&@ObjectUtils.toBoolean(readonly)){%> readonly="readonly"<%}%><%if(isNotEmpty(disabled!)&&@ObjectUtils.toBoolean(disabled)){%> disabled="disabled"<%}%><%if(isNotEmpty(p.placeholder!)){%> placeholder="${p.placeholder!}"<%}%><%if(isNotEmpty(class!)){%> class="${class!}"<%}%><%if(isNotEmpty(style!)){%> style="${style!}"<%}%>/>
 <input id="${id}Code" type="hidden" name="${name}" <%if(isNotEmpty(value)){%> value="${value}"<%}%>/>
 <div class="input-group-append">
    <button type="button" id="${id}Button" class="btn btn-outline-light"><i class="la la-search"></i></button>
