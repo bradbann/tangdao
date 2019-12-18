@@ -96,9 +96,6 @@ public class WebSecurityConfig {
     	
     	private PasswordEncoderService passwordEncoderService;
     	
-//    	@Autowired
-//    	private StringRedisTemplate stringRedisTemplate;
-    	
         @Autowired
         public FormLoginWebSecurityConfigurerAdapter(@Qualifier("userServiceImpl") UserDetailsService userDetailsService, PasswordEncoderService passwordEncoderService) {
             this.userDetailsService = userDetailsService;
@@ -205,36 +202,6 @@ public class WebSecurityConfig {
         public SpringSessionBackedSessionRegistry<Session> sessionRegistry() {
         	return new SpringSessionBackedSessionRegistry(sessionRepository);
         }
-		
-//		/**
-//		 * 
-//		 * @param request
-//		 * @param authentication
-//		 */
-//		private void cleanRedisSession(HttpServletRequest request, Authentication authentication) {
-//			//清楚全部当前用户session信息
-//			String sessionId = request.getSession().getId();
-//			this.stringRedisTemplate.delete(RedisIndexedSessionRepository.DEFAULT_NAMESPACE+":sessions:"+sessionId);
-//			this.stringRedisTemplate.delete(RedisIndexedSessionRepository.DEFAULT_NAMESPACE+":sessions:expires:"+sessionId);
-////			stringRedisTemplate.boundValueOps("spring:session:sessions:"+sessionId).expire(0, TimeUnit.SECONDS);
-////			stringRedisTemplate.boundValueOps("spring:session:sessions:expires:"+sessionId).expire(0, TimeUnit.SECONDS);
-//			if(authentication!=null) {
-//				String key = RedisIndexedSessionRepository.DEFAULT_NAMESPACE + ":index:"+ RedisIndexedSessionRepository.PRINCIPAL_NAME_INDEX_NAME;
-////				stringRedisTemplate.boundValueOps(key+":" + name(authentication.getPrincipal())).expire(0, TimeUnit.SECONDS);
-//				stringRedisTemplate.delete(key+":" + name(authentication.getPrincipal()));
-//			}
-//		}
-		
-//		private String name(Object principal) {
-//			if (principal instanceof UserDetails) {
-//				return ((UserDetails) principal).getUsername();
-//			}
-//			if (principal instanceof Principal) {
-//				return ((Principal) principal).getName();
-//			}
-//			return principal.toString();
-//		}
-		
 	}
 
 }
