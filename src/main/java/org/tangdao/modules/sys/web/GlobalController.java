@@ -54,17 +54,20 @@ public class GlobalController extends BaseController {
 					}else if (ex instanceof BindException){
 						BindException be = (BindException) ex;
 						for (ObjectError e : be.getGlobalErrors()) {
-							message = message + "☆" + e.getDefaultMessage() + "(" + e.getObjectName() + ")<br/>";
+							message = e.getDefaultMessage() + "(" + e.getObjectName() + ")";
+							break;
 						}
 						for (FieldError e : be.getFieldErrors()) {
-							message = message + "☆" + e.getDefaultMessage() + "(" + e.getField() + ")<br/>";
+							message = e.getDefaultMessage() + "(" + e.getField() + ")";
+							break;
 						}
 					}else if (ex instanceof ConstraintViolationException){
 						ConstraintViolationException cve = (ConstraintViolationException) ex;
 						Iterator<ConstraintViolation<?>> iterator = cve.getConstraintViolations().iterator();
 						while (iterator.hasNext()) {
 							ConstraintViolation<?> e = iterator.next();
-							message = message + "☆" + e.getMessage() + "(" + e.getPropertyPath() + ")<br/>";
+							message = e.getMessage() + "(" + e.getPropertyPath() + ")";
+							break;
 						}
 					}else{
 						message = message + ex.getMessage();
