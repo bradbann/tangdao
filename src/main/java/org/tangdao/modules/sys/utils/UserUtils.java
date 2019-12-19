@@ -117,7 +117,7 @@ public class UserUtils {
 		}
 		Object obj;
 		HttpServletRequest request = ServletUtils.getRequest();
-		if (request != null && (obj = request.getAttribute("__user__" + userCode)) != null) {
+		if (request != null && (obj = request.getAttribute("__userCode__" + userCode)) != null) {
 			return (User) obj;
 		} else {
 			User user = null;
@@ -129,7 +129,7 @@ public class UserUtils {
 			user.setRoles(Static.roleService.findByUserCode(userCode));
 
 			if (request != null) {
-				request.setAttribute("__user__" + user.getUserCode(), user);
+				request.setAttribute("__userCode__" + user.getUserCode(), user);
 			}
 
 			return (User) user.clone();
@@ -146,12 +146,25 @@ public class UserUtils {
 		if (StringUtils.isBlank(username)) {
 			return null;
 		}
-		User user = Static.userService.getUserByUsername(username);
-		if (user == null) {
-			return null;
+		Object obj;
+		HttpServletRequest request = ServletUtils.getRequest();
+		if (request != null && (obj = request.getAttribute("__username__" + username)) != null) {
+			return (User) obj;
+		} else {
+			User user = null;
+			user = Static.userService.getUserByUsername(username);
+			if (user == null) {
+				return null;
+			}
+
+			user.setRoles(Static.roleService.findByUserCode(user.getUserCode()));
+
+			if (request != null) {
+				request.setAttribute("__username__" + username, user);
+			}
+
+			return (User) user.clone();
 		}
-		user.setRoles(Static.roleService.findByUserCode(user.getUserCode()));
-		return user;
 	}
 
 	/**

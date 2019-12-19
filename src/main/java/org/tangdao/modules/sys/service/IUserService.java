@@ -58,7 +58,7 @@ public interface IUserService extends ICrudService<User> {
 	 * @param userCode
 	 * @return
 	 */
-	public User getByUsercode(String userCode);
+	public User getByUserCode(String userCode);
 	
 	/**
 	 *  保存用户角色授权

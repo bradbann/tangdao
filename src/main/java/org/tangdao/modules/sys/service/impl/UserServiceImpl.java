@@ -114,7 +114,7 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 	}
 	
 	@Override
-	public User getByUsercode(String userCode) {
+	public User getByUserCode(String userCode) {
 		return this.getOne(Wrappers.<User>lambdaQuery().eq(User::getUserCode, userCode));
 	}
 	
