@@ -70,7 +70,7 @@ public class GenTable extends DataEntity<GenTable> {
 	private String flag; 	// 0：保存方案； 1：保存方案并生成代码
 	
 	@TableField(exist = false)
-	private Boolean replaceFile;	// 是否替换现有文件    0：不替换；1：替换文件
+	private String replaceFile;	// 是否替换现有文件    0：不替换；1：替换文件
 	
 	private String options;
 	
@@ -261,10 +261,10 @@ public class GenTable extends DataEntity<GenTable> {
 	}
 
 	public Boolean getReplaceFile() {
-		if(replaceFile==null){
+		if(replaceFile==null||"0".equals(replaceFile)){
 			return false;
 		}
-		return replaceFile;
+		return true;
 	}
 	
 	public String getParentTableName() {

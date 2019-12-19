@@ -137,7 +137,7 @@
          </div>
         <div class="card-footer pd-sm-l-30">
             <div class="row">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-offset-2">
                 	<#form:hidden path="flag"/>
 					<% if(op != 'step3' && genTable.flag != '0'){ %>
 						<button id="btnNext" type="submit" class="btn btn-sm btn-primary"
@@ -154,6 +154,11 @@
 					<% } %>
                     <button type="button" class="btn btn-sm btn-default" onclick="js.closeCurrentTabPage()">关闭窗口</button>
                 </div>
+                <% if(!genTable.parentExists){ %>
+                <div class="col-sm-offset-2 mg-l-15 pd-t-7">
+                    <#form:checkbox name="replaceFile" label="是否替换现有文件"  class="custom-control-input" value="1"/>
+                </div>
+                <% } %>
             </div>
         </div>
     </#form:form>

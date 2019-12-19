@@ -407,21 +407,23 @@ public class GenUtils {
 		String content = BeetlUtils.renderFromString(StringUtils.trimToEmpty(tpl.getContent()), model);
 		logger.debug(" content === \r\n" + content);
 		
-		// 如果选择替换文件，则删除原文件
-//		if (genTable.getReplaceFile()){
-			FileUtils.deleteFile(fileName);
-//		}
 		
-		// 创建并写入文件
-		if (FileUtils.createFile(fileName)){
-			FileUtils.writeToFile(fileName, content, true);
-			logger.debug(" file create === " + fileName);
-			return "生成成功："+fileName+"<br/>";
-		}else{
+		if("2".equals(genTable.getFlag())) {
+			
+			// 如果选择替换文件，则删除原文件
+			if (genTable.getReplaceFile()){
+				FileUtils.deleteFile(fileName);
+			}
+			// 创建并写入文件
+			if (FileUtils.createFile(fileName)){
+				FileUtils.writeToFile(fileName, content, true);
+				logger.debug(" file create === " + fileName);
+				return "生成成功："+fileName+"<br/>";
+			}
 			logger.debug(" file extents === " + fileName);
 			return "文件已存在："+fileName+"<br/>";
 		}
-//		return "生成成功："+fileName+"<br/>";
+		return fileName+"<br/>";
 	}
 //	
 //	public static void main(String[] args) {
