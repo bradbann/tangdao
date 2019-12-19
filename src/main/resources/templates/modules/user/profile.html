@@ -27,7 +27,7 @@
 			  <#form:hidden path="userCode"/>
 			  <div class="row row-sm">
                 <div class="col-lg-2 col-sm-8">
-                  <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">移动电话</label>
+                  <label class="tx-13 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">移动电话</label>
                   <p class="tx-primary tx-rubik mg-b-0">
                   	<#form:input path="mobile" readonly="true" maxlength="32" class="form-control "/>
                   </p>
@@ -44,7 +44,7 @@
               </div>
               <div class="row row-sm mg-t-10">
                  <div class="col-lg-4 col-sm-8">
-                  <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">用户昵称</label>
+                  <label class="tx-13 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">用户昵称</label>
                   <p class="mg-b-0">
                   	<#form:input path="nickname" maxlength="32" class="form-control required "/>
                   </p>
@@ -52,7 +52,7 @@
               </div><!-- row -->
               <div class="row row-sm mg-t-10">
                  <div class="col-lg-4 col-sm-8">
-                  <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">性别</label>
+                  <label class="tx-13 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">性别</label>
                   <div class="mg-b-0 radio-list d-flex pd-t-5">
                   	<#form:radio path="sex" dictType="sys_user_sex"/>
                   </div>
@@ -60,7 +60,7 @@
               </div><!-- row -->
               <div class="row row-sm mg-t-10">
                 <div class="col-lg-8 col-sm-8">
-                  <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">签名</label>
+                  <label class="tx-13 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">签名</label>
                   <p class="tx-13 mg-b-0">
                   	<#form:textarea path="sign" class="form-control" row="3" />
                   </p>
@@ -70,13 +70,13 @@
               <h6 class="mg-t-40 mg-b-10">联系信息</h6>
               <div class="row row-sm">
                  <div class="col-lg-4 col-sm-8 mg-t-10">
-                  <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">邮件地址</label>
+                  <label class="tx-13 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">邮件地址</label>
                   <p class="tx-primary mg-b-0">
                   	<#form:input path="email" maxlength="32" class="form-control "/>
                   </p>
                 </div>
                 <div class="col-lg-4 col-sm-8  mg-t-10">
-                  <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">电话号码</label>
+                  <label class="tx-13 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">电话号码</label>
                   <p class="tx-primary tx-rubik mg-b-0">
                   	<#form:input path="phone" maxlength="32" class="form-control "/>
                   </p>
@@ -84,13 +84,13 @@
               </div>
               <div class="row row-sm">
                 <div class="col-lg-4 col-sm-8  mg-t-10">
-                  <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">公司信息</label>
+                  <label class="tx-13 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">公司信息</label>
                   <p class="mg-b-0">
                   	<#form:input name="companyName" maxlength="32" class="form-control "/>
                   </p>
                 </div>
                 <div class="col-lg-4 col-sm-8  mg-t-10">
-                  <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">岗位信息</label>
+                  <label class="tx-13 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">岗位信息</label>
                   <p class="mg-b-0">
                   	<#form:input name="postName" maxlength="32" class="form-control "/>
                   </p>
@@ -99,13 +99,13 @@
               <h6 class="mg-t-40 mg-b-10">最近登录</h6>
               <div class="row row-sm"> 
                 <div class="col-sm-6">
-                  <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">最近一次登录时间</label>
+                  <label class="tx-13 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">最近一次登录时间</label>
                   <p class="mg-b-0">${user.lastLoginDate, dateFormat}</p>
                 </div>
               </div>
               <div class="row row-sm">
                 <div class="col-sm-6">
-                  <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">登录地址</label>
+                  <label class="tx-13 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-10">登录地址</label>
                   <p class="mg-b-0">${user.lastLoginIp}</p>
                 </div>
               </div>

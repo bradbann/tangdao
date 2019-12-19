@@ -40,7 +40,9 @@
 				<% } %>
 		<% }else if(c.showType == 'select' || c.showType == 'select_multiple'){
 				var isMultiple = (c.showType == 'select_multiple'); %>
+				<div class="wd-100">
 				<${'#'}form:select path="${c.javaField}" dictType="${c.optionMap['dictType']}"${isMultiple?' multiple="true"':''} blankOption="true" class="form-control select2"/>
+				</div>
 		<% }else if(c.showType == 'radio'){ %>
 				<${'#'}form:radio path="${c.javaField}" dictType="${c.optionMap['dictType']}" blankOption="true" class="form-control"/>
 		<% }else if(c.showType == 'checkbox'){ %>

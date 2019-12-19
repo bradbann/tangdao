@@ -24,4 +24,7 @@ public class EmpUser extends User{
 
 	private Employee employee;
 	
+	public EmpUser() {
+		this.setEmployee(new Employee());
+	}
 }

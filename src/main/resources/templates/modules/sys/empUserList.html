@@ -20,11 +20,13 @@
           </div>
         </div>
 		<div class="form-group">
-			<div class="input-group wd-150">
+			<div class="input-group">
 				<div class="input-group-prepend">
 					<span class="input-group-text">状态</span>
          		</div>
-				<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control select2"/>
+         		<div class="wd-100">
+					<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control select2"/>
+         		</div>
 			</div>
 		</div>
 		<div class="form-group">
@@ -73,7 +75,7 @@ $('#dataGrid').dataGrid({
 				actions.push('<a href="${ctx}/sys/empUser/delete?userCode='+row.userCode+'" class="btnList" title="删除用户" data-confirm="确认要删除该用户吗？"><i class="la la-trash"></i></a>&nbsp;');
 			<% } %>
 			
-			actions.push('<a href="" class="dropdown-link" data-toggle="dropdown"><i class="la la-ellipsis-v"></i></a>');
+			actions.push('<a href="#" class="dropdown-link" data-toggle="dropdown" ><i class="la la-ellipsis-v"></i></a>');
 			actions.push('<div class="dropdown-menu dropdown-menu-right">');
 			<% if(expIf("hasAuthority('sys:user:authRole')")){ %>
 					actions.push('<a href="${ctx}/sys/empUser/form?userCode='+row.userCode+'&op=auth" class="dropdown-item btnList" title="用户设置权限"><i class="la la-cube"></i> 设置权限</a>');
