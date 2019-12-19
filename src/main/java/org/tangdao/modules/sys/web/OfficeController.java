@@ -81,6 +81,19 @@ public class OfficeController extends BaseController {
 		if(StringUtils.isNotBlank(office.getParentCode())){
 			queryWrapper.eq("parent_code", office.getParentCode());
 		}
+		if (StringUtils.isNotBlank(office.getFullName())) {
+			office.setParentCode(null);
+			queryWrapper.like("full_name", office.getFullName());
+		}
+		if (StringUtils.isNotBlank(office.getViewCode())) {
+			queryWrapper.likeRight("view_code", office.getViewCode());
+		}
+		if (StringUtils.isNotBlank(office.getOfficeType())) {
+			queryWrapper.eq("office_type", office.getOfficeType());
+		}
+		if (StringUtils.isNotBlank(office.getStatus())) {
+			queryWrapper.eq("status", office.getStatus());
+		}
 		queryWrapper.orderByAsc("tree_sort", "office_code");
 		return officeService.select(queryWrapper);
 	}

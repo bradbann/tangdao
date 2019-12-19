@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.suports.BaseController;
+import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.model.domain.Post;
 import org.tangdao.modules.sys.service.IPostService;
 
@@ -57,6 +58,15 @@ public class PostController extends BaseController {
 	@RequestMapping(value = "listData")
 	public @ResponseBody IPage<Post> listData(Post post, HttpServletRequest request, HttpServletResponse response) {
 		QueryWrapper<Post> queryWrapper = new QueryWrapper<Post>();
+		if (StringUtils.isNotBlank(post.getPostName())) {
+			queryWrapper.like("post_name", post.getPostName());
+		}
+		if (StringUtils.isNotBlank(post.getPostType())) {
+			queryWrapper.eq("post_type", post.getPostType());
+		}
+		if (StringUtils.isNotBlank(post.getStatus())) {
+			queryWrapper.eq("status", post.getStatus());
+		}
 		return postService.page(post.getPage(), queryWrapper);
 	}
 

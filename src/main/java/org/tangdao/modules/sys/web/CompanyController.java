@@ -66,10 +66,16 @@ public class CompanyController extends BaseController {
 		}
 		if (StringUtils.isNotBlank(company.getCompanyName())) {
 			company.setParentCode(null);
-			queryWrapper.likeRight("company_name", company.getCompanyName());
+			queryWrapper.like("company_name", company.getCompanyName());
 		}
 		if (StringUtils.isNotBlank(company.getParentCode())) {
 			queryWrapper.eq("parent_code", company.getParentCode());
+		}
+		if (StringUtils.isNotBlank(company.getViewCode())) {
+			queryWrapper.likeRight("view_code", company.getViewCode());
+		}
+		if (StringUtils.isNotBlank(company.getStatus())) {
+			queryWrapper.eq("status", company.getStatus());
 		}
 		queryWrapper.orderByAsc("tree_sort", "company_code");
 		return companyService.select(queryWrapper);
