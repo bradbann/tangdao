@@ -25,7 +25,7 @@ import org.tangdao.modules.sys.service.IUserService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 public class UserUtils {
-	
+
 	private static final class Static {
 		private static IUserService userService = SpringUtils.getBean(IUserService.class);
 		private static IRoleService roleService = SpringUtils.getBean(IRoleService.class);
@@ -33,13 +33,13 @@ public class UserUtils {
 	}
 
 	/**
-	 * 当前登录用户
+	 * 获取当前登录用户对象
 	 * 
 	 * @return
 	 */
 	public static User getUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if(authentication==null) {
+		if (authentication == null) {
 			return null;
 		}
 		Object principal = authentication.getPrincipal();
@@ -51,7 +51,11 @@ public class UserUtils {
 		return null;
 	}
 
-	// 获取页面显示菜单
+	/**
+	 * 获取当前登录用户的菜单
+	 * 
+	 * @return
+	 */
 	public static List<Menu> getMenuTree() {
 		List<Menu> targetList = new ArrayList<>();
 		List<Menu> sourceList = getUser().getMenus().stream()
@@ -60,27 +64,21 @@ public class UserUtils {
 		Static.menuService.convertChildList(sourceList, targetList, Menu.ROOT_CODE);
 		return targetList;
 	}
-	
+
+	/**
+	 * 获取菜单列表
+	 * 
+	 * @param parentCode 父节点编码
+	 * @return
+	 */
 	public static List<Menu> getMenuByParentCode(String parentCode) {
-//		String sysId = ObjectUtils.toStringIgnoreNull(getSession().getAttribute("sysId"), Menu.SYS_ID_DEFAULT);
-//		StringBuffer key = new StringBuffer("menuList_" + sysId);
-//		if (StringUtils.isNotBlank(parentId)) {
-//			key.append("_" + parentId);
-//		}
-//		List<Menu> list = (List<Menu>) UserUtils.getCache(key.toString());
-//		if (list != null) {
-//			return list;
-//		}
-//		Menu menu = new Menu();
-//		menu.setSysId(sysId);
-//		menu.setParentId(parentId);
 		User user = null;
 		List<Menu> menus = null;
-		if(User.isSuperAdmin((user = getUser()).getUserCode())) {
+		if (User.isSuperAdmin((user = getUser()).getUserCode())) {
 			QueryWrapper<Menu> queryWrapper = new QueryWrapper<Menu>();
 			queryWrapper.ne("status", Menu.STATUS_DELETE);
-			queryWrapper.ge("weight", Menu.SUPER_ADMIN_GET_MENU_MIN_WEIGHT); //管理员获取的最小权重菜单，（用于有些菜单管理员不可查看，如财务报表等）
-			
+			queryWrapper.ge("weight", Menu.SUPER_ADMIN_GET_MENU_MIN_WEIGHT); // 管理员获取的最小权重菜单，（用于有些菜单管理员不可查看，如财务报表等）
+
 			queryWrapper.orderByAsc("tree_sort");
 			menus = Static.menuService.select(queryWrapper);
 		} else {
@@ -104,12 +102,12 @@ public class UserUtils {
 			menu.setParentCode(parentCode);
 			menus = Static.menuService.findByUserMenu(menu, false);
 		}
-//		UserUtils.putCache(key.toString(), menus);
 		return menus;
 	}
-	
+
 	/**
 	 * 根据用户编码获取用户信息
+	 * 
 	 * @param userCode
 	 * @return
 	 */
@@ -123,38 +121,24 @@ public class UserUtils {
 			return (User) obj;
 		} else {
 			User user = null;
-//			User user = (User) CacheUtils.get(USER_CACHE, USER_CACHE_USER_ID_ + userCode);
-//			if (user != null) {
-//				return (User) user.clone();
-//			}
-//			userCacheLock.lock();
-//			try {
-//				user = (User) CacheUtils.get(USER_CACHE, USER_CACHE_USER_ID_ + userCode);
-//				if (user != null) {
-//					return (User) user.clone();
-//				}
-				user = Static.userService.get(userCode);
-				if (user == null) {
-					return null;
-				}
+			user = Static.userService.get(userCode);
+			if (user == null) {
+				return null;
+			}
 
-				user.setRoles(Static.roleService.findByUserCode(userCode));
-//				CacheUtils.put(USER_CACHE, USER_CACHE_USER_ID_ + user.getuserCode(), user);
-//				CacheUtils.put(USER_CACHE, USER_CACHE_USERNAME_ + user.getUsername(), user.getuserCode());
+			user.setRoles(Static.roleService.findByUserCode(userCode));
 
-				if (request != null) {
-					request.setAttribute("__user__" + user.getUserCode(), user);
-				}
+			if (request != null) {
+				request.setAttribute("__user__" + user.getUserCode(), user);
+			}
 
-				return (User) user.clone();
-//			} finally {
-//				userCacheLock.unlock();
-//			}
+			return (User) user.clone();
 		}
 	}
-	
+
 	/**
 	 * 根据用户名获取用户信息
+	 * 
 	 * @param username
 	 * @return
 	 */
@@ -162,40 +146,21 @@ public class UserUtils {
 		if (StringUtils.isBlank(username)) {
 			return null;
 		}
-//		String userId = (String) CacheUtils.get(USER_CACHE, USER_CACHE_USERNAME_ + username);
-//		if (StringUtils.isNotBlank(userId)) {
-//			return UserUtils.get(userId);
-//		}
-//		userCacheLock.lock();
-//		try {
-//			userId = (String) CacheUtils.get(USER_CACHE, USER_CACHE_USERNAME_ + username);
-//			if (StringUtils.isNotBlank(userId)) {
-//				return UserUtils.get(userId);
-//			}
-//			User user = new User();
-//			user.setUsername(username);
-			User user = Static.userService.getUserByUsername(username);
-			if (user == null) {
-				return null;
-			}
-
-			user.setRoles(Static.roleService.findByUserCode(user.getUserCode()));
-//			CacheUtils.put(USER_CACHE, USER_CACHE_USER_ID_ + user.getUserId(), user);
-//			CacheUtils.put(USER_CACHE, USER_CACHE_USERNAME_ + user.getUsername(), user.getUserId());
-
-			return (User) user.clone();
-//
-//		} finally {
-//			userCacheLock.unlock();
-//		}
+		User user = Static.userService.getUserByUsername(username);
+		if (user == null) {
+			return null;
+		}
+		user.setRoles(Static.roleService.findByUserCode(user.getUserCode()));
+		return user;
 	}
-	
+
 	/**
 	 * 更新登录信息
+	 * 
 	 * @param user
 	 */
 	public static void updateUserLogininfo(User user) {
 		Static.userService.updateLoginUserinfo(user);
 	}
-	
+
 }
