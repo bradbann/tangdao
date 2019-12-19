@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.tangdao.modules.sys.mapper.RoleMapper">
+
+	<sql id="selectColumns">
+		t.role_code AS "roleCode",
+		t.role_name AS "roleName",
+		t.role_sort AS "roleSort",
+		t.data_scope AS "dataScope",
+		t.status AS "status",
+		t.create_by AS "createBy",
+		t.create_time AS "createTime",
+		t.update_by AS "updateBy",
+		t.update_time AS "updateTime",
+		t.remarks AS "remarks"
+	</sql>
+
+	<select id="findByUserCode" resultType="org.tangdao.modules.sys.model.domain.Role">
+		SELECT 
+		<include refid="selectColumns"/>
+		FROM sys_role t
+		JOIN sys_user_role ur ON t.role_code = ur.role_code
+		WHERE t.status = #{STATUS_NORMAL}
+			AND ur.user_code = #{userCode}
+			ORDER BY t.role_sort ASC
+	</select>
+	
+	<delete id="deleteRoleMenu">
+        DELETE FROM sys_role_menu WHERE role_code = #{roleCode}
+	</delete>
+	
+	<insert id="insertRoleMenu">
+        INSERT INTO sys_role_menu(role_code, menu_code)
+        <foreach collection="menuCodes" item="menuCode" separator=" union all ">
+            SELECT #{roleCode}, #{menuCode} FROM dual
+        </foreach>
+	</insert>
+</mapper>

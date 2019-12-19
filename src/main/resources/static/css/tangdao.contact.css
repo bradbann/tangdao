@@ -1,0 +1,176 @@
+
+.contact-wrapper {
+  background-color: #f8f9fc;}
+
+.contact-wrapper-two {
+  position: relative;
+  height: 100%;
+  top: 0; }
+  .contact-wrapper-two .contact-content-header {
+    right: 0; }
+  .contact-wrapper-two .contact-content-body {
+    right: 0; }
+
+.contact-navleft,
+.contact-sidebar,
+.contact-content {
+  transition: all 0.3s; }
+
+.contact-sidebar {
+  background-color: #fff;
+  position: absolute;
+ top: 55px;}
+
+.contact-sidebar-header {}
+
+.contact-content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;}
+
+.contact-content-header {
+  background-color: #fff;
+  height: 45px;
+  border-bottom: 1px solid rgba(72, 94, 144, 0.16);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  padding-left: 225px;}
+  .contact-content-header .nav-link {
+    color: #8392a5;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    padding: 0; }
+    .contact-content-header .nav-link:hover, .contact-content-header .nav-link:focus {
+      color: #525f70; }
+    .contact-content-header .nav-link.active {
+      color: #0168fa;
+      font-weight: 600;
+      position: relative; }
+      .contact-content-header .nav-link.active::before {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 0;
+        width: 100%;
+        border-bottom: 1px solid #0168fa; }
+    .contact-content-header .nav-link + .nav-link {
+      margin-left: 30px; }
+
+.contact-content-body {
+  position: absolute;
+  top: 55px;
+  left: 200px;
+  right: 0;
+  bottom: 0; }
+/* @media (max-width: 1200px) {
+    .contact-content-body {
+      left: 0; } }*/
+
+ /*.contact-content-sidebar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  }
+  @media (min-width: 1200px) {
+    .contact-content-sidebar {
+      width: 290px;
+      padding: 25px;
+      right: 0; } } */
+
+.contact-edit-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  background-color: #e5e9f2;
+  color: #8392a5;
+  border-radius: 100%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  box-shadow: 0 0 0 3px #fff; }
+  .contact-edit-photo:hover, .contact-edit-photo:focus {
+    color: #1b2e4b;
+    background-color: #c0ccda; }
+  .contact-edit-photo svg {
+    width: 12px;
+    stroke-width: 3px; }
+
+.contact-call-nav {
+  display: flex; }
+  .contact-call-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 100%;
+    color: #fff; }
+    .contact-call-nav a svg {
+      width: 16px;
+      stroke-width: 2.6px; }
+    .contact-call-nav a + a {
+      margin-left: 8px; }
+    .contact-call-nav a.nav-call {
+      background-color: #00cccc; }
+      .contact-call-nav a.nav-call:hover, .contact-call-nav a.nav-call:focus {
+        background-color: #009999; }
+    .contact-call-nav a.nav-video {
+      background-color: #f10075; }
+      .contact-call-nav a.nav-video:hover, .contact-call-nav a.nav-video:focus {
+        background-color: #be005c; }
+    .contact-call-nav a.nav-msg {
+      background-color: #0168fa; }
+      .contact-call-nav a.nav-msg:hover, .contact-call-nav a.nav-msg:focus {
+        background-color: #0153c7; }
+
+.contact-actions {
+  display: flex;
+  position: relative;
+  margin-top: -2px; }
+  .contact-actions a {
+    display: flex;
+    align-items: flex-end;
+    color: #1b2e4b; }
+    .contact-actions a:hover, .contact-actions a:focus {
+      color: #0168fa; }
+    .contact-actions a svg {
+      width: 16px;
+      stroke-width: 2.6px;
+      margin-right: 5px; }
+    .contact-actions a + a {
+      margin-left: 20px; }
+
+.contact-content-nav .nav-link {
+  color: #1b2e4b;
+  display: flex;
+  align-items: center;
+  padding: 0; }
+  .contact-content-nav .nav-link:hover, .contact-content-nav .nav-link:focus {
+    color: #0168fa; }
+  .contact-content-nav .nav-link + .nav-link {
+    margin-top: 10px; }
+
+.contact-content-nav svg {
+  position: relative;
+  margin-top: -2px;
+  width: 16px;
+  margin-right: 12px; }
+.contact-wrapper.genTable{
+	top:0px;
+}
+.contact-wrapper.genTable .contact-sidebar{
+	left:0px;
+	width:200px;
+}
+.contact-wrapper.genTable .contact-content{
+	left:200px;
+}
