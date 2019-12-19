@@ -141,6 +141,7 @@ public class RoleController extends BaseController {
 			e.put("id", item.getKey());
 			e.put("pId", TreeEntity.ROOT_CODE);
 			e.put("name", StringUtils.getTreeNodeName(isShowCode, item.getRoleCode(), item.getRoleName()));
+			e.put("remarks", item.getRemarks());
 			list.add(e);
 		});
 		return list;
