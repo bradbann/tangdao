@@ -30,8 +30,6 @@ public class SerializationUtils {
                 g_serializer = new JavaSerializer();
             } else if ("fst".equals(ser)) {
                 g_serializer = new FSTSerializer();
-            } else if ("json".equals(ser)) {
-                g_serializer = new FstJSONSerializer(props);
             } else if ("fastjson".equals(ser)) {
                 g_serializer = new FastjsonSerializer();
             } else {

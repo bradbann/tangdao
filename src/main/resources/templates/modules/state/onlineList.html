@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="card-body pd-10">
-      <#form:form id="searchForm" action="${ctx}/sys/online/listData" method="post"  class="form-horizontal"
+      <#form:form id="searchForm" action="${ctx}/state/online/listData" method="post"  class="form-horizontal"
 				data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
         <div class="form-group">
           <div class="input-group wd-250">
@@ -44,7 +44,7 @@ $('#dataGrid').dataGrid({
 		{header:'设备名称', name:'deviceName', width:100}
 		,{header:'操作', name:'actions', width:50, sortable:false, formatter: function(val, obj, row, act){
 			var actions = [];
-			actions.push('<a href="${ctx}/sys/online/tickOut?sessionId='+row.id+'" class="btnList" title="踢出在线用户" data-confirm="确认要踢出该用户在线状态吗？"><i class="la la-trash"></i></a>&nbsp;');
+			actions.push('<a href="${ctx}/state/online/tickOut?sessionId='+row.id+'" class="btnList" title="踢出在线用户" data-confirm="确认要踢出该用户在线状态吗？"><i class="la la-trash"></i></a>&nbsp;');
 			return actions.join('');
 		}}
 	],
