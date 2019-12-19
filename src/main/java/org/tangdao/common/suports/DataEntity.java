@@ -35,7 +35,7 @@ public class DataEntity<T> extends BaseEntity<T> {
 	protected String createBy; // 新增人
 
 	@TableField(exist = false)
-	protected transient String createByName; // 新增人姓名
+	protected String createByName; // 新增人姓名
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	protected Date updateTime; // 更新时间
@@ -43,7 +43,7 @@ public class DataEntity<T> extends BaseEntity<T> {
 	protected String updateBy; // 更新人
 
 	@TableField(exist = false)
-	protected transient String updateByName; // 更新人姓名
+	protected String updateByName; // 更新人姓名
 	
 	/**
 	 * 正常
