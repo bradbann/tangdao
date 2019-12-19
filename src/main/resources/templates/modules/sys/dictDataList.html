@@ -44,7 +44,7 @@ $('#dataGrid').dataGrid({
 		{header:'状态', name:'status', index:'status', width:60, fixed:true, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_status')}, val, '未知', true);
 		}},
-		{header:'操作', name:'actions', width:150, sortable:false, title:false, formatter: function(val, obj, row, act){
+		{header:'操作', name:'actions', width:100, fixed:true, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(expIf("hasAuthority('sys:dictData:edit')")){ %>
 				actions.push('<a href="${ctx}/sys/dictData/form?id='+row.id+'" class="btnList" title="编辑字典数据"><i class="la la-edit"></i></a>&nbsp;');

@@ -44,7 +44,7 @@ $('#dataGrid').dataGrid({
 		{header:'状态', name:'status', index:'status', width:140, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_status')}, val, '未知', true);
 		}},
-		{header:'操作', name:'actions', width:260, sortable:false, title:false, formatter: function(val, obj, row, act){
+		{header:'操作', name:'actions', width:130, fixed:true,  sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 				actions.push('<a href="${ctx}/sys/admin/form?userCode='+row.userCode+'&op=edit" class="btnList" title="编辑用户"><i class="la la-edit"></i></a>&nbsp;');
 				if (row.status == Global.STATUS_NORMAL){

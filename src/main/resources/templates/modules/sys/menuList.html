@@ -63,7 +63,7 @@
   		{header:'权重', name:'weight', width:90, fixed:true, align:"center", formatter: function(val, obj, row, act){
   			return js.getDictLabel(${@DictUtils.getDictListJson('sys_menu_weight')}, val, '未知', true);
   		}},
-  		{header:'操作', name:'actions', width:100, sortable:false, formatter: function(val, obj, row, act){
+  		{header:'操作', name:'actions', width:100, fixed:true, sortable:false, formatter: function(val, obj, row, act){
   			var actions = [];
   			<% if(expIf("hasAuthority('sys:menu:edit')")){ %>
   				actions.push('<a href="${ctx}/sys/menu/form?menuCode='+row.key+'" class="btnList" title="编辑菜单"><i class="la la-edit"></i></a>&nbsp;');
