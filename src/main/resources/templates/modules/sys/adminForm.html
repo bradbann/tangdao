@@ -6,7 +6,9 @@
 
         </div>
     </div>
-    <#form:form id="inputForm" model="${user}" action="${ctx}/sys/user/save" method="post">
+    <#form:form id="inputForm" model="${user}" action="${ctx}/sys/admin/save" method="post">
+    	<#form:hidden name="op" value="${op}"/>
+    	<#form:hidden name="userType" value="employee"/>
     	<#form:hidden path="userCode"/>
         <div class="card-body card-content-fixed pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
         	<div class="form-row">
@@ -53,7 +55,7 @@
             <div class="form-group">
             	<label>角色选择</label>
             	<table id="roleGrid"></table>
-				<#form:hidden name="userRoleString"/>
+				<#form:hidden name="roleCodeString"/>
 			</div>
         </div>
         <div class="card-footer pd-sm-l-30">
@@ -91,7 +93,7 @@ var roleGrid = $("#roleGrid").dataGrid({
 });
 $("#inputForm").validate({
 	submitHandler: function(form){
-		$("#userRoleString").val(roleGrid.dataGrid('getSelectRows').join(','));
+		$("#roleCodeString").val(roleGrid.dataGrid('getSelectRows').join(','));
 		js.ajaxSubmitForm($(form), function(data){
 			js.showMessage(data.message);
 			if(data.result == Global.TRUE){

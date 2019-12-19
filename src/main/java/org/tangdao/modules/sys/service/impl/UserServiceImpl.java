@@ -89,11 +89,23 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 		User user = new User();
 		user.setUserCode(userCode);
 		if(StringUtils.isEmpty(password)) {
-			password = passwordEncoderService.encryptPassword(Global.getConfig("sys.user.initPassword"));
+			password = Global.getConfig("sys.user.initPassword");
 		}
-		user.setPassword(password);
+		user.setPassword(passwordEncoderService.encryptPassword(password));
 		user.preUpdate();
 		this.baseMapper.updateById(user);
+	}
+	
+	@Override
+	public void updateMgrType(User user) {
+		if(user == null) {
+			return;
+		}
+		User update = new User();
+		update.setUserCode(user.getUserCode());
+		update.setMgrType(user.getMgrType());
+		update.preUpdate();
+		this.baseMapper.updateById(update);
 	}
 
 	@Override
@@ -111,9 +123,9 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 		if(user.getIsNewRecord()) {
 			String password = user.getPassword();
 			if(StringUtils.isEmpty(password)) {
-				password = passwordEncoderService.encryptPassword(Global.getConfig("sys.user.initPassword"));
+				password = Global.getConfig("sys.user.initPassword");
 			}
-			user.setPassword(password);
+			user.setPassword(passwordEncoderService.encryptPassword(password));
 			if(StringUtils.isEmpty(user.getUserType())) {
 				user.setUserType(User.USER_TYPE_NONE);
 			}

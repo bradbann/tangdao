@@ -53,10 +53,12 @@
 	<select id="findEmpUserPage" resultType="org.tangdao.modules.sys.model.vo.EmpUser">
 		select 		
 			<include refid="selectColumnsEmpUser" />
-		from sys_user u join sys_employee t on u.user_code = t.emp_code and u.user_type=#{empUser.USER_TYPE_EMPLOYEE} 
+		from sys_user u 
+		left join sys_employee t on u.user_code = t.emp_code
 		left join sys_office o on t.office_code = o.office_code
 		left join sys_company c on t.company_code = c.company_code
-		<where>
+		where 
+		    u.user_type=#{empUser.USER_TYPE_EMPLOYEE} and u.mgr_type=#{empUser.MGR_TYPE_NOT_ADMIN}
 			<if test="empUser.username != null and empUser.username != ''">
 				AND u.username = #{empUser.username}
 			</if>
@@ -66,14 +68,14 @@
 			<if test="empUser.employee != null and empUser.employee.officeCode != null and empUser.employee.officeCode != ''">
 				AND t.office_code = #{empUser.employee.officeCode}
 			</if>
-		</where>
 		order by u.user_weight desc, u.update_time desc
 	</select>
 	
 	<select id="getEmpUserByUserCode" resultType="org.tangdao.modules.sys.model.vo.EmpUser">
 		select 		
 			<include refid="selectColumnsEmpUser" />
-		from sys_user u join sys_employee t on u.user_code = t.emp_code
+		from sys_user u 
+		left join sys_employee t on u.user_code = t.emp_code
 		left join sys_office o on t.office_code = o.office_code
 		left join sys_company c on t.company_code = c.company_code
 		where u.user_code = #{userCode}

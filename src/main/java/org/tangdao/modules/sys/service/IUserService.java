@@ -48,6 +48,12 @@ public interface IUserService extends ICrudService<User> {
 	public void updatePassword(String userCode, String password);
 	
 	/**
+	 * 更新管理类型
+	 * @param user
+	 */
+	public void updateMgrType(User user);
+	
+	/**
 	 * 根据用户主键获取用户信息
 	 * @param userCode
 	 * @return

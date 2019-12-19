@@ -64,11 +64,11 @@ $('#dataGrid').dataGrid({
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_post_type')}, val, '未知}', true);
 		}},
 		{header:'更新时间', name:'updateTime', index:'update_time', width:150, align:"center"},
-		{header:'备注', name:'remarks', index:'remarks', width:150, align:"left"},
+		{header:'备注', name:'remarks', index:'remarks', align:"left"},
 		{header:'状态', name:'status', index:'status', width:80, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '未知}', true);
 		}},
-		{header:'操作', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+		{header:'操作', name:'actions', width:100, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(expIf("hasAuthority('sys:post:edit')")){ %>
 				actions.push('<a href="${ctx}/sys/post/form?postCode='+row.postCode+'" class="btnList" title="编辑岗位"><i class="la la-edit"></i></a>&nbsp;');

@@ -48,13 +48,14 @@ public class EmployeeServiceImpl extends CrudServiceImpl<EmployeeMapper, Employe
 		//保存用户
 		this.userService.saveOrUpdate(user);
 		Employee employee = user.getEmployee();
-		employee.setIsNewRecord(user.getIsNewRecord());
+		boolean isNewRecord = employee.getIsNewRecord();
 		if(StringUtils.isEmpty(employee.getEmpCode())) {
 			employee.setEmpCode(user.getUserCode());
 		}
 		if(StringUtils.isEmpty(employee.getEmpName())) {
 			employee.setEmpName(user.getUsername());
 		}
+		employee.setIsNewRecord(isNewRecord);
 		//保存员工
 		this.saveOrUpdate(employee);
 		// 岗位关联
