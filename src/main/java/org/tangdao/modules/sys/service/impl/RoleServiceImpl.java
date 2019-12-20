@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.tangdao.common.service.impl.CrudServiceImpl;
+import org.tangdao.common.suports.Page;
 import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.mapper.RoleMapper;
 import org.tangdao.modules.sys.model.domain.Role;
+import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.IRoleService;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -51,5 +53,16 @@ public class RoleServiceImpl extends CrudServiceImpl<RoleMapper, Role> implement
 		if (menuCodes != null&&menuCodes.length>0 && StringUtils.isNotBlank(role.getRoleCode())) {
 			this.baseMapper.insertRoleMenu(role.getRoleCode(), menuCodes);
 		}
+	}
+	
+	@Override
+	public Page<User> findUserPage(Page<Role> page, Role role) {
+		return this.baseMapper.findUserPage(page, role);
+	}
+
+	@Override
+	public int deleteRoleUser(String roleCode, String userCode) {
+		// TODO Auto-generated method stub
+		return this.baseMapper.deleteRoleUser(roleCode, userCode);
 	}
 }

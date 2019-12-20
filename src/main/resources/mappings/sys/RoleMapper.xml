@@ -12,7 +12,8 @@
 		t.create_time AS "createTime",
 		t.update_by AS "updateBy",
 		t.update_time AS "updateTime",
-		t.remarks AS "remarks"
+		t.remarks AS "remarks",
+		t.user_type AS "userType"
 	</sql>
 
 	<select id="findByUserCode" resultType="org.tangdao.modules.sys.model.domain.Role">
@@ -25,8 +26,27 @@
 			ORDER BY t.role_sort ASC
 	</select>
 	
+	<select id="findUserPage" resultType="org.tangdao.modules.sys.model.domain.User">
+		select
+			t.user_code as "userCode",
+			t.username as "username",
+			t.nickname as "nickname",
+			t.create_time as "createTime",
+			t.status as "status"
+		from
+			sys_user t
+		join sys_user_role ur on
+			t.user_code = ur.user_code
+		where
+			ur.role_code = #{role.roleCode}
+	</select>
+	
 	<delete id="deleteRoleMenu">
         DELETE FROM sys_role_menu WHERE role_code = #{roleCode}
+	</delete>
+	
+	<delete id="deleteRoleUser">
+        DELETE FROM sys_user_role WHERE role_code = #{roleCode} and user_code = #{userCode}
 	</delete>
 	
 	<insert id="insertRoleMenu">

@@ -40180,7 +40180,8 @@ a.bg-twitter:hover, a.bg-twitter:focus, button.bg-twitter:hover, button.bg-twitt
 	right: 0;
 	background: #fff; 
 }
-.box-header.fixed+form{
+.box-header.fixed+form,
+.box-header.fixed+.form{
 	margin-top: 45px;
 }
 /**

@@ -36,7 +36,7 @@ $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
 		{header:'角色名称', name:'roleName', index:'role_name', width:150, align:"center", frozen:true, formatter: function(val, obj, row, act){
-			return '<a href="${ctx}/sys/role/form?roleCode='+row.roleCode+'&op=edit" class="btnList" data-title="编辑角色">'+(val||row.id)+'</a>';
+			return '<a href="${ctx}/sys/role/formAuthUser?roleCode='+row.roleCode+'" class="btnList" data-title="角色用户授权">'+(val||row.id)+'</a>';
 		}},
 		{header:'角色编码', name:'roleCode', index:'role_code', width:150, align:"center"},
 		{header:'排序号', name:'roleSort', index:'role_sort', width:80, align:"center"},
@@ -47,7 +47,6 @@ $('#dataGrid').dataGrid({
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_role_data_scope')}, val, '未设置', true);
 		}},
 		{header:'更新时间', name:'updateTime', index:'update_time', width:130, align:"center"},
-		{header:'备注信息', name:'remarks', index:'remarks', width:160, align:"left"},
 		{header:'状态', name:'status', index:'status', width:80, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_status')}, val, '未知', true);
 		}},

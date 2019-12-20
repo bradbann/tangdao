@@ -38,4 +38,5 @@
             SELECT #{userCode}, #{roleCode} FROM dual
         </foreach>
 	</insert>
+	
 </mapper>

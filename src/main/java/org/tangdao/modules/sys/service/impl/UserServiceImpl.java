@@ -142,5 +142,4 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 			this.baseMapper.insertUserRole(user.getUserCode(), user.getRoleCodes().split(","));
 		}
 	}
-	
 }
