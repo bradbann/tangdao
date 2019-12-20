@@ -19,6 +19,7 @@ import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.model.vo.EmpUser;
 import org.tangdao.modules.sys.service.IRoleService;
 import org.tangdao.modules.sys.service.IUserService;
+import org.tangdao.modules.sys.utils.UserUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -74,7 +75,7 @@ public class AdminController extends BaseController {
 
 	@PostMapping(value = "save")
 	public @ResponseBody String save(@Validated User user, String oldUsername, String op, Model model) {
-		if (!user.getCurrentUser().isSuperAdmin()){
+		if (!UserUtils.getUser().isSuperAdmin()){
 			return renderResult(Global.FALSE, "越权操作，只有超级管理员才能修改此数据！");
 		}
 		if (User.isSuperAdmin(user.getUserCode())) {
@@ -93,7 +94,7 @@ public class AdminController extends BaseController {
 		userService.saveOrUpdate(user);
 		userService.saveAuth(user);
 		// 如果修改的是当前用户，则清除当前用户缓存
-		if (user.getUserCode().equals(user.getCurrentUser().getUserCode())) {
+		if (user.getUserCode().equals(UserUtils.getUser().getUserCode())) {
 //			UserUtils.clearCache();
 		}
 
@@ -108,7 +109,7 @@ public class AdminController extends BaseController {
 		if (User.isSuperAdmin(user.getUserCode())) {
 			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
 		}
-		if(user.getCurrentUser().getUserCode().equals(user.getUserCode())) {
+		if(UserUtils.getUser().getUserCode().equals(user.getUserCode())) {
 			return renderResult(Global.FALSE, "停用失败，不允许停用当前用户！");
 		}
 		user.setStatus(Employee.STATUS_DISABLE);
@@ -137,7 +138,7 @@ public class AdminController extends BaseController {
 		if (User.isSuperAdmin(user.getUserCode())) {
 			return renderResult(Global.FALSE, "非法操作，不能够操作此用户！");
 		}
-		if(user.getCurrentUser().getUserCode().equals(user.getUserCode())) {
+		if(UserUtils.getUser().getUserCode().equals(user.getUserCode())) {
 			return renderResult(Global.FALSE, "停用失败，不允许停用当前用户！");
 		}
 		if(User.USER_TYPE_NONE.equals(user.getUserType())) {

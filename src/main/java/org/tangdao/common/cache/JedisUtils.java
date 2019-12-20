@@ -306,6 +306,16 @@ public class JedisUtils{
     public void add(String key, Map<Object, Object> map) {
         redisTemplate.opsForHash().putAll(key, map);
     }
+    
+    /**
+     * 加入缓存 
+     * @param key
+     * @param hashKey
+     * @param value
+     */
+    public void add(String key, String hashKey, Object value) {
+    	redisTemplate.opsForHash().put(key, hashKey, value);
+    }
  
     /**
      * 获取 key 下的 所有  hashkey 和 value

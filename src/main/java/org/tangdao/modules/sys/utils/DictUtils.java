@@ -1,7 +1,6 @@
 package org.tangdao.modules.sys.utils;
 
 import java.util.List;
-import java.util.Map;
 
 import org.tangdao.common.utils.JsonMapper;
 import org.tangdao.common.utils.ListUtils;
@@ -73,14 +72,7 @@ public class DictUtils {
 	}
 
 	public static List<DictData> getDictList(String dictType) {
-		Map<String, List<DictData>> dictDataMap = Static.dictDataService.getDictDataList();
-		if (dictDataMap != null && dictDataMap.size() != 0) {
-			List<DictData> list = dictDataMap.get(dictType);
-			if (list != null) {
-				return list;
-			}
-		}
-		return null;
+		return Static.dictDataService.getDictDataList(dictType);
 	}
 
 	public static String getDictListJson(String dictType) {

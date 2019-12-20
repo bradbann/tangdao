@@ -67,5 +67,5 @@ public class Role extends DataEntity<Role> {
  	
  	@TableField(exist = false)
  	private String userCode;
-    
+ 	
 }

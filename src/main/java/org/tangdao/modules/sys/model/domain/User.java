@@ -167,10 +167,7 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 	public static final String MGR_TYPE_DEFAULT_ADMIN = "1";
 	
 	public boolean isAdmin() {
-		if (MGR_TYPE_DEFAULT_ADMIN.equals(mgrType)) {
-			return true;
-		}
-		return false;
+		return MGR_TYPE_DEFAULT_ADMIN.equals(mgrType);
 	}
 
 	public boolean isSuperAdmin() {
@@ -178,10 +175,7 @@ public class User extends DataEntity<User> implements Serializable, UserDetails 
 	}
 
 	public static boolean isSuperAdmin(String id) {
-		if (id != null && StringUtils.inString(id, SUPER_ADMIN_CODE.split(","))) {
-			return true;
-		}
-		return false;
+		return (id != null && StringUtils.inString(id, SUPER_ADMIN_CODE.split(",")));
 	}
 	
 	@JsonIgnore

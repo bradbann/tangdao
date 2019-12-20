@@ -5,8 +5,6 @@ import java.io.Serializable;
 import org.apache.commons.lang3.StringUtils;
 import org.tangdao.common.utils.ObjectUtils;
 import org.tangdao.common.utils.ReflectUtils;
-import org.tangdao.modules.sys.model.domain.User;
-import org.tangdao.modules.sys.utils.UserUtils;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
@@ -29,28 +27,21 @@ public abstract class BaseEntity<T> implements Serializable {
 
 	@JsonIgnore
 	@TableField(exist = false)
-	protected transient String keyAttrName;
+	protected String keyAttrName;
 
 	@JsonIgnore
 	@TableField(exist = false)
-	protected transient String keyColumnName;
+	protected String keyColumnName;
 
 	@JsonIgnore
 	@TableField(exist = false)
-	protected transient boolean isNewRecord;
-
-	/**
-	 * 当前用户
-	 */
-	@JsonIgnore
-	@TableField(exist = false)
-	protected transient User currentUser;
+	protected boolean isNewRecord;
 
 	/**
 	 * 分页对象
 	 */
 	@TableField(exist = false)
-	protected transient Page<T> page;
+	protected Page<T> page;
 
 	public void setPageSize(Integer pageSize) {
 		if (this.page == null) {
@@ -101,27 +92,6 @@ public abstract class BaseEntity<T> implements Serializable {
 			this.setKey(key);
 		}
 	}
-
-	public User getCurrentUser() {
-		if (currentUser == null) {
-			currentUser = UserUtils.getUser();
-		}
-		return currentUser;
-	}
-
-	public void setCurrentUser(User currentUser) {
-		this.currentUser = currentUser;
-	}
-
-	/**
-	 * 插入之前执行方法，子类实现
-	 */
-	public abstract void preInsert();
-
-	/**
-	 * 更新之前执行方法，子类实现
-	 */
-	public abstract void preUpdate();
 
 	/**
 	 * 是否是新记录（默认：false），调用setIsNewRecord()设置新记录，使用自定义ID。 设置为true后强制執行主鍵策略

@@ -3,7 +3,9 @@ package org.tangdao.modules.sys.service;
 import java.util.List;
 
 import org.tangdao.common.service.ICrudService;
+import org.tangdao.common.suports.Page;
 import org.tangdao.modules.sys.model.domain.Role;
+import org.tangdao.modules.sys.model.domain.User;
 
 /**
  * <p>
@@ -16,9 +18,13 @@ import org.tangdao.modules.sys.model.domain.Role;
 public interface IRoleService extends ICrudService<Role> {
 
 	public List<Role> findByUserCode(String userCode);
-	
+
 	public boolean checkRoleNameExists(String oldRoleName, String roleName);
-	
+
 	public void insertRoleMenu(Role role, String[] menuCodes);
-	
+
+	public Page<User> findUserPage(Page<Role> page, Role role);
+
+	public int deleteRoleUser(String roleCode, String userCode);
+
 }

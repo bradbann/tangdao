@@ -15,15 +15,18 @@ import org.tangdao.modules.sys.model.domain.DictData;
  * @since 2019-07-02
  */
 public interface IDictDataService extends ICrudService<DictData> {
-	
+
 	/**
 	 * 获取数据字典，分类
+	 * 
 	 * @return
 	 */
 	public Map<String, List<DictData>> getDictDataList();
 
-    public boolean reloadToRedis();
-    
-    public boolean deleteByType(String dictType);
-    
+	public List<DictData> getDictDataList(String dictType);
+
+	public boolean reloadToRedis();
+
+	public boolean deleteByType(String dictType);
+
 }

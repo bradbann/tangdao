@@ -199,7 +199,7 @@ public class GenUtils {
 			}
 			// 删除标记
 			else if (StringUtils.equalsIgnoreCase(column.getColumnName(), "status")){
-				column.setShowType("radio");
+				column.setShowType("select");
 				
 				optionMap.put("dictType", "sys_status");
 				optionMap.put("dictName", "sys_status");

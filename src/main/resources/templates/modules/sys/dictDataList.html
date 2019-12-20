@@ -40,7 +40,7 @@ $('#dataGrid').dataGrid({
 		{header:'字典键值', name:'dictValue', index:'dict_value', width:200, align:"left"},
 		{header:'排序号', name:'dictSort', width:63, align:"center", fixed:true},
 		{header:'更新时间', name:'updateTime', index:'update_time', width:150, align:"center"},
-		{header:'备注信息', name:'remarks', index:'remarks', width:200, align:"left"},
+		{header:'字典描述', name:'description', index:'description', width:200, align:"left"},
 		{header:'状态', name:'status', index:'status', width:60, fixed:true, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_status')}, val, '未知', true);
 		}},

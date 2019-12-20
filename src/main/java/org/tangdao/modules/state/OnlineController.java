@@ -1,4 +1,4 @@
-package org.tangdao.modules.sys.web;
+package org.tangdao.modules.state;
 
 import java.util.Date;
 import java.util.List;
@@ -32,7 +32,7 @@ import org.tangdao.common.utils.TimeUtils;
 import org.tangdao.modules.sys.model.domain.User;
 
 @Controller
-@RequestMapping(value = "${adminPath}/sys/online")
+@RequestMapping(value = "${adminPath}/state/online")
 public class OnlineController extends BaseController{
 	
 	@Autowired
@@ -63,7 +63,7 @@ public class OnlineController extends BaseController{
 	 */
 	@RequestMapping(value = "list")
 	public String list(Model model) {
-		return "modules/sys/onlineList";
+		return "modules/state/onlineList";
 	}
 	
 	/**

@@ -146,14 +146,12 @@ public class GenTableService extends CrudServiceImpl<GenTableMapper, GenTable>{
 			column.setTableName(genTable.getTableName());
 			column.setGenTable(genTable);
 			if (StringUtils.isBlank(column.getId())){
-				column.preInsert();
 				genTableColumnMapper.insert(column);
 				continue;
 			}
 			if ("1".equals(column.getStatus())) {	
 				genTableColumnMapper.deleteById(column);
 			} else{
-				column.preUpdate();
 				genTableColumnMapper.updateById(column);
 			}
 		}

@@ -4,6 +4,8 @@ package org.tangdao.modules.sys.web;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,10 +20,13 @@ import org.tangdao.common.suports.TreeEntity;
 import org.tangdao.common.utils.ListUtils;
 import org.tangdao.common.utils.MapUtils;
 import org.tangdao.common.utils.StringUtils;
+import org.tangdao.modules.sys.model.domain.Employee;
 import org.tangdao.modules.sys.model.domain.Menu;
 import org.tangdao.modules.sys.model.domain.Role;
+import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.IMenuService;
 import org.tangdao.modules.sys.service.IRoleService;
+import org.tangdao.modules.sys.utils.UserUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -41,10 +46,10 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 public class RoleController extends BaseController {
 
 	@Autowired
-	IRoleService roleService;
+	private IRoleService roleService;
 	
 	@Autowired
-	IMenuService menuService;
+	private IMenuService menuService;
 	
 	@ModelAttribute
 	public Role get(String roleCode, boolean isNewRecord) {
@@ -59,14 +64,12 @@ public class RoleController extends BaseController {
 	@RequestMapping(value = "listData")
 	public @ResponseBody IPage<Role> listData(Role role){
 		QueryWrapper<Role> queryWrapper = new QueryWrapper<Role>();
-		
 		if(StringUtils.isNotBlank(role.getStatus())) {
 			queryWrapper.eq("status", role.getStatus());
 		}
 		if(StringUtils.isNotBlank(role.getRoleName())) {
-			queryWrapper.likeRight("role_name", role.getRoleName());
+			queryWrapper.like("role_name", role.getRoleName());
 		}
-		
 		return this.roleService.page(role.getPage(), queryWrapper);
 	}
 	
@@ -77,24 +80,27 @@ public class RoleController extends BaseController {
 		return "modules/sys/roleForm";
 	}
 	
+	@RequestMapping(value = "formAuthUser")
+	public String form(Role role, Model model){
+	    model.addAttribute("role", role);
+		return "modules/sys/roleFormAuthUser";
+	}
+	
 	@PostMapping(value = "save")
 	public @ResponseBody String save(@Validated Role role, String oldRoleName, String[] menuCodes, String op){
 		if (!roleService.checkRoleNameExists(oldRoleName, role.getRoleName())) {	
 			return this.renderResult(Global.FALSE, "保存失败，角色名称已存在");	
 		}
-		
-		if (StringUtils.inString(op, "add", "edit")) {	
+		if (StringUtils.inString(op, Global.OP_ADD, Global.OP_EDIT)) {	
 			roleService.saveOrUpdate(role);
 		}
-		
-		if (StringUtils.inString(op, "add", "auth")) {	
+		if (StringUtils.inString(op,  Global.OP_ADD, Global.OP_AUTH)) {	
 			roleService.insertRoleMenu(role, menuCodes);
 		}
-		
 		return renderResult(Global.TRUE,"保存成功");
 	}
 	
-	@PostMapping(value = "delete")
+	@RequestMapping(value = "delete")
 	public @ResponseBody String delete(Role role){
 		if(Role.DEFAULT_ADMIN_ROLE_CODE.equals(role.getRoleCode())) {
 			return this.renderResult(Global.FALSE, "非法操作，此角色为内置角色，不允许删除！");
@@ -104,29 +110,25 @@ public class RoleController extends BaseController {
 		}
 	}
 	
-//	@ResponseBody
-//	@PostMapping(value = "disable")
-//	public String disable(Role role){
-//		if(Global.YES.equals(role.getIsSys())&&!role.getShiroUser().isSuperAdmin()) {
-//			return renderResult(Global.FALSE, "越权操作，只有超级管理员才能操作此数据");
-//		}else {
-//			role.setStatus(Role.STATUS_DISABLE);
-//			roleService.updateByPrimaryKeySelective(role);
-//			return renderResult(Global.TRUE, "停用成功");
-//		}
-//	}
-//	
-//	@ResponseBody
-//	@PostMapping(value = "enable")
-//	public String enable(Role role){
-//		if(Global.YES.equals(role.getIsSys())&&!role.getShiroUser().isSuperAdmin()) {
-//			return renderResult(Global.FALSE, "越权操作，只有超级管理员才能操作此数据");
-//		}else {
-//			role.setStatus(Role.STATUS_NORMAL);
-//			roleService.updateByPrimaryKeySelective(role);
-//			return renderResult(Global.TRUE, "启用成功");
-//		}
-//	}
+	/**
+	 * 停用角色
+	 */
+	@RequestMapping(value = "disable")
+	public @ResponseBody String disable(Role role) {
+		role.setStatus(Employee.STATUS_DISABLE);
+		roleService.updateStatusById(role);
+		return renderResult(Global.TRUE, "停用成功");
+	}
+	
+	/**
+	 * 启用角色
+	 */
+	@RequestMapping(value = "enable")
+	public @ResponseBody String enable(Role role) {
+		role.setStatus(Employee.STATUS_NORMAL);
+		roleService.updateStatusById(role);
+		return renderResult(Global.TRUE, "启用成功");
+	}
 	
 	@RequestMapping(value = "treeData")
 	public @ResponseBody List<Map<String, Object>> listDataNormal(Role role, Boolean isAll, String isShowCode){
@@ -152,9 +154,9 @@ public class RoleController extends BaseController {
 		Map<String, Object> resultMap = MapUtils.newHashMap();
 		QueryWrapper<Menu> queryWrapper = new QueryWrapper<Menu>();
 		queryWrapper.eq("status", Menu.STATUS_NORMAL);
-		if(role.getCurrentUser().isSuperAdmin()) {
+		if(UserUtils.getUser().isSuperAdmin()) {
 			queryWrapper.lt("weight", Menu.WEIGHT_SUPER_ADMIN);
-		} else if(role.getCurrentUser().isAdmin()) {
+		} else if(UserUtils.getUser().isAdmin()) {
 			queryWrapper.lt("weight", Menu.WEIGHT_DEFAULT_ADMIN);
 		} else {
 			queryWrapper.lt("weight", Menu.WEIGHT_DEFAULT);
@@ -182,10 +184,44 @@ public class RoleController extends BaseController {
 				roleMenuCodes.add(m.getMenuCode());
 			}
 		}
-		
 		resultMap.put("menuList", menus);
-		
 		resultMap.put("roleMenuCodes", roleMenuCodes);
 		return resultMap;
+	}
+	
+	/**
+	 *  根据角色代码查询用户分页
+	 * @param user
+	 * @param roleCode
+	 * @param request
+	 * @return
+	 */
+	@PostMapping("/listUserData")
+	public @ResponseBody IPage<User> listData(Role role, HttpServletRequest request) {
+		return this.roleService.findUserPage(role.getPage(), role);
+	}
+	
+	/**
+	 * 解除角色用户关联
+	 */
+	@RequestMapping(value = "deleteRoleUser")
+	public @ResponseBody String deleteRoleUser(String roleCode, String userCode) {
+		if(StringUtils.isNotBlank(roleCode)&&StringUtils.isNotBlank(userCode)) {
+			roleService.deleteRoleUser(roleCode, userCode);
+			return renderResult(Global.TRUE, "解除成功");
+		}
+		return renderResult(Global.FALSE, "解除失败");
+	}
+	
+	/**
+	 * 保存角色用户关联
+	 * @param roleCode
+	 * @param userCodes
+	 * @return
+	 */
+	@RequestMapping(value = "saveRoleUser")
+	public @ResponseBody String saveRoleUser(String roleCode, String[] userCodes) {
+		
+		return renderResult(Global.TRUE, "保存成功");
 	}
 }
