@@ -31,7 +31,7 @@ public class UserUtils {
 		private static IRoleService roleService = SpringUtils.getBean(IRoleService.class);
 		private static IMenuService menuService = SpringUtils.getBean(IMenuService.class);
 	}
-
+	
 	/**
 	 * 获取当前登录用户对象
 	 * 

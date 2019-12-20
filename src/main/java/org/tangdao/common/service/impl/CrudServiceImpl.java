@@ -89,9 +89,6 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 
 	@Override
 	public boolean save(T entity) {
-		if(entity!=null) {
-			entity.preInsert();
-		}
 		return retBool(baseMapper.insert(entity));
 	}
 
@@ -109,7 +106,6 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 		try (SqlSession batchSqlSession = sqlSessionBatch()) {
 			int i = 0;
 			for (T anEntityList : entityList) {
-				anEntityList.preInsert();
 				batchSqlSession.insert(sqlStatement, anEntityList);
 				if (i >= 1 && i % batchSize == 0) {
 					batchSqlSession.flushStatements();
@@ -198,17 +194,11 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 
 	@Override
 	public boolean updateById(T entity) {
-		if(entity!=null) {
-			entity.preUpdate();
-		}
 		return retBool(baseMapper.updateById(entity));
 	}
 
 	@Override
 	public boolean update(T entity, Wrapper<T> updateWrapper) {
-		if(entity!=null) {
-			entity.preUpdate();
-		}
 		return retBool(baseMapper.update(entity, updateWrapper));
 	}
 
@@ -335,7 +325,6 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 			update = this.currentModelClass().newInstance();
 			update.setStatus(entity.getStatus());
 			update.setKey(entity.getKey());
-			update.preUpdate();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			throw newValidationException(e1.getMessage());

@@ -22,6 +22,7 @@ import org.tangdao.modules.sys.model.domain.Menu;
 import org.tangdao.modules.sys.model.domain.Role;
 import org.tangdao.modules.sys.service.IMenuService;
 import org.tangdao.modules.sys.service.IRoleService;
+import org.tangdao.modules.sys.utils.UserUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -152,9 +153,9 @@ public class RoleController extends BaseController {
 		Map<String, Object> resultMap = MapUtils.newHashMap();
 		QueryWrapper<Menu> queryWrapper = new QueryWrapper<Menu>();
 		queryWrapper.eq("status", Menu.STATUS_NORMAL);
-		if(role.getCurrentUser().isSuperAdmin()) {
+		if(UserUtils.getUser().isSuperAdmin()) {
 			queryWrapper.lt("weight", Menu.WEIGHT_SUPER_ADMIN);
-		} else if(role.getCurrentUser().isAdmin()) {
+		} else if(UserUtils.getUser().isAdmin()) {
 			queryWrapper.lt("weight", Menu.WEIGHT_DEFAULT_ADMIN);
 		} else {
 			queryWrapper.lt("weight", Menu.WEIGHT_DEFAULT);

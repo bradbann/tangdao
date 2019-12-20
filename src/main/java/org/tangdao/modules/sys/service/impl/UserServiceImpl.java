@@ -64,7 +64,6 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 		update.setSex(user.getSex());
 		update.setAvatar(user.getAvatar());
 		update.setSign(user.getSign());
-		update.preUpdate();
 		this.baseMapper.updateById(update);
 	}
 
@@ -77,7 +76,6 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 		update.setUserCode(user.getUserCode());
 		update.setLastLoginDate(new Date());
 		update.setLastLoginIp(user.getLastLoginIp());
-		update.preUpdate();
 		this.baseMapper.updateById(update);
 	}
 
@@ -92,7 +90,6 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 			password = Global.getConfig("sys.user.initPassword");
 		}
 		user.setPassword(passwordEncoderService.encryptPassword(password));
-		user.preUpdate();
 		this.baseMapper.updateById(user);
 	}
 	
@@ -104,7 +101,6 @@ public class UserServiceImpl extends CrudServiceImpl<UserMapper, User> implement
 		User update = new User();
 		update.setUserCode(user.getUserCode());
 		update.setMgrType(user.getMgrType());
-		update.preUpdate();
 		this.baseMapper.updateById(update);
 	}
 

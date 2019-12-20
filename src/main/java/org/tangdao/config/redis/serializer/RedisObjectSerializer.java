@@ -1,21 +1,15 @@
 package org.tangdao.config.redis.serializer;
 
-import java.io.IOException;
-
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.stereotype.Component;
-import org.tangdao.common.serializer.SerializationUtils;
+import org.tangdao.common.utils.ObjectUtils;
 
 @Component("springSessionDefaultRedisSerializer")
 public class RedisObjectSerializer implements RedisSerializer<Object> {
 
-	/**
-	 * 
-	 */
 	public RedisObjectSerializer() {
-		// TODO Auto-generated constructor stub
-		SerializationUtils.init("fst", null);
+		
 	}
 
 	// 为了方便进行对象与字节数组的转换，所以应该首先准备出两个转换器
@@ -26,10 +20,10 @@ public class RedisObjectSerializer implements RedisSerializer<Object> {
 		if (obj == null) { // 这个时候没有要序列化的对象出现，所以返回的字节数组应该就是一个空数组
 			return EMPTY_BYTE_ARRAY;
 		}
-//		return this.serializingConverter.convert(obj); // 将对象变为字节数组
+		// 将对象变为字节数组
 		try {
-			return SerializationUtils.serialize(obj);
-		} catch (IOException e) {
+			return ObjectUtils.serializeFst(obj);
+		} catch (RuntimeException e) {
 			// TODO Auto-generated catch block
 			throw new SerializationException(e.getMessage(), e);
 		}
@@ -41,8 +35,8 @@ public class RedisObjectSerializer implements RedisSerializer<Object> {
 			return null;
 		}
 		try {
-			return SerializationUtils.deserialize(data);
-		} catch (IOException e) {
+			return ObjectUtils.unserializeFst(data);
+		} catch (RuntimeException e) {
 			// TODO Auto-generated catch block
 			throw new SerializationException(e.getMessage(), e);
 		}
