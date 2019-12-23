@@ -6,7 +6,7 @@
 	    <div class="clearfix mg-b-25">
 	      <div id="contactAvatar" class="pos-relative float-left">
 	        <div class="avatar avatar-xxl"><img src="${ctxStatic+user.avatar!'/images/user1.jpg'}" class="rounded" alt="用户头像"></div>
-	        <a href="" class="contact-edit-photo" data-toggle="tooltip" title="Upload Photo"><i data-feather="edit-2"></i></a>
+	        <a href="#" class="contact-edit-photo"><i data-feather="edit-2"></i></a>
 	      </div>
 	    </div>
 	    <h5 id="contactName" class="tx-16 mg-b-5">${user.nickname!user.username}</h5>
@@ -138,5 +138,7 @@ $("#inputForm").validate({
 		}, "json");
     }
 });
+
+
 </script>
 </body></html>
