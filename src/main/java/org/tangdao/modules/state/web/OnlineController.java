@@ -1,4 +1,4 @@
-package org.tangdao.modules.state;
+package org.tangdao.modules.state.web;
 
 import java.util.Date;
 import java.util.List;

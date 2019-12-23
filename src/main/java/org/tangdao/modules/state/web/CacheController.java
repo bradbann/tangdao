@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.tangdao.modules.state;
+package org.tangdao.modules.state.web;
 
 import java.util.List;
 import java.util.Map;
