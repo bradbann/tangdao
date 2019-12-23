@@ -5,9 +5,9 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.tangdao.common.utils.MapUtils;
-import org.tangdao.common.utils.StringUtils;
-import org.tangdao.common.utils.TimeUtils;
+import org.tangdao.common.collect.MapUtils;
+import org.tangdao.common.lang.StringUtils;
+import org.tangdao.common.lang.TimeUtils;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;

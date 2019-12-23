@@ -16,13 +16,13 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.tangdao.common.collect.ListUtils;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.exception.ServiceException;
+import org.tangdao.common.lang.ExceptionUtils;
+import org.tangdao.common.lang.StringUtils;
 import org.tangdao.common.suports.BaseController;
-import org.tangdao.common.utils.ExceptionUtils;
-import org.tangdao.common.utils.ListUtils;
-import org.tangdao.common.utils.ServletUtils;
-import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.web.http.ServletUtils;
 
 /**
  * @ClassName: GlobalController.java

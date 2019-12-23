@@ -1,8 +1,8 @@
 package org.tangdao.modules.sys.utils;
 
 import org.tangdao.common.config.Global;
+import org.tangdao.common.lang.StringUtils;
 import org.tangdao.common.utils.SpringUtils;
-import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.model.domain.Config;
 import org.tangdao.modules.sys.service.IConfigService;
 

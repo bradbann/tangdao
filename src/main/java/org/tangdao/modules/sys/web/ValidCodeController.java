@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.tangdao.common.config.Global;
-import org.tangdao.common.utils.CaptchaUtils;
-import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.image.CaptchaUtils;
+import org.tangdao.common.lang.StringUtils;
 import org.tangdao.modules.sys.utils.ValidCodeUtils;
 
 @Controller

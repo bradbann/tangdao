@@ -6,8 +6,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.tangdao.common.utils.ListUtils;
-import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.collect.ListUtils;
+import org.tangdao.common.lang.StringUtils;
 
 import lombok.Getter;
 import lombok.Setter;

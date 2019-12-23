@@ -2,8 +2,8 @@ package org.tangdao.modules.sys.service.impl;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.tangdao.common.utils.EncodeUtils;
-import org.tangdao.common.utils.Sha1Utils;
+import org.tangdao.common.codec.EncodeUtils;
+import org.tangdao.common.codec.Sha1Utils;
 
 @Component
 public class PasswordEncoderService implements PasswordEncoder{

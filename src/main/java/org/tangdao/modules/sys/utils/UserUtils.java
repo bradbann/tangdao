@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.tangdao.common.collect.ListUtils;
 import org.tangdao.common.config.Global;
-import org.tangdao.common.utils.ListUtils;
-import org.tangdao.common.utils.ServletUtils;
+import org.tangdao.common.lang.StringUtils;
 import org.tangdao.common.utils.SpringUtils;
-import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.web.http.ServletUtils;
 import org.tangdao.modules.sys.model.domain.Menu;
 import org.tangdao.modules.sys.model.domain.Role;
 import org.tangdao.modules.sys.model.domain.User;

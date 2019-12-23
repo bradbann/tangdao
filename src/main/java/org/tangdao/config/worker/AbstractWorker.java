@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.tangdao.common.utils.ListUtils;
-import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.collect.ListUtils;
+import org.tangdao.common.lang.StringUtils;
 import org.tangdao.config.worker.hook.ShutdownHookWorker;
 
 import com.alibaba.fastjson.JSON;

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.tangdao.common.annotation.DbSaveLog;
 import org.tangdao.common.suports.BaseController;
-import org.tangdao.common.utils.ServletUtils;
+import org.tangdao.common.web.http.ServletUtils;
 import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.utils.UserUtils;
 

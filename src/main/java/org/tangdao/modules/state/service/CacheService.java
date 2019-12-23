@@ -10,11 +10,11 @@ import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.tangdao.common.cache.JedisUtils;
-import org.tangdao.common.utils.JsonMapper;
-import org.tangdao.common.utils.ListUtils;
-import org.tangdao.common.utils.MapUtils;
-import org.tangdao.common.utils.ObjectUtils;
-import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.collect.ListUtils;
+import org.tangdao.common.collect.MapUtils;
+import org.tangdao.common.lang.ObjectUtils;
+import org.tangdao.common.lang.StringUtils;
+import org.tangdao.common.mapper.JsonMapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 

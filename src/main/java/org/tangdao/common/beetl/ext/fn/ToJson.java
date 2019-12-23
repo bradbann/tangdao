@@ -2,7 +2,7 @@ package org.tangdao.common.beetl.ext.fn;
 
 import org.beetl.core.Context;
 import org.beetl.core.Function;
-import org.tangdao.common.utils.JsonMapper;
+import org.tangdao.common.mapper.JsonMapper;
 
 public class ToJson implements Function {
 

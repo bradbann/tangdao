@@ -11,9 +11,9 @@ import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.misc.BeetlUtil;
 import org.beetl.core.resource.StringTemplateResourceLoader;
-import org.tangdao.common.utils.ExceptionUtils;
-import org.tangdao.common.utils.PropertiesUtils;
-import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.io.PropertiesUtils;
+import org.tangdao.common.lang.ExceptionUtils;
+import org.tangdao.common.lang.StringUtils;
 
 public class BeetlUtils {
 

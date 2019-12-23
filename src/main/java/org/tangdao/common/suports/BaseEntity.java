@@ -3,8 +3,8 @@ package org.tangdao.common.suports;
 import java.io.Serializable;
 
 import org.apache.commons.lang3.StringUtils;
-import org.tangdao.common.utils.ObjectUtils;
-import org.tangdao.common.utils.ReflectUtils;
+import org.tangdao.common.lang.ObjectUtils;
+import org.tangdao.common.reflect.ReflectUtils;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;

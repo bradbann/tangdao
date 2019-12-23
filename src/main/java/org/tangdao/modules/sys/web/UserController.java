@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.tangdao.common.lang.StringUtils;
 import org.tangdao.common.suports.BaseController;
-import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.model.domain.User;
 import org.tangdao.modules.sys.service.IUserService;
 

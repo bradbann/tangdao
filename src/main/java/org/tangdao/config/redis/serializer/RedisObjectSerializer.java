@@ -3,7 +3,7 @@ package org.tangdao.config.redis.serializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.stereotype.Component;
-import org.tangdao.common.utils.ObjectUtils;
+import org.tangdao.common.lang.ObjectUtils;
 
 @Component("springSessionDefaultRedisSerializer")
 public class RedisObjectSerializer implements RedisSerializer<Object> {

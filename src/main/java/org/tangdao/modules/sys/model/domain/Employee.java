@@ -2,9 +2,9 @@ package org.tangdao.modules.sys.model.domain;
 
 import java.util.List;
 
+import org.tangdao.common.collect.ListUtils;
+import org.tangdao.common.lang.StringUtils;
 import org.tangdao.common.suports.DataEntity;
-import org.tangdao.common.utils.ListUtils;
-import org.tangdao.common.utils.StringUtils;
 import org.tangdao.modules.sys.model.vo.EmpPost;
 
 import com.baomidou.mybatisplus.annotation.TableField;

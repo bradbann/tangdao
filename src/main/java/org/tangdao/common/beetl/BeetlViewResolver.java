@@ -9,7 +9,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 import org.tangdao.common.config.Global;
-import org.tangdao.common.utils.DateUtils;
+import org.tangdao.common.lang.DateUtils;
 
 public class BeetlViewResolver extends BeetlSpringViewResolver {
 

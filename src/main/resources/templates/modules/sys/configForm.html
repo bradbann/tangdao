@@ -10,14 +10,12 @@
         <div class="card-body card-content-fixed pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="parentCode">参数名称</label>
-                    <#form:input path="configName" maxlength="100" class="form-control required" 
-									readonly="${!config.currentUser.superAdmin}"/>
+                    <label for="parentCode">参数名称 <span class="tx-danger ">*</span></label>
+                    <#form:input path="configName" maxlength="100" class="form-control required"/>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="menuType">参数键名</label>
-	                <#form:input path="configKey" maxlength="100" class="form-control required"
-									readonly="${!config.currentUser.superAdmin}" />
+                    <label for="menuType">参数键名 <span class="tx-danger ">*</span></label>
+	                <#form:input path="configKey" maxlength="100" class="form-control required" />
                 </div>
             </div>
             <div class="form-row">

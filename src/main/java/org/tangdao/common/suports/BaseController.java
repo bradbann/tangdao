@@ -6,7 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.WebDataBinder;
-import org.tangdao.common.utils.ServletUtils;
+import org.tangdao.common.web.http.ServletUtils;
 
 public abstract class BaseController {
 	

@@ -3,9 +3,9 @@ package org.tangdao.common.suports;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.tangdao.common.utils.CookieUtils;
-import org.tangdao.common.utils.ObjectUtils;
-import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.lang.ObjectUtils;
+import org.tangdao.common.lang.StringUtils;
+import org.tangdao.common.web.CookieUtils;
 
 import lombok.Getter;
 import lombok.Setter;

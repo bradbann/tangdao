@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.tangdao.common.utils.HttpClientUtils;
+import org.tangdao.common.web.http.HttpClientUtils;
 
 public class SmsTest {
 	public static void main(String[] args) {

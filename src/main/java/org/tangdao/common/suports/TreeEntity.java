@@ -4,8 +4,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import org.tangdao.common.exception.ServiceException;
-import org.tangdao.common.utils.ReflectUtils;
-import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.lang.StringUtils;
+import org.tangdao.common.reflect.ReflectUtils;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;

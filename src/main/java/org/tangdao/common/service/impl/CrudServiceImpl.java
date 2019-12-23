@@ -312,7 +312,7 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends DataEntity<T>> i
 	}
 
 	public static ValidationException newValidationException(String message) {
-		return new ValidationException(org.tangdao.common.utils.StringUtils.defaultString(message, "校验失败"));
+		return new ValidationException(org.tangdao.common.lang.StringUtils.defaultString(message, "校验失败"));
 	}
 
 	@Override

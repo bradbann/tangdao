@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.tangdao.common.collect.ListUtils;
 import org.tangdao.common.config.Global;
+import org.tangdao.common.lang.StringUtils;
 import org.tangdao.common.suports.DataEntity;
-import org.tangdao.common.utils.ListUtils;
-import org.tangdao.common.utils.StringUtils;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;

@@ -9,7 +9,7 @@ import org.beetl.ext.spring.BeetlSpringView;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.tangdao.common.config.Global;
-import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.lang.StringUtils;
 
 /** 
  * @ClassName: BeetlView.java 

@@ -2,7 +2,7 @@ package org.tangdao.modules.sys.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.tangdao.common.utils.StringUtils;
+import org.tangdao.common.lang.StringUtils;
 import org.tangdao.modules.sys.mapper.LogMapper;
 import org.tangdao.modules.sys.model.domain.Log;
 import org.tangdao.modules.sys.service.ILogService;
