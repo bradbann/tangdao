@@ -65,4 +65,16 @@ public class RoleServiceImpl extends CrudServiceImpl<RoleMapper, Role> implement
 		// TODO Auto-generated method stub
 		return this.baseMapper.deleteRoleUser(roleCode, userCode);
 	}
+	
+	@Override
+	public int insertRoleUser(String roleCode, String[] userCodes) {
+		int count = 0;
+		if (userCodes != null && roleCode!=null) {
+			for (String userCode : userCodes) {
+				this.baseMapper.deleteRoleUser(roleCode, userCode);
+				count+=this.baseMapper.insertRoleUser(roleCode, userCode);
+			}
+		}
+		return count;
+	}
 }

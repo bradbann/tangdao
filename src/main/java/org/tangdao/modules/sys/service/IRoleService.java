@@ -26,5 +26,7 @@ public interface IRoleService extends ICrudService<Role> {
 	public Page<User> findUserPage(Page<Role> page, Role role);
 
 	public int deleteRoleUser(String roleCode, String userCode);
+	
+	public int insertRoleUser(String roleCode, String[] userCodes);
 
 }

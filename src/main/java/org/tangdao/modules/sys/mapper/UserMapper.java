@@ -20,5 +20,5 @@ public interface UserMapper extends BaseMapper<User> {
 	public void deleteUserRole(String userCode);
 
 	public int insertUserRole(@Param("userCode") String userCode, @Param("roleCodes") String[] roleCodes);
-
+	
 }

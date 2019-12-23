@@ -221,7 +221,10 @@ public class RoleController extends BaseController {
 	 */
 	@RequestMapping(value = "saveRoleUser")
 	public @ResponseBody String saveRoleUser(String roleCode, String[] userCodes) {
-		
-		return renderResult(Global.TRUE, "保存成功");
+		if(StringUtils.isNotBlank(roleCode)&&userCodes!=null) {
+			roleService.insertRoleUser(roleCode, userCodes);
+			return renderResult(Global.TRUE, "保存成功");
+		}
+		return renderResult(Global.FALSE, "保存失败");
 	}
 }

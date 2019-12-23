@@ -48,6 +48,10 @@
 	<delete id="deleteRoleUser">
         DELETE FROM sys_user_role WHERE role_code = #{roleCode} and user_code = #{userCode}
 	</delete>
+
+	<delete id="insertRoleUser">
+        INSERT INTO sys_user_role(role_code, user_code)values(#{roleCode}, #{userCode})
+	</delete>
 	
 	<insert id="insertRoleMenu">
         INSERT INTO sys_role_menu(role_code, menu_code)
