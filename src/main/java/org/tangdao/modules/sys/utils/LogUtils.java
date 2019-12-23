@@ -14,7 +14,6 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.method.HandlerMethod;
-import org.tangdao.common.annotation.DbSaveLog;
 import org.tangdao.common.config.Global;
 import org.tangdao.common.lang.ExceptionUtils;
 import org.tangdao.common.lang.ObjectUtils;
@@ -65,19 +64,14 @@ public class LogUtils {
 		if (handler instanceof HandlerMethod){
 			HandlerMethod hm = ((HandlerMethod)handler);
 			Method m = hm.getMethod();
-			DbSaveLog dsl = m.getAnnotation(DbSaveLog.class);
+			org.tangdao.common.annotation.Log dsl = m.getAnnotation(org.tangdao.common.annotation.Log.class);
 			if(dsl!=null) {
-				if(dsl.logIgnore()) {
+				if(dsl.ignore()) {
 					return;
 				}
 				if(StringUtils.isNotBlank(logTitle)) {
-					logTitle = dsl.logTitle();
+					logTitle = dsl.title();
 				}
-				if(StringUtils.isNotBlank(logType)) {
-					logType = dsl.logType();
-				}
-				log.setBizKey(dsl.bizKey());
-				log.setBizType(dsl.bizType());
 			}
 		}
 		log.setLogTitle(logTitle);

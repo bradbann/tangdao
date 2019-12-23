@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.tangdao.common.annotation.DbSaveLog;
+import org.tangdao.common.annotation.Log;
 import org.tangdao.common.suports.BaseController;
 import org.tangdao.common.web.http.ServletUtils;
 import org.tangdao.modules.sys.model.domain.User;
@@ -28,7 +28,7 @@ public class LoginController extends BaseController {
 	 * @param model
 	 * @return
 	 */
-	@DbSaveLog(logIgnore = true)
+	@Log(ignore = true)
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -55,7 +55,7 @@ public class LoginController extends BaseController {
 	 * @param model
 	 * @return
 	 */
-	@DbSaveLog(logIgnore = true)
+	@Log(ignore = true)
 	@PreAuthorize("isAuthenticated()")
 //	@PreAuthorize("hasRole('ROLE_USER') and hasAuthority('sys:menu:edit') and isAuthenticated()")
 	@RequestMapping(value = "index")
@@ -79,7 +79,7 @@ public class LoginController extends BaseController {
 	 * @param model
 	 * @return
 	 */
-	@DbSaveLog(logIgnore = true)
+	@Log(ignore = true)
 	@RequestMapping(value = "desktop")
 	public String desktop(HttpServletRequest request, HttpServletResponse response, Model model) {
 		return "modules/sysDesktop";
