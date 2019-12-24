@@ -68,7 +68,6 @@
 			<if test="empUser.employee != null and empUser.employee.officeCode != null and empUser.employee.officeCode != ''">
 				AND t.office_code = #{empUser.employee.officeCode}
 			</if>
-		order by u.user_weight desc, u.update_time desc
 	</select>
 	
 	<select id="getEmpUserByUserCode" resultType="org.tangdao.modules.sys.model.vo.EmpUser">

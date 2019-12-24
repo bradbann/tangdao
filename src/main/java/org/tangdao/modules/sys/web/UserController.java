@@ -35,6 +35,9 @@ public class UserController extends BaseController {
 		if(StringUtils.isNotBlank(user.getStatus())) {
 			queryWrapper.eq("status", user.getStatus());
 		}
+		if(StringUtils.isNotBlank(user.getUserType())) {
+			queryWrapper.eq("user_type", user.getUserType());
+		}
 		if(StringUtils.isNotBlank(user.getUsername())||StringUtils.isNotBlank(user.getNickname())) {
 			queryWrapper.like("username", user.getUsername()).or().like("nickname", user.getNickname());
 		}

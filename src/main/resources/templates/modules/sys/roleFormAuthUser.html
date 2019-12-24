@@ -103,6 +103,7 @@ $("#search").select2({
     		return {
     			username: params.term,
     			nickname: params.term,
+    			userType: '${role.userType}',
     			pageNo: params.page,
     			pageSize: 20
     		}
