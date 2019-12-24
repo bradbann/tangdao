@@ -19,7 +19,7 @@ import org.tangdao.config.redis.serializer.RedisObjectSerializer;
 @Configuration
 @EnableCaching
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds = 3600)
-public class RedisConfiguration {
+public class RedisConfig {
 	
 	@Primary
 	@Bean("redisTemplate")

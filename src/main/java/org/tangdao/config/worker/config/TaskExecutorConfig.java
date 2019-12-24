@@ -17,7 +17,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  */
 @Configuration
 @Order(1)
-public class TaskExecutorConfiguration {
+public class TaskExecutorConfig {
     
     /**
      * 当前服务器核心CPU个数

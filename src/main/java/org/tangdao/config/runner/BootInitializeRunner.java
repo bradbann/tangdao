@@ -28,6 +28,7 @@ import org.tangdao.modules.sys.service.IMenuService;
 @Configuration
 @Order(2)
 public class BootInitializeRunner implements CommandLineRunner {
+	
 	@Autowired
 	private IConfigService             configService;
 	@Autowired
