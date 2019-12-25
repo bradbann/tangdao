@@ -7,11 +7,11 @@
 springboot，spring-security，spring-session，mybatis-plus，redis，fst，beetl
 
 #### 效果图示
-<img src="doc/images/va.png" width="50%" />
-<img src="doc/images/vb.png" width="50%" />
+<img src="doc/images/va.png" width="80%" />
+<img src="doc/images/vb.png" width="80%" />
 
 #### 项目进度
-<img src="doc/images/ta.png" width="50%" />
+<img src="doc/images/ta.png" width="80%" />
 
 #### 安装教程
 ```
