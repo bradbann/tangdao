@@ -4,7 +4,7 @@
 开源，开源，开源
 
 #### 技术选型
-springboot，spring-security，spring-session,mybatis-plus，redis，fst，beetl
+springboot，spring-security，spring-session，mybatis-plus，redis，fst，beetl
 
 #### 安装教程
 ```
