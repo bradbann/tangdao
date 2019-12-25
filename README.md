@@ -2,8 +2,9 @@
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)       [![star](https://gitee.com/ruyangit/tangdao/badge/star.svg?theme=gray)](https://gitee.com/ruyangit/tangdao/stargazers)
 
 #### 项目介绍
-    开源，开源，开源。(github site: [https://tangdao.io](https://github.com/ruyangit/tangdao))  唐刀，唐朝制式军刀，起这个名字主要是偶然间看到这把刀的样子好看、好看、好看。
-    该项目原来主要是做一些设计上的演变，后来就直接用作一些小项目的管理系统，目前看到的就是一个基础的权限管理系统，包括用户，角色，菜单，岗位，机构，公司，数据字典，系统配置，日志，缓存（可视化redis），代码生成，组件展示等。
+开源，开源，开源。(github site: [https://tangdao.io](https://github.com/ruyangit/tangdao))  唐刀，唐朝制式军刀，起这个名字主要是偶然间看到这把刀的样子好看、好看、好看。
+
+项目原来主要是做一些设计，及中间件的一些适配测试，后来就直接用作一些小项目的管理系统，目前看到的就是一个基础的权限管理系统，包括用户，角色，菜单，岗位，机构，公司，数据字典，系统配置，日志，缓存（可视化redis），代码生成，组件展示等。2.0.1 是一个短信平台的分支，没开发完呢就被抛弃了！O(∩_∩)O
 
 #### 技术选型
 springboot，spring-security，spring-session，mybatis-plus，redis，fst，beetl...
