@@ -1,5 +1,5 @@
 # 权限管理系统 
-[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)[![star](https://gitee.com/ruyangit/tangdao/badge/star.svg?theme=gray)](https://gitee.com/ruyangit/tangdao/stargazers)
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)    [![star](https://gitee.com/ruyangit/tangdao/badge/star.svg?theme=gray)](https://gitee.com/ruyangit/tangdao/stargazers)
 
 #### 项目介绍
 开源，开源，开源。(github site: [https://tangdao.io](https://github.com/ruyangit/tangdao)) 
@@ -8,11 +8,10 @@
 springboot，spring-security，spring-session，mybatis-plus，redis，fst，beetl...
 
 #### 效果图示
-<img src="doc/images/va.png" width="80%" />
-<img src="doc/images/vb.png" width="80%" />
+<img src="doc/images/va.png" width="50%" /><img src="doc/images/vb.png" width="50%" />
 
 #### 项目进度
-<img src="doc/images/ta.png" width="80%" />
+<img src="doc/images/ta.png" width="50%" />
 
 #### 安装教程
 ```
