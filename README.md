@@ -5,7 +5,7 @@
 开源，开源，开源。(github site: [https://tangdao.io](https://github.com/ruyangit/tangdao)) 
 
 #### 技术选型
-springboot，spring-security，spring-session，mybatis-plus，redis，fst，beetl
+springboot，spring-security，spring-session，mybatis-plus，redis，fst，beetl 等。
 
 #### 效果图示
 <img src="doc/images/va.png" width="80%" />
