@@ -38,7 +38,9 @@ mvn package -f pom.xml -Dmaven.test.skip=true
 * 维护新的项目多模块管理，拆分服务
 
 #### 版权说明
-该项目采用JEESITE的设计思路，部分引用作者代码，仅用于学习和内部系统使用。如有版权问题请联系我。如有需要请支持正版 <a href="https://gitee.com/thinkgem/jeesite4" target="_blank">JEESITE</a>。
+```
+该项目采用jeesite的设计思路，部分引用作者代码，仅用于学习和内部系统使用。如有版权问题请联系我。如有需要请支持正版 <a href="https://gitee.com/thinkgem/jeesite4" target="_blank">jeesite</a>。
+```
 
 #### 参与贡献
 
