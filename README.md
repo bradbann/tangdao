@@ -33,6 +33,8 @@ mvn package -f pom.xml -Dmaven.test.skip=true
 * 需要数据库MYSQL环境。
 * 需要缓存REDIS服务。
 
+* 注：没钱所以没有在线预览，本地导入方便快捷。
+
 #### 维护计划
 
 * 本项目仅修复问题，不做新功能的开发。
