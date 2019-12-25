@@ -10,7 +10,7 @@
 springboot，spring-security，spring-session，mybatis-plus，redis，fst，beetl...
 
 #### 效果图示
-<img src="doc/images/vb.png" width="50%" /><img src="doc/images/va.png" width="50%" />
+<img src="doc/images/skin.jpg" width="50%" /><img src="doc/images/user.jpg" width="50%" /><img src="doc/images/role.jpg" width="50%" /><img src="doc/images/redis.jpg" width="50%" /><img src="doc/images/login.jpg" width="50%" />
 
 #### 项目进度
 <img src="doc/images/ta.png" width="50%" />
