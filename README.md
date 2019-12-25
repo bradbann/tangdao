@@ -6,6 +6,9 @@
 #### 技术选型
 springboot，spring-security，spring-session，mybatis-plus，redis，fst，beetl
 
+#### 效果图示
+<img src="https://gitee.com/ruyangit/tangdao/raw/master/doc/images/va.png" width="100%" />
+
 #### 安装教程
 ```
 mvn clean install
@@ -26,7 +29,7 @@ mvn package -f pom.xml -Dmaven.test.skip=true
 * 需要数据库MYSQL环境
 * 需要缓存REDIS服务
 
-#### 计划
+#### 维护计划
 
 * 维护新的项目多模块管理，拆分服务
 
