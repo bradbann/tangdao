@@ -1,7 +1,8 @@
-# 权限管理系统
+# 权限管理系统 
+[![star](https://gitee.com/ruyangit/tangdao/badge/star.svg?theme=gray)](https://gitee.com/ruyangit/tangdao/stargazers)
 
 #### 项目介绍
-开源，开源，开源。(github site: [https://tangdao.io](https://github.com/ruyangit/tangdao))
+开源，开源，开源。(github site: [https://tangdao.io](https://github.com/ruyangit/tangdao)) 
 
 #### 技术选型
 springboot，spring-security，spring-session，mybatis-plus，redis，fst，beetl
