@@ -1,8 +1,7 @@
 # 权限管理系统
 
 #### 项目介绍
-开源，开源，开源 
-Tangdao (github site: [https://tangdao.io](https://github.com/ruyangit/tangdao))
+开源，开源，开源。(github site: [https://tangdao.io](https://github.com/ruyangit/tangdao))
 
 #### 技术选型
 springboot，spring-security，spring-session，mybatis-plus，redis，fst，beetl
