@@ -30,15 +30,16 @@ mvn package -f pom.xml -Dmaven.test.skip=true
 
 #### 使用说明
 
-* 需要数据库MYSQL环境
-* 需要缓存REDIS服务
+* 需要数据库MYSQL环境。
+* 需要缓存REDIS服务。
 
 #### 维护计划
 
-* 维护新的项目多模块管理，拆分服务
+* 本项目仅修复问题，不做新功能的开发。
+* 重构项目拆分微服务。
 
 #### 版权说明
-本项目遵循 Apache License 2.0 协议。项目采用jeesite的设计思路，部分引用作者代码，仅用于学习和内部系统使用。如有版权问题请联系我。如有需要请支持正版 <a href="https://gitee.com/thinkgem/jeesite4" target="_blank">jeesite</a>。
+本项目遵循 Apache License 2.0 协议。项目借鉴jeesite的设计思路，部分引用作者代码，仅用于学习和内部系统的使用。如有版权问题请联系我。如有需要请支持正版 <a href="https://gitee.com/thinkgem/jeesite4" target="_blank">jeesite</a>。
 
 #### 参与贡献
 
