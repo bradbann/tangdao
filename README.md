@@ -1,5 +1,5 @@
 # 综合管理系统 （Tangdao）
-[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)       [![star](https://gitee.com/ruyangit/tangdao/badge/star.svg?theme=gray)](https://gitee.com/ruyangit/tangdao/stargazers)
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)       [![star](https://gitee.com/ruyangit/tangdao/badge/star.svg?theme=dark)](https://gitee.com/ruyangit/tangdao/stargazers)
 
 #### 项目介绍
 开源，开源，开源。(github site: [https://tangdao.io](https://github.com/ruyangit/tangdao))  唐刀，唐朝制式军刀，起这个名字主要是偶然间看到这把刀的样子好看、好看、好看。
@@ -17,7 +17,7 @@ springboot，spring-security，spring-session，mybatis-plus，redis，fst，bee
 
 #### 安装教程
 ```
-mvn clean install
+mvn install
 ```
 
 ### 运行开发环境
@@ -25,7 +25,7 @@ mvn clean install
 mvn springboot:run
 ```
 
-### 打包压缩后的生产文件
+### 打包发布
 ```
 mvn package -f pom.xml -Dmaven.test.skip=true
 ```
