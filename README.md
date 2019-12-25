@@ -1,4 +1,4 @@
-# 综合管理系统 
+# 综合管理系统 （唐刀）
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)       [![star](https://gitee.com/ruyangit/tangdao/badge/star.svg?theme=gray)](https://gitee.com/ruyangit/tangdao/stargazers)
 
 #### 项目介绍
